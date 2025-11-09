@@ -5039,12 +5039,37 @@ def show_partners_page():
     """Strona z partnerami"""
     st.title("💬 Chat z Partnerami AI")
     
-    # Initialize session state for messages
-    if 'messages' not in st.session_state:
-        st.session_state.messages = []
+    # Initialize session state for conversation history (per partner)
+    if 'partner_conversations' not in st.session_state:
+        st.session_state.partner_conversations = {}
     
     if 'selected_partner' not in st.session_state:
         st.session_state.selected_partner = "Wszyscy"
+    
+    # Get or create conversation for current partner
+    current_partner = st.session_state.selected_partner
+    if current_partner not in st.session_state.partner_conversations:
+        st.session_state.partner_conversations[current_partner] = {
+            'messages': [],
+            'session_id': datetime.now().strftime("%Y-%m-%d %H:%M"),
+            'session_count': 1
+        }
+    
+    # Backward compatibility - migrate old messages if exists
+    if 'messages' in st.session_state and len(st.session_state.messages) > 0:
+        if len(st.session_state.partner_conversations[current_partner]['messages']) == 0:
+            st.session_state.partner_conversations[current_partner]['messages'] = st.session_state.messages
+        del st.session_state.messages
+    
+    # Helper function to get current conversation messages
+    def get_messages():
+        return st.session_state.partner_conversations[current_partner]['messages']
+    
+    def add_message(msg):
+        st.session_state.partner_conversations[current_partner]['messages'].append(msg)
+    
+    def clear_messages():
+        st.session_state.partner_conversations[current_partner]['messages'] = []
     
     # === TABY ===
     tab_chat, tab_profiles = st.tabs(["💬 Chat", "📋 Profile Partnerów"])
@@ -5108,6 +5133,22 @@ def show_partners_page():
             st.markdown("---")
             
             st.markdown("### ⚙️ Opcje")
+            
+            # Przycisk Nowa rozmowa
+            if st.button("🆕 Nowa rozmowa", width="stretch", key="new_conversation_btn", type="primary"):
+                current_conv = st.session_state.partner_conversations[current_partner]
+                current_conv['session_count'] += 1
+                current_conv['session_id'] = datetime.now().strftime("%Y-%m-%d %H:%M")
+                current_conv['messages'] = []
+                st.rerun()
+            
+            # Statystyki sesji
+            conv_info = st.session_state.partner_conversations[current_partner]
+            st.caption(f"📅 Sesja #{conv_info['session_count']} od {conv_info['session_id']}")
+            st.caption(f"💬 Wiadomości: {len(conv_info['messages'])}")
+            
+            st.markdown("---")
+            
             tryb = st.radio(
                 "Tryb odpowiedzi:",
                 ["Zwięzły", "Normalny", "Szczegółowy"],
@@ -5180,7 +5221,7 @@ def show_partners_page():
             pass
         
         # === NOWE: SUGEROWANE PYTANIA ===
-        if len(st.session_state.messages) < 3:  # Pokazuj tylko gdy mało wiadomości
+        if len(get_messages()) < 3:  # Pokazuj tylko gdy mało wiadomości
             try:
                 stan_spolki, cele = load_portfolio_data()
                 smart_questions = generate_smart_questions(stan_spolki, cele)
@@ -5198,7 +5239,7 @@ def show_partners_page():
                             type="secondary"
                         ):
                             # Użyj pytania jako input
-                            st.session_state.messages.append({
+                            add_message({
                                 "role": "user",
                                 "content": question,
                                 "avatar": "👤"
@@ -5231,7 +5272,7 @@ def show_partners_page():
                                             content = f"{sentiment} **{resp['partner']}**: {resp['response']}"
                                         
                                         # Dodaj do historii
-                                        st.session_state.messages.append({
+                                        add_message({
                                             "role": "assistant",
                                             "content": content,
                                             "avatar": resp['avatar'],
@@ -5258,7 +5299,7 @@ def show_partners_page():
                                         color = PERSONAS[st.session_state.selected_partner].get('color_code', '')
                                         avatar = color_map.get(color, "🤖")
                                     
-                                    st.session_state.messages.append({
+                                    add_message({
                                         "role": "assistant",
                                         "content": f"**{st.session_state.selected_partner}**: {response}",
                                         "avatar": avatar,
@@ -5272,7 +5313,7 @@ def show_partners_page():
         # Display messages
         chat_container = st.container()
         with chat_container:
-            for msg in st.session_state.messages:
+            for msg in get_messages():
                 with st.chat_message(msg["role"], avatar=msg.get("avatar", "🤖")):
                     st.markdown(msg["content"])
                     
@@ -5293,7 +5334,7 @@ def show_partners_page():
         # Handle user input
         if user_input:
             # Add user message
-            st.session_state.messages.append({
+            add_message({
                 "role": "user",
                 "content": user_input,
                 "avatar": "👤"
@@ -5336,7 +5377,7 @@ def show_partners_page():
                                 content = f"{sentiment} **{resp['partner']}**: {resp['response']}"
                             
                             # Dodaj do historii
-                            st.session_state.messages.append({
+                            add_message({
                                 "role": "assistant",
                                 "content": content,
                                 "avatar": resp['avatar'],
@@ -5363,7 +5404,7 @@ def show_partners_page():
                             "Tomek": "🔥"
                         }.get(st.session_state.selected_partner, "🤖")
                 
-                        st.session_state.messages.append({
+                        add_message({
                             "role": "assistant",
                             "content": f"**{st.session_state.selected_partner}**: {response}",
                             "avatar": avatar,
@@ -5380,7 +5421,7 @@ def show_partners_page():
         
         with col1:
             if st.button("🗳️ Rozpocznij głosowanie", width="stretch"):
-                st.session_state.messages.append({
+                add_message({
                     "role": "system",
                     "content": "📋 **Nowe głosowanie** - Propozycja do głosowania otworzona",
                     "avatar": "🤖"
@@ -5389,7 +5430,7 @@ def show_partners_page():
         
         with col2:
             if st.button("🎯 Poproś o doradztwo", width="stretch"):
-                st.session_state.messages.append({
+                add_message({
                     "role": "system",
                     "content": "🤖 **AI Advisor** - Generuję 3 scenariusze...",
                     "avatar": "🤖"
@@ -5398,7 +5439,7 @@ def show_partners_page():
         
         with col3:
             if st.button("🧹 Wyczyść chat", width="stretch"):
-                st.session_state.messages = []
+                clear_messages()
                 st.rerun()
         
         # Drugi rząd przycisków - funkcje pamięci AI
@@ -5409,7 +5450,7 @@ def show_partners_page():
             with col4:
                 if st.button("💾 Zapisz decyzję", width="stretch", help="Zapisz ostatnią rekomendację AI do pamięci"):
                     # Znajdź ostatnią odpowiedź AI
-                    ai_messages = [m for m in st.session_state.messages if m["role"] == "assistant"]
+                    ai_messages = [m for m in get_messages() if m["role"] == "assistant"]
                     if ai_messages:
                         last_msg = ai_messages[-1]
                         content = last_msg["content"]
