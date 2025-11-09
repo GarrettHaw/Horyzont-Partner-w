@@ -3123,9 +3123,9 @@ def main():
         show_autonomous_conversations_page()
     elif page == "📧 Powiadomienia":
         show_notifications_page()
-    elif page == "�️ Konsultacje":
+    elif page == "🗳️ Konsultacje":
         show_consultations_page()
-    elif page == "�📜 Kodeks":
+    elif page == "📜 Kodeks":
         show_kodeks_page()
     elif page == "🔔 Alerty":
         show_alerts_page()
