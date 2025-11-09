@@ -6786,24 +6786,38 @@ def load_wyplaty():
         data = load_persistent_data('wyplaty.json')
         if isinstance(data, dict):
             wyplaty = data.get('wyplaty', [])
-            return wyplaty if wyplaty is not None else []
-        return [] if data is None else (data if isinstance(data, list) else [])
+            wyplaty = wyplaty if wyplaty is not None else []
+        else:
+            wyplaty = [] if data is None else (data if isinstance(data, list) else [])
+    else:
+        # Fallback - stary system
+        if 'wyplaty_data' in st.session_state:
+            wyplaty = st.session_state['wyplaty_data']
+        else:
+            try:
+                with open('wyplaty.json', 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                    wyplaty = data.get('wyplaty', [])
+                    wyplaty = wyplaty if wyplaty is not None else []
+                    st.session_state['wyplaty_data'] = wyplaty
+            except FileNotFoundError:
+                wyplaty = []
+            except Exception as e:
+                st.error(f"Błąd wczytywania wypłat: {e}")
+                wyplaty = []
     
-    # Fallback - stary system
-    if 'wyplaty_data' in st.session_state:
-        return st.session_state['wyplaty_data']
+    # MIGRACJA: dodaj pole 'typ' do starych wpisów
+    migrated = False
+    for w in wyplaty:
+        if 'typ' not in w:
+            w['typ'] = 'Wypłata'
+            migrated = True
     
-    try:
-        with open('wyplaty.json', 'r', encoding='utf-8') as f:
-            data = json.load(f)
-            wyplaty = data.get('wyplaty', [])
-            st.session_state['wyplaty_data'] = wyplaty if wyplaty is not None else []
-            return wyplaty if wyplaty is not None else []
-    except FileNotFoundError:
-        return []
-    except Exception as e:
-        st.error(f"Błąd wczytywania wypłat: {e}")
-        return []
+    # Zapisz po migracji
+    if migrated:
+        save_wyplaty(wyplaty)
+    
+    return wyplaty
 
 def save_wyplaty(wyplaty):
     """Zapisz wypłaty do pliku JSON"""
