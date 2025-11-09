@@ -8033,6 +8033,9 @@ def show_kredyty_page(stan_spolki, cele):
                             }
                             wyplaty.append(nowy_bonus)
                             
+                            # Sortuj od najnowszej
+                            wyplaty.sort(key=lambda x: x['data'], reverse=True)
+                            
                             if save_wyplaty(wyplaty):
                                 st.success(f"✅ 🎉 Bonus zapisany: {kwota_total:,.0f} PLN")
                                 st.rerun()
@@ -8077,6 +8080,9 @@ def show_kredyty_page(stan_spolki, cele):
                                     'notatki': f"Premia ponad minimalną" + (f" | {notatki}" if notatki else "")
                                 }
                                 wyplaty.append(nowa_premia)
+                            
+                            # Sortuj od najnowszej
+                            wyplaty.sort(key=lambda x: x['data'], reverse=True)
                             
                             if save_wyplaty(wyplaty):
                                 st.success(f"""
