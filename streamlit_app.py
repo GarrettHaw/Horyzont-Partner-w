@@ -2942,7 +2942,7 @@ def main():
     col_header1, col_header2, col_header3 = st.columns([6, 1, 1])
     with col_header2:
         theme_icon = "🌙" if st.session_state.theme == "light" else "☀️"
-        if st.button(theme_icon, help="Przełącz motyw"):
+        if st.button(theme_icon, help="Przełącz motyw", key="toggle_theme_btn"):
             # Przełącz motyw
             st.session_state.theme = "dark" if st.session_state.theme == "light" else "light"
             
@@ -2958,7 +2958,7 @@ def main():
             
             st.rerun()
     with col_header3:
-        if st.button("🔔", help="Powiadomienia"):
+        if st.button("🔔", help="Powiadomienia", key="toggle_notifications_btn"):
             st.session_state.notifications_enabled = not st.session_state.notifications_enabled
             
             # Zapisz preferencje
@@ -2983,7 +2983,7 @@ def main():
         current_page = st.session_state.get('page', "📊 Dashboard")
         
         # Przycisk odświeżania
-        if st.button("🔄 Odśwież Dane", width="stretch"):
+        if st.button("🔄 Odśwież Dane", width="stretch", key="refresh_data_btn"):
             st.cache_data.clear()
             # Wyczyść cache cen crypto żeby pobrać świeże przy następnym renderze
             if 'crypto_prices_cache' in st.session_state:
@@ -2997,7 +2997,7 @@ def main():
         # === SEKCJA 1: PRZEGLĄD ===
         st.markdown("### 📊 Przegląd")
         button_type_dashboard = "primary" if current_page == "📊 Dashboard" else "secondary"
-        if st.button("📊 Dashboard", width="stretch", type=button_type_dashboard):
+        if st.button("📊 Dashboard", width="stretch", type=button_type_dashboard, key="nav_dashboard"):
             st.session_state.page = "📊 Dashboard"
             st.rerun()
         
@@ -3006,7 +3006,7 @@ def main():
         # === SEKCJA 2: FINANSE ===
         st.markdown("### 💰 Finanse")
         button_type_finanse = "primary" if current_page == "💳 Kredyty" else "secondary"
-        if st.button("💳 Centrum Finansowe", width="stretch", type=button_type_finanse):
+        if st.button("💳 Centrum Finansowe", width="stretch", type=button_type_finanse, key="nav_finanse"):
             st.session_state.page = "💳 Kredyty"
             st.rerun()
         
@@ -3016,32 +3016,32 @@ def main():
         st.markdown("### 🤖 AI & Strategia")
         
         button_type_partnerzy = "primary" if current_page == "💬 Partnerzy" else "secondary"
-        if st.button("💬 Partnerzy AI", width="stretch", type=button_type_partnerzy):
+        if st.button("💬 Partnerzy AI", width="stretch", type=button_type_partnerzy, key="nav_partnerzy"):
             st.session_state.page = "💬 Partnerzy"
             st.rerun()
         
         button_type_rozmowy = "primary" if current_page == "🗣️ Rozmowy Rady" else "secondary"
-        if st.button("🗣️ Rozmowy Rady", width="stretch", type=button_type_rozmowy):
+        if st.button("🗣️ Rozmowy Rady", width="stretch", type=button_type_rozmowy, key="nav_rozmowy"):
             st.session_state.page = "🗣️ Rozmowy Rady"
             st.rerun()
         
         button_type_powiadomienia = "primary" if current_page == "📧 Powiadomienia" else "secondary"
-        if st.button("📧 Powiadomienia", width="stretch", type=button_type_powiadomienia):
+        if st.button("📧 Powiadomienia", width="stretch", type=button_type_powiadomienia, key="nav_powiadomienia"):
             st.session_state.page = "📧 Powiadomienia"
             st.rerun()
         
         button_type_konsultacje = "primary" if current_page == "🗳️ Konsultacje" else "secondary"
-        if st.button("🗳️ Konsultacje", width="stretch", type=button_type_konsultacje):
+        if st.button("🗳️ Konsultacje", width="stretch", type=button_type_konsultacje, key="nav_konsultacje"):
             st.session_state.page = "🗳️ Konsultacje"
             st.rerun()
         
         button_type_kodeks = "primary" if current_page == "📜 Kodeks" else "secondary"
-        if st.button("📜 Kodeks Spółki", width="stretch", type=button_type_kodeks):
+        if st.button("📜 Kodeks Spółki", width="stretch", type=button_type_kodeks, key="nav_kodeks"):
             st.session_state.page = "📜 Kodeks"
             st.rerun()
         
         button_type_alerty = "primary" if current_page == "🔔 Alerty" else "secondary"
-        if st.button("🔔 Alerty i Notyfikacje", width="stretch", type=button_type_alerty):
+        if st.button("🔔 Alerty i Notyfikacje", width="stretch", type=button_type_alerty, key="nav_alerty"):
             st.session_state.page = "🔔 Alerty"
             st.rerun()
         
@@ -3053,22 +3053,22 @@ def main():
         col1, col2 = st.columns(2)
         with col1:
             button_type_analiza = "primary" if current_page == "📈 Analiza" else "secondary"
-            if st.button("📈 Analiza", width="stretch", type=button_type_analiza):
+            if st.button("📈 Analiza", width="stretch", type=button_type_analiza, key="nav_analiza"):
                 st.session_state.page = "📈 Analiza"
                 st.rerun()
             
             button_type_timeline = "primary" if current_page == "🕐 Timeline" else "secondary"
-            if st.button("🕐 Timeline", width="stretch", type=button_type_timeline):
+            if st.button("🕐 Timeline", width="stretch", type=button_type_timeline, key="nav_timeline"):
                 st.session_state.page = "🕐 Timeline"
                 st.rerun()
         with col2:
             button_type_rynki = "primary" if current_page == "🌍 Rynki" else "secondary"
-            if st.button("🌍 Rynki", width="stretch", type=button_type_rynki):
+            if st.button("🌍 Rynki", width="stretch", type=button_type_rynki, key="nav_rynki"):
                 st.session_state.page = "🌍 Rynki"
                 st.rerun()
             
             button_type_snapshots = "primary" if current_page == "📸 Snapshots" else "secondary"
-            if st.button("📸 Snapshots", width="stretch", type=button_type_snapshots):
+            if st.button("📸 Snapshots", width="stretch", type=button_type_snapshots, key="nav_snapshots"):
                 st.session_state.page = "📸 Snapshots"
                 st.rerun()
         
@@ -3080,12 +3080,12 @@ def main():
         col1, col2 = st.columns(2)
         with col1:
             button_type_symulacje = "primary" if current_page == "🎮 Symulacje" else "secondary"
-            if st.button("🎮 Symulacje", width="stretch", type=button_type_symulacje):
+            if st.button("🎮 Symulacje", width="stretch", type=button_type_symulacje, key="nav_symulacje"):
                 st.session_state.page = "🎮 Symulacje"
                 st.rerun()
         with col2:
             button_type_ustawienia = "primary" if current_page == "⚙️ Ustawienia" else "secondary"
-            if st.button("⚙️ Ustawienia", width="stretch", type=button_type_ustawienia):
+            if st.button("⚙️ Ustawienia", width="stretch", type=button_type_ustawienia, key="nav_ustawienia"):
                 st.session_state.page = "⚙️ Ustawienia"
                 st.rerun()
         
@@ -3774,17 +3774,17 @@ _{daily_tip['tip_text']}_
     col1, col2, col3, col4 = st.columns(4)
     
     with col1:
-        if st.button("🔄 Odśwież Portfolio", width="stretch"):
+        if st.button("🔄 Odśwież Portfolio", width="stretch", key="refresh_portfolio_btn"):
             st.cache_data.clear()
             st.rerun()
     
     with col2:
-        if st.button("📊 Analiza Ryzyka", width="stretch"):
+        if st.button("📊 Analiza Ryzyka", width="stretch", key="analiza_ryzyka_btn"):
             st.session_state.page = "📈 Analiza"
             st.rerun()
     
     with col3:
-        if st.button("📄 Generuj Raport Excel", width="stretch"):
+        if st.button("📄 Generuj Raport Excel", width="stretch", key="raport_excel_btn"):
             try:
                 with st.spinner("� Generuję raport..."):
                     filename = generate_full_report(stan_spolki)
