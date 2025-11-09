@@ -447,5 +447,143 @@
     "status": "completed",
     "api_calls_used": 12,
     "completed_at": "2025-11-02T20:31:13.292178"
+  },
+  {
+    "id": "conv_20251109_181617",
+    "date": "2025-11-09T18:16:17.110655",
+    "topic_id": "risk_assessment",
+    "topic_name": "Ocena Ryzyka",
+    "opening_prompt": "Przeanalizujmy poziom ryzyka w portfelu. Czy jesteśmy odpowiednio zdywersyfikowani? Jakie są największe zagrożenia?",
+    "participants": [
+      "Partner Strategiczny",
+      "Partner ds. Jakości Biznesowej",
+      "Partner ds. Aktywów Cyfrowych",
+      "Benjamin Graham"
+    ],
+    "messages": [
+      {
+        "partner": "Partner Strategiczny",
+        "message": "Dobrze, przyjrzyjmy się ryzyku. Moim zdaniem, kluczowe to sprawdzenie korelacji między aktywami. Jeśli są zbyt wysokie, dywersyfikacja jest pozorna. Największe zagrożenia widzę w niestabilnej sytuacji geopolitycznej i potencjalnych zmianach regulacyjnych w sektorze technologicznym, które dominują w naszym portfelu.",
+        "timestamp": "2025-11-09T18:16:18.207848",
+        "message_number": 1
+      },
+      {
+        "partner": "Partner ds. Jakości Biznesowej",
+        "message": "Zgodnie z moim analizą, poziom ryzyka w portfelu jest umiarkowany, ale istnieją obszary do poprawy. Korelacja między aktywami jest wystarczająco niska, ale warto rozważyć dodanie aktywów z sektorów mniej podatnych na niestabilność geopolityczną. Największym zagrożeniem jest nadmierna koncentracja w technologii, co może być problematyczne w przypadku zmian regulacyjnych.",
+        "timestamp": "2025-11-09T18:16:21.569632",
+        "message_number": 2
+      },
+      {
+        "partner": "Partner ds. Aktywów Cyfrowych",
+        "message": "Zgadzam się z oceną ryzyka jako umiarkowanego. Z punktu widzenia aktywów cyfrowych, warto monitorować nowe protokoły i platformy DeFi, ponieważ one również niosą ze sobą specyficzne zagrożenia, np. luki w kodzie. Uważam, że dodanie aktywów powiązanych z realnymi aktywami (RWA) mogłoby poprawić dywersyfikację i ograniczyć ekspozycję na ryzyko technologiczne.",
+        "timestamp": "2025-11-09T18:16:22.759035",
+        "message_number": 3
+      },
+      {
+        "partner": "Partner Strategiczny",
+        "message": "Uważam, że koncentracja w technologii to realne zagrożenie, zwłaszcza przy obecnych regulacjach. Proponuję zmniejszyć ekspozycję w tym sektorze. Dodanie aktywów RWA i ekspansja w mniej skorelowane sektory wydają się rozsądne, by poprawić dywersyfikację i zredukować wpływ geopolityki.",
+        "timestamp": "2025-11-09T18:16:24.293336",
+        "message_number": 5
+      },
+      {
+        "partner": "Partner ds. Aktywów Cyfrowych",
+        "message": "Popieram wcześniejsze wypowiedzi o konieczności dywersyfikacji. W kontekście aktywów cyfrowych, zbyt duża ekspozycja na jeden łańcuch bloków lub typ tokena (np. tylko DeFi) zwiększa ryzyko. Rozważmy ekspozycję na tokeny infrastrukturalne i rozwiązania skalowalności, aby zrównoważyć portfel i zmniejszyć podatność na pojedyncze punkty awarii.",
+        "timestamp": "2025-11-09T18:16:26.023113",
+        "message_number": 7
+      },
+      {
+        "partner": "Partner Strategiczny",
+        "message": "Zgadzam się z oceną braku wystarczającej dywersyfikacji. Koncentracja w technologii i DeFi generuje zbyt duże ryzyko. Popieram ekspansję w RWA i tokeny infrastrukturalne. Monitorujmy zmiany regulacyjne, bo mogą znacząco wpłynąć na obecną strategię.",
+        "timestamp": "2025-11-09T18:16:30.451562",
+        "message_number": 9
+      },
+      {
+        "partner": "Partner ds. Aktywów Cyfrowych",
+        "message": "Zgadzam się z oceną ryzyka - dywersyfikacja jest kluczowa. Obecna koncentracja w DeFi i technologii sprawia, że jesteśmy zbyt podatni na zmienność rynku i regulacje. Proponuję dokładną analizę wskaźników Sharpe Ratio i Max Drawdown dla poszczególnych aktywów, aby realnie ocenić ich wpływ na ryzyko całego portfela. Ustalmy konkretne cele dywersyfikacji i terminy ich realizacji.",
+        "timestamp": "2025-11-09T18:16:32.415012",
+        "message_number": 11
+      }
+    ],
+    "status": "completed",
+    "api_calls_used": 7,
+    "completed_at": "2025-11-09T18:16:32.817675",
+    "summary": {
+      "summary": "Rada Partnerów oceniła poziom ryzyka portfela jako umiarkowany, wskazując na brak wystarczającej dywersyfikacji, szczególnie w sektorach technologicznym i DeFi. Zgodzono się co do konieczności dywersyfikacji poprzez dodanie aktywów powiązanych z realnymi aktywami (RWA) oraz ekspansję w mniej skorelowane sektory, a także monitorowania zmian regulacyjnych.",
+      "key_points": [
+        "Niedostateczna dywersyfikacja portfela, z nadmierną koncentracją w sektorach technologicznym i DeFi, stanowi główne źródło ryzyka.",
+        "Konieczność dywersyfikacji poprzez dodanie aktywów RWA oraz ekspansję w mniej skorelowane sektory i tokeny infrastrukturalne.",
+        "Należy monitorować zmiany regulacyjne, które mogą znacząco wpłynąć na strategię portfela i jego poziom ryzyka."
+      ],
+      "sentiment": "neutral"
+    }
+  },
+  {
+    "id": "conv_20251109_181617",
+    "date": "2025-11-09T18:16:17.110655",
+    "topic_id": "risk_assessment",
+    "topic_name": "Ocena Ryzyka",
+    "opening_prompt": "Przeanalizujmy poziom ryzyka w portfelu. Czy jesteśmy odpowiednio zdywersyfikowani? Jakie są największe zagrożenia?",
+    "participants": [
+      "Partner Strategiczny",
+      "Partner ds. Jakości Biznesowej",
+      "Partner ds. Aktywów Cyfrowych",
+      "Benjamin Graham"
+    ],
+    "messages": [
+      {
+        "partner": "Partner Strategiczny",
+        "message": "Dobrze, przyjrzyjmy się ryzyku. Moim zdaniem, kluczowe to sprawdzenie korelacji między aktywami. Jeśli są zbyt wysokie, dywersyfikacja jest pozorna. Największe zagrożenia widzę w niestabilnej sytuacji geopolitycznej i potencjalnych zmianach regulacyjnych w sektorze technologicznym, które dominują w naszym portfelu.",
+        "timestamp": "2025-11-09T18:16:18.207848",
+        "message_number": 1
+      },
+      {
+        "partner": "Partner ds. Jakości Biznesowej",
+        "message": "Zgodnie z moim analizą, poziom ryzyka w portfelu jest umiarkowany, ale istnieją obszary do poprawy. Korelacja między aktywami jest wystarczająco niska, ale warto rozważyć dodanie aktywów z sektorów mniej podatnych na niestabilność geopolityczną. Największym zagrożeniem jest nadmierna koncentracja w technologii, co może być problematyczne w przypadku zmian regulacyjnych.",
+        "timestamp": "2025-11-09T18:16:21.569632",
+        "message_number": 2
+      },
+      {
+        "partner": "Partner ds. Aktywów Cyfrowych",
+        "message": "Zgadzam się z oceną ryzyka jako umiarkowanego. Z punktu widzenia aktywów cyfrowych, warto monitorować nowe protokoły i platformy DeFi, ponieważ one również niosą ze sobą specyficzne zagrożenia, np. luki w kodzie. Uważam, że dodanie aktywów powiązanych z realnymi aktywami (RWA) mogłoby poprawić dywersyfikację i ograniczyć ekspozycję na ryzyko technologiczne.",
+        "timestamp": "2025-11-09T18:16:22.759035",
+        "message_number": 3
+      },
+      {
+        "partner": "Partner Strategiczny",
+        "message": "Uważam, że koncentracja w technologii to realne zagrożenie, zwłaszcza przy obecnych regulacjach. Proponuję zmniejszyć ekspozycję w tym sektorze. Dodanie aktywów RWA i ekspansja w mniej skorelowane sektory wydają się rozsądne, by poprawić dywersyfikację i zredukować wpływ geopolityki.",
+        "timestamp": "2025-11-09T18:16:24.293336",
+        "message_number": 5
+      },
+      {
+        "partner": "Partner ds. Aktywów Cyfrowych",
+        "message": "Popieram wcześniejsze wypowiedzi o konieczności dywersyfikacji. W kontekście aktywów cyfrowych, zbyt duża ekspozycja na jeden łańcuch bloków lub typ tokena (np. tylko DeFi) zwiększa ryzyko. Rozważmy ekspozycję na tokeny infrastrukturalne i rozwiązania skalowalności, aby zrównoważyć portfel i zmniejszyć podatność na pojedyncze punkty awarii.",
+        "timestamp": "2025-11-09T18:16:26.023113",
+        "message_number": 7
+      },
+      {
+        "partner": "Partner Strategiczny",
+        "message": "Zgadzam się z oceną braku wystarczającej dywersyfikacji. Koncentracja w technologii i DeFi generuje zbyt duże ryzyko. Popieram ekspansję w RWA i tokeny infrastrukturalne. Monitorujmy zmiany regulacyjne, bo mogą znacząco wpłynąć na obecną strategię.",
+        "timestamp": "2025-11-09T18:16:30.451562",
+        "message_number": 9
+      },
+      {
+        "partner": "Partner ds. Aktywów Cyfrowych",
+        "message": "Zgadzam się z oceną ryzyka - dywersyfikacja jest kluczowa. Obecna koncentracja w DeFi i technologii sprawia, że jesteśmy zbyt podatni na zmienność rynku i regulacje. Proponuję dokładną analizę wskaźników Sharpe Ratio i Max Drawdown dla poszczególnych aktywów, aby realnie ocenić ich wpływ na ryzyko całego portfela. Ustalmy konkretne cele dywersyfikacji i terminy ich realizacji.",
+        "timestamp": "2025-11-09T18:16:32.415012",
+        "message_number": 11
+      }
+    ],
+    "status": "completed",
+    "api_calls_used": 7,
+    "completed_at": "2025-11-09T18:16:32.817675",
+    "summary": {
+      "summary": "Rada Partnerów oceniła poziom ryzyka portfela jako umiarkowany, wskazując na brak wystarczającej dywersyfikacji, szczególnie w sektorach technologicznym i DeFi. Zgodzono się co do konieczności dywersyfikacji poprzez dodanie aktywów powiązanych z realnymi aktywami (RWA) oraz ekspansję w mniej skorelowane sektory, a także monitorowania zmian regulacyjnych.",
+      "key_points": [
+        "Niedostateczna dywersyfikacja portfela, z nadmierną koncentracją w sektorach technologicznym i DeFi, stanowi główne źródło ryzyka.",
+        "Konieczność dywersyfikacji poprzez dodanie aktywów RWA oraz ekspansję w mniej skorelowane sektory i tokeny infrastrukturalne.",
+        "Należy monitorować zmiany regulacyjne, które mogą znacząco wpłynąć na strategię portfela i jego poziom ryzyka."
+      ],
+      "sentiment": "neutral"
+    }
   }
 ]
