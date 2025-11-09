@@ -6902,10 +6902,254 @@ def save_krypto(krypto):
         st.error(f"Błąd zapisu krypto: {e}")
         return False
 
+def calculate_financial_overview(stan_spolki, cele):
+    """
+    Oblicza kluczowe metryki finansowe dla Overview Dashboard
+    Returns: dict with assets, debts, net_worth, monthly_cash_flow, deltas
+    """
+    try:
+        # Assets (Aktywa)
+        akcje_value = stan_spolki.get('akcje', {}).get('wartosc_pln', 0)
+        krypto_value = stan_spolki.get('krypto', {}).get('wartosc_pln', 0)
+        rezerwa = cele.get('Rezerwa_gotowkowa_obecna_PLN', 0) if cele else 0
+        total_assets = akcje_value + krypto_value + rezerwa
+        
+        # Debts (Zobowiązania)
+        kredyty = load_kredyty()
+        total_debt = 0
+        monthly_payments = 0
+        for k in kredyty:
+            pozostalo = k['kwota_poczatkowa'] - k['splacono']
+            total_debt += pozostalo
+            monthly_payments += k.get('rata_miesieczna', 0)
+        
+        # Net Worth (Wartość Netto)
+        net_worth = total_assets - total_debt
+        
+        # Monthly Cash Flow
+        wyplaty = load_wyplaty()
+        wydatki = load_wydatki()
+        
+        last_income = wyplaty[0]['kwota'] if wyplaty else 0
+        stale_wydatki = get_suma_wydatkow_stalych(wydatki)
+        monthly_cash_flow = last_income - stale_wydatki - monthly_payments
+        
+        # Calculate deltas from portfolio history (if available)
+        deltas = {
+            'assets': None,
+            'debt': None,
+            'net_worth': None,
+            'cash_flow': None
+        }
+        
+        # Try to get 30-day changes
+        try:
+            with open('portfolio_history.json', 'r', encoding='utf-8') as f:
+                history = json.load(f)
+            
+            if history and len(history) > 1:
+                # Sort by timestamp
+                history_sorted = sorted(history, key=lambda x: x['timestamp'], reverse=True)
+                
+                # Find snapshot from ~30 days ago
+                from datetime import datetime, timedelta
+                target_date = datetime.now() - timedelta(days=30)
+                
+                old_snapshot = None
+                for snap in reversed(history_sorted):
+                    snap_date = datetime.fromisoformat(snap['timestamp'])
+                    if snap_date <= target_date:
+                        old_snapshot = snap
+                        break
+                
+                if not old_snapshot and len(history_sorted) > 1:
+                    old_snapshot = history_sorted[-1]
+                
+                if old_snapshot:
+                    old_value = old_snapshot.get('value', 0)
+                    if old_value > 0:
+                        net_worth_change = ((net_worth - old_value) / old_value) * 100
+                        deltas['net_worth'] = f"{net_worth_change:+.1f}%"
+        except:
+            pass
+        
+        return {
+            'total_assets': total_assets,
+            'total_debt': total_debt,
+            'net_worth': net_worth,
+            'monthly_cash_flow': monthly_cash_flow,
+            'monthly_payments': monthly_payments,
+            'last_income': last_income,
+            'kredyty_count': len(kredyty),
+            'deltas': deltas
+        }
+    except Exception as e:
+        # Return safe defaults
+        return {
+            'total_assets': 0,
+            'total_debt': 0,
+            'net_worth': 0,
+            'monthly_cash_flow': 0,
+            'monthly_payments': 0,
+            'last_income': 0,
+            'kredyty_count': 0,
+            'deltas': {'assets': None, 'debt': None, 'net_worth': None, 'cash_flow': None}
+        }
+
 def show_kredyty_page(stan_spolki, cele):
     """Strona zarządzania kredytami i celami finansowymi"""
     st.title("💳 Centrum Finansowe")
     st.caption("Kompleksowe zarządzanie: Cele • Kredyty • Spłaty • Wypłaty • Wydatki • Krypto • Track Record AI")
+    
+    # === FINANCIAL OVERVIEW DASHBOARD ===
+    st.markdown("---")
+    
+    overview = calculate_financial_overview(stan_spolki, cele)
+    
+    col1, col2, col3, col4 = st.columns(4)
+    
+    with col1:
+        st.metric(
+            "💼 Total Assets",
+            format_currency(overview['total_assets']),
+            delta=overview['deltas']['assets'],
+            help="Akcje + Krypto + Rezerwa Gotówkowa"
+        )
+        st.caption(f"Akcje: {format_currency(stan_spolki.get('akcje', {}).get('wartosc_pln', 0))}")
+        st.caption(f"Krypto: {format_currency(stan_spolki.get('krypto', {}).get('wartosc_pln', 0))}")
+    
+    with col2:
+        st.metric(
+            "💳 Total Debts",
+            format_currency(overview['total_debt']),
+            delta=overview['deltas']['debt'],
+            delta_color="inverse",
+            help=f"Suma pozostałych zobowiązań ({overview['kredyty_count']} kredytów)"
+        )
+        st.caption(f"Rata miesięczna: {overview['monthly_payments']:.0f} PLN")
+        st.caption(f"Liczba kredytów: {overview['kredyty_count']}")
+    
+    with col3:
+        st.metric(
+            "💎 Net Worth",
+            format_currency(overview['net_worth']),
+            delta=overview['deltas']['net_worth'],
+            help="Assets - Debts"
+        )
+        
+        # Leverage ratio
+        if overview['total_assets'] > 0:
+            leverage = (overview['total_debt'] / overview['total_assets']) * 100
+            leverage_color = "🟢" if leverage < 15 else "🟡" if leverage < 25 else "🔴"
+            st.caption(f"{leverage_color} Leverage: {leverage:.1f}%")
+        else:
+            st.caption("Leverage: N/A")
+    
+    with col4:
+        cash_flow_positive = overview['monthly_cash_flow'] > 0
+        st.metric(
+            "💰 Monthly Cash Flow",
+            f"{overview['monthly_cash_flow']:.0f} PLN",
+            delta=overview['deltas']['cash_flow'],
+            delta_color="normal" if cash_flow_positive else "inverse",
+            help="Ostatnia wypłata - Wydatki stałe - Raty kredytów"
+        )
+        
+        if cash_flow_positive:
+            savings_rate = (overview['monthly_cash_flow'] / overview['last_income'] * 100) if overview['last_income'] > 0 else 0
+            st.caption(f"✅ Savings rate: {savings_rate:.1f}%")
+        else:
+            st.caption(f"⚠️ Deficyt: {abs(overview['monthly_cash_flow']):.0f} PLN")
+    
+    st.markdown("---")
+    
+    # === SMART ALERTS - NADCHODZĄCE PŁATNOŚCI ===
+    kredyty = load_kredyty()
+    
+    if kredyty:
+        from datetime import datetime
+        dzis = datetime.now().day
+        najblizsze_splaty = []
+        suma_platnosci_ten_miesiac = 0
+        
+        for k in kredyty:
+            dzien_splaty = k['dzien_splaty']
+            kwota = k.get('rata_miesieczna', 0)
+            
+            # Oblicz dni do spłaty
+            if dzien_splaty >= dzis:
+                dni_do_splaty = dzien_splaty - dzis
+            else:
+                # Następny miesiąc
+                import calendar
+                dni_w_miesiacu = calendar.monthrange(datetime.now().year, datetime.now().month)[1]
+                dni_do_splaty = (dni_w_miesiacu - dzis) + dzien_splaty
+            
+            najblizsze_splaty.append({
+                'nazwa': k['nazwa'],
+                'dzien': dzien_splaty,
+                'dni_do': dni_do_splaty,
+                'kwota': kwota
+            })
+            
+            # Suma płatności w tym miesiącu
+            if dzien_splaty >= dzis:
+                suma_platnosci_ten_miesiac += kwota
+        
+        if najblizsze_splaty:
+            # Sortuj po liczbie dni
+            najblizsze_splaty.sort(key=lambda x: x['dni_do'])
+            
+            # Znajdź najbliższą płatność
+            najblizsza = najblizsze_splaty[0]
+            
+            # Określ kolor i ikonę
+            if najblizsza['dni_do'] == 0:
+                alert_type = "error"
+                alert_icon = "🚨"
+                alert_message = f"**DZIŚ PŁATNOŚĆ!** {najblizsza['nazwa']} - {najblizsza['kwota']:.0f} PLN"
+            elif najblizsza['dni_do'] <= 3:
+                alert_type = "warning"
+                alert_icon = "⚠️"
+                alert_message = f"**Za {najblizsza['dni_do']} dni:** {najblizsza['nazwa']} - {najblizsza['kwota']:.0f} PLN"
+            elif najblizsza['dni_do'] <= 7:
+                alert_type = "info"
+                alert_icon = "📅"
+                alert_message = f"**Za {najblizsza['dni_do']} dni:** {najblizsza['nazwa']} - {najblizsza['kwota']:.0f} PLN"
+            else:
+                alert_type = None
+                alert_icon = "💳"
+                alert_message = None
+            
+            # Pokaż alert tylko dla płatności < 7 dni
+            if alert_type:
+                if alert_type == "error":
+                    st.error(f"{alert_icon} {alert_message}")
+                elif alert_type == "warning":
+                    st.warning(f"{alert_icon} {alert_message}")
+                else:
+                    st.info(f"{alert_icon} {alert_message}")
+            
+            # Pokaż szczegóły w expander
+            with st.expander(f"💳 Nadchodzące płatności ({len(najblizsze_splaty)}) - Suma w tym miesiącu: {suma_platnosci_ten_miesiac:.0f} PLN"):
+                for splata in najblizsze_splaty:
+                    col_nazwa, col_data, col_kwota = st.columns([3, 2, 2])
+                    
+                    with col_nazwa:
+                        st.write(f"**{splata['nazwa']}**")
+                    
+                    with col_data:
+                        if splata['dni_do'] == 0:
+                            st.write("🔴 **DZIŚ!**")
+                        elif splata['dni_do'] <= 3:
+                            st.write(f"🟡 Za {splata['dni_do']} dni (dzień {splata['dzien']})")
+                        else:
+                            st.write(f"🟢 Za {splata['dni_do']} dni (dzień {splata['dzien']})")
+                    
+                    with col_kwota:
+                        st.write(f"**{splata['kwota']:.0f} PLN**")
+            
+            st.markdown("---")
     
     tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
         "💰 Cele Finansowe", 
@@ -6936,7 +7180,8 @@ def show_kredyty_page(stan_spolki, cele):
                 min_value=0,
                 value=int(rezerwa_obecna),
                 step=1000,
-                help="Aktualna kwota rezerwy gotówkowej"
+                help="Aktualna kwota rezerwy gotówkowej",
+                key="input_rezerwa_obecna"
             )
             
             new_rezerwa_cel = st.number_input(
@@ -6944,45 +7189,106 @@ def show_kredyty_page(stan_spolki, cele):
                 min_value=0,
                 value=int(rezerwa_cel),
                 step=5000,
-                help="Kwota do osiągnięcia"
+                help="Kwota do osiągnięcia",
+                key="input_rezerwa_cel"
             )
             
-            # Progress
+            # LIVE PREVIEW - Progress z nowymi wartościami
             progress = new_rezerwa_obecna / new_rezerwa_cel if new_rezerwa_cel > 0 else 0
             st.progress(min(progress, 1.0))
-            st.caption(f"Postęp: {progress*100:.1f}% ({format_currency(new_rezerwa_obecna)} / {format_currency(new_rezerwa_cel)})")
+            st.caption(f"**Preview:** {progress*100:.1f}% ({format_currency(new_rezerwa_obecna)} / {format_currency(new_rezerwa_cel)})")
             
-            if st.button("💾 Zapisz Rezerwę", key="save_rezerwa"):
-                if cele is None:
-                    cele = {}
-                cele['Rezerwa_gotowkowa_obecna_PLN'] = new_rezerwa_obecna
-                cele['Rezerwa_gotowkowa_PLN'] = new_rezerwa_cel
-                if save_cele(cele):
-                    # Synchronizuj cel w kodeksie spółki
-                    try:
-                        with open('kodeks_spolki.txt', 'r', encoding='utf-8') as f:
-                            kodeks_content = f.read()
-                        
-                        # Zamień linię z celem rezerwy gotówkowej
-                        import re
-                        pattern = r'Cel #2: Budowa rezerwy gotówkowej do docelowego poziomu \d+[\s,]*\d* PLN\.'
-                        replacement = f'Cel #2: Budowa rezerwy gotówkowej do docelowego poziomu {new_rezerwa_cel:,} PLN.'.replace(',', ' ')
-                        
-                        new_kodeks = re.sub(pattern, replacement, kodeks_content)
-                        
-                        if new_kodeks != kodeks_content:
-                            with open('kodeks_spolki.txt', 'w', encoding='utf-8') as f:
-                                f.write(new_kodeks)
-                            st.success("✅ Rezerwa gotówkowa zaktualizowana w cele.json i kodeksie spółki!")
-                        else:
-                            st.success("✅ Rezerwa gotówkowa zaktualizowana!")
-                    except Exception as e:
-                        st.success("✅ Rezerwa gotówkowa zaktualizowana w cele.json!")
-                        st.warning(f"⚠️ Nie udało się zaktualizować kodeksu: {str(e)}")
+            # Sprawdź czy są zmiany
+            has_changes = (new_rezerwa_obecna != rezerwa_obecna) or (new_rezerwa_cel != rezerwa_cel)
+            
+            # Pokaż przycisk tylko gdy są zmiany
+            if has_changes:
+                st.warning("⚠️ Masz niezapisane zmiany!")
+                
+                col_save, col_cancel = st.columns(2)
+                
+                with col_save:
+                    if st.button("💾 Zapisz Zmiany", key="save_rezerwa", type="primary", use_container_width=True):
+                        if cele is None:
+                            cele = {}
+                        cele['Rezerwa_gotowkowa_obecna_PLN'] = new_rezerwa_obecna
+                        cele['Rezerwa_gotowkowa_PLN'] = new_rezerwa_cel
+                        if save_cele(cele):
+                            # Synchronizuj cel w kodeksie spółki
+                            try:
+                                with open('kodeks_spolki.txt', 'r', encoding='utf-8') as f:
+                                    kodeks_content = f.read()
+                                
+                                # Zamień linię z celem rezerwy gotówkowej
+                                import re
+                                pattern = r'Cel #2: Budowa rezerwy gotówkowej do docelowego poziomu \d+[\s,]*\d* PLN\.'
+                                replacement = f'Cel #2: Budowa rezerwy gotówkowej do docelowego poziomu {new_rezerwa_cel:,} PLN.'.replace(',', ' ')
+                                
+                                new_kodeks = re.sub(pattern, replacement, kodeks_content)
+                                
+                                if new_kodeks != kodeks_content:
+                                    with open('kodeks_spolki.txt', 'w', encoding='utf-8') as f:
+                                        f.write(new_kodeks)
+                                    st.success("✅ Rezerwa gotówkowa zaktualizowana w cele.json i kodeksie spółki!")
+                                else:
+                                    st.success("✅ Rezerwa gotówkowa zaktualizowana!")
+                            except Exception as e:
+                                st.success("✅ Rezerwa gotówkowa zaktualizowana w cele.json!")
+                                st.warning(f"⚠️ Nie udało się zaktualizować kodeksu: {str(e)}")
+                            
+                            # WYCZYŚĆ CACHE aby odświeżyć dane
+                            load_portfolio_data.clear()
+                            st.rerun()
+                
+                with col_cancel:
+                    if st.button("🔄 Anuluj", key="cancel_rezerwa", use_container_width=True):
+                        st.rerun()
+            else:
+                st.success("✅ Wszystkie dane zapisane")
+            
+            # === PROGRESS TRACKING & TIMELINE ===
+            st.markdown("---")
+            st.markdown("#### 📈 Progress Tracking")
+            
+            # Oblicz miesięczny wzrost na podstawie cash flow
+            overview_tab1 = calculate_financial_overview(stan_spolki, cele)
+            miesieczny_wzrost = overview_tab1['monthly_cash_flow']
+            
+            if new_rezerwa_cel > new_rezerwa_obecna and miesieczny_wzrost > 0:
+                brakujaca_kwota = new_rezerwa_cel - new_rezerwa_obecna
+                miesiace_do_celu = brakujaca_kwota / miesieczny_wzrost
+                
+                from datetime import datetime, timedelta
+                data_osiagniecia = datetime.now() + timedelta(days=miesiace_do_celu * 30)
+                
+                st.info(f"🎯 **Przewidywana data osiągnięcia:** {data_osiagniecia.strftime('%Y-%m-%d')}")
+                st.caption(f"⏰ Czas do celu: {int(miesiace_do_celu)} miesięcy (przy obecnym cash flow: {miesieczny_wzrost:.0f} PLN/mies)")
+                
+                # Milestones
+                st.markdown("**🎖️ Milestones:**")
+                milestones = [
+                    (0.25, "25%", "🥉"),
+                    (0.50, "50%", "🥈"),
+                    (0.75, "75%", "🥇"),
+                    (1.00, "100%", "🏆")
+                ]
+                
+                progress_actual = new_rezerwa_obecna / new_rezerwa_cel if new_rezerwa_cel > 0 else 0
+                
+                for milestone_pct, label, emoji in milestones:
+                    milestone_kwota = new_rezerwa_cel * milestone_pct
                     
-                    # WYCZYŚĆ CACHE aby odświeżyć dane
-                    load_portfolio_data.clear()
-                    st.rerun()
+                    if progress_actual >= milestone_pct:
+                        st.success(f"{emoji} {label} - {format_currency(milestone_kwota)} ✅ OSIĄGNIĘTE!")
+                    else:
+                        brakuje = milestone_kwota - new_rezerwa_obecna
+                        miesiace = brakuje / miesieczny_wzrost if miesieczny_wzrost > 0 else 0
+                        data_milestone = datetime.now() + timedelta(days=miesiace * 30)
+                        st.info(f"⏳ {label} - {format_currency(milestone_kwota)} (do osiągnięcia: {brakuje:.0f} PLN, ~{data_milestone.strftime('%Y-%m-%d')})")
+            elif new_rezerwa_obecna >= new_rezerwa_cel:
+                st.success("🎊 **CEL OSIĄGNIĘTY!** Gratulacje!")
+            else:
+                st.warning("⚠️ Brak dodatniego cash flow - nie można obliczyć przewidywanej daty osiągnięcia celu.")
         
         with col2:
             st.subheader("💳 Zarządzanie Kredytami")
@@ -7005,37 +7311,6 @@ def show_kredyty_page(stan_spolki, cele):
         st.header("💳 Szczegółowe Zarządzanie Kredytami")
         
         kredyty = load_kredyty()
-        
-        # Przypomnienia o nadchodzących spłatach
-        if kredyty:
-            dzis = datetime.now().day
-            najblizsze_splaty = []
-            
-            for k in kredyty:
-                dzien_splaty = k['dzien_splaty']
-                if dzien_splaty >= dzis:
-                    dni_do_splaty = dzien_splaty - dzis
-                    najblizsze_splaty.append({
-                        'nazwa': k['nazwa'],
-                        'dzien': dzien_splaty,
-                        'dni_do': dni_do_splaty,
-                        'kwota': k['rata_miesieczna']
-                    })
-            
-            if najblizsze_splaty:
-                # Sortuj po liczbie dni
-                najblizsze_splaty.sort(key=lambda x: x['dni_do'])
-                
-                with st.expander(f"🔔 Nadchodzące spłaty ({len(najblizsze_splaty)})", expanded=True):
-                    for splata in najblizsze_splaty:
-                        if splata['dni_do'] == 0:
-                            st.error(f"🚨 **DZIŚ!** {splata['nazwa']} - {splata['kwota']:.0f} PLN (dzień {splata['dzien']})")
-                        elif splata['dni_do'] <= 3:
-                            st.warning(f"⚠️ Za {splata['dni_do']} dni: {splata['nazwa']} - {splata['kwota']:.0f} PLN (dzień {splata['dzien']})")
-                        else:
-                            st.info(f"📅 Za {splata['dni_do']} dni: {splata['nazwa']} - {splata['kwota']:.0f} PLN (dzień {splata['dzien']})")
-                
-                st.markdown("---")
         
         # Formularz dodawania nowego kredytu
         with st.expander("➕ Dodaj Nowy Kredyt", expanded=len(kredyty)==0):
@@ -7082,68 +7357,115 @@ def show_kredyty_page(stan_spolki, cele):
         if kredyty:
             st.markdown("### 📋 Twoje Kredyty")
             
+            # Przygotuj dane do tabeli
+            import pandas as pd
+            df_kredyty_list = []
+            
             for i, kredyt in enumerate(kredyty):
                 pozostalo = kredyt['kwota_poczatkowa'] - kredyt['splacono']
-                with st.expander(f"**{kredyt['nazwa']}** - {format_currency(pozostalo)} pozostało"):
-                    # Informacje główne
-                    col1, col2, col3 = st.columns([2, 2, 1])
-                    
-                    with col1:
-                        st.metric("Kwota początkowa", format_currency(kredyt['kwota_poczatkowa']))
-                        st.metric("Spłacono", format_currency(kredyt['splacono']))
-                        st.caption(f"📅 Data zaciągnięcia: {kredyt['data_zaciagniecia']}")
-                    
-                    with col2:
-                        st.metric("Pozostało", format_currency(pozostalo))
-                        postep = kredyt['splacono'] / kredyt['kwota_poczatkowa'] * 100 if kredyt['kwota_poczatkowa'] > 0 else 0
-                        st.progress(min(postep / 100, 1.0))
-                        st.caption(f"Postęp: {postep:.1f}%")
-                    
-                    with col3:
-                        st.metric("Oprocentowanie", f"{kredyt['oprocentowanie']:.2f}%")
-                        st.metric("Rata miesięczna", f"{kredyt['rata_miesieczna']:.0f} PLN")
-                        st.caption(f"🗓️ Spłata: {kredyt['dzien_splaty']} dzień miesiąca")
-                    
-                    # Oblicz ile miesięcy do spłaty
+                postep = (kredyt['splacono'] / kredyt['kwota_poczatkowa'] * 100) if kredyt['kwota_poczatkowa'] > 0 else 0
+                miesiace_do_splaty = (pozostalo / kredyt['rata_miesieczna']) if kredyt['rata_miesieczna'] > 0 else 0
+                
+                df_kredyty_list.append({
+                    'ID': i,
+                    'Nazwa': kredyt['nazwa'],
+                    'Początek': kredyt['kwota_poczatkowa'],
+                    'Spłacono': kredyt['splacono'],
+                    'Pozostało': pozostalo,
+                    'Postęp %': postep,
+                    'Rata/mies': kredyt['rata_miesieczna'],
+                    'Oprocent. %': kredyt['oprocentowanie'],
+                    'Dzień spłaty': kredyt['dzien_splaty'],
+                    'Miesiące do końca': int(miesiace_do_splaty)
+                })
+            
+            df_kredyty = pd.DataFrame(df_kredyty_list)
+            
+            # Wyświetl tabelę
+            st.dataframe(
+                df_kredyty[['Nazwa', 'Początek', 'Spłacono', 'Pozostało', 'Postęp %', 'Rata/mies', 'Dzień spłaty', 'Miesiące do końca']],
+                use_container_width=True,
+                hide_index=True,
+                column_config={
+                    'Początek': st.column_config.NumberColumn(format="%.0f PLN"),
+                    'Spłacono': st.column_config.NumberColumn(format="%.0f PLN"),
+                    'Pozostało': st.column_config.NumberColumn(format="%.0f PLN"),
+                    'Postęp %': st.column_config.ProgressColumn(format="%.1f%%", min_value=0, max_value=100),
+                    'Rata/mies': st.column_config.NumberColumn(format="%.0f PLN"),
+                }
+            )
+            
+            st.markdown("---")
+            st.markdown("### ✏️ Edycja Kredytu")
+            
+            # Wybór kredytu do edycji
+            kredyt_names = [f"{k['nazwa']} (pozostało: {format_currency(k['kwota_poczatkowa'] - k['splacono'])})" for k in kredyty]
+            selected_idx = st.selectbox(
+                "Wybierz kredyt do edycji:",
+                range(len(kredyty)),
+                format_func=lambda i: kredyt_names[i],
+                key="select_kredyt_edit"
+            )
+            
+            if selected_idx is not None:
+                kredyt = kredyty[selected_idx]
+                pozostalo = kredyt['kwota_poczatkowa'] - kredyt['splacono']
+                
+                col_info1, col_info2, col_info3 = st.columns(3)
+                
+                with col_info1:
+                    st.metric("Kwota początkowa", format_currency(kredyt['kwota_poczatkowa']))
+                    st.caption(f"📅 Data: {kredyt['data_zaciagniecia']}")
+                
+                with col_info2:
+                    postep = kredyt['splacono'] / kredyt['kwota_poczatkowa'] * 100 if kredyt['kwota_poczatkowa'] > 0 else 0
+                    st.metric("Pozostało", format_currency(pozostalo))
+                    st.progress(min(postep / 100, 1.0))
+                    st.caption(f"Postęp: {postep:.1f}%")
+                
+                with col_info3:
                     if kredyt['rata_miesieczna'] > 0:
                         miesiace = pozostalo / kredyt['rata_miesieczna']
-                        st.info(f"⏰ **Przewidywany czas spłaty:** {int(miesiace)} miesięcy ({int(miesiace/12)} lat {int(miesiace%12)} miesięcy)")
-                    
-                    if kredyt.get('notatki'):
-                        st.text_area("Notatki", value=kredyt['notatki'], disabled=True, key=f"notatki_view_{i}")
-                    
-                    # Edycja spłaty
-                    st.markdown("---")
-                    st.markdown("**💰 Aktualizuj spłatę**")
-                    col_edit1, col_edit2, col_edit3 = st.columns([2, 2, 1])
-                    
-                    with col_edit1:
-                        nowa_splacona_kwota = st.number_input(
-                            "Spłacona kwota (PLN)",
-                            min_value=0,
-                            max_value=int(kredyt['kwota_poczatkowa']),
-                            value=int(kredyt['splacono']),
-                            step=100,
-                            key=f"edit_splacono_{i}"
-                        )
-                    
-                    with col_edit2:
-                        if st.button("� Zapisz spłatę", key=f"save_{i}"):
-                            kredyty[i]['splacono'] = nowa_splacona_kwota
+                        st.metric("Miesiące do spłaty", f"{int(miesiace)}")
+                        st.caption(f"({int(miesiace/12)} lat {int(miesiace%12)} mies.)")
+                    else:
+                        st.metric("Miesiące do spłaty", "N/A")
+                
+                if kredyt.get('notatki'):
+                    st.info(f"📝 Notatki: {kredyt['notatki']}")
+                
+                st.markdown("---")
+                
+                col_edit1, col_edit2, col_edit3 = st.columns([2, 1, 1])
+                
+                with col_edit1:
+                    nowa_splacona_kwota = st.number_input(
+                        "Aktualizuj spłaconą kwotę (PLN)",
+                        min_value=0,
+                        max_value=int(kredyt['kwota_poczatkowa']),
+                        value=int(kredyt['splacono']),
+                        step=100,
+                        key=f"edit_splacono_table_{selected_idx}",
+                        help="Zmień kwotę która została już spłacona"
+                    )
+                
+                with col_edit2:
+                    if st.button("💾 Zapisz", key=f"save_table_{selected_idx}", type="primary", use_container_width=True):
+                        kredyty[selected_idx]['splacono'] = nowa_splacona_kwota
+                        if save_kredyty(kredyty):
+                            st.success("✅ Zaktualizowano!")
+                            st.rerun()
+                
+                with col_edit3:
+                    if st.button("🗑️ Usuń", key=f"delete_table_{selected_idx}", use_container_width=True):
+                        if st.session_state.get(f'confirm_delete_table_{selected_idx}', False):
+                            kredyty.pop(selected_idx)
                             if save_kredyty(kredyty):
-                                st.success("✅ Zaktualizowano spłatę!")
+                                st.success("✅ Usunięto!")
                                 st.rerun()
-                    
-                    with col_edit3:
-                        if st.button("🗑️ Usuń kredyt", key=f"delete_{i}", type="secondary"):
-                            if st.session_state.get(f'confirm_delete_{i}', False):
-                                kredyty.pop(i)
-                                if save_kredyty(kredyty):
-                                    st.success("✅ Usunięto kredyt!")
-                                    st.rerun()
-                            else:
-                                st.session_state[f'confirm_delete_{i}'] = True
-                                st.warning("⚠️ Kliknij ponownie aby potwierdzić!")
+                        else:
+                            st.session_state[f'confirm_delete_table_{selected_idx}'] = True
+                            st.warning("⚠️ Kliknij ponownie!")
         else:
             st.info("ℹ️ Nie masz jeszcze żadnych kredytów. Dodaj pierwszy powyżej!")
     
@@ -7233,7 +7555,148 @@ def show_kredyty_page(stan_spolki, cele):
                     height=400
                 )
                 
-                st.plotly_chart(fig, width="stretch")
+                st.plotly_chart(fig, use_container_width=True)
+                
+                st.markdown("---")
+                
+                # === PIE CHART - BREAKDOWN DŁUGÓW ===
+                st.markdown("### 🥧 Breakdown Długów")
+                
+                fig_pie = go.Figure(data=[go.Pie(
+                    labels=[k['nazwa'] for k in kredyty],
+                    values=[k['kwota_poczatkowa'] - k['splacono'] for k in kredyty],
+                    hole=0.4,
+                    textinfo='label+percent',
+                    hovertemplate='<b>%{label}</b><br>Pozostało: %{value:,.0f} PLN<br>%{percent}<extra></extra>'
+                )])
+                
+                fig_pie.update_layout(
+                    title="Rozkład pozostałych zobowiązań",
+                    height=400,
+                    showlegend=True
+                )
+                
+                st.plotly_chart(fig_pie, use_container_width=True)
+                
+                st.markdown("---")
+                
+                # === INTEREST PAID CALCULATOR ===
+                st.markdown("### 💸 Kalkulator Odsetek")
+                
+                total_interest = 0
+                interest_breakdown = []
+                
+                for k in kredyty:
+                    if k['oprocentowanie'] > 0 and k['rata_miesieczna'] > 0:
+                        pozostalo = k['kwota_poczatkowa'] - k['splacono']
+                        miesiace = pozostalo / k['rata_miesieczna'] if k['rata_miesieczna'] > 0 else 0
+                        
+                        # Uproszczone obliczenie (annuity formula aproximation)
+                        total_to_pay = k['rata_miesieczna'] * miesiace
+                        interest = total_to_pay - pozostalo
+                        
+                        interest_breakdown.append({
+                            'Kredyt': k['nazwa'],
+                            'Odsetki (przewidywane)': interest
+                        })
+                        total_interest += interest
+                
+                if interest_breakdown:
+                    col_int1, col_int2 = st.columns(2)
+                    
+                    with col_int1:
+                        st.metric("💰 Łączne odsetki do zapłaty", f"{total_interest:.0f} PLN")
+                        st.caption("Przewidywana kwota odsetek przy obecnym harmonogramie spłat")
+                    
+                    with col_int2:
+                        effective_rate = (total_interest / suma_pozostala * 100) if suma_pozostala > 0 else 0
+                        st.metric("📊 Efektywna stopa kosztów", f"{effective_rate:.2f}%")
+                        st.caption("Stosunek odsetek do pozostałego kapitału")
+                    
+                    # Tabela breakdown
+                    with st.expander("📋 Szczegóły odsetek"):
+                        import pandas as pd
+                        df_int = pd.DataFrame(interest_breakdown)
+                        st.dataframe(df_int, use_container_width=True, hide_index=True)
+                else:
+                    st.info("ℹ️ Brak kredytów z oprocentowaniem")
+                
+                st.markdown("---")
+                
+                # === EARLY PAYOFF SIMULATOR ===
+                st.markdown("### 🚀 Symulator Wcześniejszej Spłaty")
+                
+                dodatkowa_kwota = st.slider(
+                    "Dodatkowa miesięczna wpłata (PLN)",
+                    min_value=0,
+                    max_value=5000,
+                    value=500,
+                    step=100,
+                    help="Ile dodatkowych pieniędzy możesz przeznaczyć miesięcznie na spłatę?"
+                )
+                
+                if dodatkowa_kwota > 0:
+                    col_sim1, col_sim2, col_sim3 = st.columns(3)
+                    
+                    # Scenariusz bez dodatkowych wpłat
+                    miesiace_bazowe = suma_pozostala / suma_rat if suma_rat > 0 else 0
+                    
+                    # Scenariusz z dodatkowymi wpłatami
+                    miesiace_z_dodatkiem = suma_pozostala / (suma_rat + dodatkowa_kwota) if (suma_rat + dodatkowa_kwota) > 0 else 0
+                    
+                    # Oszczędność czasu
+                    oszczednosc_miesiecy = miesiace_bazowe - miesiace_z_dodatkiem
+                    oszczednosc_lat = oszczednosc_miesiecy / 12
+                    
+                    with col_sim1:
+                        st.metric("⏰ Obecny czas spłaty", f"{int(miesiace_bazowe)} mies.")
+                        st.caption(f"({int(miesiace_bazowe/12)} lat {int(miesiace_bazowe%12)} mies.)")
+                    
+                    with col_sim2:
+                        st.metric("🚀 Z dodatkowymi wpłatami", f"{int(miesiace_z_dodatkiem)} mies.")
+                        st.caption(f"({int(miesiace_z_dodatkiem/12)} lat {int(miesiace_z_dodatkiem%12)} mies.)")
+                    
+                    with col_sim3:
+                        st.metric("💎 Oszczędność czasu", f"{int(oszczednosc_miesiecy)} mies.", delta=f"-{oszczednosc_lat:.1f} lat")
+                        st.caption("Szybsza spłata = mniej odsetek!")
+                    
+                    # Oszczędność na odsetkach (uproszczone)
+                    if total_interest > 0:
+                        oszczednosc_odsetek = total_interest * (oszczednosc_miesiecy / miesiace_bazowe) if miesiace_bazowe > 0 else 0
+                        st.success(f"💰 **Przewidywana oszczędność na odsetkach:** {oszczednosc_odsetek:.0f} PLN")
+                
+                st.markdown("---")
+                
+                # === DEBT SNOWBALL VS AVALANCHE ===
+                st.markdown("### ❄️ Strategie Spłaty: Snowball vs Avalanche")
+                
+                st.info("""
+                **Dwie popularne strategie spłaty długów:**
+                
+                🌨️ **Debt Snowball** - Spłacaj od najmniejszego długu  
+                ✅ Motywujące (szybkie wygrane)  
+                ❌ Potencjalnie więcej odsetek  
+                
+                🏔️ **Debt Avalanche** - Spłacaj od najwyższego oprocentowania  
+                ✅ Minimalizuje odsetki  
+                ❌ Mniej motywujące początkowo  
+                """)
+                
+                col_strat1, col_strat2 = st.columns(2)
+                
+                with col_strat1:
+                    st.markdown("#### 🌨️ Snowball (od najmniejszego)")
+                    sorted_by_size = sorted(kredyty, key=lambda k: k['kwota_poczatkowa'] - k['splacono'])
+                    for i, k in enumerate(sorted_by_size[:5], 1):
+                        pozostalo = k['kwota_poczatkowa'] - k['splacono']
+                        st.write(f"{i}. **{k['nazwa']}** - {format_currency(pozostalo)}")
+                
+                with col_strat2:
+                    st.markdown("#### 🏔️ Avalanche (od najdroższego)")
+                    sorted_by_interest = sorted(kredyty, key=lambda k: k['oprocentowanie'], reverse=True)
+                    for i, k in enumerate(sorted_by_interest[:5], 1):
+                        pozostalo = k['kwota_poczatkowa'] - k['splacono']
+                        st.write(f"{i}. **{k['nazwa']}** ({k['oprocentowanie']:.2f}%) - {format_currency(pozostalo)}")
     
     # ===== TAB 4: WYPŁATY =====
     with tab4:
@@ -7262,22 +7725,177 @@ def show_kredyty_page(stan_spolki, cele):
         
         # === PODSUMOWANIE ===
         if wyplaty:
-            col1, col2, col3 = st.columns(3)
+            # Sortuj wypłaty po dacie
+            wyplaty_sorted = sorted(wyplaty, key=lambda x: x['data'], reverse=True)
             
-            # Ostatnie 12 miesięcy
+            # Różne okresy
             rok_temu = datetime.now() - timedelta(days=365)
-            wyplaty_12m = [w for w in wyplaty if datetime.fromisoformat(w['data']) >= rok_temu]
+            pol_roku_temu = datetime.now() - timedelta(days=180)
+            kwartal_temu = datetime.now() - timedelta(days=90)
             
-            suma_total_12m = sum(w['kwota'] for w in wyplaty_12m)
-            srednia_12m = suma_total_12m / len(wyplaty_12m) if wyplaty_12m else 0
+            wyplaty_12m = [w for w in wyplaty_sorted if datetime.fromisoformat(w['data']) >= rok_temu]
+            wyplaty_6m = [w for w in wyplaty_sorted if datetime.fromisoformat(w['data']) >= pol_roku_temu]
+            wyplaty_3m = [w for w in wyplaty_sorted if datetime.fromisoformat(w['data']) >= kwartal_temu]
+            
+            # Średnie
+            srednia_12m = sum(w['kwota'] for w in wyplaty_12m) / len(wyplaty_12m) if wyplaty_12m else 0
+            srednia_6m = sum(w['kwota'] for w in wyplaty_6m) / len(wyplaty_6m) if wyplaty_6m else 0
+            srednia_3m = sum(w['kwota'] for w in wyplaty_3m) / len(wyplaty_3m) if wyplaty_3m else 0
+            
+            col1, col2, col3, col4 = st.columns(4)
             
             with col1:
-                st.metric("💰 Suma (12 mies.)", format_currency(suma_total_12m))
+                st.metric("💰 Ostatnia wypłata", format_currency(wyplaty_sorted[0]['kwota']))
+                st.caption(f"📅 {wyplaty_sorted[0]['data']}")
+            
             with col2:
-                st.metric("📊 Średnia", format_currency(srednia_12m))
+                st.metric("📊 Średnia (3 mies.)", format_currency(srednia_3m))
+                trend_3_6 = ((srednia_3m - srednia_6m) / srednia_6m * 100) if srednia_6m > 0 else 0
+                st.caption(f"Trend: {trend_3_6:+.1f}% vs 6m")
+            
             with col3:
-                if wyplaty:
-                    st.metric("� Liczba wypłat", len(wyplaty))
+                st.metric("📊 Średnia (6 mies.)", format_currency(srednia_6m))
+                trend_6_12 = ((srednia_6m - srednia_12m) / srednia_12m * 100) if srednia_12m > 0 else 0
+                st.caption(f"Trend: {trend_6_12:+.1f}% vs 12m")
+            
+            with col4:
+                st.metric("📊 Średnia (12 mies.)", format_currency(srednia_12m))
+                st.caption(f"Liczba wypłat: {len(wyplaty_12m)}")
+            
+            st.markdown("---")
+            
+            # === WYKRES HISTORII WYPŁAT ===
+            st.markdown("### 📈 Historia Wypłat")
+            
+            # Przygotuj dane do wykresu
+            wyplaty_chart = sorted(wyplaty, key=lambda x: x['data'])
+            dates = [w['data'] for w in wyplaty_chart]
+            amounts = [w['kwota'] for w in wyplaty_chart]
+            
+            fig_income = go.Figure()
+            
+            # Linia główna
+            fig_income.add_trace(go.Scatter(
+                x=dates,
+                y=amounts,
+                mode='lines+markers',
+                name='Wypłata',
+                line=dict(color='#00CC96', width=3),
+                marker=dict(size=8),
+                hovertemplate='<b>%{x}</b><br>Wypłata: %{y:,.0f} PLN<extra></extra>'
+            ))
+            
+            # Średnie kroczące
+            if len(wyplaty_chart) >= 3:
+                # 3-miesięczna średnia krocząca
+                ma_3 = []
+                for i in range(len(amounts)):
+                    if i < 2:
+                        ma_3.append(None)
+                    else:
+                        ma_3.append(sum(amounts[i-2:i+1]) / 3)
+                
+                fig_income.add_trace(go.Scatter(
+                    x=dates,
+                    y=ma_3,
+                    mode='lines',
+                    name='Średnia 3m',
+                    line=dict(color='orange', width=2, dash='dash'),
+                    hovertemplate='<b>%{x}</b><br>Śr. 3m: %{y:,.0f} PLN<extra></extra>'
+                ))
+            
+            fig_income.update_layout(
+                title="Trend wypłat w czasie",
+                xaxis_title="Data",
+                yaxis_title="Kwota (PLN)",
+                hovermode='x unified',
+                height=400,
+                showlegend=True
+            )
+            
+            st.plotly_chart(fig_income, use_container_width=True)
+            
+            st.markdown("---")
+            
+            # === YoY COMPARISON ===
+            st.markdown("### 📅 Porównanie Rok do Roku (YoY)")
+            
+            # Grupuj wypłaty po miesiącach i latach
+            from collections import defaultdict
+            wyplaty_by_month = defaultdict(list)
+            
+            for w in wyplaty:
+                date = datetime.fromisoformat(w['data'])
+                month_key = f"{date.year}-{date.month:02d}"
+                wyplaty_by_month[month_key].append(w['kwota'])
+            
+            # Oblicz sumy miesięczne
+            monthly_totals = {k: sum(v) for k, v in wyplaty_by_month.items()}
+            
+            # Porównaj ostatnie miesiące z rokiem wcześniej
+            current_month = datetime.now().strftime("%Y-%m")
+            last_year_month = (datetime.now().replace(year=datetime.now().year - 1)).strftime("%Y-%m")
+            
+            if current_month in monthly_totals and last_year_month in monthly_totals:
+                current = monthly_totals[current_month]
+                last_year = monthly_totals[last_year_month]
+                yoy_change = ((current - last_year) / last_year * 100) if last_year > 0 else 0
+                
+                col_yoy1, col_yoy2, col_yoy3 = st.columns(3)
+                
+                with col_yoy1:
+                    st.metric("Bieżący miesiąc", format_currency(current))
+                
+                with col_yoy2:
+                    st.metric("Rok wcześniej", format_currency(last_year))
+                
+                with col_yoy3:
+                    st.metric("Zmiana YoY", f"{yoy_change:+.1f}%", delta=f"{current - last_year:+.0f} PLN")
+            else:
+                st.info("ℹ️ Brak wystarczających danych do porównania rok do roku")
+            
+            st.markdown("---")
+            
+            # === PREDICTED NEXT PAYCHECK ===
+            st.markdown("### 🔮 Przewidywana Następna Wypłata")
+            
+            if len(wyplaty_sorted) >= 3:
+                # Prosta predykcja bazująca na średniej z ostatnich 3
+                ostatnie_3 = wyplaty_sorted[:3]
+                predicted_amount = sum(w['kwota'] for w in ostatnie_3) / 3
+                
+                # Znajdź następny dzień wypłaty (zakładamy 10-ty dzień miesiąca)
+                today = datetime.now()
+                if today.day < 10:
+                    next_paycheck_date = today.replace(day=10)
+                else:
+                    # Następny miesiąc
+                    if today.month == 12:
+                        next_paycheck_date = today.replace(year=today.year + 1, month=1, day=10)
+                    else:
+                        next_paycheck_date = today.replace(month=today.month + 1, day=10)
+                
+                dni_do_wyplaty = (next_paycheck_date - today).days
+                
+                col_pred1, col_pred2 = st.columns(2)
+                
+                with col_pred1:
+                    st.metric("💰 Przewidywana kwota", f"{predicted_amount:.0f} PLN")
+                    st.caption(f"Na podstawie średniej z ostatnich 3 wypłat")
+                
+                with col_pred2:
+                    st.metric("📅 Przewidywana data", next_paycheck_date.strftime("%Y-%m-%d"))
+                    
+                    if dni_do_wyplaty == 0:
+                        st.caption("🎉 **DZIŚ!**")
+                    elif dni_do_wyplaty < 0:
+                        st.caption(f"⚠️ Opóźnienie: {abs(dni_do_wyplaty)} dni")
+                    else:
+                        st.caption(f"⏰ Za {dni_do_wyplaty} dni")
+            else:
+                st.info("ℹ️ Dodaj więcej wypłat aby zobaczyć predykcję")
+        
+        st.markdown("---")
         
         # === DODAWANIE WYPŁATY ===
         st.markdown("### ➕ Dodaj Wypłatę")
