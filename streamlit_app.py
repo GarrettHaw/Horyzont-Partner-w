@@ -6214,10 +6214,17 @@ def save_cele(cele):
 
 def load_wyplaty():
     """Wczytaj wypłaty z pliku JSON"""
+    # Najpierw sprawdź session state (dla Streamlit Cloud)
+    if 'wyplaty_data' in st.session_state:
+        return st.session_state['wyplaty_data']
+    
     try:
         with open('wyplaty.json', 'r', encoding='utf-8') as f:
             data = json.load(f)
-            return data.get('wyplaty', [])
+            wyplaty = data.get('wyplaty', [])
+            # Zapisz do session state
+            st.session_state['wyplaty_data'] = wyplaty
+            return wyplaty
     except FileNotFoundError:
         return []
     except Exception as e:
@@ -6229,17 +6236,29 @@ def save_wyplaty(wyplaty):
     try:
         with open('wyplaty.json', 'w', encoding='utf-8') as f:
             json.dump({'wyplaty': wyplaty}, f, indent=2, ensure_ascii=False)
+        
+        # Zapisz również do session state (dla Streamlit Cloud)
+        st.session_state['wyplaty_data'] = wyplaty
+        
         return True
     except Exception as e:
-        st.error(f"Błąd zapisu wypłat: {e}")
-        return False
+        # Na Streamlit Cloud filesystem jest read-only - zapisz tylko do session
+        st.session_state['wyplaty_data'] = wyplaty
+        st.warning(f"⚠️ Dane zapisane tymczasowo w sesji. Filesystem read-only: {e}")
+        return True  # Zwróć True bo zapisaliśmy do session
 
 def load_wydatki():
     """Wczytaj wydatki z pliku JSON"""
+    # Najpierw sprawdź session state
+    if 'wydatki_data' in st.session_state:
+        return st.session_state['wydatki_data']
+    
     try:
         with open('wydatki.json', 'r', encoding='utf-8') as f:
             data = json.load(f)
-            return data.get('wydatki', [])
+            wydatki = data.get('wydatki', [])
+            st.session_state['wydatki_data'] = wydatki
+            return wydatki
     except FileNotFoundError:
         return []
     except Exception as e:
@@ -6251,10 +6270,13 @@ def save_wydatki(wydatki):
     try:
         with open('wydatki.json', 'w', encoding='utf-8') as f:
             json.dump({'wydatki': wydatki}, f, indent=2, ensure_ascii=False)
+        st.session_state['wydatki_data'] = wydatki
         return True
     except Exception as e:
-        st.error(f"Błąd zapisu wydatków: {e}")
-        return False
+        # Streamlit Cloud - tylko session
+        st.session_state['wydatki_data'] = wydatki
+        st.warning(f"⚠️ Dane zapisane tymczasowo w sesji. Filesystem read-only.")
+        return True
 
 def load_krypto():
     """Wczytaj kryptowaluty z pliku JSON"""
@@ -6614,6 +6636,16 @@ def show_kredyty_page(stan_spolki, cele):
     # ===== TAB 4: WYPŁATY =====
     with tab4:
         st.header("💸 Historia Wypłat")
+        
+        # OSTRZEŻENIE dla Streamlit Cloud
+        st.warning("""
+        ⚠️ **UWAGA - Streamlit Cloud:** 
+        Dane wypłat są zapisywane **tymczasowo w sesji**. Po odświeżeniu strony znikną!
+        
+        **Rozwiązanie:**
+        - Dane zachowają się dopóki nie zamkniesz przeglądarki
+        - Wkrótce dodam synchronizację z GitHub Actions (automatyczny commit)
+        """)
         
         wyplaty = load_wyplaty()
         
