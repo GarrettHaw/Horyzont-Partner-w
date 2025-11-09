@@ -27,9 +27,8 @@ def check_password():
     def password_entered():
         """Sprawdza czy hasło jest poprawne."""
         # Hasło zahashowane SHA256 (bezpieczne przechowywanie)
-        # Domyślne hasło: "horyzont2025" (możesz zmienić w Streamlit Secrets)
         correct_password_hash = st.secrets.get("PASSWORD_HASH", 
-            "5c3991dda699564005cefb8c44bb6c9cb7300144fafebb42f88c6ca12ad8d0dd")  # horyzont2025
+            "c75814b6fdb3b8b95a4619f6cd20d072e5525b7571908993d4398e8b38c5e685")  # Shinobi123!
         
         entered_password = st.session_state["password"]
         entered_hash = hashlib.sha256(entered_password.encode()).hexdigest()
@@ -64,8 +63,6 @@ def check_password():
         
         if "password_correct" in st.session_state and not st.session_state["password_correct"]:
             st.error("❌ Nieprawidłowe hasło")
-        
-        st.info("💡 Domyślne hasło: **horyzont2025**")
     
     return False
 
