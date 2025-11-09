@@ -6653,14 +6653,16 @@ def show_kredyty_page(stan_spolki, cele):
     with tab4:
         st.header("💸 Historia Wypłat")
         
-        # OSTRZEŻENIE dla Streamlit Cloud
-        st.warning("""
-        ⚠️ **UWAGA - Streamlit Cloud:** 
-        Dane wypłat są zapisywane **tymczasowo w sesji**. Po odświeżeniu strony znikną!
+        # Info o systemie persystencji
+        st.info("""
+        💾 **System persystencji danych:**
+        - Dane zapisują się automatycznie do pamięci sesji
+        - **Synchronizacja z GitHub co godzinę** (GitHub Actions)
+        - Sprawdź status synchronizacji w sidebar (🔄)
         
-        **Rozwiązanie:**
-        - Dane zachowają się dopóki nie zamkniesz przeglądarki
-        - Wkrótce dodam synchronizację z GitHub Actions (automatyczny commit)
+        📋 **System wypłat:**
+        - Wypłata około **10-go** każdego miesiąca
+        - Podstawa + premia w jednym przelewie
         """)
         
         wyplaty = load_wyplaty()

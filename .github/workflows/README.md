@@ -10,6 +10,7 @@ Ten folder zawiera skrypty automatyzacji dla Horyzont Partnerów.
 | **Monthly Audit** | 1. dnia miesiąca | 09:00 | Pełny audyt compliance |
 | **AI Conversations** | 2x dziennie | 10:00, 18:00 | Autonomiczne dyskusje AI |
 | **Knowledge Update** | Poniedziałek | 08:00 | Aktualizacja newsy rynkowe |
+| **Data Sync** 🆕 | Co godzinę | :00 | Synchronizacja danych użytkownika |
 
 ## 🔐 Wymagane Secrets
 

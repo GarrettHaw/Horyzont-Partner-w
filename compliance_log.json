@@ -1,0 +1,26 @@
+{
+  "ostatnia_aktualizacja": "2025-10-11 22:43:36",
+  "wpisy": [
+    {
+      "data": "2025-10-11 22:43:36",
+      "protokol": "Artykuł IV §2 - Zasilenie ADD",
+      "id": "ADD_325",
+      "status": "zgodne",
+      "opis": "Kwota: 325 PLN"
+    },
+    {
+      "data": "2025-10-11 22:43:36",
+      "protokol": "Artykuł IV §2 - Zasilenie PBR",
+      "id": "PBR_50_tydz",
+      "status": "zgodne",
+      "opis": "Kwota: 50 PLN"
+    },
+    {
+      "data": "2025-10-11 22:43:36",
+      "protokol": "Artykuł IV §2 - Zasilenie Filaru Taktycznego",
+      "id": "BCAT_VWCE_50_tydz",
+      "status": "zgodne",
+      "opis": "Kwota: 50 PLN"
+    }
+  ]
+}

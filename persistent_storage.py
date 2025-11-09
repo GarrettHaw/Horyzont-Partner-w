@@ -135,12 +135,18 @@ def show_sync_widget():
         with st.sidebar.expander("📁 Pliki do synchronizacji"):
             for f in status['files']:
                 st.caption(f"• {f}")
+            st.caption("")
+            st.info("ℹ️ **Automatyczna synchronizacja co godzinę** przez GitHub Actions")
         
-        if st.sidebar.button("🔄 Synchronizuj z GitHub", key="sync_btn"):
-            success, msg = trigger_github_sync()
-            if success:
-                st.sidebar.success(msg)
-            else:
-                st.sidebar.info(msg)
+        if st.sidebar.button("🔄 Wymuś sync teraz", key="sync_btn", help="Ręcznie uruchom GitHub Actions"):
+            st.sidebar.info("""
+            🚀 **Aby wymusić synchronizację:**
+            1. Idź na GitHub Actions
+            2. Wybierz "Sync Data Files"  
+            3. Kliknij "Run workflow"
+            
+            [Otwórz GitHub Actions →](https://github.com/GarrettHaw/Horyzont-Partner-w/actions/workflows/sync_data.yml)
+            """)
     else:
         st.sidebar.success("✅ Wszystko zsynchronizowane")
+        st.sidebar.caption("🔄 Następny auto-sync za <1h")

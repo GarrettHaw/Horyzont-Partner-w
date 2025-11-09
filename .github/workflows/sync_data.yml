@@ -1,0 +1,84 @@
+name: Sync Data Files
+
+on:
+  schedule:
+    # Co godzinę (00 minuty każdej godziny)
+    - cron: '0 * * * *'
+  workflow_dispatch:  # Ręczne uruchomienie
+    inputs:
+      files:
+        description: 'Pliki do synchronizacji (rozdzielone przecinkami)'
+        required: false
+        default: 'all'
+
+jobs:
+  sync-data:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: true
+      
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: 📦 Install dependencies
+        run: |
+          pip install -q streamlit pandas gspread google-auth
+      
+      - name: 🔄 Sync data files
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          TRADING212_API_KEY: ${{ secrets.TRADING212_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          HUGGINGFACE_API_KEY: ${{ secrets.HUGGINGFACE_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          python sync_data.py
+          echo "✓ Data synchronization completed"
+      
+      - name: 💾 Commit changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "GitHub Actions Bot"
+          
+          # Dodaj tylko pliki danych (ignoruj cache i logi)
+          git add persona_memory.json || true
+          git add autonomous_conversations.json || true
+          git add wyplaty.json || true
+          git add wydatki.json || true
+          git add daily_snapshots.json || true
+          git add portfolio_history.json || true
+          git add api_usage.json || true
+          git add cele.json || true
+          git add kredyty.json || true
+          git add krypto.json || true
+          
+          # Commit tylko jeśli są zmiany
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "🔄 Auto-sync: $(date +'%Y-%m-%d %H:%M UTC')"
+            git push
+          fi
+      
+      - name: 📊 Summary
+        run: |
+          echo "### 🔄 Data Sync Complete! 💾" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ All data files synchronized" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Changes committed to GitHub" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Streamlit Cloud will auto-update" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Next sync:** In 1 hour" >> $GITHUB_STEP_SUMMARY
