@@ -3861,18 +3861,18 @@ def show_dashboard(stan_spolki, cele):
     col_action1, col_action2, col_action3, col_action4 = st.columns(4)
     
     with col_action1:
-        if st.button("🤖 Zapytaj AI o Portfel", use_container_width=True):
-            st.session_state['goto_page'] = "💬 Partnerzy AI"
-            st.session_state['quick_question'] = "Jak oceniasz mój obecny portfel? Jakie widzisz ryzyka i szanse?"
+        if st.button("🤖 Zapytaj AI o Portfel", use_container_width=True, key="quick_ai"):
+            st.session_state.page = "💬 Partnerzy"
+            st.session_state.quick_question = "Jak oceniasz mój obecny portfel? Jakie widzisz ryzyka i szanse?"
             st.rerun()
     
     with col_action2:
-        if st.button("📊 Szczegółowa Analiza", use_container_width=True):
-            st.session_state['goto_page'] = "📈 Analiza"
+        if st.button("📊 Szczegółowa Analiza", use_container_width=True, key="quick_analiza"):
+            st.session_state.page = "📈 Analiza"
             st.rerun()
     
     with col_action3:
-        if st.button("📄 Generuj Raport Excel", use_container_width=True):
+        if st.button("📄 Generuj Raport Excel", use_container_width=True, key="quick_raport"):
             try:
                 with st.spinner("📊 Generuję raport..."):
                     filename = generate_full_report(stan_spolki)
@@ -3883,15 +3883,16 @@ def show_dashboard(stan_spolki, cele):
                             data=file,
                             file_name=filename,
                             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                            use_container_width=True
+                            use_container_width=True,
+                            key="download_raport"
                         )
                     st.success(f"✅ Raport wygenerowany: {filename}")
             except Exception as e:
                 st.error(f"❌ Błąd generowania raportu: {e}")
     
     with col_action4:
-        if st.button("💳 Zarządzaj Finansami", use_container_width=True):
-            st.session_state['goto_page'] = "💳 Kredyty"
+        if st.button("💳 Zarządzaj Finansami", use_container_width=True, key="quick_finanse"):
+            st.session_state.page = "💳 Kredyty"
             st.rerun()
     
     st.markdown("---")
