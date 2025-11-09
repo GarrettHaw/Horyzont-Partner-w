@@ -28,13 +28,20 @@ jobs:
           pip install -r requirements.txt
       
       - name: 🔐 Configure environment
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          TRADING212_API_KEY: ${{ secrets.TRADING212_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
-          echo "GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}" >> $GITHUB_ENV
-          echo "TRADING212_API_KEY=${{ secrets.TRADING212_API_KEY }}" >> $GITHUB_ENV
-          echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> $GITHUB_ENV
-          echo "ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }}" >> $GITHUB_ENV
+          echo "✓ Environment configured"
       
       - name: 🔍 Run Monthly Audit
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          TRADING212_API_KEY: ${{ secrets.TRADING212_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           python monthly_audit.py
           echo "✓ Monthly audit completed"
