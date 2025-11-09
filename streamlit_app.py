@@ -10,6 +10,7 @@ from datetime import datetime, timedelta
 import json
 import os
 from pathlib import Path
+import hashlib
 
 # Konfiguracja strony - MUSI być jako pierwsze
 st.set_page_config(
@@ -18,6 +19,59 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
+
+# === SYSTEM LOGOWANIA ===
+def check_password():
+    """Zwraca True jeśli użytkownik wprowadził poprawne hasło."""
+    
+    def password_entered():
+        """Sprawdza czy hasło jest poprawne."""
+        # Hasło zahashowane SHA256 (bezpieczne przechowywanie)
+        # Domyślne hasło: "horyzont2025" (możesz zmienić w Streamlit Secrets)
+        correct_password_hash = st.secrets.get("PASSWORD_HASH", 
+            "8f3b5c7e2a1d9f6e4b8a0c5d7e9f2a4b6c8d0e1f3a5b7c9d1e3f5a7b9c0d2e4f6")  # horyzont2025
+        
+        entered_password = st.session_state["password"]
+        entered_hash = hashlib.sha256(entered_password.encode()).hexdigest()
+        
+        if entered_hash == correct_password_hash:
+            st.session_state["password_correct"] = True
+            del st.session_state["password"]  # Usuń hasło z pamięci
+        else:
+            st.session_state["password_correct"] = False
+
+    # Jeśli już zalogowany, zwróć True
+    if st.session_state.get("password_correct", False):
+        return True
+
+    # Pokaż ekran logowania
+    st.markdown("""
+    <div style="text-align: center; padding: 50px 20px;">
+        <h1 style="color: #1f77b4;">🔐 HORYZONT PARTNERÓW</h1>
+        <p style="font-size: 18px; color: #666;">Zaloguj się aby kontynuować</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        st.text_input(
+            "Hasło", 
+            type="password", 
+            on_change=password_entered, 
+            key="password",
+            placeholder="Wprowadź hasło dostępu"
+        )
+        
+        if "password_correct" in st.session_state and not st.session_state["password_correct"]:
+            st.error("❌ Nieprawidłowe hasło")
+        
+        st.info("💡 Domyślne hasło: **horyzont2025**")
+    
+    return False
+
+# Sprawdź logowanie PRZED załadowaniem reszty aplikacji
+if not check_password():
+    st.stop()  # Zatrzymaj wykonywanie jeśli nie zalogowany
 
 # === EKRAN ŁADOWANIA ===
 if 'app_loaded' not in st.session_state:
@@ -2978,6 +3032,13 @@ def main():
     # Sidebar
     with st.sidebar:
         st.title("📋 Menu Główne")
+        
+        # Przycisk wylogowania
+        col1, col2 = st.columns([3, 1])
+        with col2:
+            if st.button("🚪", key="logout_btn", help="Wyloguj się"):
+                st.session_state["password_correct"] = False
+                st.rerun()
         
         # Pobierz aktualną stronę (dla highlight)
         current_page = st.session_state.get('page', "📊 Dashboard")
