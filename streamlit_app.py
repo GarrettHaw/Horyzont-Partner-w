@@ -8081,7 +8081,7 @@ def show_markets_page(stan_spolki, cele):
                 for name, ticker in indices.items():
                     try:
                         import yfinance as yf
-                        data = yf.download(ticker, period="1mo", progress=False)
+                        data = yf.download(ticker, period="1mo", progress=False, auto_adjust=True)
                         
                         if not data.empty and 'Close' in data.columns:
                             # Normalizuj do 100
@@ -8123,7 +8123,7 @@ def show_markets_page(stan_spolki, cele):
             for name, ticker in indices.items():
                 try:
                     import yfinance as yf
-                    data = yf.download(ticker, period="1mo", progress=False)
+                    data = yf.download(ticker, period="1mo", progress=False, auto_adjust=True)
                     
                     if not data.empty and 'Close' in data.columns:
                         start_price = data['Close'].iloc[0]
