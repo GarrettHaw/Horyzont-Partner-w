@@ -8,6 +8,13 @@ import json
 from datetime import datetime
 import os
 
+# Import GitHub API
+try:
+    from github_api import trigger_sync_workflow
+    GITHUB_API_OK = True
+except:
+    GITHUB_API_OK = False
+
 # Pliki wymagające persystencji
 PERSISTENT_FILES = [
     'persona_memory.json',
@@ -138,15 +145,69 @@ def show_sync_widget():
             st.caption("")
             st.info("ℹ️ **Automatyczna synchronizacja co godzinę** przez GitHub Actions")
         
-        if st.sidebar.button("🔄 Wymuś sync teraz", key="sync_btn", help="Ręcznie uruchom GitHub Actions"):
-            st.sidebar.info("""
-            🚀 **Aby wymusić synchronizację:**
-            1. Idź na GitHub Actions
-            2. Wybierz "Sync Data Files"  
-            3. Kliknij "Run workflow"
-            
-            [Otwórz GitHub Actions →](https://github.com/GarrettHaw/Horyzont-Partner-w/actions/workflows/sync_data.yml)
-            """)
+        # Przycisk natychmiastowego zapisu
+        col1, col2 = st.sidebar.columns([1, 1])
+        with col1:
+            if st.button("💾 Zapisz teraz", key="sync_now_btn", type="primary", use_container_width=True):
+                # Spróbuj automatycznego triggera
+                if GITHUB_API_OK:
+                    with st.spinner("Uruchamiam synchronizację..."):
+                        success, msg = trigger_sync_workflow()
+                        if success:
+                            st.sidebar.success(msg)
+                            st.sidebar.caption("Sprawdź status: [GitHub Actions](https://github.com/GarrettHaw/Horyzont-Partner-w/actions)")
+                        else:
+                            st.sidebar.error(msg)
+                            st.sidebar.info("💡 Użyj ręcznego triggera (link poniżej)")
+                else:
+                    st.sidebar.info("""
+                    🚀 **Aby zapisać dane:**
+                    
+                    1. Idź na [GitHub Actions](https://github.com/GarrettHaw/Horyzont-Partner-w/actions/workflows/sync_data.yml)
+                    2. Kliknij "Run workflow" → "Run workflow"
+                    3. Poczekaj ~1 min na zakończenie
+                    
+                    ✅ Dane zostaną zapisane trwale!
+                    """)
+        
+        with col2:
+            if st.button("📥 Pobierz", key="download_btn", use_container_width=True, help="Pobierz dane jako backup"):
+                # Twórz ZIP z wszystkimi plikami
+                import zipfile
+                import io
+                import json
+                
+                zip_buffer = io.BytesIO()
+                with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+                    for filename in status['files']:
+                        if f'persistent_{filename}' in st.session_state:
+                            data = st.session_state[f'persistent_{filename}']
+                            json_str = json.dumps(data, indent=2, ensure_ascii=False)
+                            zip_file.writestr(filename, json_str)
+                
+                zip_buffer.seek(0)
+                from datetime import datetime
+                timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+                
+                st.sidebar.download_button(
+                    label="📦 Pobierz ZIP",
+                    data=zip_buffer.getvalue(),
+                    file_name=f"horyzont_backup_{timestamp}.zip",
+                    mime="application/zip",
+                    key="download_zip_btn"
+                )
+        
+        # JavaScript - ostrzeżenie przed zamknięciem
+        st.sidebar.markdown("""
+        <script>
+        window.addEventListener('beforeunload', function (e) {
+            e.preventDefault();
+            e.returnValue = 'Masz niezapisane dane! Czy chcesz zapisać przed wyjściem?';
+            return 'Masz niezapisane dane! Czy chcesz zapisać przed wyjściem?';
+        });
+        </script>
+        """, unsafe_allow_html=True)
+        
     else:
         st.sidebar.success("✅ Wszystko zsynchronizowane")
         st.sidebar.caption("🔄 Następny auto-sync za <1h")
