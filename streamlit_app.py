@@ -29,7 +29,7 @@ def check_password():
         # Hasło zahashowane SHA256 (bezpieczne przechowywanie)
         # Domyślne hasło: "horyzont2025" (możesz zmienić w Streamlit Secrets)
         correct_password_hash = st.secrets.get("PASSWORD_HASH", 
-            "8f3b5c7e2a1d9f6e4b8a0c5d7e9f2a4b6c8d0e1f3a5b7c9d1e3f5a7b9c0d2e4f6")  # horyzont2025
+            "5c3991dda699564005cefb8c44bb6c9cb7300144fafebb42f88c6ca12ad8d0dd")  # horyzont2025
         
         entered_password = st.session_state["password"]
         entered_hash = hashlib.sha256(entered_password.encode()).hexdigest()
