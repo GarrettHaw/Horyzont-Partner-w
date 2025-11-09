@@ -3137,7 +3137,6 @@ def main():
         show_timeline_page(stan_spolki)
     elif page == "📸 Snapshots":
         show_snapshots_page()
-        show_snapshots_page()
     elif page == "🎮 Symulacje":
         show_simulations_page(stan_spolki)
     elif page == "⚙️ Ustawienia":
