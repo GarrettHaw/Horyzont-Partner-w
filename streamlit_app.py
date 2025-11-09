@@ -8055,12 +8055,13 @@ def show_kredyty_page(stan_spolki, cele):
                             wyplata_czesc = min(kwota_total, minimalna_krajowa)
                             premia_czesc = max(0, kwota_total - minimalna_krajowa)
                             
-                            # Dodaj Wypłatę
+                            # Dodaj Wypłatę (ZAPISZ MINIMALNĄ KRAJOWĄ dla historii)
                             nowa_wyplata = {
                                 'id': str(timestamp_base),
                                 'typ': 'Wypłata',
                                 'data': data_wyplaty.isoformat(),
                                 'kwota': wyplata_czesc,
+                                'minimalna_krajowa': minimalna_krajowa,  # ZAPISZ dla historii
                                 'notatki': f"Minimalna krajowa {minimalna_krajowa:,.0f} PLN" + (f" | {notatki}" if notatki else "")
                             }
                             wyplaty.append(nowa_wyplata)
@@ -8072,6 +8073,7 @@ def show_kredyty_page(stan_spolki, cele):
                                     'typ': 'Premia',
                                     'data': data_wyplaty.isoformat(),
                                     'kwota': premia_czesc,
+                                    'minimalna_krajowa': minimalna_krajowa,  # ZAPISZ dla historii
                                     'notatki': f"Premia ponad minimalną" + (f" | {notatki}" if notatki else "")
                                 }
                                 wyplaty.append(nowa_premia)
@@ -8164,6 +8166,10 @@ def show_kredyty_page(stan_spolki, cele):
                     
                     if wyplata.get('notatki'):
                         st.caption(f"📝 {wyplata['notatki']}")
+                    
+                    # Pokaż zapisaną minimalną krajową (jeśli jest)
+                    if wyplata.get('minimalna_krajowa'):
+                        st.info(f"⚙️ **Minimalna krajowa w tym okresie:** {wyplata['minimalna_krajowa']:,.0f} PLN")
                     
                     # Edycja (jeśli potrzeba korekty)
                     st.markdown("---")
