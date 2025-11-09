@@ -41,17 +41,17 @@ crypto_metadata_cache.json
 crypto_prices_cache.json
 cache_migrated.flag
 
-# Data Files - uncommit these if needed
-cele.json
-kredyty.json
-krypto.json
-portfolio_history.json
-monthly_snapshot.json
-daily_snapshots.json
-autonomous_conversations.json
-persona_memory.json
-api_usage.json
-compliance_log.json
+# Data Files - WŁĄCZONE dla Streamlit Cloud (potrzebne dane)
+# cele.json  # Ma auto-create więc opcjonalne
+# kredyty.json  # POTRZEBNE
+# krypto.json  # POTRZEBNE
+# portfolio_history.json  # POTRZEBNE
+# monthly_snapshot.json  # POTRZEBNE
+# daily_snapshots.json  # POTRZEBNE
+# autonomous_conversations.json  # opcjonalne
+# persona_memory.json  # opcjonalne
+api_usage.json  # generowane dynamicznie
+compliance_log.json  # generowane dynamicznie
 
 # Keep config files
 !autonomous_topics_config.json

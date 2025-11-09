@@ -1,0 +1,15 @@
+{
+  "kredyty": [
+    {
+      "id": "1760987119.024234",
+      "nazwa": "VeloBank",
+      "kwota_poczatkowa": 7999,
+      "data_zaciagniecia": "2025-09-15",
+      "dzien_splaty": 15,
+      "oprocentowanie": 0.0,
+      "rata_miesieczna": 667,
+      "splacono": 1334,
+      "notatki": ""
+    }
+  ]
+}

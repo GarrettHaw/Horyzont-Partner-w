@@ -1,0 +1,220 @@
+{
+  "Rezerwa_gotowkowa_PLN": 10000,
+  "Dlugi_do_splaty_70_procent_PLN": 5599,
+  "Dlugi_poczatkowe_PLN": 7999,
+  "Rezerwa_gotowkowa_obecna_PLN": 4437,
+  "PBR_akcje_liczba": 100,
+  "GAIN_akcje_limit": 200,
+  "ADD_wartosc_docelowa_PLN": 50000,
+  "wiek_uzytkownika": 30,
+  "miesieczne_wydatki_fi": 2600,
+  "Pies_Inwestycyjne": {
+    "Almost_Daily_Dividends": {
+      "name": "Almost Daily Dividends Portfolio",
+      "description": "Portfolio akcji wypłacających częste dywidendy",
+      "target_allocation": 100,
+      "symbols": [
+        {
+          "symbol": "AFL",
+          "weight": 2
+        },
+        {
+          "symbol": "AGNC",
+          "weight": 2
+        },
+        {
+          "symbol": "ADC",
+          "weight": 2
+        },
+        {
+          "symbol": "AAPL",
+          "weight": 2
+        },
+        {
+          "symbol": "ADP",
+          "weight": 2
+        },
+        {
+          "symbol": "BMO",
+          "weight": 2
+        },
+        {
+          "symbol": "BNS",
+          "weight": 2
+        },
+        {
+          "symbol": "BLK",
+          "weight": 2
+        },
+        {
+          "symbol": "BMY",
+          "weight": 2
+        },
+        {
+          "symbol": "CNQ",
+          "weight": 2
+        },
+        {
+          "symbol": "CAH",
+          "weight": 2
+        },
+        {
+          "symbol": "CVX",
+          "weight": 2
+        },
+        {
+          "symbol": "CB",
+          "weight": 2
+        },
+        {
+          "symbol": "CSCO",
+          "weight": 2
+        },
+        {
+          "symbol": "C",
+          "weight": 2
+        },
+        {
+          "symbol": "KO",
+          "weight": 2
+        },
+        {
+          "symbol": "DUK",
+          "weight": 2
+        },
+        {
+          "symbol": "ECL",
+          "weight": 2
+        },
+        {
+          "symbol": "EMR",
+          "weight": 2
+        },
+        {
+          "symbol": "GD",
+          "weight": 2
+        },
+        {
+          "symbol": "GOOD",
+          "weight": 2
+        },
+        {
+          "symbol": "IBM",
+          "weight": 2
+        },
+        {
+          "symbol": "ITW",
+          "weight": 2
+        },
+        {
+          "symbol": "JNJ",
+          "weight": 2
+        },
+        {
+          "symbol": "JPM",
+          "weight": 2
+        },
+        {
+          "symbol": "KMB",
+          "weight": 2
+        },
+        {
+          "symbol": "LOW",
+          "weight": 2
+        },
+        {
+          "symbol": "LTC",
+          "weight": 2
+        },
+        {
+          "symbol": "MAIN",
+          "weight": 2
+        },
+        {
+          "symbol": "MA",
+          "weight": 2
+        },
+        {
+          "symbol": "MCD",
+          "weight": 2
+        },
+        {
+          "symbol": "MSFT",
+          "weight": 2
+        },
+        {
+          "symbol": "NUE",
+          "weight": 2
+        },
+        {
+          "symbol": "PNR",
+          "weight": 2
+        },
+        {
+          "symbol": "PEP",
+          "weight": 2
+        },
+        {
+          "symbol": "PPG",
+          "weight": 2
+        },
+        {
+          "symbol": "PG",
+          "weight": 2
+        },
+        {
+          "symbol": "O",
+          "weight": 2
+        },
+        {
+          "symbol": "ROP",
+          "weight": 2
+        },
+        {
+          "symbol": "RY",
+          "weight": 2
+        },
+        {
+          "symbol": "RGLD",
+          "weight": 2
+        },
+        {
+          "symbol": "SHW",
+          "weight": 2
+        },
+        {
+          "symbol": "SLB",
+          "weight": 2
+        },
+        {
+          "symbol": "STAG",
+          "weight": 2
+        },
+        {
+          "symbol": "SBUX",
+          "weight": 2
+        },
+        {
+          "symbol": "SYY",
+          "weight": 2
+        },
+        {
+          "symbol": "TROW",
+          "weight": 2
+        },
+        {
+          "symbol": "TD",
+          "weight": 2
+        },
+        {
+          "symbol": "WMT",
+          "weight": 2
+        },
+        {
+          "symbol": "GWW",
+          "weight": 2
+        }
+      ]
+    }
+  }
+}

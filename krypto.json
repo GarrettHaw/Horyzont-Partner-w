@@ -1,0 +1,125 @@
+{
+  "krypto": [
+    {
+      "id": "1761067084.772407",
+      "symbol": "ATOM",
+      "ilosc": 24.28,
+      "cena_zakupu_usd": 9.5,
+      "platforma": "Gate.io",
+      "status": "Staking",
+      "apy": 21.63,
+      "notatki": "",
+      "data_dodania": "2025-10-21T19:18:04.772411"
+    },
+    {
+      "id": "1761066999.582405",
+      "symbol": "BTC",
+      "ilosc": 0.00093,
+      "cena_zakupu_usd": 117961.14,
+      "platforma": "Gate.io",
+      "status": "Earn",
+      "apy": 5.32,
+      "notatki": "",
+      "data_dodania": "2025-10-21T19:16:39.582409"
+    },
+    {
+      "id": "1761066951.837691",
+      "symbol": "ETH",
+      "ilosc": 0.1,
+      "cena_zakupu_usd": 2086.009,
+      "platforma": "Gate.io",
+      "status": "Earn",
+      "apy": 6.82,
+      "notatki": "",
+      "data_dodania": "2025-10-21T19:15:51.837695"
+    },
+    {
+      "id": "1761066912.685947",
+      "symbol": "GT",
+      "ilosc": 83.0,
+      "cena_zakupu_usd": 14.66,
+      "platforma": "Gate.io",
+      "status": "Launchpool",
+      "apy": 1.0,
+      "notatki": "",
+      "data_dodania": "2025-10-21T19:15:12.685951"
+    },
+    {
+      "id": "1761067168.537865",
+      "symbol": "GUSD",
+      "ilosc": 250.0,
+      "cena_zakupu_usd": 0.9991,
+      "platforma": "Gate.io",
+      "status": "Staking",
+      "apy": 4.4,
+      "notatki": "Stablecoin - cena auto z Gate.io API",
+      "data_dodania": "2025-10-21T19:19:28.537869"
+    },
+    {
+      "id": "1761067404.331788",
+      "symbol": "MX",
+      "ilosc": 610.23,
+      "cena_zakupu_usd": 2.36,
+      "platforma": "MEXC",
+      "status": "Earn",
+      "apy": 15.4,
+      "notatki": "MEXC Token - cena auto z MEXC API",
+      "data_dodania": "2025-10-21T19:23:24.331792"
+    },
+    {
+      "id": "1761067529.81981",
+      "symbol": "SOL",
+      "ilosc": 0.279,
+      "cena_zakupu_usd": 81.36,
+      "platforma": "Inne",
+      "status": "Earn",
+      "apy": 5.0,
+      "notatki": "",
+      "data_dodania": "2025-10-21T19:25:29.819814"
+    },
+    {
+      "id": "1761067126.205325",
+      "symbol": "TON",
+      "ilosc": 10.0,
+      "cena_zakupu_usd": 4.76,
+      "platforma": "Gate.io",
+      "status": "Staking",
+      "apy": 3.56,
+      "notatki": "",
+      "data_dodania": "2025-10-21T19:18:46.205329"
+    },
+    {
+      "id": "1761066837.559162",
+      "symbol": "USDT",
+      "ilosc": 1000.0,
+      "cena_zakupu_usd": 0.8025,
+      "platforma": "Gate.io",
+      "status": "Earn",
+      "apy": 13.6,
+      "notatki": "",
+      "data_dodania": "2025-10-21T19:13:57.559168"
+    },
+    {
+      "id": "1761066864.052815",
+      "symbol": "USDT",
+      "ilosc": 500.0,
+      "cena_zakupu_usd": 0.8025,
+      "platforma": "Gate.io",
+      "status": "Earn",
+      "apy": 11.12,
+      "notatki": "",
+      "data_dodania": "2025-10-21T19:14:24.052819"
+    },
+    {
+      "id": "1761071570.14625",
+      "symbol": "USDT",
+      "ilosc": 300.0,
+      "cena_zakupu_usd": 1.0,
+      "platforma": "Bybit",
+      "status": "Earn",
+      "apy": 3.0,
+      "notatki": "",
+      "data_dodania": "2025-10-21T20:32:50.146255"
+    }
+  ]
+}

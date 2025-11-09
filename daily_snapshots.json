@@ -1,0 +1,72 @@
+[
+  {
+    "date": "2025-10-19 19:14:04",
+    "date_only": "2025-10-19",
+    "usd_pln_rate": 3.6388,
+    "stocks": {
+      "value_usd": 5749.21,
+      "value_pln": 20920.23,
+      "positions": 56,
+      "cash_usd": 1339.77
+    },
+    "crypto": {
+      "value_usd": 7032.82,
+      "value_pln": 25591.03,
+      "positions": 17
+    },
+    "debt": null,
+    "totals": {
+      "assets_usd": 12782.03,
+      "assets_pln": 46511.26,
+      "debt_pln": 0,
+      "net_worth_pln": 46511.26
+    },
+    "_migrated_from": "monthly_snapshot.json"
+  },
+  {
+    "date": "2025-10-21 21:46:12",
+    "date_only": "2025-10-21",
+    "usd_pln_rate": 3.6479,
+    "stocks": {
+      "value_usd": 5773.53,
+      "value_pln": 21061.27,
+      "positions": 56,
+      "cash_usd": 1330.34
+    },
+    "crypto": {
+      "value_usd": 5029.71,
+      "value_pln": 18347.89,
+      "positions": 11
+    },
+    "debt": null,
+    "totals": {
+      "assets_usd": 10803.24,
+      "assets_pln": 39409.16,
+      "debt_pln": 0,
+      "net_worth_pln": 39409.16
+    }
+  },
+  {
+    "date": "2025-10-23 16:37:57",
+    "date_only": "2025-10-23",
+    "usd_pln_rate": 3.6519,
+    "stocks": {
+      "value_usd": 5781.96,
+      "value_pln": 21115.15,
+      "positions": 56,
+      "cash_usd": 1020.38
+    },
+    "crypto": {
+      "value_usd": 5029.71,
+      "value_pln": 18368.01,
+      "positions": 11
+    },
+    "debt": null,
+    "totals": {
+      "assets_usd": 10811.67,
+      "assets_pln": 39483.16,
+      "debt_pln": 0,
+      "net_worth_pln": 39483.16
+    }
+  }
+]
