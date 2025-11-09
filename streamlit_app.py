@@ -27,6 +27,9 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+# === CONFIGURATION CONSTANTS ===
+DEFAULT_USD_PLN_RATE = 3.65  # Default USD/PLN exchange rate
+
 # === SYSTEM LOGOWANIA ===
 def check_password():
     """Zwraca True jeśli użytkownik wprowadził poprawne hasło."""
@@ -356,7 +359,8 @@ def send_to_ai_partner(partner_name, message, stan_spolki=None, cele=None, tryb_
                 stan_pelny = pobierz_stan_spolki(cele or {})
                 if stan_pelny:
                     dane_rynkowe = stan_pelny.get('PORTFEL_AKCJI', {}).get('Dane_rynkowe', {})
-            except:
+            except Exception as e:
+                # Nie ma gra_rpg.py lub błąd ładowania - używaj stan_spolki z parametru
                 pass
         
         if dane_rynkowe:
@@ -428,8 +432,8 @@ TRYB ODPOWIEDZI: NORMALNY
 - Praktyczne wnioski
 """
         
-        # === PAMIĘĆ DŁUGOTERMINOWA ===
-        memory_context = load_memory_context(partner_name, limit=5)
+        # === PAMIĘĆ DŁUGOTERMINOWA (20 ostatnich rozmów dla lepszego kontekstu) ===
+        memory_context = load_memory_context(partner_name, limit=20)
         memory_section = memory_context if memory_context else ""
         
         # === PAMIĘĆ PERSONY (track record i ewolucja) ===
@@ -568,14 +572,24 @@ TWOJE ZADANIE:
 def save_conversation_to_memory(partner_name, user_message, ai_response, stan_spolki=None):
     """Zapisuje rozmowę do pamięci długoterminowej partnera"""
     try:
-        memory_file = MEMORY_FOLDER / f"{partner_name.replace('/', '_').replace(' ', '_')}.json"
-        
-        # Załaduj istniejącą pamięć lub stwórz nową
-        if memory_file.exists():
-            with open(memory_file, 'r', encoding='utf-8-sig') as f:
-                memory = json.load(f)
+        # Załaduj istniejącą pamięć przez persistence system
+        if PERSISTENT_OK:
+            memory = load_persistent_data('persona_memory.json')
+            if memory is None:
+                memory = {}
         else:
-            memory = {
+            # Fallback - odczyt z pliku
+            memory_file = MEMORY_FOLDER / f"{partner_name.replace('/', '_').replace(' ', '_')}.json"
+            if memory_file.exists():
+                with open(memory_file, 'r', encoding='utf-8-sig') as f:
+                    memory = json.load(f)
+            else:
+                memory = {}
+        
+        # Stwórz strukturę dla partnera jeśli nie istnieje
+        partner_key = partner_name.replace('/', '_').replace(' ', '_')
+        if partner_key not in memory:
+            memory[partner_key] = {
                 "partner_name": partner_name,
                 "conversations": [],
                 "statistics": {
@@ -603,49 +617,73 @@ def save_conversation_to_memory(partner_name, user_message, ai_response, stan_sp
             } if stan_spolki else None
         }
         
-        memory["conversations"].append(conversation_entry)
-        memory["statistics"]["total_messages"] += 1
-        memory["statistics"]["last_interaction"] = datetime.now().isoformat()
+        memory[partner_key]["conversations"].append(conversation_entry)
+        memory[partner_key]["statistics"]["total_messages"] += 1
+        memory[partner_key]["statistics"]["last_interaction"] = datetime.now().isoformat()
         
-        # Zachowaj ostatnie 100 rozmów (żeby plik nie rósł w nieskończoność)
-        if len(memory["conversations"]) > 100:
-            memory["conversations"] = memory["conversations"][-100:]
+        # USUNIĘTY LIMIT - pamięć długoterminowa powinna kumulować całą wiedzę!
+        # Partnerzy uczą się z każdej rozmowy i nigdy nie zapominają
         
-        # Zapisz
-        with open(memory_file, 'w', encoding='utf-8') as f:
-            json.dump(memory, f, ensure_ascii=False, indent=2)
-        
-        return True
+        # Zapisz przez persistence system
+        if PERSISTENT_OK:
+            return save_persistent_data('persona_memory.json', memory)
+        else:
+            # Fallback - zapis do pliku
+            memory_file = MEMORY_FOLDER / f"{partner_name.replace('/', '_').replace(' ', '_')}.json"
+            with open(memory_file, 'w', encoding='utf-8') as f:
+                json.dump(memory[partner_key], f, ensure_ascii=False, indent=2)
+            return True
+            
     except Exception as e:
         print(f"Błąd zapisu pamięci dla {partner_name}: {e}")
         return False
 
-def load_memory_context(partner_name, limit=5):
+def load_memory_context(partner_name, limit=20):
     """Ładuje kontekst z pamięci długoterminowej partnera"""
     try:
-        memory_file = MEMORY_FOLDER / f"{partner_name.replace('/', '_').replace(' ', '_')}.json"
+        partner_key = partner_name.replace('/', '_').replace(' ', '_')
         
-        if not memory_file.exists():
-            return None
+        # Załaduj przez persistence system
+        if PERSISTENT_OK:
+            all_memory = load_persistent_data('persona_memory.json')
+            if all_memory is None or partner_key not in all_memory:
+                return None
+            memory = all_memory[partner_key]
+        else:
+            # Fallback - odczyt z pliku
+            memory_file = MEMORY_FOLDER / f"{partner_key}.json"
+            if not memory_file.exists():
+                return None
+            with open(memory_file, 'r', encoding='utf-8-sig') as f:
+                memory = json.load(f)
         
-        with open(memory_file, 'r', encoding='utf-8-sig') as f:
-            memory = json.load(f)
-        
-        # Pobierz ostatnie N rozmów
+        # Pobierz ostatnie N rozmów (domyślnie 20 - więcej kontekstu = lepsza pamięć)
         recent_conversations = memory["conversations"][-limit:] if memory["conversations"] else []
         
         if not recent_conversations:
             return None
         
-        # Formatuj kontekst
-        context = "\n\n📚 PAMIĘĆ Z POPRZEDNICH ROZMÓW:\n"
-        context += f"(Ostatnie {len(recent_conversations)} rozmów z {memory['statistics']['total_messages']} całkowitych)\n\n"
+        # Formatuj kontekst - PEŁNE teksty dla lepszego zrozumienia
+        context = "\n\n📚 TWOJA PAMIĘĆ DŁUGOTERMINOWA:\n"
+        context += f"Masz {memory['statistics']['total_messages']} rozmów w pamięci. "
+        context += f"Oto ostatnie {len(recent_conversations)} rozmów:\n\n"
         
         for conv in recent_conversations:
             date = datetime.fromisoformat(conv['timestamp']).strftime("%Y-%m-%d %H:%M")
-            context += f"[{date}]\n"
-            context += f"Użytkownik: {conv['user_message'][:100]}...\n"
-            context += f"Ty: {conv['ai_response'][:150]}...\n\n"
+            context += f"{'='*60}\n"
+            context += f"📅 [{date}]\n\n"
+            context += f"👤 Użytkownik:\n{conv['user_message']}\n\n"
+            context += f"🤖 Ty odpowiedziałeś:\n{conv['ai_response']}\n\n"
+            
+            # Dodaj snapshot portfela jeśli istnieje
+            if conv.get('portfolio_snapshot'):
+                snapshot = conv['portfolio_snapshot']
+                context += f"💼 Stan portfela w tamtym momencie:\n"
+                context += f"   Wartość: {snapshot.get('total_value', 0):,.0f} PLN\n"
+                context += f"   Długi: {snapshot.get('debt', 0):,.0f} PLN\n\n"
+        
+        context += f"{'='*60}\n\n"
+        context += "💡 Wykorzystaj tę wiedzę aby udzielać spersonalizowanych, kontekstowych odpowiedzi!\n"
         
         return context
         
@@ -656,13 +694,21 @@ def load_memory_context(partner_name, limit=5):
 def get_memory_statistics(partner_name):
     """Pobiera statystyki pamięci partnera"""
     try:
-        memory_file = MEMORY_FOLDER / f"{partner_name.replace('/', '_').replace(' ', '_')}.json"
+        partner_key = partner_name.replace('/', '_').replace(' ', '_')
         
-        if not memory_file.exists():
-            return None
-        
-        with open(memory_file, 'r', encoding='utf-8-sig') as f:
-            memory = json.load(f)
+        # Załaduj przez persistence system
+        if PERSISTENT_OK:
+            all_memory = load_persistent_data('persona_memory.json')
+            if all_memory is None or partner_key not in all_memory:
+                return None
+            memory = all_memory[partner_key]
+        else:
+            # Fallback - odczyt z pliku
+            memory_file = MEMORY_FOLDER / f"{partner_key}.json"
+            if not memory_file.exists():
+                return None
+            with open(memory_file, 'r', encoding='utf-8-sig') as f:
+                memory = json.load(f)
         
         return memory["statistics"]
     except:
@@ -1427,7 +1473,7 @@ def get_cached_crypto_prices(symbols):
     return {sym: st.session_state.crypto_prices_cache[sym] 
             for sym in symbols if sym in st.session_state.crypto_prices_cache}
 
-def calculate_crypto_apy_earnings(krypto_holdings, current_prices=None, kurs_usd=3.65):
+def calculate_crypto_apy_earnings(krypto_holdings, current_prices=None, kurs_usd=DEFAULT_USD_PLN_RATE):
     """
     Oblicza zarobki z APY/Staking/Earn dla pozycji krypto.
     
@@ -2252,22 +2298,23 @@ def generate_market_insights(market_analysis, correlations):
         # 2. Dominujący rynek
         if markets:
             sorted_markets = sorted(markets.items(), key=lambda x: x[1]["percentage"], reverse=True)
-            top_market = sorted_markets[0]
-            
-            if top_market[1]["percentage"] > 70:
-                insights.append({
-                    "type": "warning",
-                    "icon": "🌎",
-                    "title": f"Nadmierna ekspozycja na {top_market[0]}",
-                    "description": f"{top_market[1]['percentage']:.1f}% portfela. Rozważ zwiększenie innych rynków."
-                })
-            elif top_market[1]["percentage"] > 50:
-                insights.append({
-                    "type": "info",
-                    "icon": "🌎",
-                    "title": f"Dominacja rynku {top_market[0]}",
-                    "description": f"{top_market[1]['percentage']:.1f}% portfela. To może być OK dla Twojej strategii."
-                })
+            if sorted_markets:  # Sprawdź czy lista nie jest pusta
+                top_market = sorted_markets[0]
+                
+                if top_market[1]["percentage"] > 70:
+                    insights.append({
+                        "type": "warning",
+                        "icon": "🌎",
+                        "title": f"Nadmierna ekspozycja na {top_market[0]}",
+                        "description": f"{top_market[1]['percentage']:.1f}% portfela. Rozważ zwiększenie innych rynków."
+                    })
+                elif top_market[1]["percentage"] > 50:
+                    insights.append({
+                        "type": "info",
+                        "icon": "🌎",
+                        "title": f"Dominacja rynku {top_market[0]}",
+                        "description": f"{top_market[1]['percentage']:.1f}% portfela. To może być OK dla Twojej strategii."
+                    })
         
         # 3. Crypto exposure
         crypto = markets.get("Crypto", {})
@@ -2309,24 +2356,28 @@ def generate_market_insights(market_analysis, correlations):
         
         # 5. Performance po rynkach
         if market_changes:
-            best_market = max(market_changes.items(), key=lambda x: x[1])
-            worst_market = min(market_changes.items(), key=lambda x: x[1])
-            
-            if best_market[1] > 5:
-                insights.append({
-                    "type": "success",
-                    "icon": "📈",
-                    "title": f"Najlepszy rynek: {best_market[0]}",
-                    "description": f"+{best_market[1]:.1f}% średnia zmiana. Silne momentum."
-                })
-            
-            if worst_market[1] < -5:
-                insights.append({
-                    "type": "warning",
-                    "icon": "📉",
-                    "title": f"Najsłabszy rynek: {worst_market[0]}",
-                    "description": f"{worst_market[1]:.1f}% średnia zmiana. Sprawdź czy teza inwestycyjna się sprawdza."
-                })
+            try:
+                best_market = max(market_changes.items(), key=lambda x: x[1])
+                worst_market = min(market_changes.items(), key=lambda x: x[1])
+                
+                if best_market[1] > 5:
+                    insights.append({
+                        "type": "success",
+                        "icon": "📈",
+                        "title": f"Najlepszy rynek: {best_market[0]}",
+                        "description": f"+{best_market[1]:.1f}% średnia zmiana. Silne momentum."
+                    })
+                
+                if worst_market[1] < -5:
+                    insights.append({
+                        "type": "warning",
+                        "icon": "📉",
+                        "title": f"Najsłabszy rynek: {worst_market[0]}",
+                        "description": f"{worst_market[1]:.1f}% średnia zmiana. Sprawdź czy teza inwestycyjna się sprawdza."
+                    })
+            except ValueError:
+                # market_changes było puste
+                pass
         
         # 6. Home bias (nadmierna ekspozycja na rynek lokalny - dla Polaków to EU)
         eu = markets.get("EU", {})
@@ -2728,7 +2779,6 @@ def apply_custom_css(theme="light"):
 # Inicjalizacja session state dla ustawień
 def load_user_preferences():
     """Wczytuje zapisane preferencje użytkownika"""
-    preferences_file = "user_preferences.json"
     default_preferences = {
         "theme": "light",
         "notifications_enabled": True,
@@ -2737,6 +2787,13 @@ def load_user_preferences():
         "refresh_interval": 60
     }
     
+    if PERSISTENT_OK:
+        prefs = load_persistent_data('user_preferences.json')
+        if prefs:
+            return prefs
+    
+    # Fallback
+    preferences_file = "user_preferences.json"
     try:
         if os.path.exists(preferences_file):
             with open(preferences_file, 'r', encoding='utf-8') as f:
@@ -2748,6 +2805,10 @@ def load_user_preferences():
 
 def save_user_preferences(preferences):
     """Zapisuje preferencje użytkownika do pliku"""
+    if PERSISTENT_OK:
+        return save_persistent_data('user_preferences.json', preferences)
+    
+    # Fallback
     preferences_file = "user_preferences.json"
     try:
         with open(preferences_file, 'w', encoding='utf-8') as f:
@@ -2887,6 +2948,161 @@ def format_currency(amount, currency="PLN"):
         return f"{amount/1_000_000:.2f}M {currency}"
     elif amount >= 1_000:
         return f"{amount/1_000:.1f}K {currency}"
+    else:
+        return f"{amount:.0f} {currency}"
+
+def get_dividend_trend_indicator(dywidendy_info):
+    """
+    Oblicza prosty wskaźnik trendu dla dywidend
+    Returns: dict with 'trend_emoji', 'trend_text', 'trend_color'
+    """
+    try:
+        liczba_spolek = dywidendy_info.get('liczba_spolek_z_dywidendami', 0)
+        miesieczna_kwota = dywidendy_info.get('miesieczna_kwota_pln', 0)
+        
+        # Oblicz średnią dywidendę na spółkę
+        if liczba_spolek > 0:
+            avg_per_company = miesieczna_kwota / liczba_spolek
+        else:
+            avg_per_company = 0
+        
+        # Benchmark: Dobra dywidenda to ~100 PLN/mies na spółkę
+        benchmark = 100
+        
+        if avg_per_company >= benchmark * 1.2:
+            # Powyżej 120 PLN/spółkę - excellent trend
+            return {
+                'trend_emoji': '📈',
+                'trend_text': 'Wysoka rentowność',
+                'trend_color': 'green',
+                'trend_percentage': '+20%'
+            }
+        elif avg_per_company >= benchmark * 0.8:
+            # 80-120 PLN/spółkę - stable trend
+            return {
+                'trend_emoji': '➡️',
+                'trend_text': 'Stabilny trend',
+                'trend_color': 'blue',
+                'trend_percentage': '±0%'
+            }
+        else:
+            # Poniżej 80 PLN/spółkę - needs improvement
+            return {
+                'trend_emoji': '📉',
+                'trend_text': 'Potencjał wzrostu',
+                'trend_color': 'orange',
+                'trend_percentage': '-20%'
+            }
+    except Exception as e:
+        return {
+            'trend_emoji': '➡️',
+            'trend_text': 'Brak danych',
+            'trend_color': 'gray',
+            'trend_percentage': 'N/A'
+        }
+
+def calculate_portfolio_deltas(stan_spolki, cele):
+    """
+    Oblicza zmiany wartości portfela z ostatniego tygodnia
+    Returns: dict with 'wartosc_netto_delta', 'leverage_delta', 'pozycje_delta', 'last_update'
+    """
+    try:
+        # Załaduj historię portfela
+        if os.path.exists('portfolio_history.json'):
+            with open('portfolio_history.json', 'r', encoding='utf-8') as f:
+                history_data = json.load(f)
+                snapshots = history_data.get('snapshots', [])
+                
+                if len(snapshots) < 2:
+                    return {
+                        'wartosc_netto_delta': None,
+                        'leverage_delta': None, 
+                        'pozycje_delta': None,
+                        'last_update': datetime.now().strftime('%Y-%m-%d %H:%M')
+                    }
+                
+                # Znajdź snapshot sprzed ~7 dni
+                today = datetime.now()
+                week_ago = today - timedelta(days=7)
+                
+                # Sortuj po dacie (najnowsze pierwsze)
+                sorted_snapshots = sorted(snapshots, key=lambda x: x.get('timestamp', ''), reverse=True)
+                current_snapshot = sorted_snapshots[0] if sorted_snapshots else None
+                week_ago_snapshot = None
+                
+                for snapshot in sorted_snapshots:
+                    snap_date = datetime.fromisoformat(snapshot.get('timestamp', ''))
+                    if snap_date <= week_ago:
+                        week_ago_snapshot = snapshot
+                        break
+                
+                # Jeśli nie znaleziono z tydzień temu, użyj najstarszego
+                if not week_ago_snapshot and len(sorted_snapshots) > 1:
+                    week_ago_snapshot = sorted_snapshots[-1]
+                
+                if not current_snapshot or not week_ago_snapshot:
+                    return {
+                        'wartosc_netto_delta': None,
+                        'leverage_delta': None,
+                        'pozycje_delta': None,
+                        'last_update': datetime.now().strftime('%Y-%m-%d %H:%M')
+                    }
+                
+                # Oblicz aktualne wartości
+                rezerwa_current = cele.get('Rezerwa_gotowkowa_obecna_PLN', 0) if cele else 0
+                wartosc_netto_current = (
+                    stan_spolki['akcje'].get('wartosc_pln', 0) + 
+                    stan_spolki['krypto'].get('wartosc_pln', 0) +
+                    rezerwa_current -
+                    get_suma_kredytow()
+                )
+                
+                suma_aktywow_current = (
+                    stan_spolki['akcje'].get('wartosc_pln', 0) + 
+                    stan_spolki['krypto'].get('wartosc_pln', 0) +
+                    rezerwa_current
+                )
+                leverage_current = (get_suma_kredytow() / suma_aktywow_current * 100) if suma_aktywow_current > 0 else 0
+                
+                pozycje_current = (
+                    stan_spolki['akcje'].get('liczba_pozycji', 0) + 
+                    stan_spolki['krypto'].get('liczba_pozycji', 0)
+                )
+                
+                # Pobierz wartości z week ago
+                wartosc_netto_old = week_ago_snapshot.get('net_worth', wartosc_netto_current)
+                leverage_old = week_ago_snapshot.get('leverage', leverage_current)
+                pozycje_old = week_ago_snapshot.get('total_positions', pozycje_current)
+                
+                # Oblicz delty
+                wartosc_netto_delta_pct = ((wartosc_netto_current - wartosc_netto_old) / wartosc_netto_old * 100) if wartosc_netto_old > 0 else 0
+                leverage_delta_pct = leverage_current - leverage_old  # Punkty procentowe
+                pozycje_delta = pozycje_current - pozycje_old
+                
+                last_update = current_snapshot.get('timestamp', datetime.now().isoformat())
+                
+                return {
+                    'wartosc_netto_delta': f"{wartosc_netto_delta_pct:+.2f}%",
+                    'leverage_delta': f"{leverage_delta_pct:+.2f}pp",
+                    'pozycje_delta': f"{pozycje_delta:+d}",
+                    'last_update': datetime.fromisoformat(last_update).strftime('%Y-%m-%d %H:%M')
+                }
+                
+    except Exception as e:
+        # Jeśli błąd, zwróć None dla wszystkich
+        return {
+            'wartosc_netto_delta': None,
+            'leverage_delta': None,
+            'pozycje_delta': None,
+            'last_update': datetime.now().strftime('%Y-%m-%d %H:%M')
+        }
+    
+    return {
+        'wartosc_netto_delta': None,
+        'leverage_delta': None,
+        'pozycje_delta': None,
+        'last_update': datetime.now().strftime('%Y-%m-%d %H:%M')
+    }
     return f"{amount:.2f} {currency}"
 
 def create_portfolio_value_chart(stan_spolki, cele=None):
@@ -2894,12 +3110,14 @@ def create_portfolio_value_chart(stan_spolki, cele=None):
     if not stan_spolki:
         return go.Figure()
     
-    # Przygotuj dane z bezpiecznym dostępem
+    # Przygotuj dane z bezpiecznym dostępem - ładuj raz
     wyplaty_cf = load_wyplaty()
+    kredyty_chart = load_kredyty()
+    wydatki_cf = load_wydatki()
+    
     if wyplaty_cf:
         ostatnia_wyplata_chart = wyplaty_cf[0]['kwota']
-        wydatki_stale_chart = get_suma_wydatkow_stalych()
-        kredyty_chart = load_kredyty()
+        wydatki_stale_chart = get_suma_wydatkow_stalych(wydatki_cf)
         raty_chart = sum(k['rata_miesieczna'] for k in kredyty_chart)
         cash_flow_value = ostatnia_wyplata_chart - wydatki_stale_chart - raty_chart
     else:
@@ -2914,7 +3132,7 @@ def create_portfolio_value_chart(stan_spolki, cele=None):
         stan_spolki.get('krypto', {}).get('wartosc_pln', 0),
         rezerwa,  # Rezerwa gotówkowa z cele.json
         max(cash_flow_value, 0),  # Nadwyżka z wyplaty.json (tylko dodatnia)
-        -get_suma_kredytow()  # Ujemne bo to zobowiązania - z kredyty.json
+        -sum(k['kwota_poczatkowa'] - k['splacono'] for k in kredyty_chart)  # Zobowiązania - bez kolejnego load
     ]
     
     colors = ['#1f77b4', '#ff7f0e', '#9467bd', '#2ca02c', '#d62728']
@@ -3212,6 +3430,180 @@ def main():
     elif page == "⚙️ Ustawienia":
         show_settings_page()
 
+def calculate_portfolio_health_score(stan_spolki, cele):
+    """
+    Oblicza Portfolio Health Score (0-100) bazując na kluczowych metrykach
+    Returns: dict with 'score', 'grade', 'factors'
+    """
+    score = 0
+    factors = {}
+    
+    try:
+        # === FACTOR 1: Diversification (0-25 pts) ===
+        liczba_pozycji = stan_spolki['akcje'].get('liczba_pozycji', 0) + stan_spolki['krypto'].get('liczba_pozycji', 0)
+        
+        if liczba_pozycji >= 20:
+            diversification_score = 25
+        elif liczba_pozycji >= 15:
+            diversification_score = 20
+        elif liczba_pozycji >= 10:
+            diversification_score = 15
+        elif liczba_pozycji >= 5:
+            diversification_score = 10
+        else:
+            diversification_score = 5
+        
+        factors['diversification'] = {
+            'score': diversification_score,
+            'max': 25,
+            'label': 'Dywersyfikacja',
+            'detail': f"{liczba_pozycji} pozycji"
+        }
+        score += diversification_score
+        
+        # === FACTOR 2: Leverage Health (0-25 pts) ===
+        rezerwa = cele.get('Rezerwa_gotowkowa_obecna_PLN', 0) if cele else 0
+        suma_aktywow = (
+            stan_spolki['akcje'].get('wartosc_pln', 0) + 
+            stan_spolki['krypto'].get('wartosc_pln', 0) +
+            rezerwa
+        )
+        leverage = (get_suma_kredytow() / suma_aktywow * 100) if suma_aktywow > 0 else 0
+        
+        if leverage <= 10:
+            leverage_score = 25
+        elif leverage <= 20:
+            leverage_score = 20
+        elif leverage <= 30:
+            leverage_score = 15
+        elif leverage <= 40:
+            leverage_score = 10
+        else:
+            leverage_score = 5
+        
+        factors['leverage'] = {
+            'score': leverage_score,
+            'max': 25,
+            'label': 'Zdrowy Leverage',
+            'detail': f"{leverage:.1f}%"
+        }
+        score += leverage_score
+        
+        # === FACTOR 3: Passive Income Coverage (0-30 pts) ===
+        dywidendy_info = calculate_portfolio_dividends(stan_spolki)
+        krypto_holdings = load_krypto()
+        crypto_apy_score = {'miesieczne_pln': 0}
+        
+        if krypto_holdings and CRYPTO_MANAGER_OK:
+            try:
+                symbols = list(set(k['symbol'] for k in krypto_holdings))
+                current_prices = get_cached_crypto_prices(symbols)
+                kurs_usd = float(stan_spolki.get('kurs_usd', DEFAULT_USD_PLN_RATE))
+                crypto_apy_score = calculate_crypto_apy_earnings(krypto_holdings, current_prices, kurs_usd)
+            except:
+                pass
+        
+        passive_income = dywidendy_info['miesieczna_kwota_pln'] + crypto_apy_score['miesieczne_pln']
+        wydatki_stale = get_suma_wydatkow_stalych()
+        kredyty = load_kredyty()
+        raty = sum(k['rata_miesieczna'] for k in kredyty)
+        total_wydatki = wydatki_stale + raty
+        
+        coverage = (passive_income / total_wydatki * 100) if total_wydatki > 0 else 0
+        
+        if coverage >= 100:
+            passive_score = 30
+        elif coverage >= 75:
+            passive_score = 25
+        elif coverage >= 50:
+            passive_score = 20
+        elif coverage >= 25:
+            passive_score = 15
+        elif coverage >= 10:
+            passive_score = 10
+        else:
+            passive_score = 5
+        
+        factors['passive_income'] = {
+            'score': passive_score,
+            'max': 30,
+            'label': 'Pokrycie Wydatków',
+            'detail': f"{coverage:.0f}% ({passive_income:.0f}/{total_wydatki:.0f} PLN)"
+        }
+        score += passive_score
+        
+        # === FACTOR 4: Portfolio Balance (0-20 pts) ===
+        # Sprawdź czy jest balans między akcjami a krypto
+        akcje_val = stan_spolki['akcje'].get('wartosc_pln', 0)
+        krypto_val = stan_spolki['krypto'].get('wartosc_pln', 0)
+        total_val = akcje_val + krypto_val
+        
+        if total_val > 0:
+            akcje_pct = (akcje_val / total_val * 100)
+            # Optymalne: 70-90% akcje, 10-30% krypto
+            if 70 <= akcje_pct <= 90:
+                balance_score = 20
+            elif 60 <= akcje_pct <= 95:
+                balance_score = 15
+            elif 50 <= akcje_pct <= 98:
+                balance_score = 10
+            else:
+                balance_score = 5
+        else:
+            balance_score = 0
+        
+        factors['balance'] = {
+            'score': balance_score,
+            'max': 20,
+            'label': 'Balans Portfela',
+            'detail': f"{akcje_pct:.0f}% akcje, {100-akcje_pct:.0f}% krypto"
+        }
+        score += balance_score
+        
+        # === DETERMINE GRADE ===
+        if score >= 90:
+            grade = "A+"
+            emoji = "🏆"
+            status = "Doskonały"
+        elif score >= 80:
+            grade = "A"
+            emoji = "🌟"
+            status = "Bardzo dobry"
+        elif score >= 70:
+            grade = "B+"
+            emoji = "✅"
+            status = "Dobry"
+        elif score >= 60:
+            grade = "B"
+            emoji = "👍"
+            status = "Zadowalający"
+        elif score >= 50:
+            grade = "C"
+            emoji = "⚠️"
+            status = "Przeciętny"
+        else:
+            grade = "D"
+            emoji = "❌"
+            status = "Wymaga poprawy"
+        
+        return {
+            'score': score,
+            'grade': grade,
+            'emoji': emoji,
+            'status': status,
+            'factors': factors
+        }
+        
+    except Exception as e:
+        # Return default low score on error
+        return {
+            'score': 0,
+            'grade': 'N/A',
+            'emoji': '❓',
+            'status': 'Błąd obliczenia',
+            'factors': {}
+        }
+
 def show_dashboard(stan_spolki, cele):
     """Główny dashboard"""
     
@@ -3230,6 +3622,52 @@ def show_dashboard(stan_spolki, cele):
         st.json(stan_spolki)  # Pokaż co mamy
         return
     
+    # === HEADER Z TIMESTAMP ===
+    col_title, col_timestamp = st.columns([3, 1])
+    with col_title:
+        st.title("📊 Dashboard Portfela")
+    with col_timestamp:
+        deltas = calculate_portfolio_deltas(stan_spolki, cele)
+        st.caption(f"🕐 Ostatnia aktualizacja:")
+        st.caption(f"**{deltas['last_update']}**")
+    
+    st.markdown("---")
+    
+    # === PORTFOLIO HEALTH SCORE ===
+    health = calculate_portfolio_health_score(stan_spolki, cele)
+    
+    col_health1, col_health2, col_health3 = st.columns([1, 2, 1])
+    
+    with col_health1:
+        st.metric(
+            label="🏥 Portfolio Health Score",
+            value=f"{health['score']}/100",
+            delta=f"Ocena: {health['grade']}",
+            help="Kompleksowa ocena zdrowia portfela: dywersyfikacja, leverage, pokrycie wydatków, balans"
+        )
+    
+    with col_health2:
+        st.progress(health['score'] / 100)
+        st.caption(f"{health['emoji']} **Status:** {health['status']}")
+        
+        # Pokaż breakdown w expander
+        with st.expander("📊 Szczegóły punktacji", expanded=False):
+            for factor_name, factor_data in health['factors'].items():
+                col_f1, col_f2 = st.columns([3, 1])
+                with col_f1:
+                    st.caption(f"**{factor_data['label']}:** {factor_data['detail']}")
+                with col_f2:
+                    st.caption(f"{factor_data['score']}/{factor_data['max']} pkt")
+    
+    with col_health3:
+        # Rekomendacja bazowana na najsłabszym faktore
+        if health['factors']:
+            weakest_factor = min(health['factors'].items(), key=lambda x: x[1]['score'] / x[1]['max'])
+            st.caption("💡 **Popraw:**")
+            st.caption(weakest_factor[1]['label'])
+    
+    st.markdown("---")
+    
     # Metryki główne
     col1, col2, col3, col4 = st.columns(4)
     
@@ -3245,8 +3683,8 @@ def show_dashboard(stan_spolki, cele):
             st.metric(
                 label="💼 Wartość Netto",
                 value=format_currency(wartosc_netto),
-                delta="+1.74%",  # TODO: Oblicz z historii
-                help="Akcje + Krypto + Rezerwa Gotówkowa - Zobowiązania"
+                delta=deltas['wartosc_netto_delta'],
+                help="Akcje + Krypto + Rezerwa Gotówkowa - Zobowiązania (zmiana z ostatniego tygodnia)"
             )
         except Exception as e:
             st.error(f"Błąd metryki wartość netto: {e}")
@@ -3263,7 +3701,8 @@ def show_dashboard(stan_spolki, cele):
             st.metric(
                 label="📈 Leverage",
                 value=f"{leverage:.2f}%",
-                delta="-0.5%"  # TODO: Oblicz z historii
+                delta=deltas['leverage_delta'],
+                help="Zobowiązania / Aktywa (zmiana w punktach procentowych)"
             )
         except Exception as e:
             st.error(f"Błąd metryki leverage: {e}")
@@ -3277,7 +3716,8 @@ def show_dashboard(stan_spolki, cele):
             st.metric(
                 label="🎯 Pozycje",
                 value=f"{liczba_pozycji} aktywa",
-                delta="+3"  # TODO: Oblicz z historii
+                delta=deltas['pozycje_delta'],
+                help="Łączna liczba pozycji w portfelu (zmiana z ostatniego tygodnia)"
             )
         except Exception as e:
             st.error(f"Błąd metryki pozycje: {e}")
@@ -3303,9 +3743,9 @@ def show_dashboard(stan_spolki, cele):
                     
                     # Pobierz kurs USD (bezpieczne pobieranie)
                     try:
-                        kurs_usd = float(stan_spolki.get('kurs_usd', 3.65))
+                        kurs_usd = float(stan_spolki.get('kurs_usd', DEFAULT_USD_PLN_RATE))
                     except (TypeError, ValueError, AttributeError):
-                        kurs_usd = 3.65  # Fallback
+                        kurs_usd = DEFAULT_USD_PLN_RATE  # Fallback
                     
                     # Oblicz APY earnings
                     crypto_apy = calculate_crypto_apy_earnings(
@@ -3341,7 +3781,122 @@ def show_dashboard(stan_spolki, cele):
     
     st.markdown("---")
     
-    # === NOWE: PROAKTYWNE ALERTY ===
+    # === CASH FLOW OVERVIEW ===
+    st.markdown("### 💸 Cash Flow Overview")
+    
+    # Load financial data
+    wyplaty_cf = load_wyplaty()
+    wydatki_cf = load_wydatki()
+    kredyty_cf = load_kredyty()
+    
+    if wyplaty_cf:
+        ostatnia_wyplata_cf = wyplaty_cf[0]['kwota']
+        wydatki_stale_cf = get_suma_wydatkow_stalych(wydatki_cf)
+        raty_cf = sum(k['rata_miesieczna'] for k in kredyty_cf)
+        wydatki_total_cf = wydatki_stale_cf + raty_cf
+        
+        nadwyzka = ostatnia_wyplata_cf - wydatki_total_cf
+        procent_oszczednosci = (nadwyzka / ostatnia_wyplata_cf * 100) if ostatnia_wyplata_cf > 0 else 0
+        
+        # Three-column metrics
+        col_cf1, col_cf2, col_cf3 = st.columns(3)
+        
+        with col_cf1:
+            st.metric(
+                "💰 Ostatnia Wypłata", 
+                f"{ostatnia_wyplata_cf:.0f} PLN",
+                help=f"📅 Data: {wyplaty_cf[0]['data']}"
+            )
+        
+        with col_cf2:
+            st.metric(
+                "📊 Wydatki Miesięczne", 
+                f"{wydatki_total_cf:.0f} PLN",
+                help=f"Stałe: {wydatki_stale_cf:.0f} PLN | Raty: {raty_cf:.0f} PLN"
+            )
+        
+        with col_cf3:
+            if nadwyzka >= 0:
+                st.metric(
+                    "✅ Nadwyżka", 
+                    f"{nadwyzka:.0f} PLN",
+                    delta=f"{procent_oszczednosci:.1f}% oszczędności",
+                    delta_color="normal"
+                )
+            else:
+                st.metric(
+                    "⚠️ Deficyt", 
+                    f"{nadwyzka:.0f} PLN",
+                    delta=f"{procent_oszczednosci:.1f}% deficytu",
+                    delta_color="inverse"
+                )
+        
+        # Visual expense gauge
+        if ostatnia_wyplata_cf > 0:
+            wydatki_procent = min((wydatki_total_cf / ostatnia_wyplata_cf), 1.0)
+            
+            # Color-coded progress bar
+            col_gauge_label, col_gauge_bar = st.columns([1, 5])
+            with col_gauge_label:
+                st.caption("**Wykorzystanie:**")
+            with col_gauge_bar:
+                st.progress(wydatki_procent)
+                st.caption(f"{wydatki_procent*100:.1f}% wypłaty pokrywa wydatki")
+            
+            # Status message
+            if nadwyzka > 0:
+                st.success(f"✅ Miesięczna nadwyżka: **{nadwyzka:.0f} PLN** ({procent_oszczednosci:.1f}%)")
+            elif nadwyzka < 0:
+                st.error(f"⚠️ Miesięczny deficyt: **{abs(nadwyzka):.0f} PLN** - Wydatki przekraczają wypłatę!")
+            else:
+                st.warning("⚖️ Bilans zerowy - wydatki równają się wypłacie")
+    else:
+        st.info("ℹ️ Dodaj wypłaty w zakładce '💳 Kredyty → Wypłaty' aby zobaczyć analizę Cash Flow.")
+    
+    st.markdown("---")
+    
+    # === QUICK ACTIONS PANEL ===
+    st.markdown("### ⚡ Szybkie Akcje")
+    
+    col_action1, col_action2, col_action3, col_action4 = st.columns(4)
+    
+    with col_action1:
+        if st.button("🤖 Zapytaj AI o Portfel", use_container_width=True):
+            st.session_state['goto_page'] = "💬 Partnerzy AI"
+            st.session_state['quick_question'] = "Jak oceniasz mój obecny portfel? Jakie widzisz ryzyka i szanse?"
+            st.rerun()
+    
+    with col_action2:
+        if st.button("📊 Szczegółowa Analiza", use_container_width=True):
+            st.session_state['goto_page'] = "📈 Analiza"
+            st.rerun()
+    
+    with col_action3:
+        if st.button("📄 Generuj Raport Excel", use_container_width=True):
+            try:
+                with st.spinner("📊 Generuję raport..."):
+                    filename = generate_full_report(stan_spolki)
+                    
+                    with open(filename, "rb") as file:
+                        st.download_button(
+                            label="⬇️ Pobierz raport",
+                            data=file,
+                            file_name=filename,
+                            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                            use_container_width=True
+                        )
+                    st.success(f"✅ Raport wygenerowany: {filename}")
+            except Exception as e:
+                st.error(f"❌ Błąd generowania raportu: {e}")
+    
+    with col_action4:
+        if st.button("💳 Zarządzaj Finansami", use_container_width=True):
+            st.session_state['goto_page'] = "💳 Kredyty"
+            st.rerun()
+    
+    st.markdown("---")
+    
+    # === OPTIMIZED ALERTS DISPLAY ===
     st.markdown("### 🚨 Alerty Portfela")
     
     alerts = check_portfolio_alerts(stan_spolki, cele)
@@ -3353,31 +3908,38 @@ def show_dashboard(stan_spolki, cele):
         success_alerts = [a for a in alerts if a["severity"] == "success"]
         info_alerts = [a for a in alerts if a["severity"] == "info"]
         
-        # Wyświetl critical w pierwszej kolejności
-        for alert in critical_alerts:
-            with st.container():
-                st.error(f"**{alert['title']}**")
-                st.markdown(f"{alert['message']}")
-                if alert.get('action'):
-                    st.markdown(f"💡 *Rekomendacja: {alert['action']}*")
-                st.markdown("---")
+        # Pokaż TOP 3 critical/warning bezpośrednio
+        priority_alerts = critical_alerts + warning_alerts
+        top_alerts = priority_alerts[:3]
+        remaining_alerts = priority_alerts[3:]
         
-        # Potem warning i success
-        if warning_alerts:
-            for alert in warning_alerts:
+        # Wyświetl TOP 3
+        for alert in top_alerts:
+            if alert["severity"] == "critical":
+                st.error(f"**{alert['title']}**\n\n{alert['message']}")
+            else:
                 st.warning(f"**{alert['title']}**\n\n{alert['message']}")
-                if alert.get('action'):
-                    st.markdown(f"💡 *Rekomendacja: {alert['action']}*")
+            
+            if alert.get('action'):
+                st.caption(f"💡 *Rekomendacja: {alert['action']}*")
         
-        if success_alerts:
-            for alert in success_alerts:
-                st.success(f"**{alert['title']}**\n\n{alert['message']}")
-                if alert.get('action'):
-                    st.markdown(f"💡 *Rekomendacja: {alert['action']}*")
+        # Reszta w expanderze
+        if remaining_alerts:
+            with st.expander(f"⚠️ Pokaż pozostałe alerty ({len(remaining_alerts)})", expanded=False):
+                for alert in remaining_alerts:
+                    if alert["severity"] == "critical":
+                        st.error(f"**{alert['title']}**\n\n{alert['message']}")
+                    else:
+                        st.warning(f"**{alert['title']}**\n\n{alert['message']}")
+                    
+                    if alert.get('action'):
+                        st.caption(f"💡 *Rekomendacja: {alert['action']}*")
         
-        # Info na końcu w expander (żeby nie zaśmiecać)
-        if info_alerts:
-            with st.expander(f"ℹ️ Informacje ({len(info_alerts)})", expanded=False):
+        # Success/Info zawsze w expanderze
+        if success_alerts or info_alerts:
+            with st.expander(f"✅ Informacje pozytywne ({len(success_alerts + info_alerts)})", expanded=False):
+                for alert in success_alerts:
+                    st.success(f"**{alert['title']}**\n\n{alert['message']}")
                 for alert in info_alerts:
                     st.info(f"**{alert['title']}**\n\n{alert['message']}")
     else:
@@ -3486,15 +4048,19 @@ _{daily_tip['tip_text']}_
     # Progress bars celów
     st.subheader("🎯 Progres Celów Strategicznych")
     
+    # Załaduj dane raz na początku
+    kredyty_dash = load_kredyty()
+    wyplaty_dash = load_wyplaty()
+    wydatki_dash = load_wydatki()
+    
     col1, col2 = st.columns(2)
     
     with col1:
         st.markdown("##### 💳 Kredyty")
-        kredyty = load_kredyty()
-        if kredyty:
-            suma_pozostala = sum(k['kwota_poczatkowa'] - k['splacono'] for k in kredyty)
-            suma_splacona = sum(k['splacono'] for k in kredyty)
-            suma_poczatkowa = sum(k['kwota_poczatkowa'] for k in kredyty)
+        if kredyty_dash:
+            suma_pozostala = sum(k['kwota_poczatkowa'] - k['splacono'] for k in kredyty_dash)
+            suma_splacona = sum(k['splacono'] for k in kredyty_dash)
+            suma_poczatkowa = sum(k['kwota_poczatkowa'] for k in kredyty_dash)
             progress_kredyty = suma_splacona / suma_poczatkowa if suma_poczatkowa > 0 else 0
             
             st.progress(progress_kredyty)
@@ -3509,10 +4075,9 @@ _{daily_tip['tip_text']}_
             st.rerun()
         
         st.markdown("##### � Wypłaty")
-        wyplaty = load_wyplaty()
-        if wyplaty:
-            ostatnia_wyplata = wyplaty[0]
-            srednia_wyplata = get_srednia_wyplata(3)
+        if wyplaty_dash:
+            ostatnia_wyplata = wyplaty_dash[0]
+            srednia_wyplata = get_srednia_wyplata(3, wyplaty_dash)
             
             st.metric("Ostatnia wypłata", f"{ostatnia_wyplata['kwota']:.0f} PLN")
             st.caption(f"📅 Data: {ostatnia_wyplata['data']}")
@@ -3535,9 +4100,8 @@ _{daily_tip['tip_text']}_
         st.caption(f"Zgromadzone: {format_currency(rezerwa_current)} / {format_currency(rezerwa_target)}")
         
         st.markdown("##### 📋 Wydatki Miesięczne")
-        wydatki_stale = get_suma_wydatkow_stalych()
-        kredyty = load_kredyty()
-        raty_miesieczne = sum(k['rata_miesieczna'] for k in kredyty)
+        wydatki_stale = get_suma_wydatkow_stalych(wydatki_dash)
+        raty_miesieczne = sum(k['rata_miesieczna'] for k in kredyty_dash)
         wydatki_total = wydatki_stale + raty_miesieczne
         
         st.metric("Wydatki stałe", f"{wydatki_stale:.0f} PLN")
@@ -3566,17 +4130,18 @@ _{daily_tip['tip_text']}_
                 current_prices_fi = get_cached_crypto_prices(symbols_fi)
                 
                 try:
-                    kurs_usd_fi = float(stan_spolki.get('kurs_usd', 3.65))
+                    kurs_usd_fi = float(stan_spolki.get('kurs_usd', DEFAULT_USD_PLN_RATE))
                 except (TypeError, ValueError, AttributeError):
-                    kurs_usd_fi = 3.65
+                    kurs_usd_fi = DEFAULT_USD_PLN_RATE
                 
                 crypto_apy_fi = calculate_crypto_apy_earnings(
                     krypto_holdings_fi, 
                     current_prices_fi,
                     kurs_usd=kurs_usd_fi
                 )
-            except:
-                pass
+            except Exception as e:
+                # Błąd przy obliczaniu crypto APY - użyj 0
+                crypto_apy_fi = {'miesieczne_pln': 0}
         
         fi_dochod = fi_dochod_dywidendy + crypto_apy_fi['miesieczne_pln']  # TOTAL passive income
         fi_wydatki = wydatki_total  # Z wydatki.json + raty kredytów
@@ -3635,7 +4200,12 @@ _{daily_tip['tip_text']}_
         
         with col_fi3:
             # Time to FI (ile lat do osiągnięcia przy obecnym tempie)
-            wyplaty_fi = load_wyplaty()
+            # Wykorzystaj już załadowane dane
+            if 'wyplaty_dash' in locals():
+                wyplaty_fi = wyplaty_dash
+            else:
+                wyplaty_fi = load_wyplaty()
+                
             if wyplaty_fi and len(wyplaty_fi) > 0:
                 ostatnia_wyplata_fi = wyplaty_fi[0]['kwota']
                 miesieczne_inwestycje = ostatnia_wyplata_fi - wydatki_total
@@ -3663,8 +4233,23 @@ _{daily_tip['tip_text']}_
             col_b1, col_b2, col_b3 = st.columns(3)
             
             with col_b1:
+                # Get dividend trend indicator
+                div_trend = get_dividend_trend_indicator(dywidendy_info)
+                
                 st.metric("📈 Dywidendy (NETTO)", f"{fi_dochod_dywidendy:.0f} PLN/mies")
                 st.caption(f"{dywidendy_info['roczna_kwota_pln']:.0f} PLN/rok z {dywidendy_info['liczba_spolek_z_dywidendami']} spółek")
+                
+                # Mini trend indicator
+                if dywidendy_info['liczba_spolek_z_dywidendami'] > 0:
+                    avg_div_per_stock = fi_dochod_dywidendy / dywidendy_info['liczba_spolek_z_dywidendami']
+                    
+                    # Color-coded trend badge
+                    if div_trend['trend_color'] == 'green':
+                        st.success(f"{div_trend['trend_emoji']} {div_trend['trend_text']} • {avg_div_per_stock:.0f} PLN/spółka")
+                    elif div_trend['trend_color'] == 'blue':
+                        st.info(f"{div_trend['trend_emoji']} {div_trend['trend_text']} • {avg_div_per_stock:.0f} PLN/spółka")
+                    else:
+                        st.warning(f"{div_trend['trend_emoji']} {div_trend['trend_text']} • {avg_div_per_stock:.0f} PLN/spółka")
             
             with col_b2:
                 st.metric("₿ Crypto APY", f"{crypto_apy_fi['miesieczne_pln']:.0f} PLN/mies")
@@ -3698,71 +4283,6 @@ _{daily_tip['tip_text']}_
                 roczne=fi_wydatki * 12,
                 fi_num=fi_number
             ))
-    
-    st.markdown("---")
-    
-    # === ANALIZA CASH FLOW ===
-    st.subheader("💸 Analiza Cash Flow")
-    
-    wyplaty = load_wyplaty()
-    if wyplaty:
-        ostatnia_wyplata_cf = wyplaty[0]['kwota']  # Ostatnia wypłata zamiast średniej
-        wydatki_stale_cf = get_suma_wydatkow_stalych()
-        kredyty_cf = load_kredyty()
-        raty_cf = sum(k['rata_miesieczna'] for k in kredyty_cf)
-        wydatki_total_cf = wydatki_stale_cf + raty_cf
-        
-        nadwyzka = ostatnia_wyplata_cf - wydatki_total_cf
-        procent_oszczednosci = (nadwyzka / ostatnia_wyplata_cf * 100) if ostatnia_wyplata_cf > 0 else 0
-        
-        col1, col2, col3 = st.columns(3)
-        
-        with col1:
-            st.metric("💰 Ostatnia wypłata", f"{ostatnia_wyplata_cf:.0f} PLN")
-            st.caption(f"📅 {wyplaty[0]['data']}")
-        with col2:
-            st.metric("📊 Wydatki + Raty", f"{wydatki_total_cf:.0f} PLN")
-            st.caption(f"Stałe: {wydatki_stale_cf:.0f} | Raty: {raty_cf:.0f}")
-        with col3:
-            delta_color = "normal" if nadwyzka >= 0 else "inverse"
-            st.metric(
-                "💵 Nadwyżka/Deficyt", 
-                f"{nadwyzka:.0f} PLN",
-                delta=f"{procent_oszczednosci:.1f}% oszczędności"
-            )
-        
-        # Pasek postępu
-        if ostatnia_wyplata_cf > 0:
-            wydatki_procent = (wydatki_total_cf / ostatnia_wyplata_cf)
-            st.progress(min(wydatki_procent, 1.0))
-            
-            if nadwyzka > 0:
-                st.success(f"✅ Nadwyżka miesięczna: {nadwyzka:.0f} PLN ({procent_oszczednosci:.1f}%)")
-                
-                # Szczegółowy breakdown
-                with st.expander("📊 Szczegóły obliczenia"):
-                    st.write(f"""
-                    **Wypłata:** {ostatnia_wyplata_cf:.2f} PLN  
-                    **Wydatki stałe:** -{wydatki_stale_cf:.2f} PLN  
-                    **Raty kredytów:** -{raty_cf:.2f} PLN  
-                    **═══════════════**  
-                    **Nadwyżka:** {nadwyzka:.2f} PLN
-                    """)
-            elif nadwyzka < 0:
-                st.error(f"⚠️ Deficyt miesięczny: {abs(nadwyzka):.0f} PLN")
-                
-                with st.expander("📊 Szczegóły obliczenia"):
-                    st.write(f"""
-                    **Wypłata:** {ostatnia_wyplata_cf:.2f} PLN  
-                    **Wydatki stałe:** -{wydatki_stale_cf:.2f} PLN  
-                    **Raty kredytów:** -{raty_cf:.2f} PLN  
-                    **═══════════════**  
-                    **Deficyt:** {nadwyzka:.2f} PLN
-                    """)
-            else:
-                st.warning("⚖️ Bilans zerowy")
-    else:
-        st.info("ℹ️ Dodaj wypłaty w zakładce 'Kredyty → Wypłaty' aby zobaczyć analizę.")
     
     st.markdown("---")
     
@@ -3965,11 +4485,16 @@ def show_kodeks_page():
                             new_rezerwa_cel = int(cel_str)
                             
                             # Zaktualizuj cele.json
-                            try:
-                                with open('cele.json', 'r', encoding='utf-8') as f:
-                                    cele = json.load(f)
-                            except:
-                                cele = {}
+                            if PERSISTENT_OK:
+                                cele = load_persistent_data('cele.json')
+                                if cele is None:
+                                    cele = {}
+                            else:
+                                try:
+                                    with open('cele.json', 'r', encoding='utf-8') as f:
+                                        cele = json.load(f)
+                                except:
+                                    cele = {}
                             
                             if cele.get('Rezerwa_gotowkowa_PLN') != new_rezerwa_cel:
                                 cele['Rezerwa_gotowkowa_PLN'] = new_rezerwa_cel
@@ -4691,10 +5216,14 @@ def show_notifications_page():
                 }
             }
             
-            # Zapisz
+            # Zapisz przez persistence system
             notifier.config.update(new_config)
-            with open("notification_config.json", 'w', encoding='utf-8') as f:
-                json.dump(notifier.config, f, indent=2, ensure_ascii=False)
+            if PERSISTENT_OK:
+                save_persistent_data('notification_config.json', notifier.config)
+            else:
+                # Fallback
+                with open("notification_config.json", 'w', encoding='utf-8') as f:
+                    json.dump(notifier.config, f, indent=2, ensure_ascii=False)
             
             st.success("✅ Konfiguracja zapisana!")
             st.rerun()
@@ -5053,7 +5582,12 @@ def show_partners_page():
     
     # Initialize session state for conversation history (per partner)
     if 'partner_conversations' not in st.session_state:
-        st.session_state.partner_conversations = {}
+        # Załaduj z persistence jeśli dostępne
+        if PERSISTENT_OK:
+            saved_conversations = load_persistent_data('partner_conversations.json')
+            st.session_state.partner_conversations = saved_conversations if saved_conversations else {}
+        else:
+            st.session_state.partner_conversations = {}
     
     if 'selected_partner' not in st.session_state:
         st.session_state.selected_partner = "Wszyscy"
@@ -5079,9 +5613,15 @@ def show_partners_page():
     
     def add_message(msg):
         st.session_state.partner_conversations[current_partner]['messages'].append(msg)
+        # Zapisz rozmowy po każdej wiadomości
+        if PERSISTENT_OK:
+            save_persistent_data('partner_conversations.json', st.session_state.partner_conversations)
     
     def clear_messages():
         st.session_state.partner_conversations[current_partner]['messages'] = []
+        # Zapisz po wyczyszczeniu
+        if PERSISTENT_OK:
+            save_persistent_data('partner_conversations.json', st.session_state.partner_conversations)
     
     # === TABY ===
     tab_chat, tab_profiles = st.tabs(["💬 Chat", "📋 Profile Partnerów"])
@@ -5269,11 +5809,12 @@ def show_partners_page():
                                     # Placeholder dla odpowiedzi w czasie rzeczywistym
                                     response_container = st.empty()
                                     
-                                    for resp in send_to_all_partners(question, stan_spolki, cele, tryb_odpowiedzi):
-                                        # Formatuj wiadomość z emoji reakcji i flagą przerywania
-                                        sentiment = resp.get('sentiment_emoji', '💬')
-                                        is_interrupting = resp.get('is_interrupting', False)
-                                        is_voting = resp.get('is_voting_summary', False)
+                                    with st.spinner("🤔 Partnerzy rozmawiają..."):
+                                        for resp in send_to_all_partners(question, stan_spolki, cele, tryb_odpowiedzi):
+                                            # Formatuj wiadomość z emoji reakcji i flagą przerywania
+                                            sentiment = resp.get('sentiment_emoji', '💬')
+                                            is_interrupting = resp.get('is_interrupting', False)
+                                            is_voting = resp.get('is_voting_summary', False)
                                         
                                         if is_voting:
                                             # Specjalne formatowanie dla podsumowania głosowania
@@ -5371,9 +5912,9 @@ def show_partners_page():
                 }
                 tryb_odpowiedzi = tryb_map.get(tryb, "normalny")
         
-                with st.spinner("🤖 AI myśli..."):
-                    if st.session_state.selected_partner == "Wszyscy":
-                        # Response from all partners - jeden za drugim, wyświetlaj na żywo
+                if st.session_state.selected_partner == "Wszyscy":
+                    # Response from all partners - jeden za drugim, wyświetlaj na żywo
+                    with st.spinner("🤔 Partnerzy rozmawiają..."):
                         for resp in send_to_all_partners(user_input, stan_spolki, cele, tryb_odpowiedzi):
                             # Formatuj wiadomość z emoji reakcji i flagą przerywania
                             sentiment = resp.get('sentiment_emoji', '💬')
@@ -5399,8 +5940,10 @@ def show_partners_page():
                             # Wyświetl natychmiast z avatarem
                             with st.chat_message("assistant", avatar=resp['avatar']):
                                 st.markdown(content)
-                    else:
-                        # Single partner response
+                
+                else:
+                    # Single partner response
+                    with st.spinner(f"💭 {st.session_state.selected_partner} myśli..."):
                         response, knowledge = send_to_ai_partner(
                             st.session_state.selected_partner,
                             user_input,
@@ -5409,19 +5952,19 @@ def show_partners_page():
                             tryb_odpowiedzi
                         )
                 
-                        avatar = {
-                            "Marek": "🎭",
-                            "Ania": "🎨", 
-                            "Kasia": "📊",
-                            "Tomek": "🔥"
-                        }.get(st.session_state.selected_partner, "🤖")
+                    avatar = {
+                        "Marek": "🎭",
+                        "Ania": "🎨", 
+                        "Kasia": "📊",
+                        "Tomek": "🔥"
+                    }.get(st.session_state.selected_partner, "🤖")
                 
-                        add_message({
-                            "role": "assistant",
-                            "content": f"**{st.session_state.selected_partner}**: {response}",
-                            "avatar": avatar,
-                            "knowledge": knowledge  # Zapisz knowledge
-                        })
+                    add_message({
+                        "role": "assistant",
+                        "content": f"**{st.session_state.selected_partner}**: {response}",
+                        "avatar": avatar,
+                        "knowledge": knowledge  # Zapisz knowledge
+                    })
         
                 st.rerun()
         
@@ -5692,7 +6235,8 @@ def show_partners_page():
                                 st.caption(f"📝 {stats.get('decisions_made', 0)} decyzji")
                                 st.caption(f"😊 Nastrój: {emotions.get('current_mood', 'neutral')}")
                         except Exception as e:
-                            pass
+                            # Brak danych partnera w pamięci - pomiń
+                            st.caption("💬 Nowy partner")
         
         st.markdown("---")
         st.info(f"👥 **Rada składa się z {len(partners_with_weights)} członków** (włącznie z Tobą jako Partner Zarządzający)")
@@ -6160,10 +6704,18 @@ def show_simulations_page(stan_spolki):
 
 def load_kredyty():
     """Wczytaj kredyty z pliku JSON"""
+    if PERSISTENT_OK:
+        data = load_persistent_data('kredyty.json')
+        if data is not None:
+            kredyty = data.get('kredyty', [])
+            return kredyty if kredyty is not None else []
+    
+    # Fallback
     try:
         with open('kredyty.json', 'r', encoding='utf-8') as f:
             data = json.load(f)
-            return data.get('kredyty', [])
+            kredyty = data.get('kredyty', [])
+            return kredyty if kredyty is not None else []
     except FileNotFoundError:
         return []
     except Exception as e:
@@ -6175,17 +6727,10 @@ def get_suma_kredytow():
     kredyty = load_kredyty()
     return sum(k['kwota_poczatkowa'] - k['splacono'] for k in kredyty)
 
-def get_ostatnia_wyplata():
-    """Pobierz ostatnią wypłatę z wyplaty.json"""
-    wyplaty = load_wyplaty()
-    if wyplaty:
-        # Wypłaty są posortowane od najnowszej
-        return wyplaty[0]['kwota']
-    return 0
-
-def get_srednia_wyplata(liczba_miesiecy=3):
+def get_srednia_wyplata(liczba_miesiecy=3, wyplaty=None):
     """Oblicz średnią wypłatę z ostatnich N miesięcy"""
-    wyplaty = load_wyplaty()
+    if wyplaty is None:
+        wyplaty = load_wyplaty()
     if not wyplaty:
         return 0
     
@@ -6194,18 +6739,24 @@ def get_srednia_wyplata(liczba_miesiecy=3):
         return sum(w['kwota'] for w in ostatnie) / len(ostatnie)
     return 0
 
-def get_suma_wydatkow_stalych():
+def get_suma_wydatkow_stalych(wydatki=None):
     """Pobierz sumę stałych wydatków miesięcznych z wydatki.json"""
-    wydatki = load_wydatki()
+    if wydatki is None:
+        wydatki = load_wydatki()
     return sum(w['kwota'] for w in wydatki if not w.get('nadprogramowy', False))
 
-def get_suma_wydatkow_nadprogramowych():
+def get_suma_wydatkow_nadprogramowych(wydatki=None):
     """Pobierz sumę wydatków nadprogramowych z wydatki.json"""
-    wydatki = load_wydatki()
+    if wydatki is None:
+        wydatki = load_wydatki()
     return sum(w['kwota'] for w in wydatki if w.get('nadprogramowy', False))
 
 def save_kredyty(kredyty):
     """Zapisz kredyty do pliku JSON"""
+    if PERSISTENT_OK:
+        return save_persistent_data('kredyty.json', {'kredyty': kredyty})
+    
+    # Fallback
     try:
         with open('kredyty.json', 'w', encoding='utf-8') as f:
             json.dump({'kredyty': kredyty}, f, indent=2, ensure_ascii=False)
@@ -6216,6 +6767,10 @@ def save_kredyty(kredyty):
 
 def save_cele(cele):
     """Zapisz cele do pliku JSON"""
+    if PERSISTENT_OK:
+        return save_persistent_data('cele.json', cele)
+    
+    # Fallback
     try:
         with open('cele.json', 'w', encoding='utf-8') as f:
             json.dump(cele, f, indent=2, ensure_ascii=False)
@@ -6228,7 +6783,10 @@ def load_wyplaty():
     """Wczytaj wypłaty z pliku JSON"""
     if PERSISTENT_OK:
         data = load_persistent_data('wyplaty.json')
-        return data.get('wyplaty', []) if isinstance(data, dict) else data
+        if isinstance(data, dict):
+            wyplaty = data.get('wyplaty', [])
+            return wyplaty if wyplaty is not None else []
+        return [] if data is None else (data if isinstance(data, list) else [])
     
     # Fallback - stary system
     if 'wyplaty_data' in st.session_state:
@@ -6238,8 +6796,8 @@ def load_wyplaty():
         with open('wyplaty.json', 'r', encoding='utf-8') as f:
             data = json.load(f)
             wyplaty = data.get('wyplaty', [])
-            st.session_state['wyplaty_data'] = wyplaty
-            return wyplaty
+            st.session_state['wyplaty_data'] = wyplaty if wyplaty is not None else []
+            return wyplaty if wyplaty is not None else []
     except FileNotFoundError:
         return []
     except Exception as e:
@@ -6249,6 +6807,8 @@ def load_wyplaty():
 def save_wyplaty(wyplaty):
     """Zapisz wypłaty do pliku JSON"""
     if PERSISTENT_OK:
+        #清除 cache aby uniknąć konfliktu ze starymi danymi
+        st.session_state.pop('wyplaty_data', None)
         return save_persistent_data('wyplaty.json', {'wyplaty': wyplaty})
     
     # Fallback - stary system
@@ -6265,7 +6825,14 @@ def save_wyplaty(wyplaty):
 
 def load_wydatki():
     """Wczytaj wydatki z pliku JSON"""
-    # Najpierw sprawdź session state
+    if PERSISTENT_OK:
+        data = load_persistent_data('wydatki.json')
+        if isinstance(data, dict):
+            wydatki = data.get('wydatki', [])
+            return wydatki if wydatki is not None else []
+        return [] if data is None else (data if isinstance(data, list) else [])
+    
+    # Fallback - stary system
     if 'wydatki_data' in st.session_state:
         return st.session_state['wydatki_data']
     
@@ -6273,8 +6840,8 @@ def load_wydatki():
         with open('wydatki.json', 'r', encoding='utf-8') as f:
             data = json.load(f)
             wydatki = data.get('wydatki', [])
-            st.session_state['wydatki_data'] = wydatki
-            return wydatki
+            st.session_state['wydatki_data'] = wydatki if wydatki is not None else []
+            return wydatki if wydatki is not None else []
     except FileNotFoundError:
         return []
     except Exception as e:
@@ -6283,6 +6850,12 @@ def load_wydatki():
 
 def save_wydatki(wydatki):
     """Zapisz wydatki do pliku JSON"""
+    if PERSISTENT_OK:
+        # Wyczyść cache aby uniknąć konfliktu ze starymi danymi
+        st.session_state.pop('wydatki_data', None)
+        return save_persistent_data('wydatki.json', {'wydatki': wydatki})
+    
+    # Fallback - stary system
     try:
         with open('wydatki.json', 'w', encoding='utf-8') as f:
             json.dump({'wydatki': wydatki}, f, indent=2, ensure_ascii=False)
@@ -6296,10 +6869,18 @@ def save_wydatki(wydatki):
 
 def load_krypto():
     """Wczytaj kryptowaluty z pliku JSON"""
+    if PERSISTENT_OK:
+        data = load_persistent_data('krypto.json')
+        if data is not None:
+            krypto = data.get('krypto', [])
+            return krypto if krypto is not None else []
+    
+    # Fallback
     try:
         with open('krypto.json', 'r', encoding='utf-8') as f:
             data = json.load(f)
-            return data.get('krypto', [])
+            krypto = data.get('krypto', [])
+            return krypto if krypto is not None else []
     except FileNotFoundError:
         return []
     except Exception as e:
@@ -6308,6 +6889,10 @@ def load_krypto():
 
 def save_krypto(krypto):
     """Zapisz kryptowaluty do pliku JSON"""
+    if PERSISTENT_OK:
+        return save_persistent_data('krypto.json', {'krypto': krypto})
+    
+    # Fallback
     try:
         with open('krypto.json', 'w', encoding='utf-8') as f:
             json.dump({'krypto': krypto}, f, indent=2, ensure_ascii=False)
@@ -7266,21 +7851,27 @@ def show_kredyty_page(stan_spolki, cele):
             
             # Check coin concentration (>40% in one coin)
             if coin_concentration:
-                max_coin = max(coin_concentration.items(), key=lambda x: x[1])
-                max_coin_percent = (max_coin[1] / total_value * 100) if total_value > 0 else 0
-                if max_coin_percent > 40:
-                    alerts.append(f"🔴 **Wysoka koncentracja:** {max_coin[0]} stanowi {max_coin_percent:.1f}% portfela")
-                elif max_coin_percent > 25:
-                    alerts.append(f"🟡 **Średnia koncentracja:** {max_coin[0]} stanowi {max_coin_percent:.1f}% portfela")
+                try:
+                    max_coin = max(coin_concentration.items(), key=lambda x: x[1])
+                    max_coin_percent = (max_coin[1] / total_value * 100) if total_value > 0 else 0
+                    if max_coin_percent > 40:
+                        alerts.append(f"🔴 **Wysoka koncentracja:** {max_coin[0]} stanowi {max_coin_percent:.1f}% portfela")
+                    elif max_coin_percent > 25:
+                        alerts.append(f"🟡 **Średnia koncentracja:** {max_coin[0]} stanowi {max_coin_percent:.1f}% portfela")
+                except ValueError:
+                    pass
             
             # Check platform concentration (>60% on one platform)
             if platform_concentration:
-                max_platform = max(platform_concentration.items(), key=lambda x: x[1])
-                max_platform_percent = (max_platform[1] / total_value * 100) if total_value > 0 else 0
-                if max_platform_percent > 70:
-                    alerts.append(f"🔴 **Ryzyko platformy:** {max_platform[0]} - {max_platform_percent:.1f}% aktywów")
-                elif max_platform_percent > 50:
-                    alerts.append(f"🟡 **Koncentracja platformy:** {max_platform[0]} - {max_platform_percent:.1f}% aktywów")
+                try:
+                    max_platform = max(platform_concentration.items(), key=lambda x: x[1])
+                    max_platform_percent = (max_platform[1] / total_value * 100) if total_value > 0 else 0
+                    if max_platform_percent > 70:
+                        alerts.append(f"🔴 **Ryzyko platformy:** {max_platform[0]} - {max_platform_percent:.1f}% aktywów")
+                    elif max_platform_percent > 50:
+                        alerts.append(f"🟡 **Koncentracja platformy:** {max_platform[0]} - {max_platform_percent:.1f}% aktywów")
+                except ValueError:
+                    pass
             
             # Check stablecoin ratio
             stablecoin_percent = (stablecoin_value / total_value * 100) if total_value > 0 else 0
@@ -7318,7 +7909,7 @@ def show_kredyty_page(stan_spolki, cele):
             st.markdown("### 💰 Zarobki z APY/Staking/Earn")
             
             # Oblicz earnings
-            kurs_usd = 3.65  # Default, można pobrać z API
+            kurs_usd = DEFAULT_USD_PLN_RATE  # Default, można pobrać z API
             crypto_earnings = calculate_crypto_apy_earnings(krypto, current_prices, kurs_usd)
             
             if crypto_earnings['liczba_earning_positions'] > 0:
@@ -8287,8 +8878,9 @@ def show_markets_page(stan_spolki, cele):
                             "": f"{color} {emoji}",
                             "Zmiana": f"{change_pct:+.2f}%"
                         })
-                except:
-                    pass
+                except Exception as e:
+                    # Błąd przy pobieraniu danych indeksu - pomiń
+                    continue
             
             if changes_data:
                 # Sortuj po zmianie
@@ -9212,13 +9804,16 @@ def show_settings_page():
     
     with col2:
         if st.button("💾 Zapisz ustawienia do pliku", width="stretch"):
-            with open("streamlit_settings.json", "w") as f:
-                json.dump(settings_dict, f, indent=2)
-            st.success("✅ Ustawienia zapisane do streamlit_settings.json")
+            try:
+                with open("streamlit_settings.json", "w", encoding='utf-8') as f:
+                    json.dump(settings_dict, f, indent=2, ensure_ascii=False)
+                st.success("✅ Ustawienia zapisane do streamlit_settings.json")
+            except Exception as e:
+                st.error(f"❌ Błąd zapisu: {e}")
         
         if st.button("📂 Wczytaj ustawienia z pliku", width="stretch"):
             try:
-                with open("streamlit_settings.json", "r") as f:
+                with open("streamlit_settings.json", "r", encoding='utf-8') as f:
                     loaded_settings = json.load(f)
                 
                 st.session_state.theme = loaded_settings.get("theme", "light")
