@@ -12,6 +12,13 @@ import os
 from pathlib import Path
 import hashlib
 
+# Import systemu persystencji
+try:
+    from persistent_storage import load_persistent_data, save_persistent_data, show_sync_widget
+    PERSISTENT_OK = True
+except:
+    PERSISTENT_OK = False
+
 # Konfiguracja strony - MUSI być jako pierwsze
 st.set_page_config(
     page_title="Horyzont Partnerów",
@@ -3039,6 +3046,11 @@ def main():
         
         # Pobierz aktualną stronę (dla highlight)
         current_page = st.session_state.get('page', "📊 Dashboard")
+        
+        # Widget synchronizacji danych
+        if PERSISTENT_OK:
+            show_sync_widget()
+            st.markdown("---")
         
         # Przycisk odświeżania
         if st.button("🔄 Odśwież Dane", width="stretch", key="refresh_data_btn"):
@@ -6214,7 +6226,11 @@ def save_cele(cele):
 
 def load_wyplaty():
     """Wczytaj wypłaty z pliku JSON"""
-    # Najpierw sprawdź session state (dla Streamlit Cloud)
+    if PERSISTENT_OK:
+        data = load_persistent_data('wyplaty.json')
+        return data.get('wyplaty', []) if isinstance(data, dict) else data
+    
+    # Fallback - stary system
     if 'wyplaty_data' in st.session_state:
         return st.session_state['wyplaty_data']
     
@@ -6222,7 +6238,6 @@ def load_wyplaty():
         with open('wyplaty.json', 'r', encoding='utf-8') as f:
             data = json.load(f)
             wyplaty = data.get('wyplaty', [])
-            # Zapisz do session state
             st.session_state['wyplaty_data'] = wyplaty
             return wyplaty
     except FileNotFoundError:
@@ -6233,16 +6248,17 @@ def load_wyplaty():
 
 def save_wyplaty(wyplaty):
     """Zapisz wypłaty do pliku JSON"""
+    if PERSISTENT_OK:
+        return save_persistent_data('wyplaty.json', {'wyplaty': wyplaty})
+    
+    # Fallback - stary system
     try:
         with open('wyplaty.json', 'w', encoding='utf-8') as f:
             json.dump({'wyplaty': wyplaty}, f, indent=2, ensure_ascii=False)
-        
-        # Zapisz również do session state (dla Streamlit Cloud)
         st.session_state['wyplaty_data'] = wyplaty
-        
         return True
     except Exception as e:
-        # Na Streamlit Cloud filesystem jest read-only - zapisz tylko do session
+        # Streamlit Cloud - tylko session
         st.session_state['wyplaty_data'] = wyplaty
         st.warning(f"⚠️ Dane zapisane tymczasowo w sesji. Filesystem read-only: {e}")
         return True  # Zwróć True bo zapisaliśmy do session
