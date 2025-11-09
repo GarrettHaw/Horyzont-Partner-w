@@ -7702,18 +7702,32 @@ def show_kredyty_page(stan_spolki, cele):
     with tab4:
         st.header("💸 Historia Wypłat")
         
-        # Info o systemie persystencji
-        st.info("""
-        💾 **System persystencji danych:**
-        - Dane zapisują się automatycznie do pamięci sesji
-        - **Synchronizacja z GitHub co godzinę** (GitHub Actions)
-        - Sprawdź status synchronizacji w sidebar (🔄)
+        # Ustawienie minimalnej krajowej
+        col_info1, col_info2 = st.columns([2, 1])
         
-        📋 **System wpływów:**
-        - 💰 **Wypłata** - regularna pensja (około 10-go każdego miesiąca)
-        - 🎁 **Premia** - miesięczna premia (razem z wypłatą)
-        - 🎉 **Bonus** - jednorazowe bonusy (nieregularne, nie wpływają na predykcje)
-        """)
+        with col_info1:
+            st.info("""
+            💾 **System persystencji danych:**
+            - Dane zapisują się automatycznie do pamięci sesji
+            - **Synchronizacja z GitHub co godzinę** (GitHub Actions)
+            
+            📋 **System wpływów:**
+            - 💰 **Wypłata** - minimalna krajowa (automatycznie)
+            - 🎁 **Premia** - kwota powyżej minimalnej (automatycznie)
+            - 🎉 **Bonus** - jednorazowe bonusy (ręcznie zaznacz)
+            """)
+        
+        with col_info2:
+            st.markdown("### ⚙️ Ustawienia")
+            minimalna_krajowa = st.number_input(
+                "Minimalna krajowa (PLN)",
+                min_value=0.0,
+                value=st.session_state.get('minimalna_krajowa', 4300.0),
+                step=100.0,
+                help="Aktualna minimalna płaca krajowa - do automatycznego podziału na Wypłatę + Premia"
+            )
+            st.session_state['minimalna_krajowa'] = minimalna_krajowa
+            st.caption(f"✅ Minimalna: **{minimalna_krajowa:,.0f} PLN**")
         
         wyplaty = load_wyplaty()
         
@@ -7955,47 +7969,80 @@ def show_kredyty_page(stan_spolki, cele):
         st.markdown("---")
         
         # === DODAWANIE WYPŁATY ===
-        st.markdown("### ➕ Dodaj Wpływ")
-        
         col1, col2 = st.columns(2)
         
         with col1:
             with st.form("add_wyplata"):
-                typ_wyplaty = st.selectbox(
-                    "Typ wpływu *",
-                    ["Wypłata", "Premia", "Bonus"],
-                    help="Wypłata = regularna pensja, Premia = miesięczna premia, Bonus = jednorazowy bonus"
+                st.markdown("### ➕ Dodaj Wpływ")
+                
+                # Checkbox czy to bonus
+                jest_bonus = st.checkbox(
+                    "🎉 To jest jednorazowy bonus",
+                    value=False,
+                    help="Zaznacz jeśli to bonus (nie będzie dzielony na wypłatę+premia)"
                 )
                 
                 data_wyplaty = st.date_input(
-                    "Data wypłaty *",
+                    "Data wpływu *",
                     value=datetime.now().replace(day=10),
                     help="Domyślnie 10-ty dzień miesiąca"
                 )
                 
-                kwota = st.number_input(
-                    "Kwota (PLN) *",
+                kwota_total = st.number_input(
+                    "Kwota całkowita (PLN) *",
                     min_value=0.0,
-                    value=3500.0 if typ_wyplaty != "Bonus" else 1000.0,
+                    value=1000.0 if jest_bonus else minimalna_krajowa + 500.0,
                     step=100.0,
-                    help="Całkowita kwota"
+                    help="Pełna kwota przelewu - system automatycznie podzieli na wypłatę + premia (jeśli nie bonus)"
                 )
+                
+                # Podgląd podziału (jeśli nie bonus)
+                if not jest_bonus and kwota_total > 0:
+                    wyplata_czesc = min(kwota_total, minimalna_krajowa)
+                    premia_czesc = max(0, kwota_total - minimalna_krajowa)
+                    
+                    st.info(f"""
+                    **📊 Podział automatyczny:**
+                    - 💰 Wypłata: **{wyplata_czesc:,.0f} PLN** (minimalna krajowa)
+                    - 🎁 Premia: **{premia_czesc:,.0f} PLN** (kwota ponad minimalną)
+                    """)
                 
                 notatki = st.text_area(
                     "Notatki",
                     help="Opcjonalne notatki (np. za co bonus, projekt, etc.)"
                 )
                 
-                submitted = st.form_submit_button("💾 Zapisz")
+                submitted = st.form_submit_button("💾 Zapisz", use_container_width=True)
                 
                 if submitted:
                     # Walidacja
-                    if kwota <= 0:
+                    if kwota_total <= 0:
                         st.error("❌ Kwota musi być większa od 0")
                     else:
-                        # Sprawdź czy nie ma już wypłaty w tym miesiącu (tylko dla Wypłat, nie Bonusów)
-                        if typ_wyplaty == "Wypłata":
-                            miesiac_rok = data_wyplaty.strftime('%Y-%m')
+                        miesiac_rok = data_wyplaty.strftime('%Y-%m')
+                        timestamp_base = datetime.now().timestamp()
+                        
+                        if jest_bonus:
+                            # === BONUS - jeden wpis ===
+                            nowy_bonus = {
+                                'id': str(timestamp_base),
+                                'typ': 'Bonus',
+                                'data': data_wyplaty.isoformat(),
+                                'kwota': kwota_total,
+                                'notatki': notatki
+                            }
+                            wyplaty.append(nowy_bonus)
+                            
+                            if save_wyplaty(wyplaty):
+                                st.success(f"✅ 🎉 Bonus zapisany: {kwota_total:,.0f} PLN")
+                                st.rerun()
+                            else:
+                                st.error("❌ Błąd zapisu")
+                        
+                        else:
+                            # === WYPŁATA + PREMIA - dwa wpisy ===
+                            
+                            # Sprawdź czy nie ma już wypłaty w tym miesiącu
                             duplikat = any(
                                 w['data'].startswith(miesiac_rok) and w.get('typ', 'Wypłata') == 'Wypłata' 
                                 for w in wyplaty
@@ -8003,23 +8050,41 @@ def show_kredyty_page(stan_spolki, cele):
                             
                             if duplikat:
                                 st.warning(f"⚠️ Wypłata za {miesiac_rok} już istnieje. Zostanie dodana jako dodatkowa.")
-                        
-                        nowa_wyplata = {
-                            'id': str(datetime.now().timestamp()),
-                            'typ': typ_wyplaty,
-                            'data': data_wyplaty.isoformat(),
-                            'kwota': kwota,
-                            'notatki': notatki
-                        }
-                        
-                        wyplaty.append(nowa_wyplata)
-                        # Sortuj od najnowszej
-                        wyplaty.sort(key=lambda x: x['data'], reverse=True)
-                        
-                        if save_wyplaty(wyplaty):
-                            emoji = "💰" if typ_wyplaty == "Wypłata" else "🎁" if typ_wyplaty == "Premia" else "🎉"
-                            st.success(f"✅ {emoji} {typ_wyplaty} zapisana!")
-                            st.rerun()
+                            
+                            # Podział kwoty
+                            wyplata_czesc = min(kwota_total, minimalna_krajowa)
+                            premia_czesc = max(0, kwota_total - minimalna_krajowa)
+                            
+                            # Dodaj Wypłatę
+                            nowa_wyplata = {
+                                'id': str(timestamp_base),
+                                'typ': 'Wypłata',
+                                'data': data_wyplaty.isoformat(),
+                                'kwota': wyplata_czesc,
+                                'notatki': f"Minimalna krajowa {minimalna_krajowa:,.0f} PLN" + (f" | {notatki}" if notatki else "")
+                            }
+                            wyplaty.append(nowa_wyplata)
+                            
+                            # Dodaj Premię (jeśli jest)
+                            if premia_czesc > 0:
+                                nowa_premia = {
+                                    'id': str(timestamp_base + 0.001),  # Lekko inny timestamp
+                                    'typ': 'Premia',
+                                    'data': data_wyplaty.isoformat(),
+                                    'kwota': premia_czesc,
+                                    'notatki': f"Premia ponad minimalną" + (f" | {notatki}" if notatki else "")
+                                }
+                                wyplaty.append(nowa_premia)
+                            
+                            if save_wyplaty(wyplaty):
+                                st.success(f"""
+                                ✅ **Zapisano wpływ:** {kwota_total:,.0f} PLN
+                                - 💰 Wypłata: {wyplata_czesc:,.0f} PLN
+                                {f"- 🎁 Premia: {premia_czesc:,.0f} PLN" if premia_czesc > 0 else ""}
+                                """)
+                                st.rerun()
+                            else:
+                                st.error("❌ Błąd zapisu")
                         else:
                             st.error("❌ Błąd zapisu")
         
