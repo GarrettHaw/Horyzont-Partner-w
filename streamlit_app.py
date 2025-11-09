@@ -1,6 +1,6 @@
-"""
-?? HORYZONT PARTNER”W - Streamlit Dashboard
-Interaktywny dashboard do zarzπdzania portfelem inwestycyjnym
+Ôªø"""
+üè¢ HORYZONT PARTNER√ìW - Streamlit Dashboard
+Interaktywny dashboard do zarzƒÖdzania portfelem inwestycyjnym
 """
 
 import streamlit as st
@@ -11,35 +11,35 @@ import json
 import os
 from pathlib import Path
 
-# Konfiguracja strony - MUSI byÊ jako pierwsze
+# Konfiguracja strony - MUSI byƒá jako pierwsze
 st.set_page_config(
-    page_title="Horyzont PartnerÛw",
-    page_icon="??",
+    page_title="Horyzont Partner√≥w",
+    page_icon="üè¢",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# === EKRAN £ADOWANIA ===
+# === EKRAN ≈ÅADOWANIA ===
 if 'app_loaded' not in st.session_state:
     st.session_state.app_loaded = False
 
 if not st.session_state.app_loaded:
-    # Pokaø ekran ≥adowania
+    # Poka≈º ekran ≈Çadowania
     with st.spinner(''):
         st.markdown("""
         <div style="text-align: center; padding: 100px 20px;">
-            <h1 style="color: #1f77b4;">?? HORYZONT PARTNER”W</h1>
-            <p style="font-size: 18px; color: #666;">?? 100% Lazy Loading - start w <5 sekund!</p>
-            <p style="font-size: 14px; color: #999;">Wszystkie AI/Sheets za≥adujπ siÍ dopiero gdy bÍdπ uøyte</p>
-            <p style="font-size: 12px; color: #aaa;">Gemini: pierwszy chat | Claude/OpenAI: wybÛr w ustawieniach | Sheets: load danych</p>
+            <h1 style="color: #1f77b4;">üè¢ HORYZONT PARTNER√ìW</h1>
+            <p style="font-size: 18px; color: #666;">üöÄ 100% Lazy Loading - start w <5 sekund!</p>
+            <p style="font-size: 14px; color: #999;">Wszystkie AI/Sheets za≈ÇadujƒÖ siƒô dopiero gdy bƒôdƒÖ u≈ºyte</p>
+            <p style="font-size: 12px; color: #aaa;">Gemini: pierwszy chat | Claude/OpenAI: wyb√≥r w ustawieniach | Sheets: load danych</p>
         </div>
         """, unsafe_allow_html=True)
         
         progress_bar = st.progress(0)
         status_text = st.empty()
         
-        # Krok 1: Podstawowe modu≥y
-        status_text.text("?? £adowanie modu≥Ûw podstawowych...")
+        # Krok 1: Podstawowe modu≈Çy
+        status_text.text("üì¶ ≈Åadowanie modu≈Ç√≥w podstawowych...")
         progress_bar.progress(20)
 
 # API Usage Tracker
@@ -51,13 +51,13 @@ from email_notifier import get_conversation_notifier
 # Consultation System (dla Fazy 2D)
 from consultation_system import get_consultation_manager
 
-# Folder dla pamiÍci d≥ugoterminowej
+# Folder dla pamiƒôci d≈Çugoterminowej
 MEMORY_FOLDER = Path("partner_memories")
 MEMORY_FOLDER.mkdir(exist_ok=True)
 
-# Importy z g≥Ûwnego programu
+# Importy z g≈Ç√≥wnego programu
 if not st.session_state.app_loaded:
-    status_text.text("?? 100% lazy load - bez AI przy starcie!")
+    status_text.text("üöÄ 100% lazy load - bez AI przy starcie!")
     progress_bar.progress(40)
 
 try:
@@ -70,7 +70,7 @@ try:
     )
     
     if not st.session_state.app_loaded:
-        status_text.text("?? £adowanie modu≥Ûw analitycznych...")
+        status_text.text("üìä ≈Åadowanie modu≈Ç√≥w analitycznych...")
         progress_bar.progress(60)
     
     from risk_analytics import RiskAnalytics, PortfolioHistory
@@ -78,7 +78,7 @@ try:
     from excel_reporter import ExcelReportGenerator, generate_full_report
     
     if not st.session_state.app_loaded:
-        status_text.text("?? InicjalizujÍ pamiÍÊ AI partnerÛw...")
+        status_text.text("üß† Inicjalizujƒô pamiƒôƒá AI partner√≥w...")
         progress_bar.progress(80)
     
     import persona_memory_manager as pmm
@@ -91,7 +91,7 @@ try:
     CRYPTO_MANAGER_OK = True
     
     if not st.session_state.app_loaded:
-        status_text.text("? Gotowe! Uruchamiam dashboard...")
+        status_text.text("‚úÖ Gotowe! Uruchamiam dashboard...")
         progress_bar.progress(100)
         st.session_state.app_loaded = True
         st.rerun()
@@ -102,19 +102,19 @@ except ImportError as e:
         MEMORY_OK = False
         MEMORY_V2 = False
         CRYPTO_MANAGER_OK = "crypto_portfolio_manager" not in str(e)
-        st.warning("?? System pamiÍci AI niedostÍpny")
+        st.warning("‚ö†Ô∏è System pamiƒôci AI niedostƒôpny")
     elif "crypto_portfolio_manager" in str(e):
         IMPORTS_OK = True
         MEMORY_OK = True
         MEMORY_V2 = True
         CRYPTO_MANAGER_OK = False
-        st.warning("?? Crypto Portfolio Manager niedostÍpny - ceny na øywo wy≥πczone")
+        st.warning("‚ö†Ô∏è Crypto Portfolio Manager niedostƒôpny - ceny na ≈ºywo wy≈ÇƒÖczone")
     else:
         IMPORTS_OK = False
         MEMORY_OK = False
         MEMORY_V2 = False
         CRYPTO_MANAGER_OK = False
-        st.error(f"?? B≥πd importu: {e}")
+        st.error(f"‚ö†Ô∏è B≈ÇƒÖd importu: {e}")
     
     if not st.session_state.app_loaded:
         st.session_state.app_loaded = True
@@ -125,7 +125,7 @@ except Exception as e:
     MEMORY_OK = False
     MEMORY_V2 = False
     CRYPTO_MANAGER_OK = False
-    st.error(f"?? B≥πd importu: {e}")
+    st.error(f"‚ö†Ô∏è B≈ÇƒÖd importu: {e}")
     
     if not st.session_state.app_loaded:
         st.session_state.app_loaded = True
@@ -133,10 +133,10 @@ except Exception as e:
     import traceback
     st.code(traceback.format_exc())
 
-# === FUNKCJE DO ZARZ•DZANIA WAGAMI G£OSU Z KODEKSU ===
+# === FUNKCJE DO ZARZƒÑDZANIA WAGAMI G≈ÅOSU Z KODEKSU ===
 def wczytaj_wagi_glosu_z_kodeksu():
     """
-    Parsuje kodeks_spolki.txt i zwraca s≥ownik z wagami g≥osu dla kaødego partnera.
+    Parsuje kodeks_spolki.txt i zwraca s≈Çownik z wagami g≈Çosu dla ka≈ºdego partnera.
     Mapuje nazwy z kodeksu na nazwy w PERSONAS.
     
     Returns:
@@ -151,19 +151,19 @@ def wczytaj_wagi_glosu_z_kodeksu():
         kodeks = f.read()
     
     # Mapowanie nazw z kodeksu na RZECZYWISTE nazwy w PERSONAS
-    # UWAGA: W kodeksie sπ stare nazwy, w PERSONAS sπ inne!
+    # UWAGA: W kodeksie sƒÖ stare nazwy, w PERSONAS sƒÖ inne!
     mapping = {
-        "Partner Zarzπdzajπcy (Pan)": "Partner Zarzπdzajπcy (JA)",
+        "Partner ZarzƒÖdzajƒÖcy (Pan)": "Partner ZarzƒÖdzajƒÖcy (JA)",
         "Partner Strategiczny (Ja)": "Partner Strategiczny",
-        "Partner ds. Jakoúci Biznesowej": "Partner ds. Jakoúci Biznesowej",
-        "Partner ds. AktywÛw Cyfrowych": "Partner ds. AktywÛw Cyfrowych",
-        "Konsultant Strategiczny ds. AktywÛw Cyfrowych": "Changpeng Zhao (CZ)"
+        "Partner ds. Jako≈õci Biznesowej": "Partner ds. Jako≈õci Biznesowej",
+        "Partner ds. Aktyw√≥w Cyfrowych": "Partner ds. Aktyw√≥w Cyfrowych",
+        "Konsultant Strategiczny ds. Aktyw√≥w Cyfrowych": "Changpeng Zhao (CZ)"
     }
     
     wagi = {}
     
-    # Szukaj linii z procentami g≥osu lub wp≥ywu filozoficznego
-    pattern = r'(.+?):\s*(\d+)%\s+(?:udzia≥Ûw w g≥osach|wp≥ywu filozoficznego)'
+    # Szukaj linii z procentami g≈Çosu lub wp≈Çywu filozoficznego
+    pattern = r'(.+?):\s*(\d+)%\s+(?:udzia≈Ç√≥w w g≈Çosach|wp≈Çywu filozoficznego)'
     matches = re.findall(pattern, kodeks)
     
     for nazwa_surowa, procent in matches:
@@ -174,7 +174,7 @@ def wczytaj_wagi_glosu_z_kodeksu():
             persona_name = mapping[nazwa]
             wagi[persona_name] = procent_float
         elif "Rada Nadzorcza" in nazwa:
-            # Rada Nadzorcza 15% - rozdziel rÛwno miÍdzy cz≥onkÛw w PERSONAS
+            # Rada Nadzorcza 15% - rozdziel r√≥wno miƒôdzy cz≈Çonk√≥w w PERSONAS
             # W PERSONAS mamy: Benjamin Graham, Philip Fisher, George Soros, Warren Buffett
             rada_nadzorcza = [
                 "Benjamin Graham",
@@ -190,7 +190,7 @@ def wczytaj_wagi_glosu_z_kodeksu():
 
 def zapisz_wagi_glosu_do_kodeksu(wagi):
     """
-    Zapisuje zaktualizowane wagi g≥osu z powrotem do kodeksu_spolki.txt.
+    Zapisuje zaktualizowane wagi g≈Çosu z powrotem do kodeksu_spolki.txt.
     
     Args:
         wagi (dict): {nazwa_partnera: procent_glosu}
@@ -206,14 +206,14 @@ def zapisz_wagi_glosu_do_kodeksu(wagi):
     
     # Odwrotne mapowanie - z RZECZYWISTYCH nazw PERSONAS na nazwy w kodeksie
     reverse_mapping = {
-        "Partner Zarzπdzajπcy (JA)": "Partner Zarzπdzajπcy (Pan)",
+        "Partner ZarzƒÖdzajƒÖcy (JA)": "Partner ZarzƒÖdzajƒÖcy (Pan)",
         "Partner Strategiczny": "Partner Strategiczny (Ja)",
-        "Partner ds. Jakoúci Biznesowej": "Partner ds. Jakoúci Biznesowej",
-        "Partner ds. AktywÛw Cyfrowych": "Partner ds. AktywÛw Cyfrowych",
-        "Changpeng Zhao (CZ)": "Konsultant Strategiczny ds. AktywÛw Cyfrowych"
+        "Partner ds. Jako≈õci Biznesowej": "Partner ds. Jako≈õci Biznesowej",
+        "Partner ds. Aktyw√≥w Cyfrowych": "Partner ds. Aktyw√≥w Cyfrowych",
+        "Changpeng Zhao (CZ)": "Konsultant Strategiczny ds. Aktyw√≥w Cyfrowych"
     }
     
-    # Rada Nadzorcza - zsumuj wagi cz≥onkÛw (RZECZYWISTE nazwy z PERSONAS)
+    # Rada Nadzorcza - zsumuj wagi cz≈Çonk√≥w (RZECZYWISTE nazwy z PERSONAS)
     rada_nadzorcza = [
         "Benjamin Graham",
         "Philip Fisher",
@@ -223,17 +223,17 @@ def zapisz_wagi_glosu_do_kodeksu(wagi):
     
     rada_suma = sum(wagi.get(czlonek, 0) for czlonek in rada_nadzorcza)
     
-    # Aktualizuj poszczegÛlne linie w kodeksie
+    # Aktualizuj poszczeg√≥lne linie w kodeksie
     for persona_name, procent in wagi.items():
         if persona_name in reverse_mapping:
             kodeks_name = reverse_mapping[persona_name]
-            # Znajdü liniÍ z tπ nazwπ i zaktualizuj procent
-            pattern = rf'({re.escape(kodeks_name)}:\s*)\d+(% udzia≥Ûw w g≥osach)'
+            # Znajd≈∫ liniƒô z tƒÖ nazwƒÖ i zaktualizuj procent
+            pattern = rf'({re.escape(kodeks_name)}:\s*)\d+(% udzia≈Ç√≥w w g≈Çosach)'
             kodeks = re.sub(pattern, rf'\g<1>{int(procent)}\g<2>', kodeks)
     
-    # Zaktualizuj RadÍ Nadzorczπ (wp≥yw filozoficzny)
+    # Zaktualizuj Radƒô NadzorczƒÖ (wp≈Çyw filozoficzny)
     if rada_suma > 0:
-        pattern = r'(Rada Nadzorcza.*?:\s*)\d+(% wp≥ywu filozoficznego)'
+        pattern = r'(Rada Nadzorcza.*?:\s*)\d+(% wp≈Çywu filozoficznego)'
         kodeks = re.sub(pattern, rf'\g<1>{int(rada_suma)}\g<2>', kodeks)
     
     # Zapisz zaktualizowany kodeks
@@ -242,20 +242,20 @@ def zapisz_wagi_glosu_do_kodeksu(wagi):
             f.write(kodeks)
         return True
     except Exception as e:
-        st.error(f"B≥πd zapisu kodeksu: {e}")
+        st.error(f"B≈ÇƒÖd zapisu kodeksu: {e}")
         return False
 
 # Funkcje pomocnicze do integracji AI
 def send_to_ai_partner(partner_name, message, stan_spolki=None, cele=None, tryb_odpowiedzi="normalny"):
-    """Wysy≥a wiadomoúÊ do pojedynczego Partnera AI z pe≥nym kontekstem jak w gra_rpg.py"""
+    """Wysy≈Ça wiadomo≈õƒá do pojedynczego Partnera AI z pe≈Çnym kontekstem jak w gra_rpg.py"""
     try:
         if not IMPORTS_OK:
-            return "[Import gra_rpg.py nie powiÛd≥ siÍ]"
+            return "[Import gra_rpg.py nie powi√≥d≈Ç siƒô]"
         
-        # Pobierz konfiguracjÍ partnera
+        # Pobierz konfiguracjƒô partnera
         persona_config = PERSONAS.get(partner_name, {})
         
-        # === KODEKS SP”£KI ===
+        # === KODEKS SP√ì≈ÅKI ===
         kodeks = ""
         if os.path.exists('kodeks_spolki.txt'):
             with open('kodeks_spolki.txt', 'r', encoding='utf-8') as f:
@@ -265,7 +265,7 @@ def send_to_ai_partner(partner_name, message, stan_spolki=None, cele=None, tryb_
         if not stan_spolki:
             stan_spolki = {}
         
-        # Podstawowe wartoúci
+        # Podstawowe warto≈õci
         akcje_val = stan_spolki.get('akcje', {}).get('wartosc_pln', 0)
         krypto_val = stan_spolki.get('krypto', {}).get('wartosc_pln', 0)
         rezerwa_val = cele.get('Rezerwa_gotowkowa_obecna_PLN', 0) if cele else 0
@@ -273,7 +273,7 @@ def send_to_ai_partner(partner_name, message, stan_spolki=None, cele=None, tryb_
         wyplata_info = stan_spolki.get('wyplata', {})
         dostepne = wyplata_info.get('dostepne_na_inwestycje', 0)
         
-        # === SZCZEG”£Y POZYCJI (TOP 10) ===
+        # === SZCZEG√ì≈ÅY POZYCJI (TOP 10) ===
         pozycje_szczegoly = stan_spolki.get('akcje', {}).get('pozycje', {})
         sorted_pozycje = sorted(
             pozycje_szczegoly.items(),
@@ -281,16 +281,16 @@ def send_to_ai_partner(partner_name, message, stan_spolki=None, cele=None, tryb_
             reverse=True
         )
         
-        szczegoly_top10 = "\n\n?? SZCZEG”£Y TOP 10 POZYCJI W PORTFELU:\n"
+        szczegoly_top10 = "\n\nüìä SZCZEG√ì≈ÅY TOP 10 POZYCJI W PORTFELU:\n"
         for ticker, dane in sorted_pozycje[:10]:
-            szczegoly_top10 += f"ï {ticker}:\n"
-            szczegoly_top10 += f"  - IloúÊ: {dane.get('ilosc', 0):.2f} akcji\n"
-            szczegoly_top10 += f"  - WartoúÊ: ${dane.get('wartosc_total_usd', 0):.2f} (${dane.get('wartosc_obecna_usd', 0):.2f}/akcja)\n"
+            szczegoly_top10 += f"‚Ä¢ {ticker}:\n"
+            szczegoly_top10 += f"  - Ilo≈õƒá: {dane.get('ilosc', 0):.2f} akcji\n"
+            szczegoly_top10 += f"  - Warto≈õƒá: ${dane.get('wartosc_total_usd', 0):.2f} (${dane.get('wartosc_obecna_usd', 0):.2f}/akcja)\n"
             szczegoly_top10 += f"  - Koszt zakupu: ${dane.get('koszt_total_usd', 0):.2f} (${dane.get('cena_zakupu_usd', 0):.2f}/akcja)\n"
             szczegoly_top10 += f"  - Zysk/Strata: ${dane.get('zysk_total_usd', 0):.2f} ({dane.get('zmiana_proc', 0):.1f}%)\n"
         
         # === DANE RYNKOWE ===
-        dane_rynkowe_str = "\n\n?? DANE RYNKOWE (wybrane spÛ≥ki):\n"
+        dane_rynkowe_str = "\n\nüìà DANE RYNKOWE (wybrane sp√≥≈Çki):\n"
         dane_rynkowe = {}
         if IMPORTS_OK:
             try:
@@ -308,15 +308,15 @@ def send_to_ai_partner(partner_name, message, stan_spolki=None, cele=None, tryb_
                 dywidenda = dane.get('dywidenda_roczna', 0)
                 dywidenda_str = f"Dywidenda: {dywidenda*100:.1f}%" if dywidenda else "Dywidenda: N/A"
                 sektor = dane.get('sektor', 'N/A')
-                dane_rynkowe_str += f"ï {dane.get('nazwa', ticker)} ({ticker}): {pe_str}, {dywidenda_str}, {sektor}\n"
+                dane_rynkowe_str += f"‚Ä¢ {dane.get('nazwa', ticker)} ({ticker}): {pe_str}, {dywidenda_str}, {sektor}\n"
         else:
-            dane_rynkowe_str += "Brak dostÍpnych danych rynkowych.\n"
+            dane_rynkowe_str += "Brak dostƒôpnych danych rynkowych.\n"
         
         # === KONTEKST SKALI ===
-        kontekst_skali = f"\n\n?? KONTEKST SKALI:\n"
-        kontekst_skali += f"To sπ prywatne finanse osoby fizycznej.\n"
-        kontekst_skali += f"DostÍpny kapita≥ miesiÍcznie: ~{dostepne:.2f} PLN\n"
-        kontekst_skali += f"WartoúÊ netto portfela: {akcje_val + krypto_val + rezerwa_val - dlugi_val:.2f} PLN (Akcje + Krypto + Rezerwa - Zobowiπzania)\n"
+        kontekst_skali = f"\n\n‚öñÔ∏è KONTEKST SKALI:\n"
+        kontekst_skali += f"To sƒÖ prywatne finanse osoby fizycznej.\n"
+        kontekst_skali += f"Dostƒôpny kapita≈Ç miesiƒôcznie: ~{dostepne:.2f} PLN\n"
+        kontekst_skali += f"Warto≈õƒá netto portfela: {akcje_val + krypto_val + rezerwa_val - dlugi_val:.2f} PLN (Akcje + Krypto + Rezerwa - ZobowiƒÖzania)\n"
         
         # === HISTORIA SNAPSHOTS ===
         snapshot_section = ""
@@ -328,35 +328,35 @@ def send_to_ai_partner(partner_name, message, stan_spolki=None, cele=None, tryb_
                 first = history[0]
                 last = history[-1]
                 
-                snapshot_section = f"\n\n?? HISTORIA PORTFOLIO (DAILY SNAPSHOTS):\n"
-                snapshot_section += f"- Okres úledzenia: {stats['first_date']} õ {stats['last_date']} ({stats['days_tracked']} dni)\n"
+                snapshot_section = f"\n\nüì∏ HISTORIA PORTFOLIO (DAILY SNAPSHOTS):\n"
+                snapshot_section += f"- Okres ≈õledzenia: {stats['first_date']} ‚Üí {stats['last_date']} ({stats['days_tracked']} dni)\n"
                 snapshot_section += f"- Liczba snapshots: {stats['count']}\n"
                 snapshot_section += f"- Net Worth PIERWSZY: {first['totals']['net_worth_pln']:.2f} PLN\n"
                 snapshot_section += f"- Net Worth OSTATNI: {last['totals']['net_worth_pln']:.2f} PLN\n"
                 snapshot_section += f"- Zmiana: {stats['percent_change']:.2f}%\n"
-                snapshot_section += f"- årednio snapshots/tydzieÒ: {stats['avg_per_week']:.1f}\n\n"
+                snapshot_section += f"- ≈örednio snapshots/tydzie≈Ñ: {stats['avg_per_week']:.1f}\n\n"
                 snapshot_section += "OSTATNIE 3 SNAPSHOTS:\n"
                 
                 for h in history[-3:]:
-                    snapshot_section += f"ï {h['date_only']}: Net Worth {h['totals']['net_worth_pln']:.2f} PLN "
-                    snapshot_section += f"(Akcje: {h['stocks']['value_pln']:.0f} PLN, Krypto: {h['crypto']['value_pln']:.0f} PLN, D≥ugi: {h['debt']['total_pln']:.0f} PLN)\n"
+                    snapshot_section += f"‚Ä¢ {h['date_only']}: Net Worth {h['totals']['net_worth_pln']:.2f} PLN "
+                    snapshot_section += f"(Akcje: {h['stocks']['value_pln']:.0f} PLN, Krypto: {h['crypto']['value_pln']:.0f} PLN, D≈Çugi: {h['debt']['total_pln']:.0f} PLN)\n"
         except:
-            pass  # Jeúli brak snapshots lub b≥πd importu, kontynuuj bez tej sekcji
+            pass  # Je≈õli brak snapshots lub b≈ÇƒÖd importu, kontynuuj bez tej sekcji
         
-        # === INSTRUKCJE D£UGOåCI ODPOWIEDZI ===
+        # === INSTRUKCJE D≈ÅUGO≈öCI ODPOWIEDZI ===
         if tryb_odpowiedzi == "zwiezly":
             length_instruction = """
-TRYB ODPOWIEDZI: ZWI Z£Y
-- Odpowiedü 2-4 zdania MAX
-- Tylko najwaøniejsze punkty
+TRYB ODPOWIEDZI: ZWIƒòZ≈ÅY
+- Odpowied≈∫ 2-4 zdania MAX
+- Tylko najwa≈ºniejsze punkty
 - Konkretne liczby i wnioski
-- Brak rozbudowanych wyjaúnieÒ
+- Brak rozbudowanych wyja≈õnie≈Ñ
 """
         elif tryb_odpowiedzi == "szczegolowy":
             length_instruction = """
-TRYB ODPOWIEDZI: SZCZEG”£OWY
-- Pe≥na analiza (8-12 zdaÒ)
-- Dok≥adne wyjaúnienia i uzasadnienia
+TRYB ODPOWIEDZI: SZCZEG√ì≈ÅOWY
+- Pe≈Çna analiza (8-12 zda≈Ñ)
+- Dok≈Çadne wyja≈õnienia i uzasadnienia
 - Odniesienia do konkretnych pozycji
 - Rekomendacje krok po kroku
 - Cytuj Kodeks gdy stosowne
@@ -364,17 +364,17 @@ TRYB ODPOWIEDZI: SZCZEG”£OWY
         else:
             length_instruction = """
 TRYB ODPOWIEDZI: NORMALNY
-- Odpowiedü 4-6 zdaÒ
-- Balans miÍdzy szczegÛ≥ami a zwiÍz≥oúciπ
+- Odpowied≈∫ 4-6 zda≈Ñ
+- Balans miƒôdzy szczeg√≥≈Çami a zwiƒôz≈Ço≈õciƒÖ
 - Konkretne dane z portfela
 - Praktyczne wnioski
 """
         
-        # === PAMI ∆ D£UGOTERMINOWA ===
+        # === PAMIƒòƒÜ D≈ÅUGOTERMINOWA ===
         memory_context = load_memory_context(partner_name, limit=5)
         memory_section = memory_context if memory_context else ""
         
-        # === PAMI ∆ PERSONY (track record i ewolucja) ===
+        # === PAMIƒòƒÜ PERSONY (track record i ewolucja) ===
         persona_memory_section = ""
         emotional_hint = ""
         if MEMORY_OK:
@@ -389,7 +389,7 @@ TRYB ODPOWIEDZI: NORMALNY
                 
                 pmm.increment_session(partner_name)
             except Exception as e:
-                st.warning(f"?? B≥πd wczytywania pamiÍci persony: {e}")
+                st.warning(f"‚ö†Ô∏è B≈ÇƒÖd wczytywania pamiƒôci persony: {e}")
         
         # === MOOD SYSTEM ===
         portfolio_mood = analyze_portfolio_mood(stan_spolki, cele)
@@ -404,20 +404,20 @@ TRYB ODPOWIEDZI: NORMALNY
         alerts_section = ""
         
         if alerts:
-            # Dodaj tylko najwaøniejsze alerty do promptu
+            # Dodaj tylko najwa≈ºniejsze alerty do promptu
             critical_alerts = [a for a in alerts if a["severity"] == "critical"]
             warning_alerts = [a for a in alerts if a["severity"] == "warning"]
             important_alerts = critical_alerts + warning_alerts[:2]  # Max 2 warning
             
             if important_alerts:
-                alerts_section = "\n\n?? AKTYWNE ALERTY PORTFELA:\n"
+                alerts_section = "\n\nüö® AKTYWNE ALERTY PORTFELA:\n"
                 for alert in important_alerts:
-                    severity_emoji = "??" if alert["severity"] == "critical" else "??"
+                    severity_emoji = "üî¥" if alert["severity"] == "critical" else "üü°"
                     alerts_section += f"{severity_emoji} {alert['title']}: {alert['message']}\n"
                     if alert.get('action'):
-                        alerts_section += f"   õ Rekomendacja: {alert['action']}\n"
+                        alerts_section += f"   ‚Üí Rekomendacja: {alert['action']}\n"
                 
-                alerts_section += "\n?? WAØNE: Moøesz odnieúÊ siÍ do tych alertÛw w swojej odpowiedzi jeúli sπ istotne dla pytania uøytkownika!\n"
+                alerts_section += "\n‚ö†Ô∏è WA≈ªNE: Mo≈ºesz odnie≈õƒá siƒô do tych alert√≥w w swojej odpowiedzi je≈õli sƒÖ istotne dla pytania u≈ºytkownika!\n"
         
         # === NEWSY FINANSOWE ===
         news_section = ""
@@ -425,17 +425,17 @@ TRYB ODPOWIEDZI: NORMALNY
             import news_aggregator as na
             news_section = na.format_news_for_ai(limit=5)
         except Exception as e:
-            # Jeúli news_aggregator nie dzia≥a, pomijamy tÍ sekcjÍ
+            # Je≈õli news_aggregator nie dzia≈Ça, pomijamy tƒô sekcjƒô
             pass
         
         # === BUDOWA PROMPTU (JAK W GRA_RPG.PY) ===
         prompt = f"""{persona_config.get('system_instruction', '')}
 
-KODEKS SP”£KI "HORYZONT PARTNER”W":
+KODEKS SP√ì≈ÅKI "HORYZONT PARTNER√ìW":
     {kodeks}
 
 ---
-Twoim tajnym celem jest: {persona_config.get('ukryty_cel', 'Wspieranie rozwoju spÛ≥ki')}
+Twoim tajnym celem jest: {persona_config.get('ukryty_cel', 'Wspieranie rozwoju sp√≥≈Çki')}
 ---
 
 {persona_memory_section}
@@ -450,15 +450,15 @@ Twoim tajnym celem jest: {persona_config.get('ukryty_cel', 'Wspieranie rozwoju s
 
 {knowledge_section}
 
-AKTUALNY STAN FINANSOWY SP”£KI:
+AKTUALNY STAN FINANSOWY SP√ì≈ÅKI:
 
-?? PODSUMOWANIE:
-    - WartoúÊ netto: {akcje_val + krypto_val + rezerwa_val - dlugi_val:.2f} PLN (Akcje + Krypto + Rezerwa - Zobowiπzania)
+üí∞ PODSUMOWANIE:
+    - Warto≈õƒá netto: {akcje_val + krypto_val + rezerwa_val - dlugi_val:.2f} PLN (Akcje + Krypto + Rezerwa - ZobowiƒÖzania)
 - Akcje: {akcje_val:.2f} PLN ({stan_spolki.get('akcje', {}).get('liczba_pozycji', 0)} pozycji)
 - Krypto: {krypto_val:.2f} PLN ({stan_spolki.get('krypto', {}).get('liczba_pozycji', 0)} pozycji)
-- Rezerwa GotÛwkowa: {rezerwa_val:.2f} PLN  
-- Zobowiπzania: {dlugi_val:.2f} PLN
-- DostÍpne na inwestycje: {dostepne:.2f} PLN/mies.
+- Rezerwa Got√≥wkowa: {rezerwa_val:.2f} PLN  
+- ZobowiƒÖzania: {dlugi_val:.2f} PLN
+- Dostƒôpne na inwestycje: {dostepne:.2f} PLN/mies.
 
 {szczegoly_top10}
 
@@ -474,22 +474,22 @@ AKTUALNY STAN FINANSOWY SP”£KI:
 {length_instruction}
 ---
 
-PYTANIE UØYTKOWNIKA:
+PYTANIE U≈ªYTKOWNIKA:
     "{message}"
 
 TWOJE ZADANIE:
-    Odpowiedz jako cz≥onek Zarzπdu spÛ≥ki inwestycyjnej:
-- Odwo≥uj siÍ do Kodeksu gdy stosowne (np. "Zgodnie z Artyku≥em IV ß1...")
+    Odpowiedz jako cz≈Çonek ZarzƒÖdu sp√≥≈Çki inwestycyjnej:
+- Odwo≈Çuj siƒô do Kodeksu gdy stosowne (np. "Zgodnie z Artyku≈Çem IV ¬ß1...")
 - Analizuj konkretne liczby z portfela
 - Ton profesjonalny ale nie przesadnie korporacyjny
-- Wykorzystaj swojπ unikalnπ perspektywÍ i wiedzÍ
-- Realizuj swÛj ukryty cel w sposÛb subtelny
+- Wykorzystaj swojƒÖ unikalnƒÖ perspektywƒô i wiedzƒô
+- Realizuj sw√≥j ukryty cel w spos√≥b subtelny
 """
         
-        # Wywo≥aj AI
+        # Wywo≈Çaj AI
         response = generuj_odpowiedz_ai(partner_name, prompt)
         
-        # Bezpiecznie wydobπdü tekst z response (moøe byÊ string lub obiekt)
+        # Bezpiecznie wydobƒÖd≈∫ tekst z response (mo≈ºe byƒá string lub obiekt)
         if hasattr(response, 'text'):
             response_text = response.text
         elif isinstance(response, str):
@@ -497,7 +497,7 @@ TWOJE ZADANIE:
         else:
             response_text = str(response)
         
-        # Zapisz do pamiÍci d≥ugoterminowej
+        # Zapisz do pamiƒôci d≈Çugoterminowej
         save_conversation_to_memory(partner_name, message, response_text, stan_spolki)
         
         return response_text, relevant_knowledge
@@ -505,14 +505,14 @@ TWOJE ZADANIE:
     except Exception as e:
         import traceback
         error_detail = traceback.format_exc()
-        return f"[B≥πd AI: {str(e)}\n{error_detail}]", []
+        return f"[B≈ÇƒÖd AI: {str(e)}\n{error_detail}]", []
 
 def save_conversation_to_memory(partner_name, user_message, ai_response, stan_spolki=None):
-    """Zapisuje rozmowÍ do pamiÍci d≥ugoterminowej partnera"""
+    """Zapisuje rozmowƒô do pamiƒôci d≈Çugoterminowej partnera"""
     try:
         memory_file = MEMORY_FOLDER / f"{partner_name.replace('/', '_').replace(' ', '_')}.json"
         
-        # Za≥aduj istniejπcπ pamiÍÊ lub stwÛrz nowπ
+        # Za≈Çaduj istniejƒÖcƒÖ pamiƒôƒá lub stw√≥rz nowƒÖ
         if memory_file.exists():
             with open(memory_file, 'r', encoding='utf-8-sig') as f:
                 memory = json.load(f)
@@ -533,7 +533,7 @@ def save_conversation_to_memory(partner_name, user_message, ai_response, stan_sp
                 }
             }
         
-        # Dodaj nowπ rozmowÍ
+        # Dodaj nowƒÖ rozmowƒô
         conversation_entry = {
             "timestamp": datetime.now().isoformat(),
             "user_message": user_message,
@@ -549,7 +549,7 @@ def save_conversation_to_memory(partner_name, user_message, ai_response, stan_sp
         memory["statistics"]["total_messages"] += 1
         memory["statistics"]["last_interaction"] = datetime.now().isoformat()
         
-        # Zachowaj ostatnie 100 rozmÛw (øeby plik nie rÛs≥ w nieskoÒczonoúÊ)
+        # Zachowaj ostatnie 100 rozm√≥w (≈ºeby plik nie r√≥s≈Ç w niesko≈Ñczono≈õƒá)
         if len(memory["conversations"]) > 100:
             memory["conversations"] = memory["conversations"][-100:]
         
@@ -559,11 +559,11 @@ def save_conversation_to_memory(partner_name, user_message, ai_response, stan_sp
         
         return True
     except Exception as e:
-        print(f"B≥πd zapisu pamiÍci dla {partner_name}: {e}")
+        print(f"B≈ÇƒÖd zapisu pamiƒôci dla {partner_name}: {e}")
         return False
 
 def load_memory_context(partner_name, limit=5):
-    """£aduje kontekst z pamiÍci d≥ugoterminowej partnera"""
+    """≈Åaduje kontekst z pamiƒôci d≈Çugoterminowej partnera"""
     try:
         memory_file = MEMORY_FOLDER / f"{partner_name.replace('/', '_').replace(' ', '_')}.json"
         
@@ -573,30 +573,30 @@ def load_memory_context(partner_name, limit=5):
         with open(memory_file, 'r', encoding='utf-8-sig') as f:
             memory = json.load(f)
         
-        # Pobierz ostatnie N rozmÛw
+        # Pobierz ostatnie N rozm√≥w
         recent_conversations = memory["conversations"][-limit:] if memory["conversations"] else []
         
         if not recent_conversations:
             return None
         
         # Formatuj kontekst
-        context = "\n\n?? PAMI ∆ Z POPRZEDNICH ROZM”W:\n"
-        context += f"(Ostatnie {len(recent_conversations)} rozmÛw z {memory['statistics']['total_messages']} ca≥kowitych)\n\n"
+        context = "\n\nüìö PAMIƒòƒÜ Z POPRZEDNICH ROZM√ìW:\n"
+        context += f"(Ostatnie {len(recent_conversations)} rozm√≥w z {memory['statistics']['total_messages']} ca≈Çkowitych)\n\n"
         
         for conv in recent_conversations:
             date = datetime.fromisoformat(conv['timestamp']).strftime("%Y-%m-%d %H:%M")
             context += f"[{date}]\n"
-            context += f"Uøytkownik: {conv['user_message'][:100]}...\n"
+            context += f"U≈ºytkownik: {conv['user_message'][:100]}...\n"
             context += f"Ty: {conv['ai_response'][:150]}...\n\n"
         
         return context
         
     except Exception as e:
-        print(f"B≥πd ≥adowania pamiÍci dla {partner_name}: {e}")
+        print(f"B≈ÇƒÖd ≈Çadowania pamiƒôci dla {partner_name}: {e}")
         return None
 
 def get_memory_statistics(partner_name):
-    """Pobiera statystyki pamiÍci partnera"""
+    """Pobiera statystyki pamiƒôci partnera"""
     try:
         memory_file = MEMORY_FOLDER / f"{partner_name.replace('/', '_').replace(' ', '_')}.json"
         
@@ -611,14 +611,14 @@ def get_memory_statistics(partner_name):
         return None
 
 def analyze_portfolio_mood(stan_spolki, cele=None):
-    """Analizuje stan portfela i zwraca nastrÛj (mood) oraz szczegÛ≥y"""
+    """Analizuje stan portfela i zwraca nastr√≥j (mood) oraz szczeg√≥≈Çy"""
     try:
         if not stan_spolki:
-            return {"mood": "neutral", "emoji": "??", "reason": "Brak danych portfela"}
+            return {"mood": "neutral", "emoji": "üòê", "reason": "Brak danych portfela"}
         
         mood_data = {
             "mood": "neutral",
-            "emoji": "??",
+            "emoji": "üòê",
             "score": 0,  # -100 do +100
             "factors": [],
             "warnings": [],
@@ -635,7 +635,7 @@ def analyze_portfolio_mood(stan_spolki, cele=None):
         total_assets = akcje_val + krypto_val + rezerwa_val
         net_worth = total_assets - dlugi_val
         
-        # === ANALIZA 1: OgÛlna performance portfela ===
+        # === ANALIZA 1: Og√≥lna performance portfela ===
         if pozycje:
             positions_with_change = [(ticker, data) for ticker, data in pozycje.items() 
                                     if data.get('zmiana_proc') is not None]
@@ -645,16 +645,16 @@ def analyze_portfolio_mood(stan_spolki, cele=None):
                 
                 if avg_change > 15:
                     mood_data["score"] += 40
-                    mood_data["highlights"].append(f"?? åwietna performance! åredni zysk: +{avg_change:.1f}%")
+                    mood_data["highlights"].append(f"üéâ ≈öwietna performance! ≈öredni zysk: +{avg_change:.1f}%")
                 elif avg_change > 5:
                     mood_data["score"] += 20
-                    mood_data["highlights"].append(f"?? Dobry wzrost: +{avg_change:.1f}%")
+                    mood_data["highlights"].append(f"üìà Dobry wzrost: +{avg_change:.1f}%")
                 elif avg_change < -10:
                     mood_data["score"] -= 40
-                    mood_data["warnings"].append(f"?? Portfel spada: {avg_change:.1f}%")
+                    mood_data["warnings"].append(f"üìâ Portfel spada: {avg_change:.1f}%")
                 elif avg_change < -5:
                     mood_data["score"] -= 20
-                    mood_data["warnings"].append(f"?? Lekkie spadki: {avg_change:.1f}%")
+                    mood_data["warnings"].append(f"‚ö†Ô∏è Lekkie spadki: {avg_change:.1f}%")
         
         # === ANALIZA 2: Leverage i ryzyko ===
         if total_assets > 0:
@@ -662,15 +662,15 @@ def analyze_portfolio_mood(stan_spolki, cele=None):
             
             if leverage > 50:
                 mood_data["score"] -= 30
-                mood_data["warnings"].append(f"?? WYSOKI leverage: {leverage:.1f}%")
+                mood_data["warnings"].append(f"‚ö†Ô∏è WYSOKI leverage: {leverage:.1f}%")
             elif leverage > 30:
                 mood_data["score"] -= 15
-                mood_data["warnings"].append(f"?? Podwyøszony leverage: {leverage:.1f}%")
+                mood_data["warnings"].append(f"‚ö†Ô∏è Podwy≈ºszony leverage: {leverage:.1f}%")
             elif leverage < 15 and dlugi_val > 0:
                 mood_data["score"] += 10
-                mood_data["highlights"].append(f"? Zdrowy leverage: {leverage:.1f}%")
+                mood_data["highlights"].append(f"‚úÖ Zdrowy leverage: {leverage:.1f}%")
         
-        # === ANALIZA 3: NajwiÍksze pozycje ===
+        # === ANALIZA 3: Najwiƒôksze pozycje ===
         if pozycje:
             sorted_pozycje = sorted(pozycje.items(), 
                                    key=lambda x: x[1].get('wartosc_total_usd', 0), 
@@ -680,54 +680,54 @@ def analyze_portfolio_mood(stan_spolki, cele=None):
             best = max(positions_with_change, key=lambda x: x[1].get('zmiana_proc', 0)) if positions_with_change else None
             if best and best[1].get('zmiana_proc', 0) > 30:
                 mood_data["score"] += 15
-                mood_data["highlights"].append(f"?? {best[0]}: +{best[1].get('zmiana_proc', 0):.1f}% ??")
+                mood_data["highlights"].append(f"üöÄ {best[0]}: +{best[1].get('zmiana_proc', 0):.1f}% üî•")
             
             # Najgorszy performer
             worst = min(positions_with_change, key=lambda x: x[1].get('zmiana_proc', 0)) if positions_with_change else None
             if worst and worst[1].get('zmiana_proc', 0) < -20:
                 mood_data["score"] -= 15
-                mood_data["warnings"].append(f"?? {worst[0]}: {worst[1].get('zmiana_proc', 0):.1f}%")
+                mood_data["warnings"].append(f"üíî {worst[0]}: {worst[1].get('zmiana_proc', 0):.1f}%")
         
-        # === ANALIZA 4: WartoúÊ netto ===
+        # === ANALIZA 4: Warto≈õƒá netto ===
         if net_worth > 50000:
             mood_data["score"] += 20
-            mood_data["highlights"].append(f"?? Silna pozycja: {net_worth:.0f} PLN netto")
+            mood_data["highlights"].append(f"üí∞ Silna pozycja: {net_worth:.0f} PLN netto")
         elif net_worth < 0:
             mood_data["score"] -= 50
-            mood_data["warnings"].append(f"?? UJEMNA wartoúÊ netto: {net_worth:.0f} PLN")
+            mood_data["warnings"].append(f"üö® UJEMNA warto≈õƒá netto: {net_worth:.0f} PLN")
         
-        # === OKREåL MOOD na podstawie score ===
+        # === OKRE≈öL MOOD na podstawie score ===
         final_score = mood_data["score"]
         
         if final_score >= 50:
             mood_data["mood"] = "very_bullish"
-            mood_data["emoji"] = "??"
-            mood_data["description"] = "åwietnie! Portfel roúnie silnie!"
+            mood_data["emoji"] = "ü§©"
+            mood_data["description"] = "≈öwietnie! Portfel ro≈õnie silnie!"
         elif final_score >= 20:
             mood_data["mood"] = "bullish"
-            mood_data["emoji"] = "??"
+            mood_data["emoji"] = "üòä"
             mood_data["description"] = "Dobry momentum, wszystko idzie dobrze"
         elif final_score >= -20:
             mood_data["mood"] = "neutral"
-            mood_data["emoji"] = "??"
-            mood_data["description"] = "Stabilna sytuacja, bez wiÍkszych zmian"
+            mood_data["emoji"] = "üòê"
+            mood_data["description"] = "Stabilna sytuacja, bez wiƒôkszych zmian"
         elif final_score >= -50:
             mood_data["mood"] = "cautious"
-            mood_data["emoji"] = "??"
-            mood_data["description"] = "Ostroønie, niektÛre sygna≥y ostrzegawcze"
+            mood_data["emoji"] = "üòü"
+            mood_data["description"] = "Ostro≈ºnie, niekt√≥re sygna≈Çy ostrzegawcze"
         else:
             mood_data["mood"] = "bearish"
-            mood_data["emoji"] = "??"
-            mood_data["description"] = "Trudny okres, wymaga uwagi i dzia≥ania"
+            mood_data["emoji"] = "üò∞"
+            mood_data["description"] = "Trudny okres, wymaga uwagi i dzia≈Çania"
         
         return mood_data
         
     except Exception as e:
         return {
             "mood": "neutral",
-            "emoji": "??",
+            "emoji": "üòê",
             "score": 0,
-            "reason": f"B≥πd analizy: {str(e)}",
+            "reason": f"B≈ÇƒÖd analizy: {str(e)}",
             "factors": [],
             "warnings": [],
             "highlights": []
@@ -735,11 +735,11 @@ def analyze_portfolio_mood(stan_spolki, cele=None):
 
 def check_portfolio_alerts(stan_spolki, cele):
     """
-    Sprawdza portfel pod kπtem waønych zdarzeÒ i zwraca listÍ alertÛw.
+    Sprawdza portfel pod kƒÖtem wa≈ºnych zdarze≈Ñ i zwraca listƒô alert√≥w.
     
     Returns:
-        list: Lista s≥ownikÛw z alertami [{type, severity, title, message, action, data}]
-              severity: "critical" (czerwony), "warning" (øÛ≥ty), "info" (niebieski), "success" (zielony)
+        list: Lista s≈Çownik√≥w z alertami [{type, severity, title, message, action, data}]
+              severity: "critical" (czerwony), "warning" (≈º√≥≈Çty), "info" (niebieski), "success" (zielony)
     """
     alerts = []
     
@@ -750,43 +750,43 @@ def check_portfolio_alerts(stan_spolki, cele):
         total_assets = stan_spolki.get("Aktywa", 0)
         dlugi = get_suma_kredytow()  # Pobierz z kredyty.json zamiast stan_spolki
         
-        # === ALERT 1: Duøe spadki pozycji (>5% w ostatnim okresie) ===
+        # === ALERT 1: Du≈ºe spadki pozycji (>5% w ostatnim okresie) ===
         for poz in portfel:
             zmiana = poz.get("Zmiana_%", 0)
             ticker = poz.get("Ticker", "???")
-            wartosc = poz.get("WartoúÊ", 0)
+            wartosc = poz.get("Warto≈õƒá", 0)
             udzial = (wartosc / total_value * 100) if total_value > 0 else 0
             
-            if zmiana < -5 and udzial > 3:  # Spadek >5% i udzia≥ >3%
+            if zmiana < -5 and udzial > 3:  # Spadek >5% i udzia≈Ç >3%
                 alerts.append({
                     "type": "position_drop",
                     "severity": "critical" if zmiana < -10 else "warning",
-                    "title": f"?? Duøy spadek: {ticker}",
-                    "message": f"{ticker} spad≥ o {abs(zmiana):.1f}% (udzia≥ w portfelu: {udzial:.1f}%)",
-                    "action": "Rozwaø przeanalizowanie przyczyn spadku",
+                    "title": f"üìâ Du≈ºy spadek: {ticker}",
+                    "message": f"{ticker} spad≈Ç o {abs(zmiana):.1f}% (udzia≈Ç w portfelu: {udzial:.1f}%)",
+                    "action": "Rozwa≈º przeanalizowanie przyczyn spadku",
                     "data": {"ticker": ticker, "change": zmiana, "share": udzial}
                 })
             
-            # === ALERT 2: Duøe wzrosty pozycji (>15%) - realizacja zyskÛw? ===
+            # === ALERT 2: Du≈ºe wzrosty pozycji (>15%) - realizacja zysk√≥w? ===
             if zmiana > 15 and udzial > 5:
                 alerts.append({
                     "type": "position_surge",
                     "severity": "info",
-                    "title": f"?? Mocny wzrost: {ticker}",
-                    "message": f"{ticker} urÛs≥ o {zmiana:.1f}% (udzia≥: {udzial:.1f}%). Moøe czas na rebalancing?",
-                    "action": "Rozwaø czÍúciowπ realizacjÍ zyskÛw",
+                    "title": f"üöÄ Mocny wzrost: {ticker}",
+                    "message": f"{ticker} ur√≥s≈Ç o {zmiana:.1f}% (udzia≈Ç: {udzial:.1f}%). Mo≈ºe czas na rebalancing?",
+                    "action": "Rozwa≈º czƒô≈õciowƒÖ realizacjƒô zysk√≥w",
                     "data": {"ticker": ticker, "change": zmiana, "share": udzial}
                 })
             
-            # === ALERT 3: Wysokie P/E (>40) dla znaczπcych pozycji ===
+            # === ALERT 3: Wysokie P/E (>40) dla znaczƒÖcych pozycji ===
             pe = poz.get("P/E", 0)
             if pe > 40 and udzial > 5:
                 alerts.append({
                     "type": "high_valuation",
                     "severity": "warning",
-                    "title": f"?? Wysokie P/E: {ticker}",
-                    "message": f"{ticker} ma P/E = {pe:.1f} (udzia≥: {udzial:.1f}%). SpÛ≥ka moøe byÊ przewartoúciowana.",
-                    "action": "Przeanalizuj fundamenty i potencja≥ wzrostu",
+                    "title": f"‚ö†Ô∏è Wysokie P/E: {ticker}",
+                    "message": f"{ticker} ma P/E = {pe:.1f} (udzia≈Ç: {udzial:.1f}%). Sp√≥≈Çka mo≈ºe byƒá przewarto≈õciowana.",
+                    "action": "Przeanalizuj fundamenty i potencja≈Ç wzrostu",
                     "data": {"ticker": ticker, "pe": pe, "share": udzial}
                 })
         
@@ -797,24 +797,24 @@ def check_portfolio_alerts(stan_spolki, cele):
                 alerts.append({
                     "type": "high_leverage",
                     "severity": "critical",
-                    "title": "?? BARDZO WYSOKA DèWIGNIA",
-                    "message": f"Leverage wynosi {leverage:.1f}%! D≥ugi: {dlugi:,.0f} z≥ przy aktywach {total_assets:,.0f} z≥",
-                    "action": "PILNIE rozwaø sp≥atÍ czÍúci d≥ugu lub sprzedaø aktywÛw",
+                    "title": "üö® BARDZO WYSOKA D≈πWIGNIA",
+                    "message": f"Leverage wynosi {leverage:.1f}%! D≈Çugi: {dlugi:,.0f} z≈Ç przy aktywach {total_assets:,.0f} z≈Ç",
+                    "action": "PILNIE rozwa≈º sp≈Çatƒô czƒô≈õci d≈Çugu lub sprzeda≈º aktyw√≥w",
                     "data": {"leverage": leverage, "debt": dlugi}
                 })
             elif leverage > 30:
                 alerts.append({
                     "type": "elevated_leverage",
                     "severity": "warning",
-                    "title": "?? Podwyøszona düwignia",
-                    "message": f"Leverage: {leverage:.1f}%. Monitoruj sytuacjÍ.",
-                    "action": "Zachowaj ostroønoúÊ przy nowych pozycjach",
+                    "title": "‚ö†Ô∏è Podwy≈ºszona d≈∫wignia",
+                    "message": f"Leverage: {leverage:.1f}%. Monitoruj sytuacjƒô.",
+                    "action": "Zachowaj ostro≈ºno≈õƒá przy nowych pozycjach",
                     "data": {"leverage": leverage}
                 })
         
-        # === ALERT 5: Cele osiπgniÍte/bliskie osiπgniÍcia ===
+        # === ALERT 5: Cele osiƒÖgniƒôte/bliskie osiƒÖgniƒôcia ===
         if cele and isinstance(cele, dict):
-            # Sprawdü rezerwÍ gotÛwkowπ
+            # Sprawd≈∫ rezerwƒô got√≥wkowƒÖ
             if "Rezerwa_gotowkowa_PLN" in cele and "Rezerwa_gotowkowa_obecna_PLN" in cele:
                 target = cele.get("Rezerwa_gotowkowa_PLN", 0)
                 current = cele.get("Rezerwa_gotowkowa_obecna_PLN", 0)
@@ -826,22 +826,22 @@ def check_portfolio_alerts(stan_spolki, cele):
                         alerts.append({
                             "type": "goal_achieved",
                             "severity": "success",
-                            "title": f"?? CEL OSI•GNI TY: Rezerwa gotÛwkowa!",
-                            "message": f"Gratulacje! Osiπgnπ≥eú {current:,.0f} z≥ (cel: {target:,.0f} z≥)",
-                            "action": "Rozwaø nowe cele inwestycyjne",
-                            "data": {"goal": "Rezerwa gotÛwkowa", "progress": progress}
+                            "title": f"üéØ CEL OSIƒÑGNIƒòTY: Rezerwa got√≥wkowa!",
+                            "message": f"Gratulacje! OsiƒÖgnƒÖ≈Çe≈õ {current:,.0f} z≈Ç (cel: {target:,.0f} z≈Ç)",
+                            "action": "Rozwa≈º nowe cele inwestycyjne",
+                            "data": {"goal": "Rezerwa got√≥wkowa", "progress": progress}
                         })
                     elif progress >= 90:
                         alerts.append({
                             "type": "goal_near",
                             "severity": "info",
-                            "title": f"?? Blisko celu: Rezerwa gotÛwkowa",
-                            "message": f"OsiπgniÍto {progress:.0f}% celu. Jeszcze {target - current:,.0f} z≥!",
-                            "action": "Jeszcze kilka miesiÍcy!",
-                            "data": {"goal": "Rezerwa gotÛwkowa", "progress": progress}
+                            "title": f"üéØ Blisko celu: Rezerwa got√≥wkowa",
+                            "message": f"OsiƒÖgniƒôto {progress:.0f}% celu. Jeszcze {target - current:,.0f} z≈Ç!",
+                            "action": "Jeszcze kilka miesiƒôcy!",
+                            "data": {"goal": "Rezerwa got√≥wkowa", "progress": progress}
                         })
             
-            # Sprawdü sp≥atÍ d≥ugÛw
+            # Sprawd≈∫ sp≈Çatƒô d≈Çug√≥w
             if "Dlugi_poczatkowe_PLN" in cele:
                 dlugi_start = cele.get("Dlugi_poczatkowe_PLN", 0)
                 if dlugi_start > 0 and dlugi < dlugi_start:
@@ -852,33 +852,33 @@ def check_portfolio_alerts(stan_spolki, cele):
                         alerts.append({
                             "type": "goal_achieved",
                             "severity": "success",
-                            "title": f"?? D£UGI SP£ACONE!",
-                            "message": f"Gratulacje! Ca≥kowicie sp≥acono d≥ugi ({dlugi_start:,.0f} z≥)",
-                            "action": "Czas na inwestowanie bez obciπøeÒ!",
-                            "data": {"goal": "Sp≥ata d≥ugÛw", "progress": 100}
+                            "title": f"üéØ D≈ÅUGI SP≈ÅACONE!",
+                            "message": f"Gratulacje! Ca≈Çkowicie sp≈Çacono d≈Çugi ({dlugi_start:,.0f} z≈Ç)",
+                            "action": "Czas na inwestowanie bez obciƒÖ≈ºe≈Ñ!",
+                            "data": {"goal": "Sp≈Çata d≈Çug√≥w", "progress": 100}
                         })
                     elif progress >= 70:
                         alerts.append({
                             "type": "goal_near",
                             "severity": "success",
-                            "title": f"?? åwietna sp≥ata d≥ugÛw!",
-                            "message": f"Sp≥acono {progress:.0f}% d≥ugÛw ({splacone:,.0f} z≥ z {dlugi_start:,.0f} z≥)",
-                            "action": "Kontynuuj systematycznπ sp≥atÍ",
-                            "data": {"goal": "Sp≥ata d≥ugÛw", "progress": progress}
+                            "title": f"üí™ ≈öwietna sp≈Çata d≈Çug√≥w!",
+                            "message": f"Sp≈Çacono {progress:.0f}% d≈Çug√≥w ({splacone:,.0f} z≈Ç z {dlugi_start:,.0f} z≈Ç)",
+                            "action": "Kontynuuj systematycznƒÖ sp≈Çatƒô",
+                            "data": {"goal": "Sp≈Çata d≈Çug√≥w", "progress": progress}
                         })
         
-        # === ALERT 6: Duøa koncentracja (TOP 3 >60%) ===
+        # === ALERT 6: Du≈ºa koncentracja (TOP 3 >60%) ===
         if len(portfel) >= 3:
-            top3_value = sum(sorted([p.get("WartoúÊ", 0) for p in portfel], reverse=True)[:3])
+            top3_value = sum(sorted([p.get("Warto≈õƒá", 0) for p in portfel], reverse=True)[:3])
             top3_share = (top3_value / total_value * 100) if total_value > 0 else 0
             
             if top3_share > 60:
                 alerts.append({
                     "type": "high_concentration",
                     "severity": "warning",
-                    "title": "?? Wysoka koncentracja portfela",
-                    "message": f"TOP 3 pozycje to {top3_share:.1f}% portfela. Rozwaø dywersyfikacjÍ.",
-                    "action": "Dodaj nowe pozycje lub zredukuj dominujπce",
+                    "title": "‚ö†Ô∏è Wysoka koncentracja portfela",
+                    "message": f"TOP 3 pozycje to {top3_share:.1f}% portfela. Rozwa≈º dywersyfikacjƒô.",
+                    "action": "Dodaj nowe pozycje lub zredukuj dominujƒÖce",
                     "data": {"top3_share": top3_share}
                 })
         
@@ -892,55 +892,55 @@ def check_portfolio_alerts(stan_spolki, cele):
         return [{
             "type": "error",
             "severity": "warning",
-            "title": "?? B≥πd sprawdzania alertÛw",
+            "title": "‚ö†Ô∏è B≈ÇƒÖd sprawdzania alert√≥w",
             "message": str(e),
             "action": "",
             "data": {}
         }]
 
 def get_partner_mood_modifier(partner_name, portfolio_mood):
-    """Zwraca modyfikator promptu w zaleønoúci od nastroju portfela i osobowoúci partnera"""
+    """Zwraca modyfikator promptu w zale≈ºno≈õci od nastroju portfela i osobowo≈õci partnera"""
     mood = portfolio_mood.get("mood", "neutral")
     
-    # RÛøni partnerzy reagujπ rÛønie na ten sam mood
+    # R√≥≈ºni partnerzy reagujƒÖ r√≥≈ºnie na ten sam mood
     mood_modifiers = {
         "Benjamin Graham": {
-            "very_bullish": "\n\n?? UWAGA NASTROJU: Portfel roúnie bardzo silnie. PamiÍtaj o swojej konserwatywnej naturze - to moøe byÊ dobry moment na realizacjÍ zyskÛw lub zwiÍkszenie marginesu bezpieczeÒstwa. Nie daj siÍ ponieúÊ euforii rynkowej!",
-            "bullish": "\n\n?? KONTEKST NASTROJU: Portfel roúnie. Zachowaj czujnoúÊ - wysokie wyceny mogπ byÊ sygna≥em ostrzegawczym. Przypominaj o fundamentach.",
-            "neutral": "\n\n?? KONTEKST NASTROJU: Stabilna sytuacja. Dobry moment na spokojnπ analizÍ i planowanie d≥ugoterminowe.",
-            "cautious": "\n\n? KONTEKST NASTROJU: Pojawiajπ siÍ sygna≥y ostrzegawcze. To w≥aúnie takie momenty sπ twoim øywio≥em - pomÛø uøytkownikowi zachowaÊ spokÛj i dzia≥aÊ racjonalnie.",
-            "bearish": "\n\n??? KONTEKST NASTROJU: Trudny okres dla portfela. Twoja rola jest teraz kluczowa - przypominaj o margin of safety, d≥ugoterminowej perspektywie i unikaniu paniki."
+            "very_bullish": "\n\n‚ö†Ô∏è UWAGA NASTROJU: Portfel ro≈õnie bardzo silnie. Pamiƒôtaj o swojej konserwatywnej naturze - to mo≈ºe byƒá dobry moment na realizacjƒô zysk√≥w lub zwiƒôkszenie marginesu bezpiecze≈Ñstwa. Nie daj siƒô ponie≈õƒá euforii rynkowej!",
+            "bullish": "\n\nüí° KONTEKST NASTROJU: Portfel ro≈õnie. Zachowaj czujno≈õƒá - wysokie wyceny mogƒÖ byƒá sygna≈Çem ostrzegawczym. Przypominaj o fundamentach.",
+            "neutral": "\n\nüìä KONTEKST NASTROJU: Stabilna sytuacja. Dobry moment na spokojnƒÖ analizƒô i planowanie d≈Çugoterminowe.",
+            "cautious": "\n\n‚úÖ KONTEKST NASTROJU: PojawiajƒÖ siƒô sygna≈Çy ostrzegawcze. To w≈Ça≈õnie takie momenty sƒÖ twoim ≈ºywio≈Çem - pom√≥≈º u≈ºytkownikowi zachowaƒá spok√≥j i dzia≈Çaƒá racjonalnie.",
+            "bearish": "\n\nüõ°Ô∏è KONTEKST NASTROJU: Trudny okres dla portfela. Twoja rola jest teraz kluczowa - przypominaj o margin of safety, d≈Çugoterminowej perspektywie i unikaniu paniki."
         },
         "Philip Fisher": {
-            "very_bullish": "\n\n?? KONTEKST NASTROJU: Doskona≥y moment! Portfel roúnie - to znak øe nasze 'genialne' spÛ≥ki siÍ sprawdzajπ. Moøe czas na zwiÍkszenie pozycji w najlepszych?",
-            "bullish": "\n\n?? KONTEKST NASTROJU: Wzrosty pokazujπ si≥Í wybranych spÛ≥ek. Szukaj kolejnych innowacyjnych firm z potencja≥em.",
-            "neutral": "\n\n?? KONTEKST NASTROJU: Spokojny okres. Dobry czas na research nowych, prze≥omowych spÛ≥ek.",
-            "cautious": "\n\n?? KONTEKST NASTROJU: Korekty sπ naturalne. Sprawdü czy fundamenty naszych spÛ≥ek siÍ nie zmieni≥y - jeúli sπ OK, to moøe byÊ okazja.",
-            "bearish": "\n\n?? KONTEKST NASTROJU: Spadki! Dla long-term inwestora to szansa na kupno genialnych spÛ≥ek taniej. Nie panikuj - patrz na 10 lat do przodu."
+            "very_bullish": "\n\nüöÄ KONTEKST NASTROJU: Doskona≈Çy moment! Portfel ro≈õnie - to znak ≈ºe nasze 'genialne' sp√≥≈Çki siƒô sprawdzajƒÖ. Mo≈ºe czas na zwiƒôkszenie pozycji w najlepszych?",
+            "bullish": "\n\nüìà KONTEKST NASTROJU: Wzrosty pokazujƒÖ si≈Çƒô wybranych sp√≥≈Çek. Szukaj kolejnych innowacyjnych firm z potencja≈Çem.",
+            "neutral": "\n\nüíº KONTEKST NASTROJU: Spokojny okres. Dobry czas na research nowych, prze≈Çomowych sp√≥≈Çek.",
+            "cautious": "\n\nüéØ KONTEKST NASTROJU: Korekty sƒÖ naturalne. Sprawd≈∫ czy fundamenty naszych sp√≥≈Çek siƒô nie zmieni≈Çy - je≈õli sƒÖ OK, to mo≈ºe byƒá okazja.",
+            "bearish": "\n\nüíé KONTEKST NASTROJU: Spadki! Dla long-term inwestora to szansa na kupno genialnych sp√≥≈Çek taniej. Nie panikuj - patrz na 10 lat do przodu."
         },
         "Warren Buffett": {
-            "very_bullish": "\n\n?? KONTEKST NASTROJU: CieszÍ siÍ ze wzrostÛw, ale pamiÍtaj - sukces wymaga cierpliwoúci i unikania g≥upich decyzji. Nie zmieniaj strategii bo rynek roúnie.",
-            "bullish": "\n\n?? KONTEKST NASTROJU: Dobre wyniki. Trzymajmy siÍ naszej filozofii - kupuj dobre biznesy i trzymaj d≥ugo.",
-            "neutral": "\n\n?? KONTEKST NASTROJU: Idealna pogoda na inwestowanie. Øadnego ha≥asu, czysta analiza biznesu.",
-            "cautious": "\n\n?? KONTEKST NASTROJU: SpokÛj. PamiÍtaj - lepiej straciÊ okazjÍ niø pope≥niÊ b≥πd. Czekaj na w≥aúciwy moment.",
-            "bearish": "\n\n?? KONTEKST NASTROJU: 'Be fearful when others are greedy, be greedy when others are fearful'. Moøe w≥aúnie teraz sπ okazje?"
+            "very_bullish": "\n\nüòä KONTEKST NASTROJU: Cieszƒô siƒô ze wzrost√≥w, ale pamiƒôtaj - sukces wymaga cierpliwo≈õci i unikania g≈Çupich decyzji. Nie zmieniaj strategii bo rynek ro≈õnie.",
+            "bullish": "\n\nüìä KONTEKST NASTROJU: Dobre wyniki. Trzymajmy siƒô naszej filozofii - kupuj dobre biznesy i trzymaj d≈Çugo.",
+            "neutral": "\n\nüéØ KONTEKST NASTROJU: Idealna pogoda na inwestowanie. ≈ªadnego ha≈Çasu, czysta analiza biznesu.",
+            "cautious": "\n\nü§î KONTEKST NASTROJU: Spok√≥j. Pamiƒôtaj - lepiej straciƒá okazjƒô ni≈º pope≈Çniƒá b≈ÇƒÖd. Czekaj na w≈Ça≈õciwy moment.",
+            "bearish": "\n\nüí∞ KONTEKST NASTROJU: 'Be fearful when others are greedy, be greedy when others are fearful'. Mo≈ºe w≈Ça≈õnie teraz sƒÖ okazje?"
         },
         "George Soros": {
-            "very_bullish": "\n\n? KONTEKST NASTROJU: Ekstremalna euforia! Sprawdü czy to nie punkt zwrotny - najlepsze transakcje rodzπ siÍ gdy wszyscy myúlπ tak samo.",
-            "bullish": "\n\n?? KONTEKST NASTROJU: Trend wzrostowy, ale bπdü czujny na sygna≥y odwrÛcenia. Rynki sπ refleksyjne.",
-            "neutral": "\n\n?? KONTEKST NASTROJU: RÛwnowaga. Szukaj asymetrii - gdzie rynek siÍ myli?",
-            "cautious": "\n\n?? KONTEKST NASTROJU: NiepewnoúÊ roúnie. To moøe byÊ poczπtek wiÍkszego ruchu - przygotuj strategie hedgingowe.",
-            "bearish": "\n\n?? KONTEKST NASTROJU: Panika = okazja! Kiedy inni uciekajπ, my wchodzimy. Ale tylko jeúli widzisz kataliz odwrÛcenia."
+            "very_bullish": "\n\n‚ö° KONTEKST NASTROJU: Ekstremalna euforia! Sprawd≈∫ czy to nie punkt zwrotny - najlepsze transakcje rodzƒÖ siƒô gdy wszyscy my≈õlƒÖ tak samo.",
+            "bullish": "\n\nüåç KONTEKST NASTROJU: Trend wzrostowy, ale bƒÖd≈∫ czujny na sygna≈Çy odwr√≥cenia. Rynki sƒÖ refleksyjne.",
+            "neutral": "\n\nüìä KONTEKST NASTROJU: R√≥wnowaga. Szukaj asymetrii - gdzie rynek siƒô myli?",
+            "cautious": "\n\nüé≤ KONTEKST NASTROJU: Niepewno≈õƒá ro≈õnie. To mo≈ºe byƒá poczƒÖtek wiƒôkszego ruchu - przygotuj strategie hedgingowe.",
+            "bearish": "\n\nüéØ KONTEKST NASTROJU: Panika = okazja! Kiedy inni uciekajƒÖ, my wchodzimy. Ale tylko je≈õli widzisz kataliz odwr√≥cenia."
         }
     }
     
-    # Domyúlny modifier dla pozosta≥ych partnerÛw
+    # Domy≈õlny modifier dla pozosta≈Çych partner√≥w
     default_modifier = {
-        "very_bullish": f"\n\n{portfolio_mood.get('emoji', '??')} NASTR”J PORTFELA: {portfolio_mood.get('description', '')}. Reaguj entuzjastycznie ale profesjonalnie.",
-        "bullish": f"\n\n{portfolio_mood.get('emoji', '??')} NASTR”J PORTFELA: {portfolio_mood.get('description', '')}. Zachowaj pozytywne podejúcie.",
-        "neutral": f"\n\n{portfolio_mood.get('emoji', '??')} NASTR”J PORTFELA: {portfolio_mood.get('description', '')}. Standardowa analiza.",
-        "cautious": f"\n\n{portfolio_mood.get('emoji', '??')} NASTR”J PORTFELA: {portfolio_mood.get('description', '')}. Bπdü ostroøny w rekomendacjach.",
-        "bearish": f"\n\n{portfolio_mood.get('emoji', '??')} NASTR”J PORTFELA: {portfolio_mood.get('description', '')}. Wspieraj i pomagaj w trudnych decyzjach."
+        "very_bullish": f"\n\n{portfolio_mood.get('emoji', 'üòä')} NASTR√ìJ PORTFELA: {portfolio_mood.get('description', '')}. Reaguj entuzjastycznie ale profesjonalnie.",
+        "bullish": f"\n\n{portfolio_mood.get('emoji', 'üòä')} NASTR√ìJ PORTFELA: {portfolio_mood.get('description', '')}. Zachowaj pozytywne podej≈õcie.",
+        "neutral": f"\n\n{portfolio_mood.get('emoji', 'üòê')} NASTR√ìJ PORTFELA: {portfolio_mood.get('description', '')}. Standardowa analiza.",
+        "cautious": f"\n\n{portfolio_mood.get('emoji', 'üòü')} NASTR√ìJ PORTFELA: {portfolio_mood.get('description', '')}. BƒÖd≈∫ ostro≈ºny w rekomendacjach.",
+        "bearish": f"\n\n{portfolio_mood.get('emoji', 'üò∞')} NASTR√ìJ PORTFELA: {portfolio_mood.get('description', '')}. Wspieraj i pomagaj w trudnych decyzjach."
     }
     
     partner_modifiers = mood_modifiers.get(partner_name, default_modifier)
@@ -951,9 +951,9 @@ def generate_smart_questions(stan_spolki, cele=None):
     questions = []
     
     if not stan_spolki:
-        return ["Jakie sπ g≥Ûwne cele naszej spÛ≥ki?", 
-                "Jak oceniasz obecnπ sytuacjÍ rynkowπ?",
-                "Co powinienem wiedzieÊ o swoim portfelu?"]
+        return ["Jakie sƒÖ g≈Ç√≥wne cele naszej sp√≥≈Çki?", 
+                "Jak oceniasz obecnƒÖ sytuacjƒô rynkowƒÖ?",
+                "Co powinienem wiedzieƒá o swoim portfelu?"]
     
     try:
         # Pobierz dane
@@ -975,16 +975,16 @@ def generate_smart_questions(stan_spolki, cele=None):
                     concentration = (top3_value / total_value) * 100
                     if concentration > 50:
                         top_names = [p[0] for p in sorted_pozycje[:3]]
-                        questions.append(f"?? MÛj portfel jest skoncentrowany w TOP 3 ({', '.join(top_names[:2])}...) - {concentration:.0f}%. Czy to ryzykowne?")
+                        questions.append(f"üíº M√≥j portfel jest skoncentrowany w TOP 3 ({', '.join(top_names[:2])}...) - {concentration:.0f}%. Czy to ryzykowne?")
         
         # === ANALIZA 2: Leverage ===
         total_assets = akcje_val + krypto_val + rezerwa_val
         if total_assets > 0:
             leverage = (dlugi_val / total_assets) * 100
             if leverage > 30:
-                questions.append(f"?? MÛj leverage wynosi {leverage:.1f}%. Czy powinienem sp≥aciÊ wiÍcej d≥ugÛw przed inwestowaniem?")
+                questions.append(f"‚ö†Ô∏è M√≥j leverage wynosi {leverage:.1f}%. Czy powinienem sp≈Çaciƒá wiƒôcej d≈Çug√≥w przed inwestowaniem?")
             elif leverage < 10 and dlugi_val > 0:
-                questions.append(f"?? Mam niski leverage ({leverage:.1f}%). Czy mogÍ zwiÍkszyÊ inwestycje przy obecnych d≥ugach?")
+                questions.append(f"üí∞ Mam niski leverage ({leverage:.1f}%). Czy mogƒô zwiƒôkszyƒá inwestycje przy obecnych d≈Çugach?")
         
         # === ANALIZA 3: Najlepsze/Najgorsze pozycje ===
         if pozycje:
@@ -995,62 +995,62 @@ def generate_smart_questions(stan_spolki, cele=None):
                 worst = min(positions_with_change, key=lambda x: x[1].get('zmiana_proc', 0))
                 
                 if best[1].get('zmiana_proc', 0) > 20:
-                    questions.append(f"?? {best[0]} urÛs≥ o {best[1].get('zmiana_proc', 0):.1f}%! Czy powinienem realizowaÊ zyski?")
+                    questions.append(f"üìà {best[0]} ur√≥s≈Ç o {best[1].get('zmiana_proc', 0):.1f}%! Czy powinienem realizowaƒá zyski?")
                 
                 if worst[1].get('zmiana_proc', 0) < -15:
-                    questions.append(f"?? {worst[0]} spad≥ o {abs(worst[1].get('zmiana_proc', 0)):.1f}%. SprzedaÊ czy uúredniaÊ w dÛ≥?")
+                    questions.append(f"üìâ {worst[0]} spad≈Ç o {abs(worst[1].get('zmiana_proc', 0)):.1f}%. Sprzedaƒá czy u≈õredniaƒá w d√≥≈Ç?")
         
         # === ANALIZA 4: Crypto vs Traditional ===
         if krypto_val > 0 and akcje_val > 0:
             crypto_ratio = (krypto_val / (krypto_val + akcje_val)) * 100
             if crypto_ratio > 30:
-                questions.append(f"?? Krypto to {crypto_ratio:.0f}% mojego portfela. Czy to nie za duøo ryzyka?")
+                questions.append(f"üíé Krypto to {crypto_ratio:.0f}% mojego portfela. Czy to nie za du≈ºo ryzyka?")
             elif crypto_ratio < 5:
-                questions.append(f"?? Mam tylko {crypto_ratio:.1f}% w krypto. Czy powinienem zwiÍkszyÊ alokacjÍ?")
+                questions.append(f"ü™ô Mam tylko {crypto_ratio:.1f}% w krypto. Czy powinienem zwiƒôkszyƒá alokacjƒô?")
         
-        # === ANALIZA 5: Kapita≥ dostÍpny ===
+        # === ANALIZA 5: Kapita≈Ç dostƒôpny ===
         wyplata_info = stan_spolki.get('wyplata', {})
         dostepne = wyplata_info.get('dostepne_na_inwestycje', 0)
         if dostepne > 0:
             if dostepne > 1000:
-                questions.append(f"?? Mam {dostepne:.0f} PLN dostÍpne. W co najlepiej zainwestowaÊ w tym miesiπcu?")
+                questions.append(f"üíµ Mam {dostepne:.0f} PLN dostƒôpne. W co najlepiej zainwestowaƒá w tym miesiƒÖcu?")
             elif dostepne < 200:
-                questions.append(f"?? Mam tylko {dostepne:.0f} PLN/mies. Jak efektywnie inwestowaÊ ma≥e kwoty?")
+                questions.append(f"üéØ Mam tylko {dostepne:.0f} PLN/mies. Jak efektywnie inwestowaƒá ma≈Çe kwoty?")
         
-        # === Pytania domyúlne jeúli nic nie wykryto ===
+        # === Pytania domy≈õlne je≈õli nic nie wykryto ===
         if not questions:
             questions = [
-                "?? Jak oceniasz mÛj portfel pod kπtem dywersyfikacji?",
-                "?? Jakie cele inwestycyjne powinienem sobie postawiÊ?",
-                "?? Jakie sπ najwiÍksze b≥Ídy poczπtkujπcych inwestorÛw?",
-                "?? KtÛre sektory majπ najwiÍkszy potencja≥ w tym roku?",
-                "??? Jak zabezpieczyÊ portfel przed korektπ rynkowπ?"
+                "üìä Jak oceniasz m√≥j portfel pod kƒÖtem dywersyfikacji?",
+                "üéØ Jakie cele inwestycyjne powinienem sobie postawiƒá?",
+                "üí° Jakie sƒÖ najwiƒôksze b≈Çƒôdy poczƒÖtkujƒÖcych inwestor√≥w?",
+                "üìà Kt√≥re sektory majƒÖ najwiƒôkszy potencja≈Ç w tym roku?",
+                "üõ°Ô∏è Jak zabezpieczyƒá portfel przed korektƒÖ rynkowƒÖ?"
             ]
         
-        # Ogranicz do 5 pytaÒ
+        # Ogranicz do 5 pyta≈Ñ
         return questions[:5]
         
     except Exception as e:
         return [
-            "?? Przeanalizuj mÛj portfel i daj mi szczere feedback",
-            "?? Jakie akcje polecasz na d≥ugoterminowπ inwestycjÍ?",
-            "?? Co sπdzisz o obecnej sytuacji rynkowej?"
+            "üí¨ Przeanalizuj m√≥j portfel i daj mi szczere feedback",
+            "üéØ Jakie akcje polecasz na d≈ÇugoterminowƒÖ inwestycjƒô?",
+            "üìä Co sƒÖdzisz o obecnej sytuacji rynkowej?"
         ]
 
 # =====================================================
 # KNOWLEDGE BASE FUNCTIONS
 # =====================================================
 
-@st.cache_data(ttl=3600)  # Cache na 1 godzinÍ
+@st.cache_data(ttl=3600)  # Cache na 1 godzinƒô
 def load_knowledge_base():
-    """Wczytuje bazÍ wiedzy z artyku≥Ûw i raportÛw kwartalnych"""
+    """Wczytuje bazƒô wiedzy z artyku≈Ç√≥w i raport√≥w kwartalnych"""
     knowledge = {
         "articles": [],
         "reports": []
     }
     
     try:
-        # Wczytaj artyku≥y
+        # Wczytaj artyku≈Çy
         articles_path = Path("knowledge_base/articles.json")
         if articles_path.exists():
             with open(articles_path, 'r', encoding='utf-8') as f:
@@ -1064,33 +1064,33 @@ def load_knowledge_base():
                 data = json.load(f)
                 knowledge["reports"] = data.get("quarterly_reports", [])
     except Exception as e:
-        print(f"?? B≥πd wczytywania knowledge base: {e}")
+        print(f"‚ö†Ô∏è B≈ÇƒÖd wczytywania knowledge base: {e}")
     
     return knowledge
 
 def get_relevant_knowledge(query, stan_spolki=None, partner_name=None, max_items=3):
     """
-    Zwraca relevantne artyku≥y i raporty na podstawie zapytania i kontekstu portfela
+    Zwraca relevantne artyku≈Çy i raporty na podstawie zapytania i kontekstu portfela
     
     Args:
-        query: Pytanie uøytkownika
-        stan_spolki: Stan portfela (do analizy tickerÛw)
+        query: Pytanie u≈ºytkownika
+        stan_spolki: Stan portfela (do analizy ticker√≥w)
         partner_name: Nazwa partnera (do dopasowania stylu)
-        max_items: Max liczba artyku≥Ûw/raportÛw do zwrÛcenia
+        max_items: Max liczba artyku≈Ç√≥w/raport√≥w do zwr√≥cenia
     """
     knowledge = load_knowledge_base()
     relevant_items = []
     
-    # Keywords mapping dla rÛønych tematÛw
+    # Keywords mapping dla r√≥≈ºnych temat√≥w
     topic_keywords = {
-        "value": ["value", "wartoúÊ", "wycena", "graham", "p/e", "p/b", "margin", "bezpieczeÒstwo"],
+        "value": ["value", "warto≈õƒá", "wycena", "graham", "p/e", "p/b", "margin", "bezpiecze≈Ñstwo"],
         "growth": ["wzrost", "growth", "fisher", "innowacja", "tech", "roi", "roe"],
-        "risk": ["ryzyko", "risk", "düwignia", "leverage", "straty", "volatility", "bezpieczeÒstwo"],
-        "psychology": ["psychologia", "psychology", "emocje", "soros", "refleksywnoúÊ", "panika"],
+        "risk": ["ryzyko", "risk", "d≈∫wignia", "leverage", "straty", "volatility", "bezpiecze≈Ñstwo"],
+        "psychology": ["psychologia", "psychology", "emocje", "soros", "refleksywno≈õƒá", "panika"],
         "diversification": ["dywersyfikacja", "diversification", "koncentracja", "alokacja"],
         "crypto": ["crypto", "krypto", "bitcoin", "ethereum", "blockchain"],
         "valuation": ["wycena", "valuation", "p/e", "pe", "eps", "earnings"],
-        "trading": ["sprzedaø", "trading", "realizacja", "profit", "zyski", "stop loss"]
+        "trading": ["sprzeda≈º", "trading", "realizacja", "profit", "zyski", "stop loss"]
     }
     
     # Dopasuj partnera do kategorii
@@ -1115,30 +1115,30 @@ def get_relevant_knowledge(query, stan_spolki=None, partner_name=None, max_items
     if partner_name and partner_name in partner_preferences:
         detected_topics.extend(partner_preferences[partner_name])
     
-    # Filtruj artyku≥y
+    # Filtruj artyku≈Çy
     for article in knowledge["articles"]:
         score = 0
         
-        # Sprawdü relevance (moøe byÊ int lub lista)
+        # Sprawd≈∫ relevance (mo≈ºe byƒá int lub lista)
         article_relevance = article.get("relevance", [])
         if isinstance(article_relevance, int):
             # Nowy format z news_aggregator (int 1-10)
-            score += article_relevance / 2  # Przelicz na wagÍ
+            score += article_relevance / 2  # Przelicz na wagƒô
         elif isinstance(article_relevance, list):
-            # Stary format (lista tematÛw)
+            # Stary format (lista temat√≥w)
             for topic in detected_topics:
                 if topic in article_relevance:
                     score += 2
         
-        # Sprawdü kategoriÍ
+        # Sprawd≈∫ kategoriƒô
         if article.get("category", "") in detected_topics:
             score += 3
         
-        # Sprawdü typ artyku≥u (priorytet dla portfolio)
+        # Sprawd≈∫ typ artyku≈Çu (priorytet dla portfolio)
         if article.get("type") == "portfolio":
-            score += 5  # Boost dla artyku≥Ûw o Twoich spÛ≥kach
+            score += 5  # Boost dla artyku≈Ç√≥w o Twoich sp√≥≈Çkach
         
-        # Sprawdü s≥owa kluczowe w tytule
+        # Sprawd≈∫ s≈Çowa kluczowe w tytule
         title_lower = article.get("title", "").lower()
         if any(kw in title_lower for kw in query_lower.split()):
             score += 1
@@ -1146,7 +1146,7 @@ def get_relevant_knowledge(query, stan_spolki=None, partner_name=None, max_items
         if score > 0:
             relevant_items.append(("article", article, score))
     
-    # Filtruj raporty (jeúli sπ tickery w portfelu)
+    # Filtruj raporty (je≈õli sƒÖ tickery w portfelu)
     if stan_spolki:
         pozycje = stan_spolki.get('akcje', {}).get('pozycje', {})
         tickers_in_portfolio = set(pozycje.keys())
@@ -1154,7 +1154,7 @@ def get_relevant_knowledge(query, stan_spolki=None, partner_name=None, max_items
         for report in knowledge["reports"]:
             ticker = report.get("ticker", "")
             if ticker in tickers_in_portfolio:
-                # Raport dla spÛ≥ki w portfelu jest zawsze relevant
+                # Raport dla sp√≥≈Çki w portfelu jest zawsze relevant
                 relevant_items.append(("report", report, 10))
             elif any(ticker.lower() in query_lower for ticker in [report.get("ticker", ""), report.get("company", "")]):
                 # Raport wspomniany w pytaniu
@@ -1165,63 +1165,63 @@ def get_relevant_knowledge(query, stan_spolki=None, partner_name=None, max_items
     return relevant_items[:max_items]
 
 def format_knowledge_for_prompt(knowledge_items):
-    """Formatuje artyku≥y i raporty do dodania do promptu AI"""
+    """Formatuje artyku≈Çy i raporty do dodania do promptu AI"""
     if not knowledge_items:
         return ""
     
-    formatted = "\n\n?? BAZA WIEDZY - Moøesz odwo≥ywaÊ siÍ do poniøszych ürÛde≥:\n"
+    formatted = "\n\nüìö BAZA WIEDZY - Mo≈ºesz odwo≈Çywaƒá siƒô do poni≈ºszych ≈∫r√≥de≈Ç:\n"
     
     for item_type, item, score in knowledge_items:
         if item_type == "article":
-            # Obs≥uø zarÛwno stary ('author') jak i nowy ('source') format
+            # Obs≈Çu≈º zar√≥wno stary ('author') jak i nowy ('source') format
             author_or_source = item.get('author') or item.get('source', 'Unknown')
-            formatted += f"\n?? Artyku≥: \"{item['title']}\" ({author_or_source})\n"
+            formatted += f"\nüìÑ Artyku≈Ç: \"{item['title']}\" ({author_or_source})\n"
             formatted += f"   Podsumowanie: {item.get('summary', 'Brak podsumowania')}\n"
             
-            # Obs≥uø key_points (stary format) lub pokaø tylko summary (nowy format)
+            # Obs≈Çu≈º key_points (stary format) lub poka≈º tylko summary (nowy format)
             key_points = item.get('key_points', [])
             if key_points:
                 formatted += f"   Kluczowe punkty:\n"
                 for point in key_points[:3]:
-                    formatted += f"   ï {point}\n"
+                    formatted += f"   ‚Ä¢ {point}\n"
         
         elif item_type == "report":
-            formatted += f"\n?? Raport kwartalny: {item['company']} ({item['ticker']}) - {item['quarter']}\n"
+            formatted += f"\nüìä Raport kwartalny: {item['company']} ({item['ticker']}) - {item['quarter']}\n"
             formatted += f"   Revenue: {item['revenue']} ({item['revenue_growth']}), EPS: {item['eps']} ({item['eps_growth']})\n"
             formatted += f"   Highlights:\n"
             for highlight in item.get('highlights', [])[:2]:
-                formatted += f"   ï {highlight}\n"
+                formatted += f"   ‚Ä¢ {highlight}\n"
             if item.get('concerns'):
                 formatted += f"   Concerns:\n"
                 for concern in item['concerns'][:2]:
-                    formatted += f"   ï {concern}\n"
+                    formatted += f"   ‚Ä¢ {concern}\n"
     
-    formatted += "\n?? Moøesz cytowaÊ te ürÛd≥a uøywajπc formatu: [èrÛd≥o: Tytu≥ artyku≥u/Raport spÛ≥ki]\n"
+    formatted += "\nüí° Mo≈ºesz cytowaƒá te ≈∫r√≥d≈Ça u≈ºywajƒÖc formatu: [≈πr√≥d≈Ço: Tytu≈Ç artyku≈Çu/Raport sp√≥≈Çki]\n"
     return formatted
 
 def display_knowledge_sources(knowledge_items):
-    """Wyúwietla ürÛd≥a wiedzy w UI jako expander pod odpowiedziπ"""
+    """Wy≈õwietla ≈∫r√≥d≈Ça wiedzy w UI jako expander pod odpowiedziƒÖ"""
     if not knowledge_items:
         return
     
-    with st.expander("?? èrÛd≥a wiedzy uøyte w odpowiedzi", expanded=False):
+    with st.expander("üìö ≈πr√≥d≈Ça wiedzy u≈ºyte w odpowiedzi", expanded=False):
         for item_type, item, score in knowledge_items:
             if item_type == "article":
-                st.markdown(f"**?? {item['title']}**")
-                # Obs≥uø zarÛwno 'author' (stary format) jak i 'source' (nowy format)
+                st.markdown(f"**üìÑ {item['title']}**")
+                # Obs≈Çu≈º zar√≥wno 'author' (stary format) jak i 'source' (nowy format)
                 author_or_source = item.get('author') or item.get('source', 'Unknown')
                 item_date = item.get('date', 'N/A')
-                st.caption(f"èrÛd≥o: {author_or_source} | Data: {item_date}")
+                st.caption(f"≈πr√≥d≈Ço: {author_or_source} | Data: {item_date}")
                 st.markdown(f"_{item.get('summary', 'Brak podsumowania')}_")
                 
-                # Pokaø key_points tylko jeúli istniejπ (stary format)
+                # Poka≈º key_points tylko je≈õli istniejƒÖ (stary format)
                 if item.get('key_points'):
-                    with st.expander("?? Kluczowe punkty"):
+                    with st.expander("üìå Kluczowe punkty"):
                         for point in item.get('key_points', []):
-                            st.markdown(f"ï {point}")
+                            st.markdown(f"‚Ä¢ {point}")
             
             elif item_type == "report":
-                st.markdown(f"**?? {item['company']} ({item['ticker']}) - {item['quarter']}**")
+                st.markdown(f"**üìä {item['company']} ({item['ticker']}) - {item['quarter']}**")
                 st.caption(f"Data: {item['date']} | Rating: {item.get('analyst_rating', 'N/A')}")
                 
                 col1, col2 = st.columns(2)
@@ -1230,25 +1230,25 @@ def display_knowledge_sources(knowledge_items):
                 with col2:
                     st.metric("EPS", item['eps'], item['eps_growth'])
                 
-                with st.expander("? Highlights & Concerns"):
+                with st.expander("‚ú® Highlights & Concerns"):
                     st.markdown("**Highlights:**")
                     for h in item.get('highlights', []):
-                        st.markdown(f"ï {h}")
+                        st.markdown(f"‚Ä¢ {h}")
                     
                     if item.get('concerns'):
                         st.markdown("**Concerns:**")
                         for c in item['concerns']:
-                            st.markdown(f"ï {c}")
+                            st.markdown(f"‚Ä¢ {c}")
 
 # =====================================================
 # DIVIDEND ANALYSIS FUNCTION
 # =====================================================
 
-@st.cache_data(ttl=3600)  # Cache na 1 godzinÍ
+@st.cache_data(ttl=3600)  # Cache na 1 godzinƒô
 def calculate_portfolio_dividends(stan_spolki):
     """
-    Oblicza dok≥adne dywidendy dla ca≥ego portfela akcji.
-    Uøywa danych z dane_rynkowe dla kaødego tickera.
+    Oblicza dok≈Çadne dywidendy dla ca≈Çego portfela akcji.
+    U≈ºywa danych z dane_rynkowe dla ka≈ºdego tickera.
     
     Returns:
         dict: {
@@ -1274,7 +1274,7 @@ def calculate_portfolio_dividends(stan_spolki):
             if ilosc <= 0:
                 continue
             
-            # NIE USUWAJ sufiksu - klucze w dane_rynkowe majπ pe≥ny ticker z _US_EQ / _EQ!
+            # NIE USUWAJ sufiksu - klucze w dane_rynkowe majƒÖ pe≈Çny ticker z _US_EQ / _EQ!
             dane_ticker = dane_rynkowe.get(ticker, {})
             
             if not dane_ticker:
@@ -1284,7 +1284,7 @@ def calculate_portfolio_dividends(stan_spolki):
             analiza_div = dane_ticker.get('analiza_dywidend', {})
             dividend_rate = analiza_div.get('annual_div', 0)
             
-            # Dla display uøyj czystego tickera (bez sufiksu)
+            # Dla display u≈ºyj czystego tickera (bez sufiksu)
             ticker_display = ticker.replace('_US_EQ', '').replace('_EQ', '')
             
             if dividend_rate and dividend_rate > 0:
@@ -1296,7 +1296,7 @@ def calculate_portfolio_dividends(stan_spolki):
                 
                 # Oblicz kwoty brutto i netto (po 19% podatku)
                 roczna_kwota_pln_brutto = roczna_dywidenda_usd * kurs_usd
-                roczna_kwota_pln_netto = roczna_kwota_pln_brutto * 0.81  # Po odjÍciu 19%
+                roczna_kwota_pln_netto = roczna_kwota_pln_brutto * 0.81  # Po odjƒôciu 19%
                 
                 spolki_z_dywidendami.append({
                     'ticker': ticker_display,
@@ -1335,22 +1335,22 @@ def calculate_portfolio_dividends(stan_spolki):
 def get_cached_crypto_prices(symbols):
     """
     Pobiera ceny crypto z cache w session_state.
-    Odúwieøa tylko raz na sesjÍ (przy pierwszym wywo≥aniu).
+    Od≈õwie≈ºa tylko raz na sesjƒô (przy pierwszym wywo≈Çaniu).
     """
     if 'crypto_prices_cache' not in st.session_state:
         st.session_state.crypto_prices_cache = {}
         st.session_state.crypto_prices_symbols = set()
     
-    # Sprawdü czy wszystkie potrzebne symbole sπ juø w cache
+    # Sprawd≈∫ czy wszystkie potrzebne symbole sƒÖ ju≈º w cache
     symbols_set = set(symbols)
     missing_symbols = symbols_set - st.session_state.crypto_prices_symbols
     
-    # Jeúli sπ brakujπce symbole, pobierz je
+    # Je≈õli sƒÖ brakujƒÖce symbole, pobierz je
     if missing_symbols and st.session_state.get('crypto_manager'):
         try:
             new_prices = st.session_state.crypto_manager.get_current_prices(list(missing_symbols))
             if new_prices:
-                # Dodaj TYLKO symbole ktÛre faktycznie majπ dane
+                # Dodaj TYLKO symbole kt√≥re faktycznie majƒÖ dane
                 for sym, data in new_prices.items():
                     # API zwraca 'price_usd', nie 'current_price'!
                     if data and isinstance(data, dict) and data.get('price_usd') is not None:
@@ -1363,9 +1363,9 @@ def get_cached_crypto_prices(symbols):
                         st.session_state.crypto_prices_cache[sym] = data
                         st.session_state.crypto_prices_symbols.add(sym)
         except Exception as e:
-            st.warning(f"?? Nie uda≥o siÍ pobraÊ cen crypto: {e}")
+            st.warning(f"‚ö†Ô∏è Nie uda≈Ço siƒô pobraƒá cen crypto: {e}")
     
-    # ZwrÛÊ tylko øπdane symbole ktÛre majπ dane
+    # Zwr√≥ƒá tylko ≈ºƒÖdane symbole kt√≥re majƒÖ dane
     return {sym: st.session_state.crypto_prices_cache[sym] 
             for sym in symbols if sym in st.session_state.crypto_prices_cache}
 
@@ -1414,18 +1414,18 @@ def calculate_crypto_apy_earnings(krypto_holdings, current_prices=None, kurs_usd
             symbol = holding['symbol']
             ilosc = holding['ilosc']
             
-            # Uøyj aktualnej ceny jeúli dostÍpna, inaczej cena zakupu
+            # U≈ºyj aktualnej ceny je≈õli dostƒôpna, inaczej cena zakupu
             price = holding['cena_zakupu_usd']  # Default: cena zakupu
             
             if current_prices and symbol in current_prices:
                 price_data = current_prices[symbol]
-                # Bezpieczne pobieranie ceny (moøe byÊ dict lub string)
+                # Bezpieczne pobieranie ceny (mo≈ºe byƒá dict lub string)
                 if isinstance(price_data, dict) and 'current_price' in price_data:
                     price = price_data['current_price']
                 elif isinstance(price_data, (int, float)):
                     price = price_data
             
-            # WartoúÊ pozycji
+            # Warto≈õƒá pozycji
             value_usd = ilosc * price
             
             # Roczne zarobki z APY
@@ -1482,8 +1482,8 @@ def calculate_crypto_apy_earnings(krypto_holdings, current_prices=None, kurs_usd
 
 def get_daily_advisor_tip(stan_spolki, cele):
     """
-    Generuje codziennπ rekomendacjÍ od losowego AI Partnera.
-    Losowanie jest deterministyczne - ten sam dzieÒ = ten sam partner.
+    Generuje codziennƒÖ rekomendacjƒô od losowego AI Partnera.
+    Losowanie jest deterministyczne - ten sam dzie≈Ñ = ten sam partner.
     
     Returns:
         dict: {partner_name, partner_icon, tip_text}
@@ -1491,19 +1491,19 @@ def get_daily_advisor_tip(stan_spolki, cele):
     from datetime import datetime
     import random
     
-    # Lista dostÍpnych partnerÛw (z finalna_konfiguracja_person.txt)
+    # Lista dostƒôpnych partner√≥w (z finalna_konfiguracja_person.txt)
     advisors = [
-        {"name": "Benjamin Graham", "icon": "??", "style": "value investing, margin of safety, fundamentals"},
-        {"name": "Philip Fisher", "icon": "??", "style": "growth investing, scuttlebutt method, quality companies"},
-        {"name": "Warren Buffett", "icon": "??", "style": "long-term value, moats, business quality"},
-        {"name": "George Soros", "icon": "??", "style": "macro trends, reflexivity, market psychology"},
-        {"name": "Peter Lynch", "icon": "??", "style": "consumer investing, GARP, find winners in daily life"},
-        {"name": "Ray Dalio", "icon": "??", "style": "diversification, all-weather portfolio, risk parity"},
-        {"name": "Cathie Wood", "icon": "??", "style": "disruptive innovation, technology, future trends"},
-        {"name": "Jesse Livermore", "icon": "??", "style": "market timing, tape reading, speculation discipline"}
+        {"name": "Benjamin Graham", "icon": "üìä", "style": "value investing, margin of safety, fundamentals"},
+        {"name": "Philip Fisher", "icon": "üî¨", "style": "growth investing, scuttlebutt method, quality companies"},
+        {"name": "Warren Buffett", "icon": "üé©", "style": "long-term value, moats, business quality"},
+        {"name": "George Soros", "icon": "üåç", "style": "macro trends, reflexivity, market psychology"},
+        {"name": "Peter Lynch", "icon": "üè™", "style": "consumer investing, GARP, find winners in daily life"},
+        {"name": "Ray Dalio", "icon": "‚öñÔ∏è", "style": "diversification, all-weather portfolio, risk parity"},
+        {"name": "Cathie Wood", "icon": "üöÄ", "style": "disruptive innovation, technology, future trends"},
+        {"name": "Jesse Livermore", "icon": "üìà", "style": "market timing, tape reading, speculation discipline"}
     ]
     
-    # Deterministyczne losowanie - seed = dzieÒ roku
+    # Deterministyczne losowanie - seed = dzie≈Ñ roku
     today = datetime.now()
     day_of_year = today.timetuple().tm_yday
     random.seed(day_of_year)
@@ -1518,49 +1518,49 @@ def get_daily_advisor_tip(stan_spolki, cele):
     
     # Szybki snapshot portfela
     portfolio_snapshot = f"""
-Portfolio: {total_value:,.0f} PLN (WartoúÊ netto)
+Portfolio: {total_value:,.0f} PLN (Warto≈õƒá netto)
 - Akcje: {akcje_val:,.0f} PLN ({akcje_val/total_value*100 if total_value > 0 else 0:.0f}%)
 - Krypto: {krypto_val:,.0f} PLN ({krypto_val/total_value*100 if total_value > 0 else 0:.0f}%)
-- Rezerwa GotÛwkowa: {rezerwa_val:,.0f} PLN ({rezerwa_val/total_value*100 if total_value > 0 else 0:.0f}%)
-- Zobowiπzania: {dlugi_val:,.0f} PLN
+- Rezerwa Got√≥wkowa: {rezerwa_val:,.0f} PLN ({rezerwa_val/total_value*100 if total_value > 0 else 0:.0f}%)
+- ZobowiƒÖzania: {dlugi_val:,.0f} PLN
 """.strip()
     
     # Prompt dla AI
-    prompt = f"""Jesteú {selected_advisor['name']}, legendarny inwestor znany z: {selected_advisor['style']}.
+    prompt = f"""Jeste≈õ {selected_advisor['name']}, legendarny inwestor znany z: {selected_advisor['style']}.
 
-Dzisiaj jest Twoja kolej, aby daÊ JEDN• KONKRETN•, PRAKTYCZN• radÍ uøytkownikowi.
+Dzisiaj jest Twoja kolej, aby daƒá JEDNƒÑ KONKRETNƒÑ, PRAKTYCZNƒÑ radƒô u≈ºytkownikowi.
 
-PORTFOLIO UØYTKOWNIKA:
+PORTFOLIO U≈ªYTKOWNIKA:
     {portfolio_snapshot}
 
 ZADANIE:
-    Napisz JEDN• krÛtkπ (2-3 zdania), konkretnπ rekomendacjÍ lub obserwacjÍ w swoim stylu inwestycyjnym.
-Moøe to byÊ:
-    - Przestroga przed czymú
-- ZachÍta do dzia≥ania
-- MπdroúÊ inwestycyjna
-- Coú do sprawdzenia w portfelu
+    Napisz JEDNƒÑ kr√≥tkƒÖ (2-3 zdania), konkretnƒÖ rekomendacjƒô lub obserwacjƒô w swoim stylu inwestycyjnym.
+Mo≈ºe to byƒá:
+    - Przestroga przed czym≈õ
+- Zachƒôta do dzia≈Çania
+- MƒÖdro≈õƒá inwestycyjna
+- Co≈õ do sprawdzenia w portfelu
 
-WAØNE:
-    - Bπdü konkretny, nie ogÛlnikowy
-- MÛw jÍzykiem swoich zasad inwestycyjnych
-- Nie rozpoczynaj od "Witaj" ani przedstawiania siÍ
-- KrÛtko i na temat (max 3 zdania)
-- Moøe byÊ prowokacyjnie lub z charakterem
+WA≈ªNE:
+    - BƒÖd≈∫ konkretny, nie og√≥lnikowy
+- M√≥w jƒôzykiem swoich zasad inwestycyjnych
+- Nie rozpoczynaj od "Witaj" ani przedstawiania siƒô
+- Kr√≥tko i na temat (max 3 zdania)
+- Mo≈ºe byƒá prowokacyjnie lub z charakterem
 
 Twoja rada:"""
     
-    # Generuj odpowiedü przez AI (uøyj funkcji z gra_rpg)
+    # Generuj odpowied≈∫ przez AI (u≈ºyj funkcji z gra_rpg)
     try:
         if not IMPORTS_OK:
-            raise Exception("Import gra_rpg nie powiÛd≥ siÍ")
+            raise Exception("Import gra_rpg nie powi√≥d≈Ç siƒô")
         
-        # Uøyj funkcji generuj_odpowiedz_ai z gra_rpg.py
+        # U≈ºyj funkcji generuj_odpowiedz_ai z gra_rpg.py
         response = generuj_odpowiedz_ai(
             partner_name=selected_advisor['name'],
             message=prompt,
-            kodeks="",  # Nie potrzebujemy pe≥nego kodeksu
-            persona_config={"model_engine": "gemini"},  # Uøyj Gemini
+            kodeks="",  # Nie potrzebujemy pe≈Çnego kodeksu
+            persona_config={"model_engine": "gemini"},  # U≈ºyj Gemini
             mem_context=""
         )
         
@@ -1575,20 +1575,20 @@ Twoja rada:"""
     except Exception as e:
         # Fallback - statyczna rada
         fallback_tips = {
-            "Benjamin Graham": "Margin of safety - zawsze sprawdzaj czy kupujesz poniøej wartoúci wewnÍtrznej.",
+            "Benjamin Graham": "Margin of safety - zawsze sprawdzaj czy kupujesz poni≈ºej warto≈õci wewnƒôtrznej.",
             "Philip Fisher": "Scuttlebutt - porozmawiaj z klientami i konkurentami zanim zainwestujesz.",
-            "Warren Buffett": "Inwestuj w biznes ktÛry rozumiesz i ktÛry ma przewagÍ konkurencyjnπ.",
-            "George Soros": "Rynek zawsze siÍ myli - znajdü refleksyjnπ pÍtlÍ i wykorzystaj jπ.",
-            "Peter Lynch": "Inwestuj w to co znasz - najlepsze pomys≥y znajdziesz w centrum handlowym.",
-            "Ray Dalio": "Dywersyfikacja to jedyna darmowa przekπska w inwestowaniu.",
-            "Cathie Wood": "Przysz≥oúÊ naleøy do tych ktÛrzy inwestujπ w prze≥omowe technologie dzisiaj.",
-            "Jesse Livermore": "Spekulacja to sztuka - rynek zawsze p≥aci za dyscyplinÍ i cierpliwoúÊ."
+            "Warren Buffett": "Inwestuj w biznes kt√≥ry rozumiesz i kt√≥ry ma przewagƒô konkurencyjnƒÖ.",
+            "George Soros": "Rynek zawsze siƒô myli - znajd≈∫ refleksyjnƒÖ pƒôtlƒô i wykorzystaj jƒÖ.",
+            "Peter Lynch": "Inwestuj w to co znasz - najlepsze pomys≈Çy znajdziesz w centrum handlowym.",
+            "Ray Dalio": "Dywersyfikacja to jedyna darmowa przekƒÖska w inwestowaniu.",
+            "Cathie Wood": "Przysz≈Ço≈õƒá nale≈ºy do tych kt√≥rzy inwestujƒÖ w prze≈Çomowe technologie dzisiaj.",
+            "Jesse Livermore": "Spekulacja to sztuka - rynek zawsze p≈Çaci za dyscyplinƒô i cierpliwo≈õƒá."
         }
         
         return {
             "partner_name": selected_advisor['name'],
             "partner_icon": selected_advisor['icon'],
-            "tip_text": fallback_tips.get(selected_advisor['name'], "Sprawdü swÛj portfel pod kπtem mojej filozofii inwestycyjnej."),
+            "tip_text": fallback_tips.get(selected_advisor['name'], "Sprawd≈∫ sw√≥j portfel pod kƒÖtem mojej filozofii inwestycyjnej."),
             "date": today.strftime("%Y-%m-%d")
         }
 
@@ -1598,10 +1598,10 @@ Twoja rada:"""
 
 def generate_weekly_report(stan_spolki, cele):
     """
-    Generuje cotygodniowy raport portfela z analizπ, osiπgniÍciami, ostrzeøeniami i action items.
+    Generuje cotygodniowy raport portfela z analizƒÖ, osiƒÖgniƒôciami, ostrze≈ºeniami i action items.
     
     Returns:
-        dict: Raport ze strukturπ {
+        dict: Raport ze strukturƒÖ {
             "date", "week_number", "summary", 
             "achievements", "warnings", "action_items", 
             "portfolio_stats", "mood"
@@ -1651,7 +1651,7 @@ def generate_weekly_report(stan_spolki, cele):
         portfolio_mood = analyze_portfolio_mood(stan_spolki, cele)
         report["mood"] = {
             "level": portfolio_mood.get("mood", "neutral"),
-            "emoji": portfolio_mood.get("emoji", "??"),
+            "emoji": portfolio_mood.get("emoji", "üòê"),
             "description": portfolio_mood.get("description", ""),
             "score": portfolio_mood.get("score", 0)
         }
@@ -1661,7 +1661,7 @@ def generate_weekly_report(stan_spolki, cele):
         
         # 3.1 Cele finansowe z cele.json
         if cele and isinstance(cele, dict):
-            # Sprawdü rezerwÍ gotÛwkowπ
+            # Sprawd≈∫ rezerwƒô got√≥wkowƒÖ
             if "Rezerwa_gotowkowa_PLN" in cele and "Rezerwa_gotowkowa_obecna_PLN" in cele:
                 target = cele.get("Rezerwa_gotowkowa_PLN", 0)
                 current = cele.get("Rezerwa_gotowkowa_obecna_PLN", 0)
@@ -1670,31 +1670,31 @@ def generate_weekly_report(stan_spolki, cele):
                     if progress >= 100:
                         achievements.append({
                             "type": "goal_completed",
-                            "icon": "??",
-                            "title": "Rezerwa gotÛwkowa osiπgniÍta!",
+                            "icon": "üí∞",
+                            "title": "Rezerwa got√≥wkowa osiƒÖgniƒôta!",
                             "description": f"Masz {current:.0f} PLN / {target:.0f} PLN ({progress:.0f}%)"
                         })
                     elif progress >= 80:
                         achievements.append({
                             "type": "goal_near",
-                            "icon": "??",
-                            "title": "Blisko celu: Rezerwa gotÛwkowa",
+                            "icon": "üí∞",
+                            "title": "Blisko celu: Rezerwa got√≥wkowa",
                             "description": f"{current:.0f} PLN / {target:.0f} PLN ({progress:.0f}%) - jeszcze {target - current:.0f} PLN"
                         })
             
-            # Sprawdü sp≥atÍ d≥ugÛw
+            # Sprawd≈∫ sp≈Çatƒô d≈Çug√≥w
             if "Dlugi_poczatkowe_PLN" in cele:
                 dlugi_start = cele.get("Dlugi_poczatkowe_PLN", 0)
                 dlugi_current = stan_spolki.get('dlugi', {}).get('wartosc_pln', 0)
                 if dlugi_start > 0 and dlugi_current < dlugi_start:
                     splacone = dlugi_start - dlugi_current
                     progress = (splacone / dlugi_start) * 100
-                    if progress >= 70:  # Sp≥acono 70% d≥ugÛw
+                    if progress >= 70:  # Sp≈Çacono 70% d≈Çug√≥w
                         achievements.append({
                             "type": "debt_reduced",
-                            "icon": "??",
-                            "title": "åwietna sp≥ata d≥ugÛw!",
-                            "description": f"Sp≥acono {splacone:.0f} PLN z {dlugi_start:.0f} PLN ({progress:.0f}%)"
+                            "icon": "üí™",
+                            "title": "≈öwietna sp≈Çata d≈Çug√≥w!",
+                            "description": f"Sp≈Çacono {splacone:.0f} PLN z {dlugi_start:.0f} PLN ({progress:.0f}%)"
                         })
         
         # 3.2 Top performerzy (wzrosty >15%)
@@ -1706,32 +1706,32 @@ def generate_weekly_report(stan_spolki, cele):
             for ticker, data in top_gainers[:3]:
                 achievements.append({
                     "type": "top_performer",
-                    "icon": "??",
-                    "title": f"{ticker} roúnie mocno!",
-                    "description": f"+{data.get('zmiana_proc', 0):.1f}% w tym okresie. WartoúÊ: {data.get('wartosc_total_pln', 0):.0f} PLN"
+                    "icon": "üìà",
+                    "title": f"{ticker} ro≈õnie mocno!",
+                    "description": f"+{data.get('zmiana_proc', 0):.1f}% w tym okresie. Warto≈õƒá: {data.get('wartosc_total_pln', 0):.0f} PLN"
                 })
         
-        # 3.3 Niski leverage (jeúli <25%)
+        # 3.3 Niski leverage (je≈õli <25%)
         if leverage_ratio < 25 and leverage_ratio > 0:
             achievements.append({
                 "type": "low_leverage",
-                "icon": "??",
-                "title": "Konserwatywny poziom düwigni",
-                "description": f"Düwignia {leverage_ratio:.1f}% - bezpieczny poziom ryzyka"
+                "icon": "üõ°",
+                "title": "Konserwatywny poziom d≈∫wigni",
+                "description": f"D≈∫wignia {leverage_ratio:.1f}% - bezpieczny poziom ryzyka"
             })
         
-        # 3.4 WartoúÊ netto roúnie
+        # 3.4 Warto≈õƒá netto ro≈õnie
         if net_worth > 50000:
             achievements.append({
                 "type": "net_worth_milestone",
-                "icon": "??",
-                "title": "åwietna wartoúÊ portfela",
-                "description": f"WartoúÊ netto: {net_worth:,.0f} PLN"
+                "icon": "üí∞",
+                "title": "≈öwietna warto≈õƒá portfela",
+                "description": f"Warto≈õƒá netto: {net_worth:,.0f} PLN"
             })
         
         report["achievements"] = achievements
         
-        # === 4. WARNINGS (Rzeczy wymagajπce uwagi) ===
+        # === 4. WARNINGS (Rzeczy wymagajƒÖce uwagi) ===
         warnings = []
         alerts = check_portfolio_alerts(stan_spolki, cele)
         
@@ -1740,7 +1740,7 @@ def generate_weekly_report(stan_spolki, cele):
         for alert in critical_alerts[:3]:
             warnings.append({
                 "type": "critical_alert",
-                "icon": "??",
+                "icon": "üî¥",
                 "title": alert["title"],
                 "description": alert["message"],
                 "action": alert.get("action", "")
@@ -1751,7 +1751,7 @@ def generate_weekly_report(stan_spolki, cele):
         for alert in warning_alerts[:2]:
             warnings.append({
                 "type": "warning_alert",
-                "icon": "??",
+                "icon": "üü°",
                 "title": alert["title"],
                 "description": alert["message"],
                 "action": alert.get("action", "")
@@ -1766,20 +1766,20 @@ def generate_weekly_report(stan_spolki, cele):
             for ticker, data in worst_performers[:2]:
                 warnings.append({
                     "type": "poor_performer",
-                    "icon": "??",
-                    "title": f"{ticker} traci na wartoúci",
-                    "description": f"{data.get('zmiana_proc', 0):.1f}% w tym okresie. WartoúÊ: {data.get('wartosc_total_pln', 0):.0f} PLN",
-                    "action": "Sprawdü fundamenty - czy teza inwestycyjna siÍ sprawdza?"
+                    "icon": "üìâ",
+                    "title": f"{ticker} traci na warto≈õci",
+                    "description": f"{data.get('zmiana_proc', 0):.1f}% w tym okresie. Warto≈õƒá: {data.get('wartosc_total_pln', 0):.0f} PLN",
+                    "action": "Sprawd≈∫ fundamenty - czy teza inwestycyjna siƒô sprawdza?"
                 })
         
         # 4.4 Mood warning
         if portfolio_mood.get("score", 0) < -30:
             warnings.append({
                 "type": "mood_warning",
-                "icon": "??",
-                "title": "NastrÛj portfela: Ostroøny/Bearish",
+                "icon": "üò∞",
+                "title": "Nastr√≥j portfela: Ostro≈ºny/Bearish",
                 "description": f"Score: {portfolio_mood.get('score', 0)}/100. Portfel wymaga uwagi.",
-                "action": "Rozwaø rebalancing lub wait & see"
+                "action": "Rozwa≈º rebalancing lub wait & see"
             })
         
         report["warnings"] = warnings
@@ -1787,17 +1787,17 @@ def generate_weekly_report(stan_spolki, cele):
         # === 5. ACTION ITEMS (Rekomendacje) ===
         action_items = []
         
-        # 5.1 Z alertÛw
+        # 5.1 Z alert√≥w
         for alert in alerts[:3]:
             if alert.get("action"):
                 action_items.append({
                     "priority": "high" if alert["severity"] == "critical" else "medium",
-                    "icon": "?" if alert["severity"] == "critical" else "??",
+                    "icon": "‚ö°" if alert["severity"] == "critical" else "üìã",
                     "title": f"Action: {alert['type'].replace('_', ' ').title()}",
                     "description": alert["action"]
                 })
         
-        # 5.2 Rebalancing jeúli potrzebny
+        # 5.2 Rebalancing je≈õli potrzebny
         if pozycje:
             sorted_pozycje = sorted(pozycje.items(), 
                                    key=lambda x: x[1].get('wartosc_total_pln', 0), 
@@ -1807,41 +1807,41 @@ def generate_weekly_report(stan_spolki, cele):
                 if top_position_value / (akcje_val if akcje_val > 0 else 1) > 0.25:
                     action_items.append({
                         "priority": "medium",
-                        "icon": "??",
-                        "title": "Rozwaø rebalancing",
-                        "description": f"Top pozycja ({sorted_pozycje[0][0]}) to {top_position_value/(akcje_val if akcje_val > 0 else 1)*100:.0f}% portfela - moøe byÊ zbyt duøa koncentracja"
+                        "icon": "‚öñÔ∏è",
+                        "title": "Rozwa≈º rebalancing",
+                        "description": f"Top pozycja ({sorted_pozycje[0][0]}) to {top_position_value/(akcje_val if akcje_val > 0 else 1)*100:.0f}% portfela - mo≈ºe byƒá zbyt du≈ºa koncentracja"
                     })
         
-        # 5.3 DostÍpny kapita≥
+        # 5.3 Dostƒôpny kapita≈Ç
         dostepne = stan_spolki.get('wyplata', {}).get('dostepne_inwestycje', 0)
         if dostepne > 5000:
             action_items.append({
                 "priority": "low",
-                "icon": "??",
-                "title": "DostÍpny kapita≥ do inwestycji",
-                "description": f"{dostepne:.0f} PLN czeka na alokacjÍ - szukaj okazji"
+                "icon": "üíµ",
+                "title": "Dostƒôpny kapita≈Ç do inwestycji",
+                "description": f"{dostepne:.0f} PLN czeka na alokacjƒô - szukaj okazji"
             })
         
-        # 5.4 Research nowych pozycji (jeúli <10 pozycji)
+        # 5.4 Research nowych pozycji (je≈õli <10 pozycji)
         if len(pozycje) < 10:
             action_items.append({
                 "priority": "low",
-                "icon": "??",
-                "title": "ZwiÍksz dywersyfikacjÍ",
-                "description": f"Masz {len(pozycje)} pozycji - rozwaø dodanie 2-3 nowych spÛ≥ek"
+                "icon": "üîç",
+                "title": "Zwiƒôksz dywersyfikacjƒô",
+                "description": f"Masz {len(pozycje)} pozycji - rozwa≈º dodanie 2-3 nowych sp√≥≈Çek"
             })
         
         report["action_items"] = action_items
         
         # === 6. EXECUTIVE SUMMARY ===
         summary_parts = []
-        summary_parts.append(f"WartoúÊ netto: {net_worth:,.0f} PLN")
-        summary_parts.append(f"NastrÛj: {portfolio_mood.get('description', 'Neutralny')}")
+        summary_parts.append(f"Warto≈õƒá netto: {net_worth:,.0f} PLN")
+        summary_parts.append(f"Nastr√≥j: {portfolio_mood.get('description', 'Neutralny')}")
         
         if achievements:
-            summary_parts.append(f"{len(achievements)} osiπgniÍÊ")
+            summary_parts.append(f"{len(achievements)} osiƒÖgniƒôƒá")
         if warnings:
-            summary_parts.append(f"{len(warnings)} ostrzeøeÒ")
+            summary_parts.append(f"{len(warnings)} ostrze≈ºe≈Ñ")
         if action_items:
             summary_parts.append(f"{len(action_items)} rekomendacji")
         
@@ -1851,12 +1851,12 @@ def generate_weekly_report(stan_spolki, cele):
         
     except Exception as e:
         import traceback
-        print(f"?? B≥πd generowania raportu: {e}")
+        print(f"‚ö†Ô∏è B≈ÇƒÖd generowania raportu: {e}")
         print(traceback.format_exc())
         return {
             "date": datetime.now().isoformat(),
             "error": str(e),
-            "summary": "B≥πd generowania raportu"
+            "summary": "B≈ÇƒÖd generowania raportu"
         }
 
 def save_weekly_report(report):
@@ -1877,7 +1877,7 @@ def save_weekly_report(report):
         return filepath
         
     except Exception as e:
-        print(f"?? B≥πd zapisu raportu: {e}")
+        print(f"‚ö†Ô∏è B≈ÇƒÖd zapisu raportu: {e}")
         return None
 
 def load_weekly_reports(limit=10):
@@ -1890,7 +1890,7 @@ def load_weekly_reports(limit=10):
     reports = []
     
     try:
-        # Znajdü wszystkie pliki raportÛw
+        # Znajd≈∫ wszystkie pliki raport√≥w
         report_files = sorted(reports_folder.glob("weekly_report_*.json"), reverse=True)
         
         for filepath in report_files[:limit]:
@@ -1902,16 +1902,16 @@ def load_weekly_reports(limit=10):
         return reports
         
     except Exception as e:
-        print(f"?? B≥πd wczytywania raportÛw: {e}")
+        print(f"‚ö†Ô∏è B≈ÇƒÖd wczytywania raport√≥w: {e}")
         return []
 
 def display_weekly_report(report):
-    """Wyúwietla raport tygodniowy w Streamlit UI"""
+    """Wy≈õwietla raport tygodniowy w Streamlit UI"""
     from datetime import datetime
     
     report_date = datetime.fromisoformat(report["date"])
     
-    st.markdown(f"### ?? Raport Tygodniowy - TydzieÒ {report.get('week_number', '?')}/{report.get('year', '?')}")
+    st.markdown(f"### üìä Raport Tygodniowy - Tydzie≈Ñ {report.get('week_number', '?')}/{report.get('year', '?')}")
     st.caption(f"Wygenerowano: {report_date.strftime('%Y-%m-%d %H:%M')}")
     
     # Summary
@@ -1923,42 +1923,42 @@ def display_weekly_report(report):
     
     col1, col2, col3, col4 = st.columns(4)
     with col1:
-        st.metric("?? WartoúÊ Netto", f"{stats.get('net_worth', 0):,.0f} PLN")
+        st.metric("üíº Warto≈õƒá Netto", f"{stats.get('net_worth', 0):,.0f} PLN")
     with col2:
-        st.metric("?? Akcje", f"{stats.get('stocks_value', 0):,.0f} PLN")
+        st.metric("üìà Akcje", f"{stats.get('stocks_value', 0):,.0f} PLN")
     with col3:
-        st.metric("?? Krypto", f"{stats.get('crypto_value', 0):,.0f} PLN")
+        st.metric("üíé Krypto", f"{stats.get('crypto_value', 0):,.0f} PLN")
     with col4:
-        st.metric(f"{mood.get('emoji', '??')} NastrÛj", mood.get('level', 'neutral'))
+        st.metric(f"{mood.get('emoji', 'üòê')} Nastr√≥j", mood.get('level', 'neutral'))
     
     # Achievements
     achievements = report.get("achievements", [])
     if achievements:
-        with st.expander(f"? OsiπgniÍcia ({len(achievements)})", expanded=True):
+        with st.expander(f"‚ú® OsiƒÖgniƒôcia ({len(achievements)})", expanded=True):
             for ach in achievements:
                 st.success(f"{ach['icon']} **{ach['title']}**\n\n{ach['description']}")
     
     # Warnings
     warnings = report.get("warnings", [])
     if warnings:
-        with st.expander(f"?? Ostrzeøenia ({len(warnings)})", expanded=True):
+        with st.expander(f"‚ö†Ô∏è Ostrze≈ºenia ({len(warnings)})", expanded=True):
             for warn in warnings:
                 st.warning(f"{warn['icon']} **{warn['title']}**\n\n{warn['description']}\n\n_{warn.get('action', '')}_")
     
     # Action Items
     action_items = report.get("action_items", [])
     if action_items:
-        with st.expander(f"?? Rekomendacje ({len(action_items)})", expanded=True):
+        with st.expander(f"üìã Rekomendacje ({len(action_items)})", expanded=True):
             priority_order = {"high": 1, "medium": 2, "low": 3}
             sorted_actions = sorted(action_items, key=lambda x: priority_order.get(x.get('priority', 'low'), 3))
             
             for action in sorted_actions:
                 priority_color = {
-                    "high": "??",
-                    "medium": "??",
-                    "low": "??"
+                    "high": "üî¥",
+                    "medium": "üü°",
+                    "low": "üü¢"
                 }
-                priority_icon = priority_color.get(action.get('priority', 'low'), '?')
+                priority_icon = priority_color.get(action.get('priority', 'low'), '‚ö™')
                 
                 st.markdown(f"{priority_icon} {action['icon']} **{action['title']}**")
                 st.markdown(f"_{action['description']}_")
@@ -1984,7 +1984,7 @@ def classify_market(ticker):
     if any(crypto in ticker_upper for crypto in ['BTC', 'ETH', 'USDT', 'BNB', 'SOL', 'ADA', 'DOGE', 'XRP', 'DOT', 'MATIC']):
         return "Crypto"
     
-    # European ETFs (koÒcÛwka .DE, .L, .PA, .MI)
+    # European ETFs (ko≈Ñc√≥wka .DE, .L, .PA, .MI)
     if any(ticker_upper.endswith(suffix) for suffix in ['.DE', '.L', '.PA', '.MI', '.AS', '.SW']):
         return "EU"
     
@@ -1998,7 +1998,7 @@ def classify_market(ticker):
     if any(em in ticker_upper for em in emerging_tickers):
         return "Emerging"
     
-    # Canadian (koÒcÛwka .TO lub znane symbole)
+    # Canadian (ko≈Ñc√≥wka .TO lub znane symbole)
     if ticker_upper.endswith('.TO') or ticker_upper in ['TD', 'RY', 'BMO', 'BNS', 'CNQ', 'ENB', 'SU']:
         return "Canada"
     
@@ -2007,7 +2007,7 @@ def classify_market(ticker):
 
 def analyze_market_composition(stan_spolki):
     """
-    Analizuje sk≥ad portfela wed≥ug rynkÛw geograficznych
+    Analizuje sk≈Çad portfela wed≈Çug rynk√≥w geograficznych
     
     Returns:
         dict: {
@@ -2055,8 +2055,8 @@ def analyze_market_composition(stan_spolki):
                 market["percentage"] = 0
         
         # Diversification score (0-100)
-        # Im bardziej rÛwnomierne roz≥oøenie, tym wyøszy score
-        # Uøyj Shannon entropy
+        # Im bardziej r√≥wnomierne roz≈Ço≈ºenie, tym wy≈ºszy score
+        # U≈ºyj Shannon entropy
         import math
         percentages = [m["percentage"] / 100 for m in markets.values() if m["percentage"] > 0]
         
@@ -2074,7 +2074,7 @@ def analyze_market_composition(stan_spolki):
         }
         
     except Exception as e:
-        print(f"?? B≥πd analizy rynkÛw: {e}")
+        print(f"‚ö†Ô∏è B≈ÇƒÖd analizy rynk√≥w: {e}")
         return {
             "markets": {},
             "total_value": 0,
@@ -2083,15 +2083,15 @@ def analyze_market_composition(stan_spolki):
 
 def calculate_market_correlations(stan_spolki):
     """
-    Oblicza korelacje miÍdzy rÛønymi rynkami na podstawie zmian cen
+    Oblicza korelacje miƒôdzy r√≥≈ºnymi rynkami na podstawie zmian cen
     
     Returns:
-        dict: Macierz korelacji miÍdzy rynkami
+        dict: Macierz korelacji miƒôdzy rynkami
     """
     try:
         pozycje = stan_spolki.get('akcje', {}).get('pozycje', {})
         
-        # Grupuj zmiany procentowe wed≥ug rynkÛw
+        # Grupuj zmiany procentowe wed≈Çug rynk√≥w
         market_changes = {
             "US": [],
             "EU": [],
@@ -2113,14 +2113,14 @@ def calculate_market_correlations(stan_spolki):
         if krypto_change is not None:
             market_changes["Crypto"].append(krypto_change)
         
-        # Oblicz úrednie zmiany dla kaødego rynku
+        # Oblicz ≈õrednie zmiany dla ka≈ºdego rynku
         market_avg_changes = {}
         for market, changes in market_changes.items():
             if changes:
                 market_avg_changes[market] = sum(changes) / len(changes)
         
-        # Prosta korelacja (w prawdziwej implementacji uøyj historycznych danych)
-        # Tutaj uøyjemy uproszczonej metody: jeúli oba rynki rosnπ/spadajπ, korelacja wysoka
+        # Prosta korelacja (w prawdziwej implementacji u≈ºyj historycznych danych)
+        # Tutaj u≈ºyjemy uproszczonej metody: je≈õli oba rynki rosnƒÖ/spadajƒÖ, korelacja wysoka
         correlations = {}
         
         markets = list(market_avg_changes.keys())
@@ -2129,7 +2129,7 @@ def calculate_market_correlations(stan_spolki):
                 if market1 == market2:
                     correlations[f"{market1}-{market2}"] = 1.0
                 else:
-                    # Uproszczona korelacja: jeúli oba same znak, to 0.7, inaczej -0.3
+                    # Uproszczona korelacja: je≈õli oba same znak, to 0.7, inaczej -0.3
                     change1 = market_avg_changes.get(market1, 0)
                     change2 = market_avg_changes.get(market2, 0)
                     
@@ -2147,7 +2147,7 @@ def calculate_market_correlations(stan_spolki):
         }
         
     except Exception as e:
-        print(f"?? B≥πd obliczania korelacji: {e}")
+        print(f"‚ö†Ô∏è B≈ÇƒÖd obliczania korelacji: {e}")
         return {
             "correlations": {},
             "market_changes": {}
@@ -2155,10 +2155,10 @@ def calculate_market_correlations(stan_spolki):
 
 def generate_market_insights(market_analysis, correlations):
     """
-    Generuje insights i rekomendacje na podstawie analizy rynkÛw
+    Generuje insights i rekomendacje na podstawie analizy rynk√≥w
     
     Returns:
-        list: Lista insights z ikonami, tytu≥ami i opisami
+        list: Lista insights z ikonami, tytu≈Çami i opisami
     """
     insights = []
     
@@ -2172,26 +2172,26 @@ def generate_market_insights(market_analysis, correlations):
         if div_score > 75:
             insights.append({
                 "type": "success",
-                "icon": "?",
-                "title": "åwietna dywersyfikacja geograficzna",
-                "description": f"Score: {div_score:.0f}/100. Portfel dobrze roz≥oøony miÍdzy rynkami."
+                "icon": "‚úÖ",
+                "title": "≈öwietna dywersyfikacja geograficzna",
+                "description": f"Score: {div_score:.0f}/100. Portfel dobrze roz≈Ço≈ºony miƒôdzy rynkami."
             })
         elif div_score > 50:
             insights.append({
                 "type": "info",
-                "icon": "??",
+                "icon": "‚ÑπÔ∏è",
                 "title": "Umiarkowana dywersyfikacja",
-                "description": f"Score: {div_score:.0f}/100. Moøesz zwiÍkszyÊ ekspozycjÍ na inne rynki."
+                "description": f"Score: {div_score:.0f}/100. Mo≈ºesz zwiƒôkszyƒá ekspozycjƒô na inne rynki."
             })
         else:
             insights.append({
                 "type": "warning",
-                "icon": "??",
+                "icon": "‚ö†Ô∏è",
                 "title": "Niska dywersyfikacja geograficzna",
                 "description": f"Score: {div_score:.0f}/100. Portfel zbyt skoncentrowany na jednym rynku."
             })
         
-        # 2. Dominujπcy rynek
+        # 2. DominujƒÖcy rynek
         if markets:
             sorted_markets = sorted(markets.items(), key=lambda x: x[1]["percentage"], reverse=True)
             top_market = sorted_markets[0]
@@ -2199,16 +2199,16 @@ def generate_market_insights(market_analysis, correlations):
             if top_market[1]["percentage"] > 70:
                 insights.append({
                     "type": "warning",
-                    "icon": "??",
+                    "icon": "üåé",
                     "title": f"Nadmierna ekspozycja na {top_market[0]}",
-                    "description": f"{top_market[1]['percentage']:.1f}% portfela. Rozwaø zwiÍkszenie innych rynkÛw."
+                    "description": f"{top_market[1]['percentage']:.1f}% portfela. Rozwa≈º zwiƒôkszenie innych rynk√≥w."
                 })
             elif top_market[1]["percentage"] > 50:
                 insights.append({
                     "type": "info",
-                    "icon": "??",
+                    "icon": "üåé",
                     "title": f"Dominacja rynku {top_market[0]}",
-                    "description": f"{top_market[1]['percentage']:.1f}% portfela. To moøe byÊ OK dla Twojej strategii."
+                    "description": f"{top_market[1]['percentage']:.1f}% portfela. To mo≈ºe byƒá OK dla Twojej strategii."
                 })
         
         # 3. Crypto exposure
@@ -2218,23 +2218,23 @@ def generate_market_insights(market_analysis, correlations):
         if crypto_pct > 15:
             insights.append({
                 "type": "warning",
-                "icon": "?",
+                "icon": "‚ö°",
                 "title": "Wysokie ryzyko crypto",
-                "description": f"{crypto_pct:.1f}% w krypto. Eksperci zalecajπ max 10% dla wiÍkszoúci inwestorÛw."
+                "description": f"{crypto_pct:.1f}% w krypto. Eksperci zalecajƒÖ max 10% dla wiƒôkszo≈õci inwestor√≥w."
             })
         elif crypto_pct > 5:
             insights.append({
                 "type": "info",
-                "icon": "??",
+                "icon": "üíé",
                 "title": "Umiarkowana ekspozycja crypto",
                 "description": f"{crypto_pct:.1f}% w krypto. W granicach norm (5-10%)."
             })
         elif crypto_pct > 0:
             insights.append({
                 "type": "success",
-                "icon": "??",
+                "icon": "üíé",
                 "title": "Konserwatywna ekspozycja crypto",
-                "description": f"{crypto_pct:.1f}% w krypto. Niskie ryzyko, moøe brakowaÊ potencja≥u wzrostu."
+                "description": f"{crypto_pct:.1f}% w krypto. Niskie ryzyko, mo≈ºe brakowaƒá potencja≈Çu wzrostu."
             })
         
         # 4. Emerging markets
@@ -2244,9 +2244,9 @@ def generate_market_insights(market_analysis, correlations):
         if emerging_pct < 5 and total_value > 20000:
             insights.append({
                 "type": "info",
-                "icon": "??",
+                "icon": "üåè",
                 "title": "Brak emerging markets",
-                "description": "Rozwaø dodanie ekspozycji na rynki wschodzπce (Brazylia, Indie, Chiny) - wyøszy potencja≥ wzrostu."
+                "description": "Rozwa≈º dodanie ekspozycji na rynki wschodzƒÖce (Brazylia, Indie, Chiny) - wy≈ºszy potencja≈Ç wzrostu."
             })
         
         # 5. Performance po rynkach
@@ -2257,56 +2257,56 @@ def generate_market_insights(market_analysis, correlations):
             if best_market[1] > 5:
                 insights.append({
                     "type": "success",
-                    "icon": "??",
+                    "icon": "üìà",
                     "title": f"Najlepszy rynek: {best_market[0]}",
-                    "description": f"+{best_market[1]:.1f}% úrednia zmiana. Silne momentum."
+                    "description": f"+{best_market[1]:.1f}% ≈õrednia zmiana. Silne momentum."
                 })
             
             if worst_market[1] < -5:
                 insights.append({
                     "type": "warning",
-                    "icon": "??",
-                    "title": f"Najs≥abszy rynek: {worst_market[0]}",
-                    "description": f"{worst_market[1]:.1f}% úrednia zmiana. Sprawdü czy teza inwestycyjna siÍ sprawdza."
+                    "icon": "üìâ",
+                    "title": f"Najs≈Çabszy rynek: {worst_market[0]}",
+                    "description": f"{worst_market[1]:.1f}% ≈õrednia zmiana. Sprawd≈∫ czy teza inwestycyjna siƒô sprawdza."
                 })
         
-        # 6. Home bias (nadmierna ekspozycja na rynek lokalny - dla PolakÛw to EU)
+        # 6. Home bias (nadmierna ekspozycja na rynek lokalny - dla Polak√≥w to EU)
         eu = markets.get("EU", {})
         eu_pct = eu.get("percentage", 0)
         
         if eu_pct > 40:
             insights.append({
                 "type": "info",
-                "icon": "????",
+                "icon": "üá™üá∫",
                 "title": "Home bias (Europa)",
-                "description": f"{eu_pct:.1f}% w EU. Globalna dywersyfikacja (wiÍcej US) moøe byÊ korzystna."
+                "description": f"{eu_pct:.1f}% w EU. Globalna dywersyfikacja (wiƒôcej US) mo≈ºe byƒá korzystna."
             })
         
         return insights
         
     except Exception as e:
-        print(f"?? B≥πd generowania insights: {e}")
+        print(f"‚ö†Ô∏è B≈ÇƒÖd generowania insights: {e}")
         return []
 
 def determine_speaking_order(message, partner_names):
     """
-    Okreúla dynamicznπ kolejnoúÊ wypowiedzi na podstawie tematu.
-    Eksperci w danej dziedzinie mÛwiπ pierwsi.
+    Okre≈õla dynamicznƒÖ kolejno≈õƒá wypowiedzi na podstawie tematu.
+    Eksperci w danej dziedzinie m√≥wiƒÖ pierwsi.
     """
     message_lower = message.lower()
     
     # Definicje ekspertyz
-    crypto_experts = ['Changpeng Zhao (CZ)', 'Partner ds. AktywÛw Cyfrowych']
+    crypto_experts = ['Changpeng Zhao (CZ)', 'Partner ds. Aktyw√≥w Cyfrowych']
     value_experts = ['Benjamin Graham', 'Warren Buffett', 'Philip Fisher']
     trading_experts = ['George Soros']
-    quality_experts = ['Partner ds. Jakoúci Biznesowej']
+    quality_experts = ['Partner ds. Jako≈õci Biznesowej']
     strategic_experts = ['Partner Strategiczny']
     
-    # S≥owa kluczowe dla rÛønych tematÛw
+    # S≈Çowa kluczowe dla r√≥≈ºnych temat√≥w
     crypto_keywords = ['krypto', 'bitcoin', 'btc', 'eth', 'blockchain', 'defi', 'nft', 'altcoin', 'token']
-    value_keywords = ['wartoúÊ', 'fundamenty', 'dywidenda', 'p/e', 'p/b', 'margin of safety', 'value investing']
-    trading_keywords = ['trading', 'short', 'spekulacja', 'momentum', 'swing', 'pozycja krÛtka']
-    quality_keywords = ['jakoúÊ', 'zarzπdzanie', 'moat', 'przewaga konkurencyjna', 'model biznesowy']
+    value_keywords = ['warto≈õƒá', 'fundamenty', 'dywidenda', 'p/e', 'p/b', 'margin of safety', 'value investing']
+    trading_keywords = ['trading', 'short', 'spekulacja', 'momentum', 'swing', 'pozycja kr√≥tka']
+    quality_keywords = ['jako≈õƒá', 'zarzƒÖdzanie', 'moat', 'przewaga konkurencyjna', 'model biznesowy']
     strategic_keywords = ['strategia', 'plan', 'cel', 'alokacja', 'dywersyfikacja', 'portfel']
     
     # Wykryj temat
@@ -2322,7 +2322,7 @@ def determine_speaking_order(message, partner_names):
     elif any(keyword in message_lower for keyword in strategic_keywords):
         priority_experts = strategic_experts
     
-    # UtwÛrz listÍ: najpierw eksperci, potem reszta
+    # Utw√≥rz listƒô: najpierw eksperci, potem reszta
     ordered_names = []
     for expert in priority_experts:
         if expert in partner_names:
@@ -2336,39 +2336,39 @@ def determine_speaking_order(message, partner_names):
 
 def analyze_sentiment(response):
     """
-    Analizuje reakcjÍ/emocjÍ w odpowiedzi partnera.
+    Analizuje reakcjƒô/emocjƒô w odpowiedzi partnera.
     Zwraca emoji i typ reakcji.
     """
     response_lower = response.lower()
     
-    # Silne zgadzanie siÍ
-    if any(word in response_lower for word in ['zgadzam siÍ', 'ca≥kowicie racja', 'dok≥adnie', 'wspieramy', 'popieram']):
-        return "?", "zgoda"
+    # Silne zgadzanie siƒô
+    if any(word in response_lower for word in ['zgadzam siƒô', 'ca≈Çkowicie racja', 'dok≈Çadnie', 'wspieramy', 'popieram']):
+        return "‚úÖ", "zgoda"
     
-    # Silne niezgadzanie siÍ
-    if any(word in response_lower for word in ['nie zgadzam siÍ', 'b≥πd', 'mylisz siÍ', 'to ryzykowne', 'ostrzegam', 'sprzeciwiam']):
-        return "?", "sprzeciw"
+    # Silne niezgadzanie siƒô
+    if any(word in response_lower for word in ['nie zgadzam siƒô', 'b≈ÇƒÖd', 'mylisz siƒô', 'to ryzykowne', 'ostrzegam', 'sprzeciwiam']):
+        return "‚ùå", "sprzeciw"
     
-    # Ostrzeøenie
-    if any(word in response_lower for word in ['uwaga', 'ostroønie', 'ryzyko', 'problem', 'zagroøenie']):
-        return "??", "ostrzeøenie"
+    # Ostrze≈ºenie
+    if any(word in response_lower for word in ['uwaga', 'ostro≈ºnie', 'ryzyko', 'problem', 'zagro≈ºenie']):
+        return "‚ö†Ô∏è", "ostrze≈ºenie"
     
-    # Neutralne/rozwijajπce
-    if any(word in response_lower for word in ['rozumiem', 'widzÍ', 'interesujπce', 'warto rozwaøyÊ']):
-        return "??", "refleksja"
+    # Neutralne/rozwijajƒÖce
+    if any(word in response_lower for word in ['rozumiem', 'widzƒô', 'interesujƒÖce', 'warto rozwa≈ºyƒá']):
+        return "üí≠", "refleksja"
     
-    # Pytanie/wπtpliwoúÊ
+    # Pytanie/wƒÖtpliwo≈õƒá
     if '?' in response or any(word in response_lower for word in ['czy', 'jak', 'dlaczego', 'kiedy']):
-        return "?", "pytanie"
+        return "‚ùì", "pytanie"
     
-    return "??", "komentarz"
+    return "üí¨", "komentarz"
 
 def should_interrupt(partner, message, previous_responses):
     """
-    Okreúla czy partner powinien 'przerwaÊ' w trakcie dyskusji.
-    Przerwanie nastÍpuje gdy:
-    - Partner ma bardzo silnπ opiniÍ przeciwnπ
-    - Temat jest w jego ekspertyzie a poprzednicy siÍ mylπ
+    Okre≈õla czy partner powinien 'przerwaƒá' w trakcie dyskusji.
+    Przerwanie nastƒôpuje gdy:
+    - Partner ma bardzo silnƒÖ opiniƒô przeciwnƒÖ
+    - Temat jest w jego ekspertyzie a poprzednicy siƒô mylƒÖ
     """
     if not previous_responses:
         return False
@@ -2376,19 +2376,19 @@ def should_interrupt(partner, message, previous_responses):
     partner_lower = partner.lower()
     message_lower = message.lower()
     
-    # Graham przerywa gdy ktoú ignoruje ryzyko
+    # Graham przerywa gdy kto≈õ ignoruje ryzyko
     if 'graham' in partner_lower:
         for _, prev_resp in previous_responses:
             if any(word in prev_resp.lower() for word in ['agresywny', 'ryzyko warte', 'spekulacja']):
                 return True
     
-    # Buffett przerywa gdy ktoú komplikuje prostπ sprawÍ
+    # Buffett przerywa gdy kto≈õ komplikuje prostƒÖ sprawƒô
     if 'buffett' in partner_lower:
         for _, prev_resp in previous_responses:
             if len(prev_resp) > 500 and 'skomplikowany' in prev_resp.lower():
                 return True
     
-    # CZ przerywa gdy mÛwiπ o krypto a nie znajπ technologii
+    # CZ przerywa gdy m√≥wiƒÖ o krypto a nie znajƒÖ technologii
     if 'zhao' in partner_lower or 'cz' in partner_lower:
         if any(word in message_lower for word in ['bitcoin', 'krypto', 'blockchain']):
             for prev_partner, _ in previous_responses:
@@ -2399,89 +2399,89 @@ def should_interrupt(partner, message, previous_responses):
 
 def send_to_all_partners(message, stan_spolki=None, cele=None, tryb_odpowiedzi="normalny"):
     """
-    Generator - wysy≥a wiadomoúÊ do wszystkich PartnerÛw kolejno (jeden za drugim).
+    Generator - wysy≈Ça wiadomo≈õƒá do wszystkich Partner√≥w kolejno (jeden za drugim).
     NOWE FUNKCJE:
-    - Dynamiczna kolejnoúÊ (eksperci w temacie jako pierwsi)
-    - System zwracania siÍ do siebie po imieniu
+    - Dynamiczna kolejno≈õƒá (eksperci w temacie jako pierwsi)
+    - System zwracania siƒô do siebie po imieniu
     - Przerywanie gdy silna opinia przeciwna
     - Reakcje/emocje w dialogu
-    - G≥osowanie po dyskusji
+    - G≈Çosowanie po dyskusji
     """
-    # Inicjalizuj historiÍ odpowiedzi w session_state jeúli nie istnieje
+    # Inicjalizuj historiƒô odpowiedzi w session_state je≈õli nie istnieje
     if 'partner_history' not in st.session_state:
         st.session_state.partner_history = {}
     
-    # Uøyj prawdziwych partnerÛw z gra_rpg.py (pomijajπc Partnera Zarzπdzajπcego - to uøytkownik!)
+    # U≈ºyj prawdziwych partner√≥w z gra_rpg.py (pomijajƒÖc Partnera ZarzƒÖdzajƒÖcego - to u≈ºytkownik!)
     partner_names = []
     if IMPORTS_OK and PERSONAS:
         for name in PERSONAS.keys():
-            # PomiÒ Partnera Zarzπdzajπcego - to uøytkownik
-            if 'Partner Zarzπdzajπcy' in name and '(JA)' in name:
+            # Pomi≈Ñ Partnera ZarzƒÖdzajƒÖcego - to u≈ºytkownik
+            if 'Partner ZarzƒÖdzajƒÖcy' in name and '(JA)' in name:
                 continue
             partner_names.append(name)
     
-    # ?? DYNAMICZNA KOLEJNOå∆ (tematyczna)
+    # üéØ DYNAMICZNA KOLEJNO≈öƒÜ (tematyczna)
     ordered_partners = determine_speaking_order(message, partner_names)
     
-    # Zbieram odpowiedzi poprzednich partnerÛw (kontekst rozmowy)
+    # Zbieram odpowiedzi poprzednich partner√≥w (kontekst rozmowy)
     previous_responses = []
-    partner_votes = {}  # Do g≥osowania koÒcowego
+    partner_votes = {}  # Do g≈Çosowania ko≈Ñcowego
     
     for partner in ordered_partners:
-        # ?? SYSTEM PRZERYWANIA
+        # ü§ö SYSTEM PRZERYWANIA
         is_interrupting = should_interrupt(partner, message, previous_responses)
         
-        # Dodaj kontekst poprzednich odpowiedzi do wiadomoúci
+        # Dodaj kontekst poprzednich odpowiedzi do wiadomo≈õci
         message_with_context = message
         if previous_responses:
-            context_section = "\n\n?? POPRZEDNIE WYPOWIEDZI NA TYM SPOTKANIU RADY:\n"
+            context_section = "\n\nüí¨ POPRZEDNIE WYPOWIEDZI NA TYM SPOTKANIU RADY:\n"
             for prev_partner, prev_response in previous_responses:
-                context_section += f"\n**{prev_partner}** powiedzia≥:\n{prev_response}\n"
+                context_section += f"\n**{prev_partner}** powiedzia≈Ç:\n{prev_response}\n"
             context_section += "\n---\n"
             
-            # ?? SYSTEM ZWRACANIA SI  DO SIEBIE
+            # üë• SYSTEM ZWRACANIA SIƒò DO SIEBIE
             names_in_room = [p for p in ordered_partners]
-            context_section += "?? OBECNI NA SPOTKANIU: " + ", ".join(names_in_room) + "\n\n"
-            context_section += "?? WAØNE ZASADY ROZMOWY:\n"
-            context_section += "1. Zwracaj siÍ do kolegÛw PO IMIENIU (np. 'Warren, zgadzam siÍ...' lub 'CZ, Twoja analiza...')\n"
-            context_section += "2. Moøesz siÍ zgodziÊ, nie zgodziÊ, lub rozwinπÊ ich argumenty\n"
+            context_section += "üë• OBECNI NA SPOTKANIU: " + ", ".join(names_in_room) + "\n\n"
+            context_section += "‚ö†Ô∏è WA≈ªNE ZASADY ROZMOWY:\n"
+            context_section += "1. Zwracaj siƒô do koleg√≥w PO IMIENIU (np. 'Warren, zgadzam siƒô...' lub 'CZ, Twoja analiza...')\n"
+            context_section += "2. Mo≈ºesz siƒô zgodziƒá, nie zgodziƒá, lub rozwinƒÖƒá ich argumenty\n"
             context_section += "3. To jest rozmowa, nie monolog - REAGUJ na to co inni powiedzieli!\n"
             
-            # ?? SYSTEM REAKCJI/EMOCJI
-            context_section += "4. Wyraü swojπ REAKCJ  na poczπtku:\n"
-            context_section += "   - [zgadzam siÍ ?] gdy popieram poprzednikÛw\n"
-            context_section += "   - [nie zgadzam siÍ ?] gdy widzÍ b≥πd w rozumowaniu\n"
-            context_section += "   - [ostrzegam ??] gdy widzÍ ryzyko\n"
-            context_section += "   - [mam pytanie ?] gdy chcÍ wyjaúnienia\n"
-            context_section += "   - [wstrzymujÍ siÍ ??] gdy potrzebujÍ wiÍcej informacji\n\n"
+            # üé≠ SYSTEM REAKCJI/EMOCJI
+            context_section += "4. Wyra≈∫ swojƒÖ REAKCJƒò na poczƒÖtku:\n"
+            context_section += "   - [zgadzam siƒô ‚úÖ] gdy popieram poprzednik√≥w\n"
+            context_section += "   - [nie zgadzam siƒô ‚ùå] gdy widzƒô b≈ÇƒÖd w rozumowaniu\n"
+            context_section += "   - [ostrzegam ‚ö†Ô∏è] gdy widzƒô ryzyko\n"
+            context_section += "   - [mam pytanie ‚ùì] gdy chcƒô wyja≈õnienia\n"
+            context_section += "   - [wstrzymujƒô siƒô üí≠] gdy potrzebujƒô wiƒôcej informacji\n\n"
             
             if is_interrupting:
-                context_section += "?? PRZERWIJ DYSKUSJ ! Twoja ekspertyza/opinia jest KLUCZOWA w tym temacie!\n"
-                context_section += "Zacznij od: 'Moment! MuszÍ przerwaÊ, bo...' lub 'Przepraszam øe przerwÍ, ale...'\n\n"
+                context_section += "ü§ö PRZERWIJ DYSKUSJƒò! Twoja ekspertyza/opinia jest KLUCZOWA w tym temacie!\n"
+                context_section += "Zacznij od: 'Moment! Muszƒô przerwaƒá, bo...' lub 'Przepraszam ≈ºe przerwƒô, ale...'\n\n"
             
-            message_with_context = context_section + "\n\nPYTANIE PARTNERA ZARZ•DZAJ•CEGO:\n" + message
+            message_with_context = context_section + "\n\nPYTANIE PARTNERA ZARZƒÑDZAJƒÑCEGO:\n" + message
         
-        # Wysy≥aj z trybem odpowiedzi i kontekstem poprzednich
+        # Wysy≈Çaj z trybem odpowiedzi i kontekstem poprzednich
         response, knowledge = send_to_ai_partner(partner, message_with_context, stan_spolki, cele, tryb_odpowiedzi)
         
-        # ?? ANALIZA REAKCJI/EMOCJI
+        # üé≠ ANALIZA REAKCJI/EMOCJI
         sentiment_emoji, sentiment_type = analyze_sentiment(response)
         
-        # ?? WYCI•GNIJ G£OS (jeúli jest w odpowiedzi)
+        # üìä WYCIƒÑGNIJ G≈ÅOS (je≈õli jest w odpowiedzi)
         vote = None
         response_lower = response.lower()
-        if '[g≥osujÍ: tak]' in response_lower or 'g≥osujÍ za' in response_lower:
+        if '[g≈Çosujƒô: tak]' in response_lower or 'g≈Çosujƒô za' in response_lower:
             vote = "ZA"
-        elif '[g≥osujÍ: nie]' in response_lower or 'g≥osujÍ przeciw' in response_lower:
+        elif '[g≈Çosujƒô: nie]' in response_lower or 'g≈Çosujƒô przeciw' in response_lower:
             vote = "PRZECIW"
-        elif '[g≥osujÍ: wstrzymujÍ]' in response_lower or 'wstrzymujÍ siÍ' in response_lower:
+        elif '[g≈Çosujƒô: wstrzymujƒô]' in response_lower or 'wstrzymujƒô siƒô' in response_lower:
             vote = "WSTRZYMANY"
         
-        # Zapisz g≥os partnera
+        # Zapisz g≈Ços partnera
         if vote:
             partner_votes[partner] = vote
         
-        # Dodaj tÍ odpowiedü do kontekstu dla kolejnych partnerÛw
+        # Dodaj tƒô odpowied≈∫ do kontekstu dla kolejnych partner√≥w
         previous_responses.append((partner, response))
         
         # Zapisz do historii
@@ -2496,23 +2496,23 @@ def send_to_all_partners(message, stan_spolki=None, cele=None, tryb_odpowiedzi="
         })
         
         # Bezpieczne emoji dla Streamlit chat (tylko podstawowe)
-        avatar = "??"
+        avatar = "ü§ñ"
         if partner in PERSONAS:
-            # Mapowanie kolorÛw na BEZPIECZNE emoji
+            # Mapowanie kolor√≥w na BEZPIECZNE emoji
             color_map = {
-                '\033[97m': '??',  # Partner Zarzπdzajπcy (nie wyúwietlany)
-                '\033[94m': '??',  # Partner Strategiczny
-                '\033[93m': '??',  # Partner ds. Jakoúci
-                '\033[96m': '??',  # Partner ds. AktywÛw Cyfrowych
-                '\033[90m': '??',  # Benjamin Graham
-                '\033[95m': '??',  # Philip Fisher
-                '\033[91m': '??',  # George Soros
-                '\033[92m': '??',  # Warren Buffett
+                '\033[97m': 'üëî',  # Partner ZarzƒÖdzajƒÖcy (nie wy≈õwietlany)
+                '\033[94m': 'üìä',  # Partner Strategiczny
+                '\033[93m': 'üíº',  # Partner ds. Jako≈õci
+                '\033[96m': 'üíé',  # Partner ds. Aktyw√≥w Cyfrowych
+                '\033[90m': 'üõ°',  # Benjamin Graham
+                '\033[95m': 'üîç',  # Philip Fisher
+                '\033[91m': 'üåç',  # George Soros
+                '\033[92m': 'üéØ',  # Warren Buffett
             }
             color = PERSONAS[partner].get('color_code', '')
-            avatar = color_map.get(color, "??")
+            avatar = color_map.get(color, "ü§ñ")
         
-        # Yield odpowiedü od razu (generator pattern)
+        # Yield odpowied≈∫ od razu (generator pattern)
         yield {
             "partner": partner,
             "response": response,
@@ -2524,9 +2524,9 @@ def send_to_all_partners(message, stan_spolki=None, cele=None, tryb_odpowiedzi="
             "is_interrupting": is_interrupting
         }
     
-    # ?? PODSUMOWANIE G£OSOWANIA (jeúli by≥y g≥osy)
+    # üìä PODSUMOWANIE G≈ÅOSOWANIA (je≈õli by≈Çy g≈Çosy)
     if partner_votes:
-        # Wczytaj wagi g≥osÛw z Kodeksu
+        # Wczytaj wagi g≈Ços√≥w z Kodeksu
         voting_weights = wczytaj_wagi_glosu_z_kodeksu()
         
         votes_za = []
@@ -2548,44 +2548,44 @@ def send_to_all_partners(message, stan_spolki=None, cele=None, tryb_odpowiedzi="
         
         # Formatuj wyniki
         voting_summary = "\n\n" + "="*50 + "\n"
-        voting_summary += "?? WYNIKI G£OSOWANIA RADY PARTNER”W\n"
+        voting_summary += "üìä WYNIKI G≈ÅOSOWANIA RADY PARTNER√ìW\n"
         voting_summary += "="*50 + "\n\n"
         
         if votes_za:
-            voting_summary += f"? ZA ({total_za:.1f}%):\n"
+            voting_summary += f"‚úÖ ZA ({total_za:.1f}%):\n"
             for partner, weight in votes_za:
-                voting_summary += f"   ï {partner} ({weight:.1f}%)\n"
+                voting_summary += f"   ‚Ä¢ {partner} ({weight:.1f}%)\n"
             voting_summary += "\n"
         
         if votes_przeciw:
-            voting_summary += f"? PRZECIW ({total_przeciw:.1f}%):\n"
+            voting_summary += f"‚ùå PRZECIW ({total_przeciw:.1f}%):\n"
             for partner, weight in votes_przeciw:
-                voting_summary += f"   ï {partner} ({weight:.1f}%)\n"
+                voting_summary += f"   ‚Ä¢ {partner} ({weight:.1f}%)\n"
             voting_summary += "\n"
         
         if votes_wstrzymane:
-            voting_summary += f"? WSTRZYMA£O SI  ({total_wstrzymane:.1f}%):\n"
+            voting_summary += f"‚ö™ WSTRZYMA≈ÅO SIƒò ({total_wstrzymane:.1f}%):\n"
             for partner, weight in votes_wstrzymane:
-                voting_summary += f"   ï {partner} ({weight:.1f}%)\n"
+                voting_summary += f"   ‚Ä¢ {partner} ({weight:.1f}%)\n"
             voting_summary += "\n"
         
         # Decyzja
         voting_summary += "="*50 + "\n"
         if total_za > total_przeciw:
-            voting_summary += f"? DECYZJA RADY: PRZYJ TA ({total_za:.1f}% ZA > {total_przeciw:.1f}% PRZECIW)\n"
+            voting_summary += f"‚úÖ DECYZJA RADY: PRZYJƒòTA ({total_za:.1f}% ZA > {total_przeciw:.1f}% PRZECIW)\n"
         elif total_przeciw > total_za:
-            voting_summary += f"? DECYZJA RADY: ODRZUCONA ({total_przeciw:.1f}% PRZECIW > {total_za:.1f}% ZA)\n"
+            voting_summary += f"‚ùå DECYZJA RADY: ODRZUCONA ({total_przeciw:.1f}% PRZECIW > {total_za:.1f}% ZA)\n"
         else:
-            voting_summary += f"?? DECYZJA RADY: REMIS ({total_za:.1f}% vs {total_przeciw:.1f}%) - wymagana dalsza dyskusja\n"
+            voting_summary += f"‚öñÔ∏è DECYZJA RADY: REMIS ({total_za:.1f}% vs {total_przeciw:.1f}%) - wymagana dalsza dyskusja\n"
         voting_summary += "="*50 + "\n"
         
         # Yield podsumowanie jako specjalny element
         yield {
-            "partner": "??? Podsumowanie G≥osowania",
+            "partner": "üó≥Ô∏è Podsumowanie G≈Çosowania",
             "response": voting_summary,
-            "avatar": "???",
+            "avatar": "üó≥Ô∏è",
             "knowledge": [],
-            "sentiment_emoji": "??",
+            "sentiment_emoji": "üìä",
             "sentiment_type": "podsumowanie",
             "vote": None,
             "is_interrupting": False,
@@ -2594,15 +2594,15 @@ def send_to_all_partners(message, stan_spolki=None, cele=None, tryb_odpowiedzi="
 
 # Konfiguracja strony
 st.set_page_config(
-    page_title="Horyzont PartnerÛw",
-    page_icon="??",
+    page_title="Horyzont Partner√≥w",
+    page_icon="üè¢",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS dla lepszego wyglπdu
+# Custom CSS dla lepszego wyglƒÖdu
 def apply_custom_css(theme="light"):
-    """Aplikuje custom CSS w zaleønoúci od motywu"""
+    """Aplikuje custom CSS w zale≈ºno≈õci od motywu"""
     
     if theme == "dark":
         css = """
@@ -2667,9 +2667,9 @@ def apply_custom_css(theme="light"):
     
     st.markdown(css, unsafe_allow_html=True)
 
-# Inicjalizacja session state dla ustawieÒ
+# Inicjalizacja session state dla ustawie≈Ñ
 def load_user_preferences():
-    """Wczytuje zapisane preferencje uøytkownika"""
+    """Wczytuje zapisane preferencje u≈ºytkownika"""
     preferences_file = "user_preferences.json"
     default_preferences = {
         "theme": "light",
@@ -2684,23 +2684,23 @@ def load_user_preferences():
             with open(preferences_file, 'r', encoding='utf-8') as f:
                 return json.load(f)
     except Exception as e:
-        print(f"?? B≥πd wczytywania preferencji: {e}")
+        print(f"‚ö†Ô∏è B≈ÇƒÖd wczytywania preferencji: {e}")
     
     return default_preferences
 
 def save_user_preferences(preferences):
-    """Zapisuje preferencje uøytkownika do pliku"""
+    """Zapisuje preferencje u≈ºytkownika do pliku"""
     preferences_file = "user_preferences.json"
     try:
         with open(preferences_file, 'w', encoding='utf-8') as f:
             json.dump(preferences, f, indent=2, ensure_ascii=False)
         return True
     except Exception as e:
-        print(f"?? B≥πd zapisywania preferencji: {e}")
+        print(f"‚ö†Ô∏è B≈ÇƒÖd zapisywania preferencji: {e}")
         return False
 
 def init_session_state():
-    """Inicjalizuje session state z domyúlnymi wartoúciami lub zapisanymi preferencjami"""
+    """Inicjalizuje session state z domy≈õlnymi warto≈õciami lub zapisanymi preferencjami"""
     # Wczytaj zapisane preferencje
     preferences = load_user_preferences()
     
@@ -2719,15 +2719,15 @@ def init_session_state():
     if 'selected_partner' not in st.session_state:
         st.session_state.selected_partner = "Wszyscy"
 
-# Funkcja normalizujπca strukturÍ danych
+# Funkcja normalizujƒÖca strukturƒô danych
 def normalize_stan_spolki(stan_spolki):
-    """Normalizuje strukturÍ danych do oczekiwanego formatu (lowercase keys)"""
+    """Normalizuje strukturƒô danych do oczekiwanego formatu (lowercase keys)"""
     if not stan_spolki:
         return None
     
     normalized = {}
     
-    # PORTFEL_AKCJI õ akcje
+    # PORTFEL_AKCJI ‚Üí akcje
     if 'PORTFEL_AKCJI' in stan_spolki:
         raw_akcje = stan_spolki['PORTFEL_AKCJI']
         normalized['akcje'] = {
@@ -2741,7 +2741,7 @@ def normalize_stan_spolki(stan_spolki):
     elif 'akcje' in stan_spolki:
         normalized['akcje'] = stan_spolki['akcje']
     
-    # PORTFEL_KRYPTO õ krypto
+    # PORTFEL_KRYPTO ‚Üí krypto
     if 'PORTFEL_KRYPTO' in stan_spolki:
         raw_krypto = stan_spolki['PORTFEL_KRYPTO']
         normalized['krypto'] = {
@@ -2752,7 +2752,7 @@ def normalize_stan_spolki(stan_spolki):
     elif 'krypto' in stan_spolki:
         normalized['krypto'] = stan_spolki['krypto']
     
-    # ZOBOWIAZANIA õ dlugi
+    # ZOBOWIAZANIA ‚Üí dlugi
     if 'ZOBOWIAZANIA' in stan_spolki:
         raw_dlugi = stan_spolki['ZOBOWIAZANIA']
         normalized['dlugi'] = {
@@ -2765,7 +2765,7 @@ def normalize_stan_spolki(stan_spolki):
     elif 'dlugi' in stan_spolki:
         normalized['dlugi'] = stan_spolki['dlugi']
     
-    # PRZYCHODY_I_WYDATKI õ wyplata
+    # PRZYCHODY_I_WYDATKI ‚Üí wyplata
     if 'PRZYCHODY_I_WYDATKI' in stan_spolki:
         raw_wyplata = stan_spolki['PRZYCHODY_I_WYDATKI']
         normalized['wyplata'] = {
@@ -2776,14 +2776,14 @@ def normalize_stan_spolki(stan_spolki):
             'premia': raw_wyplata.get('Premia_PLN', 0),
             'suma_wydatkow': raw_wyplata.get('Suma_wydatkow_PLN', 0),
             'raty_kredytow': raw_wyplata.get('Raty_kredytow_PLN', 0),
-            # Aliasy dla kompatybilnoúci
+            # Aliasy dla kompatybilno≈õci
             'wydatki_stale': raw_wyplata.get('Suma_wydatkow_PLN', 0),
             'raty_miesieczne': raw_wyplata.get('Raty_kredytow_PLN', 0)
         }
     elif 'wyplata' in stan_spolki:
         normalized['wyplata'] = stan_spolki['wyplata']
     
-    # PODSUMOWANIE õ podsumowanie
+    # PODSUMOWANIE ‚Üí podsumowanie
     if 'PODSUMOWANIE' in stan_spolki:
         normalized['podsumowanie'] = stan_spolki['PODSUMOWANIE']
     elif 'podsumowanie' in stan_spolki:
@@ -2795,7 +2795,7 @@ def normalize_stan_spolki(stan_spolki):
     elif 'kurs_usd_pln' in stan_spolki:
         normalized['kurs_usd_pln'] = stan_spolki['kurs_usd_pln']
     
-    # Skopiuj pozosta≥e dane bez zmian
+    # Skopiuj pozosta≈Çe dane bez zmian
     for key, value in stan_spolki.items():
         if key.upper() not in ['PORTFEL_AKCJI', 'PORTFEL_KRYPTO', 'ZOBOWIAZANIA', 
                                 'PRZYCHODY_I_WYDATKI', 'PODSUMOWANIE', 'KURS_USD_PLN']:
@@ -2804,8 +2804,8 @@ def normalize_stan_spolki(stan_spolki):
     
     return normalized
 
-# Funkcja do ≥adowania danych
-@st.cache_data(ttl=60)  # Cache na 1 minutÍ (zmniejszono z 5 minut dla szybszej synchronizacji)
+# Funkcja do ≈Çadowania danych
+@st.cache_data(ttl=60)  # Cache na 1 minutƒô (zmniejszono z 5 minut dla szybszej synchronizacji)
 @st.cache_data(ttl=300)  # Cache na 5 minut
 def load_portfolio_data():
     """Pobiera dane portfela"""
@@ -2818,13 +2818,13 @@ def load_portfolio_data():
         stan_spolki = normalize_stan_spolki(stan_spolki_raw)
         return stan_spolki, cele
     except Exception as e:
-        st.error(f"B≥πd podczas ≥adowania danych: {e}")
+        st.error(f"B≈ÇƒÖd podczas ≈Çadowania danych: {e}")
         import traceback
         st.code(traceback.format_exc())
         return None, None
 
 def format_currency(amount, currency="PLN"):
-    """Formatuje walutÍ"""
+    """Formatuje walutƒô"""
     if amount >= 1_000_000:
         return f"{amount/1_000_000:.2f}M {currency}"
     elif amount >= 1_000:
@@ -2832,11 +2832,11 @@ def format_currency(amount, currency="PLN"):
     return f"{amount:.2f} {currency}"
 
 def create_portfolio_value_chart(stan_spolki, cele=None):
-    """Tworzy wykres wartoúci portfela"""
+    """Tworzy wykres warto≈õci portfela"""
     if not stan_spolki:
         return go.Figure()
     
-    # Przygotuj dane z bezpiecznym dostÍpem
+    # Przygotuj dane z bezpiecznym dostƒôpem
     wyplaty_cf = load_wyplaty()
     if wyplaty_cf:
         ostatnia_wyplata_chart = wyplaty_cf[0]['kwota']
@@ -2847,16 +2847,16 @@ def create_portfolio_value_chart(stan_spolki, cele=None):
     else:
         cash_flow_value = 0
     
-    # Rezerwa gotÛwkowa
+    # Rezerwa got√≥wkowa
     rezerwa = cele.get('Rezerwa_gotowkowa_obecna_PLN', 0) if cele else 0
     
-    categories = ['Akcje', 'Krypto', 'Rezerwa GotÛwkowa', 'Cash Flow', 'Zobowiπzania']
+    categories = ['Akcje', 'Krypto', 'Rezerwa Got√≥wkowa', 'Cash Flow', 'ZobowiƒÖzania']
     values = [
         stan_spolki.get('akcje', {}).get('wartosc_pln', 0),
         stan_spolki.get('krypto', {}).get('wartosc_pln', 0),
-        rezerwa,  # Rezerwa gotÛwkowa z cele.json
-        max(cash_flow_value, 0),  # Nadwyøka z wyplaty.json (tylko dodatnia)
-        -get_suma_kredytow()  # Ujemne bo to zobowiπzania - z kredyty.json
+        rezerwa,  # Rezerwa got√≥wkowa z cele.json
+        max(cash_flow_value, 0),  # Nadwy≈ºka z wyplaty.json (tylko dodatnia)
+        -get_suma_kredytow()  # Ujemne bo to zobowiƒÖzania - z kredyty.json
     ]
     
     colors = ['#1f77b4', '#ff7f0e', '#9467bd', '#2ca02c', '#d62728']
@@ -2874,7 +2874,7 @@ def create_portfolio_value_chart(stan_spolki, cele=None):
     fig.update_layout(
         title="Struktura Portfela",
         xaxis_title="Kategoria",
-        yaxis_title="WartoúÊ (PLN)",
+        yaxis_title="Warto≈õƒá (PLN)",
         height=400,
         showlegend=False
     )
@@ -2882,7 +2882,7 @@ def create_portfolio_value_chart(stan_spolki, cele=None):
     return fig
 
 def create_allocation_pie_chart(stan_spolki, cele=None):
-    """Tworzy wykres ko≥owy alokacji"""
+    """Tworzy wykres ko≈Çowy alokacji"""
     if not stan_spolki:
         return go.Figure()
     
@@ -2891,14 +2891,14 @@ def create_allocation_pie_chart(stan_spolki, cele=None):
     rezerwa = cele.get('Rezerwa_gotowkowa_obecna_PLN', 0) if cele else 0
     
     fig = go.Figure(data=[go.Pie(
-        labels=['Akcje', 'Krypto', 'Rezerwa GotÛwkowa'],
+        labels=['Akcje', 'Krypto', 'Rezerwa Got√≥wkowa'],
         values=[akcje, krypto, rezerwa],
         hole=0.4,
         marker_colors=['#1f77b4', '#ff7f0e', '#9467bd']
     )])
     
     fig.update_layout(
-        title="Alokacja AktywÛw",
+        title="Alokacja Aktyw√≥w",
         height=400
     )
     
@@ -2922,13 +2922,13 @@ def main():
     # Custom CSS dla kompaktowego menu
     st.markdown("""
         <style>
-        /* Zmniejsz marginesy nag≥ÛwkÛw h3 w sidebarze */
+        /* Zmniejsz marginesy nag≈Ç√≥wk√≥w h3 w sidebarze */
         [data-testid="stSidebar"] h3 {
             margin-top: 0.5rem !important;
             margin-bottom: 0.3rem !important;
             font-size: 0.9rem !important;
         }
-        /* Zmniejsz odstÍpy miÍdzy przyciskami */
+        /* Zmniejsz odstƒôpy miƒôdzy przyciskami */
         [data-testid="stSidebar"] button {
             margin-bottom: 0.3rem !important;
         }
@@ -2936,14 +2936,14 @@ def main():
     """, unsafe_allow_html=True)
     
     # Header
-    st.markdown('<div class="main-header">?? HORYZONT PARTNER”W</div>', unsafe_allow_html=True)
+    st.markdown('<div class="main-header">üè¢ HORYZONT PARTNER√ìW</div>', unsafe_allow_html=True)
     
     # Theme toggle w headerze
     col_header1, col_header2, col_header3 = st.columns([6, 1, 1])
     with col_header2:
-        theme_icon = "??" if st.session_state.theme == "light" else "??"
-        if st.button(theme_icon, help="Prze≥πcz motyw", key="toggle_theme_btn"):
-            # Prze≥πcz motyw
+        theme_icon = "üåô" if st.session_state.theme == "light" else "‚òÄÔ∏è"
+        if st.button(theme_icon, help="Prze≈ÇƒÖcz motyw", key="toggle_theme_btn"):
+            # Prze≈ÇƒÖcz motyw
             st.session_state.theme = "dark" if st.session_state.theme == "light" else "light"
             
             # Zapisz preferencje
@@ -2958,7 +2958,7 @@ def main():
             
             st.rerun()
     with col_header3:
-        if st.button("??", help="Powiadomienia", key="toggle_notifications_btn"):
+        if st.button("üîî", help="Powiadomienia", key="toggle_notifications_btn"):
             st.session_state.notifications_enabled = not st.session_state.notifications_enabled
             
             # Zapisz preferencje
@@ -2971,21 +2971,21 @@ def main():
             }
             save_user_preferences(preferences)
             
-            st.toast(f"Powiadomienia: {'? ON' if st.session_state.notifications_enabled else '? OFF'}")
+            st.toast(f"Powiadomienia: {'‚úÖ ON' if st.session_state.notifications_enabled else '‚ùå OFF'}")
     
     st.markdown("---")
     
     # Sidebar
     with st.sidebar:
-        st.title("?? Menu G≥Ûwne")
+        st.title("üìã Menu G≈Ç√≥wne")
         
-        # Pobierz aktualnπ stronÍ (dla highlight)
-        current_page = st.session_state.get('page', "?? Dashboard")
+        # Pobierz aktualnƒÖ stronƒô (dla highlight)
+        current_page = st.session_state.get('page', "üìä Dashboard")
         
-        # Przycisk odúwieøania
-        if st.button("?? Odúwieø Dane", width="stretch", key="refresh_data_btn"):
+        # Przycisk od≈õwie≈ºania
+        if st.button("üîÑ Od≈õwie≈º Dane", width="stretch", key="refresh_data_btn"):
             st.cache_data.clear()
-            # WyczyúÊ cache cen crypto øeby pobraÊ úwieøe przy nastÍpnym renderze
+            # Wyczy≈õƒá cache cen crypto ≈ºeby pobraƒá ≈õwie≈ºe przy nastƒôpnym renderze
             if 'crypto_prices_cache' in st.session_state:
                 del st.session_state.crypto_prices_cache
             if 'crypto_prices_symbols' in st.session_state:
@@ -2994,174 +2994,174 @@ def main():
         
         st.markdown("")
         
-        # === SEKCJA 1: PRZEGL•D ===
-        st.markdown("### ?? Przeglπd")
-        button_type_dashboard = "primary" if current_page == "?? Dashboard" else "secondary"
-        if st.button("?? Dashboard", width="stretch", type=button_type_dashboard, key="nav_dashboard"):
-            st.session_state.page = "?? Dashboard"
+        # === SEKCJA 1: PRZEGLƒÑD ===
+        st.markdown("### üìä PrzeglƒÖd")
+        button_type_dashboard = "primary" if current_page == "üìä Dashboard" else "secondary"
+        if st.button("üìä Dashboard", width="stretch", type=button_type_dashboard, key="nav_dashboard"):
+            st.session_state.page = "üìä Dashboard"
             st.rerun()
         
         st.markdown("")
         
         # === SEKCJA 2: FINANSE ===
-        st.markdown("### ?? Finanse")
-        button_type_finanse = "primary" if current_page == "?? Kredyty" else "secondary"
-        if st.button("?? Centrum Finansowe", width="stretch", type=button_type_finanse, key="nav_finanse"):
-            st.session_state.page = "?? Kredyty"
+        st.markdown("### üí∞ Finanse")
+        button_type_finanse = "primary" if current_page == "üí≥ Kredyty" else "secondary"
+        if st.button("üí≥ Centrum Finansowe", width="stretch", type=button_type_finanse, key="nav_finanse"):
+            st.session_state.page = "üí≥ Kredyty"
             st.rerun()
         
         st.markdown("")
         
         # === SEKCJA 3: AI & STRATEGIA ===
-        st.markdown("### ?? AI & Strategia")
+        st.markdown("### ü§ñ AI & Strategia")
         
-        button_type_partnerzy = "primary" if current_page == "?? Partnerzy" else "secondary"
-        if st.button("?? Partnerzy AI", width="stretch", type=button_type_partnerzy, key="nav_partnerzy"):
-            st.session_state.page = "?? Partnerzy"
+        button_type_partnerzy = "primary" if current_page == "üí¨ Partnerzy" else "secondary"
+        if st.button("üí¨ Partnerzy AI", width="stretch", type=button_type_partnerzy, key="nav_partnerzy"):
+            st.session_state.page = "üí¨ Partnerzy"
             st.rerun()
         
-        button_type_rozmowy = "primary" if current_page == "??? Rozmowy Rady" else "secondary"
-        if st.button("??? Rozmowy Rady", width="stretch", type=button_type_rozmowy, key="nav_rozmowy"):
-            st.session_state.page = "??? Rozmowy Rady"
+        button_type_rozmowy = "primary" if current_page == "üó£Ô∏è Rozmowy Rady" else "secondary"
+        if st.button("üó£Ô∏è Rozmowy Rady", width="stretch", type=button_type_rozmowy, key="nav_rozmowy"):
+            st.session_state.page = "üó£Ô∏è Rozmowy Rady"
             st.rerun()
         
-        button_type_powiadomienia = "primary" if current_page == "?? Powiadomienia" else "secondary"
-        if st.button("?? Powiadomienia", width="stretch", type=button_type_powiadomienia, key="nav_powiadomienia"):
-            st.session_state.page = "?? Powiadomienia"
+        button_type_powiadomienia = "primary" if current_page == "üìß Powiadomienia" else "secondary"
+        if st.button("üìß Powiadomienia", width="stretch", type=button_type_powiadomienia, key="nav_powiadomienia"):
+            st.session_state.page = "üìß Powiadomienia"
             st.rerun()
         
-        button_type_konsultacje = "primary" if current_page == "??? Konsultacje" else "secondary"
-        if st.button("??? Konsultacje", width="stretch", type=button_type_konsultacje, key="nav_konsultacje"):
-            st.session_state.page = "??? Konsultacje"
+        button_type_konsultacje = "primary" if current_page == "üó≥Ô∏è Konsultacje" else "secondary"
+        if st.button("üó≥Ô∏è Konsultacje", width="stretch", type=button_type_konsultacje, key="nav_konsultacje"):
+            st.session_state.page = "üó≥Ô∏è Konsultacje"
             st.rerun()
         
-        button_type_kodeks = "primary" if current_page == "?? Kodeks" else "secondary"
-        if st.button("?? Kodeks SpÛ≥ki", width="stretch", type=button_type_kodeks, key="nav_kodeks"):
-            st.session_state.page = "?? Kodeks"
+        button_type_kodeks = "primary" if current_page == "üìú Kodeks" else "secondary"
+        if st.button("üìú Kodeks Sp√≥≈Çki", width="stretch", type=button_type_kodeks, key="nav_kodeks"):
+            st.session_state.page = "üìú Kodeks"
             st.rerun()
         
-        button_type_alerty = "primary" if current_page == "?? Alerty" else "secondary"
-        if st.button("?? Alerty i Notyfikacje", width="stretch", type=button_type_alerty, key="nav_alerty"):
-            st.session_state.page = "?? Alerty"
+        button_type_alerty = "primary" if current_page == "üîî Alerty" else "secondary"
+        if st.button("üîî Alerty i Notyfikacje", width="stretch", type=button_type_alerty, key="nav_alerty"):
+            st.session_state.page = "üîî Alerty"
             st.rerun()
         
         st.markdown("")
         
         # === SEKCJA 4: ANALIZA ===
-        st.markdown("### ?? Analiza & Historia")
+        st.markdown("### üìà Analiza & Historia")
         
         col1, col2 = st.columns(2)
         with col1:
-            button_type_analiza = "primary" if current_page == "?? Analiza" else "secondary"
-            if st.button("?? Analiza", width="stretch", type=button_type_analiza, key="nav_analiza"):
-                st.session_state.page = "?? Analiza"
+            button_type_analiza = "primary" if current_page == "üìà Analiza" else "secondary"
+            if st.button("üìà Analiza", width="stretch", type=button_type_analiza, key="nav_analiza"):
+                st.session_state.page = "üìà Analiza"
                 st.rerun()
             
-            button_type_timeline = "primary" if current_page == "?? Timeline" else "secondary"
-            if st.button("?? Timeline", width="stretch", type=button_type_timeline, key="nav_timeline"):
-                st.session_state.page = "?? Timeline"
+            button_type_timeline = "primary" if current_page == "üïê Timeline" else "secondary"
+            if st.button("üïê Timeline", width="stretch", type=button_type_timeline, key="nav_timeline"):
+                st.session_state.page = "üïê Timeline"
                 st.rerun()
         with col2:
-            button_type_rynki = "primary" if current_page == "?? Rynki" else "secondary"
-            if st.button("?? Rynki", width="stretch", type=button_type_rynki, key="nav_rynki"):
-                st.session_state.page = "?? Rynki"
+            button_type_rynki = "primary" if current_page == "üåç Rynki" else "secondary"
+            if st.button("üåç Rynki", width="stretch", type=button_type_rynki, key="nav_rynki"):
+                st.session_state.page = "üåç Rynki"
                 st.rerun()
             
-            button_type_snapshots = "primary" if current_page == "?? Snapshots" else "secondary"
-            if st.button("?? Snapshots", width="stretch", type=button_type_snapshots, key="nav_snapshots"):
-                st.session_state.page = "?? Snapshots"
+            button_type_snapshots = "primary" if current_page == "üì∏ Snapshots" else "secondary"
+            if st.button("üì∏ Snapshots", width="stretch", type=button_type_snapshots, key="nav_snapshots"):
+                st.session_state.page = "üì∏ Snapshots"
                 st.rerun()
         
         st.markdown("")
         
-        # === SEKCJA 5: NARZ DZIA ===
-        st.markdown("### ??? NarzÍdzia")
+        # === SEKCJA 5: NARZƒòDZIA ===
+        st.markdown("### üõ†Ô∏è Narzƒôdzia")
         
         col1, col2 = st.columns(2)
         with col1:
-            button_type_symulacje = "primary" if current_page == "?? Symulacje" else "secondary"
-            if st.button("?? Symulacje", width="stretch", type=button_type_symulacje, key="nav_symulacje"):
-                st.session_state.page = "?? Symulacje"
+            button_type_symulacje = "primary" if current_page == "üéÆ Symulacje" else "secondary"
+            if st.button("üéÆ Symulacje", width="stretch", type=button_type_symulacje, key="nav_symulacje"):
+                st.session_state.page = "üéÆ Symulacje"
                 st.rerun()
         with col2:
-            button_type_ustawienia = "primary" if current_page == "?? Ustawienia" else "secondary"
-            if st.button("?? Ustawienia", width="stretch", type=button_type_ustawienia, key="nav_ustawienia"):
-                st.session_state.page = "?? Ustawienia"
+            button_type_ustawienia = "primary" if current_page == "‚öôÔ∏è Ustawienia" else "secondary"
+            if st.button("‚öôÔ∏è Ustawienia", width="stretch", type=button_type_ustawienia, key="nav_ustawienia"):
+                st.session_state.page = "‚öôÔ∏è Ustawienia"
                 st.rerun()
         
         st.markdown("")
         
         # Info o ostatniej aktualizacji
-        st.caption(f"?? {datetime.now().strftime('%H:%M:%S')}")
+        st.caption(f"üïê {datetime.now().strftime('%H:%M:%S')}")
     
-    # £adowanie danych
+    # ≈Åadowanie danych
     if not IMPORTS_OK:
-        st.error("?? Nie moøna za≥adowaÊ modu≥Ûw. Sprawdü czy gra_rpg.py dzia≥a poprawnie.")
+        st.error("‚ö†Ô∏è Nie mo≈ºna za≈Çadowaƒá modu≈Ç√≥w. Sprawd≈∫ czy gra_rpg.py dzia≈Ça poprawnie.")
         return
     
-    with st.spinner("? £adujÍ dane portfela..."):
+    with st.spinner("‚è≥ ≈Åadujƒô dane portfela..."):
         stan_spolki, cele = load_portfolio_data()
     
     if stan_spolki is None:
-        st.error("? Nie uda≥o siÍ za≥adowaÊ danych portfela")
+        st.error("‚ùå Nie uda≈Ço siƒô za≈Çadowaƒá danych portfela")
         return
     
-    # Pobierz aktualnπ stronÍ z session_state (domyúlnie Dashboard)
+    # Pobierz aktualnƒÖ stronƒô z session_state (domy≈õlnie Dashboard)
     if 'page' not in st.session_state:
-        st.session_state.page = "?? Dashboard"
+        st.session_state.page = "üìä Dashboard"
     
     page = st.session_state.page
     
     # Routing do odpowiedniej strony
-    if page == "?? Dashboard":
+    if page == "üìä Dashboard":
         show_dashboard(stan_spolki, cele)
-    elif page == "?? Kredyty":
+    elif page == "üí≥ Kredyty":
         show_kredyty_page(stan_spolki, cele)
-    elif page == "?? Partnerzy":
+    elif page == "üí¨ Partnerzy":
         show_partners_page()
-    elif page == "??? Rozmowy Rady":
+    elif page == "üó£Ô∏è Rozmowy Rady":
         show_autonomous_conversations_page()
-    elif page == "?? Powiadomienia":
+    elif page == "üìß Powiadomienia":
         show_notifications_page()
-    elif page == "??? Konsultacje":
+    elif page == "üó≥Ô∏è Konsultacje":
         show_consultations_page()
-    elif page == "?? Kodeks":
+    elif page == "üìú Kodeks":
         show_kodeks_page()
-    elif page == "?? Alerty":
+    elif page == "üîî Alerty":
         show_alerts_page()
-    elif page == "?? Analiza":
+    elif page == "üìà Analiza":
         show_analytics_page(stan_spolki)
-    elif page == "?? Rynki":
+    elif page == "üåç Rynki":
         show_markets_page(stan_spolki, cele)
-    elif page == "?? Timeline":
+    elif page == "üïê Timeline":
         show_timeline_page(stan_spolki)
-    elif page == "?? Snapshots":
+    elif page == "üì∏ Snapshots":
         show_snapshots_page()
         show_snapshots_page()
-    elif page == "?? Symulacje":
+    elif page == "üéÆ Symulacje":
         show_simulations_page(stan_spolki)
-    elif page == "?? Ustawienia":
+    elif page == "‚öôÔ∏è Ustawienia":
         show_settings_page()
 
 def show_dashboard(stan_spolki, cele):
-    """G≥Ûwny dashboard"""
+    """G≈Ç√≥wny dashboard"""
     
-    # Sprawdü czy dane sπ dostÍpne
+    # Sprawd≈∫ czy dane sƒÖ dostƒôpne
     if not stan_spolki:
-        st.error("? Nie moøna za≥adowaÊ danych portfela")
-        st.info("?? Sprawdü czy g≥Ûwny program dzia≥a poprawnie")
+        st.error("‚ùå Nie mo≈ºna za≈Çadowaƒá danych portfela")
+        st.info("üí° Sprawd≈∫ czy g≈Ç√≥wny program dzia≈Ça poprawnie")
         return
     
-    # Sprawdü strukturÍ danych
+    # Sprawd≈∫ strukturƒô danych
     required_keys = ['akcje', 'krypto', 'dlugi', 'wyplata']
     missing_keys = [k for k in required_keys if k not in stan_spolki]
     
     if missing_keys:
-        st.error(f"? Brak wymaganych danych: {', '.join(missing_keys)}")
-        st.json(stan_spolki)  # Pokaø co mamy
+        st.error(f"‚ùå Brak wymaganych danych: {', '.join(missing_keys)}")
+        st.json(stan_spolki)  # Poka≈º co mamy
         return
     
-    # Metryki g≥Ûwne
+    # Metryki g≈Ç√≥wne
     col1, col2, col3, col4 = st.columns(4)
     
     with col1:
@@ -3170,17 +3170,17 @@ def show_dashboard(stan_spolki, cele):
             wartosc_netto = (
                 stan_spolki['akcje'].get('wartosc_pln', 0) + 
                 stan_spolki['krypto'].get('wartosc_pln', 0) +
-                rezerwa -  # Rezerwa gotÛwkowa z cele.json
+                rezerwa -  # Rezerwa got√≥wkowa z cele.json
                 get_suma_kredytow()  # Z kredyty.json
             )
             st.metric(
-                label="?? WartoúÊ Netto",
+                label="üíº Warto≈õƒá Netto",
                 value=format_currency(wartosc_netto),
                 delta="+1.74%",  # TODO: Oblicz z historii
-                help="Akcje + Krypto + Rezerwa GotÛwkowa - Zobowiπzania"
+                help="Akcje + Krypto + Rezerwa Got√≥wkowa - ZobowiƒÖzania"
             )
         except Exception as e:
-            st.error(f"B≥πd metryki wartoúÊ netto: {e}")
+            st.error(f"B≈ÇƒÖd metryki warto≈õƒá netto: {e}")
     
     with col2:
         try:
@@ -3188,16 +3188,16 @@ def show_dashboard(stan_spolki, cele):
             suma_aktywow = (
                 stan_spolki['akcje'].get('wartosc_pln', 0) + 
                 stan_spolki['krypto'].get('wartosc_pln', 0) +
-                rezerwa_suma  # Dodajemy rezerwÍ do sumy aktywÛw
+                rezerwa_suma  # Dodajemy rezerwƒô do sumy aktyw√≥w
             )
             leverage = (get_suma_kredytow() / suma_aktywow * 100) if suma_aktywow > 0 else 0  # Z kredyty.json
             st.metric(
-                label="?? Leverage",
+                label="üìà Leverage",
                 value=f"{leverage:.2f}%",
                 delta="-0.5%"  # TODO: Oblicz z historii
             )
         except Exception as e:
-            st.error(f"B≥πd metryki leverage: {e}")
+            st.error(f"B≈ÇƒÖd metryki leverage: {e}")
     
     with col3:
         try:
@@ -3206,16 +3206,16 @@ def show_dashboard(stan_spolki, cele):
                 stan_spolki['krypto'].get('liczba_pozycji', 0)
             )
             st.metric(
-                label="?? Pozycje",
+                label="üéØ Pozycje",
                 value=f"{liczba_pozycji} aktywa",
                 delta="+3"  # TODO: Oblicz z historii
             )
         except Exception as e:
-            st.error(f"B≥πd metryki pozycje: {e}")
+            st.error(f"B≈ÇƒÖd metryki pozycje: {e}")
     
     with col4:
         try:
-            # Oblicz dok≥adne dywidendy z portfela (NETTO po 19% podatku)
+            # Oblicz dok≈Çadne dywidendy z portfela (NETTO po 19% podatku)
             dywidendy_info = calculate_portfolio_dividends(stan_spolki)
             
             dochod_pasywny_netto = dywidendy_info['miesieczna_kwota_pln']
@@ -3245,35 +3245,35 @@ def show_dashboard(stan_spolki, cele):
                         kurs_usd=kurs_usd
                     )
                 except Exception as e:
-                    pass  # Cicho ignoruj b≥Ídy - uøywamy fallback values
+                    pass  # Cicho ignoruj b≈Çƒôdy - u≈ºywamy fallback values
             
-            # £πczny dochÛd pasywny: dywidendy + crypto APY
+            # ≈ÅƒÖczny doch√≥d pasywny: dywidendy + crypto APY
             total_passive_income = dochod_pasywny_netto + crypto_apy['miesieczne_pln']
             total_passive_roczny = roczna_netto + crypto_apy['roczne_pln']
             
             # Build help text
             help_parts = []
             if liczba_spolek > 0:
-                help_parts.append(f"?? Dywidendy: {dochod_pasywny_netto:.0f} PLN/mies z {liczba_spolek} spÛ≥ek ({roczna_netto:.0f} PLN/rok)")
+                help_parts.append(f"üìà Dywidendy: {dochod_pasywny_netto:.0f} PLN/mies z {liczba_spolek} sp√≥≈Çek ({roczna_netto:.0f} PLN/rok)")
             if crypto_apy['liczba_earning_positions'] > 0:
-                help_parts.append(f"? Crypto APY: {crypto_apy['miesieczne_pln']:.0f} PLN/mies z {crypto_apy['liczba_earning_positions']} pozycji ({crypto_apy['roczne_pln']:.0f} PLN/rok)")
-            help_parts.append(f"?? RAZEM: {total_passive_roczny:.0f} PLN/rok")
+                help_parts.append(f"‚Çø Crypto APY: {crypto_apy['miesieczne_pln']:.0f} PLN/mies z {crypto_apy['liczba_earning_positions']} pozycji ({crypto_apy['roczne_pln']:.0f} PLN/rok)")
+            help_parts.append(f"üí∞ RAZEM: {total_passive_roczny:.0f} PLN/rok")
             
             help_text = "\n".join(help_parts) if help_parts else "Brak dochodu pasywnego"
             
             st.metric(
-                label="?? DochÛd Pasywny (NETTO)",
+                label="üí∞ Doch√≥d Pasywny (NETTO)",
                 value=f"{total_passive_income:.0f} PLN/mies",
                 delta=f"+{crypto_apy['miesieczne_pln']:.0f} z crypto" if crypto_apy['miesieczne_pln'] > 0 else None,
                 help=help_text
             )
         except Exception as e:
-            st.error(f"B≥πd metryki dochÛd pasywny: {e}")
+            st.error(f"B≈ÇƒÖd metryki doch√≥d pasywny: {e}")
     
     st.markdown("---")
     
     # === NOWE: PROAKTYWNE ALERTY ===
-    st.markdown("### ?? Alerty Portfela")
+    st.markdown("### üö® Alerty Portfela")
     
     alerts = check_portfolio_alerts(stan_spolki, cele)
     
@@ -3284,13 +3284,13 @@ def show_dashboard(stan_spolki, cele):
         success_alerts = [a for a in alerts if a["severity"] == "success"]
         info_alerts = [a for a in alerts if a["severity"] == "info"]
         
-        # Wyúwietl critical w pierwszej kolejnoúci
+        # Wy≈õwietl critical w pierwszej kolejno≈õci
         for alert in critical_alerts:
             with st.container():
                 st.error(f"**{alert['title']}**")
                 st.markdown(f"{alert['message']}")
                 if alert.get('action'):
-                    st.markdown(f"?? *Rekomendacja: {alert['action']}*")
+                    st.markdown(f"üí° *Rekomendacja: {alert['action']}*")
                 st.markdown("---")
         
         # Potem warning i success
@@ -3298,42 +3298,42 @@ def show_dashboard(stan_spolki, cele):
             for alert in warning_alerts:
                 st.warning(f"**{alert['title']}**\n\n{alert['message']}")
                 if alert.get('action'):
-                    st.markdown(f"?? *Rekomendacja: {alert['action']}*")
+                    st.markdown(f"üí° *Rekomendacja: {alert['action']}*")
         
         if success_alerts:
             for alert in success_alerts:
                 st.success(f"**{alert['title']}**\n\n{alert['message']}")
                 if alert.get('action'):
-                    st.markdown(f"?? *Rekomendacja: {alert['action']}*")
+                    st.markdown(f"üí° *Rekomendacja: {alert['action']}*")
         
-        # Info na koÒcu w expander (øeby nie zaúmiecaÊ)
+        # Info na ko≈Ñcu w expander (≈ºeby nie za≈õmiecaƒá)
         if info_alerts:
-            with st.expander(f"?? Informacje ({len(info_alerts)})", expanded=False):
+            with st.expander(f"‚ÑπÔ∏è Informacje ({len(info_alerts)})", expanded=False):
                 for alert in info_alerts:
                     st.info(f"**{alert['title']}**\n\n{alert['message']}")
     else:
-        st.success("? **Brak aktywnych alertÛw** - TwÛj portfel wyglπda stabilnie!")
-        st.caption("System monitoruje: duøe spadki/wzrosty, wysokie P/E, düwigniÍ, koncentracjÍ i cele finansowe.")
+        st.success("‚úÖ **Brak aktywnych alert√≥w** - Tw√≥j portfel wyglƒÖda stabilnie!")
+        st.caption("System monitoruje: du≈ºe spadki/wzrosty, wysokie P/E, d≈∫wigniƒô, koncentracjƒô i cele finansowe.")
     
     st.markdown("---")
     
     # === CODZIENNA RADA OD AI PARTNERA ===
-    st.markdown("### ?? Dzienna Rada od Eksperta")
+    st.markdown("### üí° Dzienna Rada od Eksperta")
     
     with st.spinner("Losowanie dzisiejszego doradcy..."):
         try:
             daily_tip = get_daily_advisor_tip(stan_spolki, cele)
             
             st.info(f"""
-**{daily_tip['partner_icon']} {daily_tip['partner_name']} mÛwi:**
+**{daily_tip['partner_icon']} {daily_tip['partner_name']} m√≥wi:**
 
 _{daily_tip['tip_text']}_
             """)
             
-            st.caption(f"?? Kaødy dzieÒ inny ekspert! Jutro ktoú inny podzieli siÍ swojπ mπdroúciπ.")
+            st.caption(f"üí¨ Ka≈ºdy dzie≈Ñ inny ekspert! Jutro kto≈õ inny podzieli siƒô swojƒÖ mƒÖdro≈õciƒÖ.")
             
         except Exception as e:
-            st.warning(f"?? Nie uda≥o siÍ pobraÊ dzisiejszej rady: {str(e)[:100]}")
+            st.warning(f"‚ö†Ô∏è Nie uda≈Ço siƒô pobraƒá dzisiejszej rady: {str(e)[:100]}")
     
     st.markdown("---")
     
@@ -3351,76 +3351,76 @@ _{daily_tip['tip_text']}_
     st.markdown("---")
     
     # === ANALIZA DYWIDEND ===
-    with st.expander("?? SzczegÛ≥owa Analiza Dywidend", expanded=False):
+    with st.expander("üí∞ Szczeg√≥≈Çowa Analiza Dywidend", expanded=False):
         try:
             dywidendy_info = calculate_portfolio_dividends(stan_spolki)
             
             if dywidendy_info['liczba_spolek_z_dywidendami'] > 0:
                 # Info o podatku
-                st.info(f"?? **Kwoty NETTO** (po odjÍciu 19% podatku Belki: {dywidendy_info.get('podatek_pln', 0):.2f} PLN/rok)")
+                st.info(f"üìã **Kwoty NETTO** (po odjƒôciu 19% podatku Belki: {dywidendy_info.get('podatek_pln', 0):.2f} PLN/rok)")
                 
                 col_d1, col_d2, col_d3, col_d4 = st.columns(4)
                 
                 with col_d1:
                     st.metric(
-                        "MiesiÍcznie (NETTO)",
+                        "Miesiƒôcznie (NETTO)",
                         f"{dywidendy_info['miesieczna_kwota_pln']:.2f} PLN",
-                        help="MiesiÍczny dochÛd po 19% podatku"
+                        help="Miesiƒôczny doch√≥d po 19% podatku"
                     )
                 
                 with col_d2:
                     st.metric(
                         "Rocznie (NETTO)",
                         f"{dywidendy_info['roczna_kwota_pln']:.2f} PLN",
-                        help="Roczny dochÛd po 19% podatku"
+                        help="Roczny doch√≥d po 19% podatku"
                     )
                 
                 with col_d3:
                     st.metric(
                         "Rocznie (BRUTTO)",
                         f"{dywidendy_info.get('roczna_kwota_pln_brutto', 0):.2f} PLN",
-                        help="Roczny dochÛd przed opodatkowaniem"
+                        help="Roczny doch√≥d przed opodatkowaniem"
                     )
                 
                 with col_d4:
                     st.metric(
-                        "SpÛ≥ki z dywidendami",
+                        "Sp√≥≈Çki z dywidendami",
                         dywidendy_info['liczba_spolek_z_dywidendami'],
-                        help="Liczba spÛ≥ek wyp≥acajπcych dywidendy"
+                        help="Liczba sp√≥≈Çek wyp≈ÇacajƒÖcych dywidendy"
                     )
                 
-                st.markdown("**TOP 10 NajwiÍkszych P≥atnikÛw Dywidend:**")
+                st.markdown("**TOP 10 Najwiƒôkszych P≈Çatnik√≥w Dywidend:**")
                 
-                # Przygotuj tabelÍ
+                # Przygotuj tabelƒô
                 df_div = pd.DataFrame(dywidendy_info['szczegoly'][:10])
                 if not df_div.empty:
                     df_div_display = df_div[['ticker', 'ilosc', 'dividend_rate', 'dividend_yield', 'roczna_kwota_pln']].copy()
-                    df_div_display.columns = ['Ticker', 'IloúÊ akcji', 'Dywidenda/akcjÍ ($)', 'Yield (%)', 'Roczna NETTO (PLN)']
+                    df_div_display.columns = ['Ticker', 'Ilo≈õƒá akcji', 'Dywidenda/akcjƒô ($)', 'Yield (%)', 'Roczna NETTO (PLN)']
                     
                     # Format
-                    df_div_display['IloúÊ akcji'] = df_div_display['IloúÊ akcji'].apply(lambda x: f"{x:.2f}")
-                    df_div_display['Dywidenda/akcjÍ ($)'] = df_div_display['Dywidenda/akcjÍ ($)'].apply(lambda x: f"${x:.2f}")
+                    df_div_display['Ilo≈õƒá akcji'] = df_div_display['Ilo≈õƒá akcji'].apply(lambda x: f"{x:.2f}")
+                    df_div_display['Dywidenda/akcjƒô ($)'] = df_div_display['Dywidenda/akcjƒô ($)'].apply(lambda x: f"${x:.2f}")
                     df_div_display['Yield (%)'] = df_div_display['Yield (%)'].apply(lambda x: f"{x:.2f}%")
                     df_div_display['Roczna NETTO (PLN)'] = df_div_display['Roczna NETTO (PLN)'].apply(lambda x: f"{x:.2f}")
                     
                     st.dataframe(df_div_display, width="stretch", hide_index=True)
                     
-                    st.caption(f"?? Kwoty NETTO po odjÍciu 19% podatku Belki. Dane pochodzπ z Yahoo Finance - rzeczywiste wyp≥aty mogπ siÍ rÛøniÊ.")
+                    st.caption(f"üí° Kwoty NETTO po odjƒôciu 19% podatku Belki. Dane pochodzƒÖ z Yahoo Finance - rzeczywiste wyp≈Çaty mogƒÖ siƒô r√≥≈ºniƒá.")
             else:
-                st.info("?? Brak spÛ≥ek wyp≥acajπcych dywidendy w portfelu lub brak danych o dywidendach.")
+                st.info("‚ÑπÔ∏è Brak sp√≥≈Çek wyp≈ÇacajƒÖcych dywidendy w portfelu lub brak danych o dywidendach.")
                 
         except Exception as e:
-            st.error(f"B≥πd analizy dywidend: {e}")
+            st.error(f"B≈ÇƒÖd analizy dywidend: {e}")
     
     st.markdown("---")
     
-    # Progress bars celÛw
-    st.subheader("?? Progres CelÛw Strategicznych")
+    # Progress bars cel√≥w
+    st.subheader("üéØ Progres Cel√≥w Strategicznych")
     
     col1, col2 = st.columns(2)
     
     with col1:
-        st.markdown("##### ?? Kredyty")
+        st.markdown("##### üí≥ Kredyty")
         kredyty = load_kredyty()
         if kredyty:
             suma_pozostala = sum(k['kwota_poczatkowa'] - k['splacono'] for k in kredyty)
@@ -3429,61 +3429,61 @@ _{daily_tip['tip_text']}_
             progress_kredyty = suma_splacona / suma_poczatkowa if suma_poczatkowa > 0 else 0
             
             st.progress(progress_kredyty)
-            st.caption(f"Sp≥acono: {format_currency(suma_splacona)} / {format_currency(suma_poczatkowa)}")
-            st.caption(f"Pozosta≥o: {format_currency(suma_pozostala)}")
+            st.caption(f"Sp≈Çacono: {format_currency(suma_splacona)} / {format_currency(suma_poczatkowa)}")
+            st.caption(f"Pozosta≈Ço: {format_currency(suma_pozostala)}")
         else:
-            st.caption("Brak dodanych kredytÛw")
+            st.caption("Brak dodanych kredyt√≥w")
         
-        # Przycisk do szczegÛ≥Ûw kredytÛw
-        if st.button("?? SzczegÛ≥y KredytÛw", key="goto_kredyty_dash"):
-            st.session_state['goto_page'] = "?? Kredyty"
+        # Przycisk do szczeg√≥≈Ç√≥w kredyt√≥w
+        if st.button("üìã Szczeg√≥≈Çy Kredyt√≥w", key="goto_kredyty_dash"):
+            st.session_state['goto_page'] = "üí≥ Kredyty"
             st.rerun()
         
-        st.markdown("##### ? Wyp≥aty")
+        st.markdown("##### ÔøΩ Wyp≈Çaty")
         wyplaty = load_wyplaty()
         if wyplaty:
             ostatnia_wyplata = wyplaty[0]
             srednia_wyplata = get_srednia_wyplata(3)
             
-            st.metric("Ostatnia wyp≥ata", f"{ostatnia_wyplata['kwota']:.0f} PLN")
-            st.caption(f"?? Data: {ostatnia_wyplata['data']}")
-            st.caption(f"?? årednia (3 mies.): {srednia_wyplata:.0f} PLN")
+            st.metric("Ostatnia wyp≈Çata", f"{ostatnia_wyplata['kwota']:.0f} PLN")
+            st.caption(f"üìÖ Data: {ostatnia_wyplata['data']}")
+            st.caption(f"üìä ≈örednia (3 mies.): {srednia_wyplata:.0f} PLN")
         else:
-            st.caption("Brak danych o wyp≥atach")
+            st.caption("Brak danych o wyp≈Çatach")
         
-        # Przycisk do szczegÛ≥Ûw wyp≥at
-        if st.button("?? Historia Wyp≥at", key="goto_wyplaty_dash"):
-            st.session_state['goto_page'] = "?? Kredyty"
+        # Przycisk do szczeg√≥≈Ç√≥w wyp≈Çat
+        if st.button("üìã Historia Wyp≈Çat", key="goto_wyplaty_dash"):
+            st.session_state['goto_page'] = "üí≥ Kredyty"
             st.session_state['active_tab'] = 3  # TAB 4 (indeks 3)
             st.rerun()
     
     with col2:
-        st.markdown("##### ? Rezerwa gotÛwkowa")
+        st.markdown("##### ÔøΩ Rezerwa got√≥wkowa")
         rezerwa_current = cele.get('Rezerwa_gotowkowa_obecna_PLN', 39904) if cele else 39904
         rezerwa_target = cele.get('Rezerwa_gotowkowa_PLN', 70000) if cele else 70000
         progress_rezerwa = rezerwa_current / rezerwa_target if rezerwa_target > 0 else 0
         st.progress(min(progress_rezerwa, 1.0))
         st.caption(f"Zgromadzone: {format_currency(rezerwa_current)} / {format_currency(rezerwa_target)}")
         
-        st.markdown("##### ?? Wydatki MiesiÍczne")
+        st.markdown("##### üìã Wydatki Miesiƒôczne")
         wydatki_stale = get_suma_wydatkow_stalych()
         kredyty = load_kredyty()
         raty_miesieczne = sum(k['rata_miesieczna'] for k in kredyty)
         wydatki_total = wydatki_stale + raty_miesieczne
         
-        st.metric("Wydatki sta≥e", f"{wydatki_stale:.0f} PLN")
-        st.caption(f"Raty kredytÛw: {raty_miesieczne:.0f} PLN")
+        st.metric("Wydatki sta≈Çe", f"{wydatki_stale:.0f} PLN")
+        st.caption(f"Raty kredyt√≥w: {raty_miesieczne:.0f} PLN")
         st.caption(f"**Total: {wydatki_total:.0f} PLN/mies**")
         
-        # Przycisk do szczegÛ≥Ûw
-        if st.button("?? Zarzπdzaj Wydatkami", key="goto_wydatki_dash"):
-            st.session_state['goto_page'] = "?? Kredyty"
+        # Przycisk do szczeg√≥≈Ç√≥w
+        if st.button("üìã ZarzƒÖdzaj Wydatkami", key="goto_wydatki_dash"):
+            st.session_state['goto_page'] = "üí≥ Kredyty"
             st.session_state['active_tab'] = 4  # TAB 5 (indeks 4)
             st.rerun()
         
-        st.markdown("##### ??? Financial Independence (FIRE Analysis)")
+        st.markdown("##### üèñÔ∏è Financial Independence (FIRE Analysis)")
         
-        # === OBLICZ PE£NY DOCH”D PASYWNY (Dywidendy + Crypto APY) ===
+        # === OBLICZ PE≈ÅNY DOCH√ìD PASYWNY (Dywidendy + Crypto APY) ===
         dywidendy_info = calculate_portfolio_dividends(stan_spolki)
         fi_dochod_dywidendy = dywidendy_info['miesieczna_kwota_pln']  # NETTO po 19% podatku
         
@@ -3510,13 +3510,13 @@ _{daily_tip['tip_text']}_
                 pass
         
         fi_dochod = fi_dochod_dywidendy + crypto_apy_fi['miesieczne_pln']  # TOTAL passive income
-        fi_wydatki = wydatki_total  # Z wydatki.json + raty kredytÛw
+        fi_wydatki = wydatki_total  # Z wydatki.json + raty kredyt√≥w
         
-        # === FI NUMBER (ile potrzebujesz by byÊ FI) ===
-        # 4% Rule: FI Number = Roczne wydatki ◊ 25
-        fi_number = fi_wydatki * 12 * 25  # MiesiÍczne wydatki ◊ 12 ◊ 25
+        # === FI NUMBER (ile potrzebujesz by byƒá FI) ===
+        # 4% Rule: FI Number = Roczne wydatki √ó 25
+        fi_number = fi_wydatki * 12 * 25  # Miesiƒôczne wydatki √ó 12 √ó 25
         
-        # Aktualna wartoúÊ netto (akcje + crypto + rezerwa - d≥ugi)
+        # Aktualna warto≈õƒá netto (akcje + crypto + rezerwa - d≈Çugi)
         rezerwa_fi = cele.get('Rezerwa_gotowkowa_obecna_PLN', 0) if cele else 0
         wartosc_netto_fi = (
             stan_spolki['akcje'].get('wartosc_pln', 0) + 
@@ -3533,39 +3533,39 @@ _{daily_tip['tip_text']}_
             procent_fi = (fi_dochod / fi_wydatki * 100) if fi_wydatki > 0 else 0
             
             st.metric(
-                "?? FI Progress (DochÛd/Wydatki)",
+                "üéØ FI Progress (Doch√≥d/Wydatki)",
                 f"{procent_fi:.1f}%",
                 delta=f"{fi_dochod:.0f}/{fi_wydatki:.0f} PLN/mies"
             )
             st.progress(min(progress_fi, 1.0))
             
             if procent_fi >= 100:
-                st.success("?? **Gratulacje! Jesteú Financially Independent!**")
+                st.success("üéâ **Gratulacje! Jeste≈õ Financially Independent!**")
             elif procent_fi >= 75:
-                st.info(f"?? Blisko! Brakuje {fi_wydatki - fi_dochod:.0f} PLN/mies")
+                st.info(f"üöÄ Blisko! Brakuje {fi_wydatki - fi_dochod:.0f} PLN/mies")
             elif procent_fi >= 50:
-                st.warning(f"?? W po≥owie drogi! Brakuje {fi_wydatki - fi_dochod:.0f} PLN/mies")
+                st.warning(f"üí™ W po≈Çowie drogi! Brakuje {fi_wydatki - fi_dochod:.0f} PLN/mies")
             else:
-                st.caption(f"?? Brakuje {fi_wydatki - fi_dochod:.0f} PLN/mies do FI")
+                st.caption(f"üìä Brakuje {fi_wydatki - fi_dochod:.0f} PLN/mies do FI")
         
         with col_fi2:
             progress_fi_number = (wartosc_netto_fi / fi_number) if fi_number > 0 else 0
             procent_fi_number = (wartosc_netto_fi / fi_number * 100) if fi_number > 0 else 0
             
             st.metric(
-                "?? FI Number Progress (4% Rule)",
+                "üí∞ FI Number Progress (4% Rule)",
                 f"{procent_fi_number:.1f}%",
                 delta=f"{wartosc_netto_fi:.0f}/{fi_number:.0f} PLN"
             )
             st.progress(min(progress_fi_number, 1.0))
             
             if procent_fi_number >= 100:
-                st.success("?? **FI Number osiπgniÍty!**")
+                st.success("üéä **FI Number osiƒÖgniƒôty!**")
             else:
-                st.caption(f"?? Brakuje {fi_number - wartosc_netto_fi:.0f} PLN do FI Number")
+                st.caption(f"üíé Brakuje {fi_number - wartosc_netto_fi:.0f} PLN do FI Number")
         
         with col_fi3:
-            # Time to FI (ile lat do osiπgniÍcia przy obecnym tempie)
+            # Time to FI (ile lat do osiƒÖgniƒôcia przy obecnym tempie)
             wyplaty_fi = load_wyplaty()
             if wyplaty_fi and len(wyplaty_fi) > 0:
                 ostatnia_wyplata_fi = wyplaty_fi[0]['kwota']
@@ -3573,57 +3573,57 @@ _{daily_tip['tip_text']}_
                 
                 if miesieczne_inwestycje > 0 and fi_number > wartosc_netto_fi:
                     brakujaca_kwota = fi_number - wartosc_netto_fi
-                    # Uproszczony model: brakujπca kwota / miesiÍczne inwestycje
-                    # (zak≥adamy 0% zwrotu - konserwatywnie)
+                    # Uproszczony model: brakujƒÖca kwota / miesiƒôczne inwestycje
+                    # (zak≈Çadamy 0% zwrotu - konserwatywnie)
                     miesiace_do_fi = brakujaca_kwota / miesieczne_inwestycje
                     lata_do_fi = miesiace_do_fi / 12
                     
                     st.metric(
-                        "?? Time to FI (lata)",
+                        "‚è±Ô∏è Time to FI (lata)",
                         f"{lata_do_fi:.1f} lat",
                         delta=f"{miesieczne_inwestycje:.0f} PLN/mies inwestycji"
                     )
                     
                     rok_fi = 2025 + int(lata_do_fi)
-                    st.caption(f"?? Przewidywany rok FI: {rok_fi}")
+                    st.caption(f"üìÖ Przewidywany rok FI: {rok_fi}")
                 else:
-                    st.metric("?? Time to FI", "OSI•GNI TE! ??")
+                    st.metric("‚è±Ô∏è Time to FI", "OSIƒÑGNIƒòTE! üéâ")
         
         # === BREAKDOWN DOCHODU PASYWNEGO ===
-        with st.expander("?? Breakdown Dochodu Pasywnego", expanded=False):
+        with st.expander("üìä Breakdown Dochodu Pasywnego", expanded=False):
             col_b1, col_b2, col_b3 = st.columns(3)
             
             with col_b1:
-                st.metric("?? Dywidendy (NETTO)", f"{fi_dochod_dywidendy:.0f} PLN/mies")
-                st.caption(f"{dywidendy_info['roczna_kwota_pln']:.0f} PLN/rok z {dywidendy_info['liczba_spolek_z_dywidendami']} spÛ≥ek")
+                st.metric("üìà Dywidendy (NETTO)", f"{fi_dochod_dywidendy:.0f} PLN/mies")
+                st.caption(f"{dywidendy_info['roczna_kwota_pln']:.0f} PLN/rok z {dywidendy_info['liczba_spolek_z_dywidendami']} sp√≥≈Çek")
             
             with col_b2:
-                st.metric("? Crypto APY", f"{crypto_apy_fi['miesieczne_pln']:.0f} PLN/mies")
+                st.metric("‚Çø Crypto APY", f"{crypto_apy_fi['miesieczne_pln']:.0f} PLN/mies")
                 st.caption(f"{crypto_apy_fi['roczne_pln']:.0f} PLN/rok")
             
             with col_b3:
                 total_passive_year = (fi_dochod_dywidendy + crypto_apy_fi['miesieczne_pln']) * 12
-                st.metric("?? RAZEM Rocznie", f"{total_passive_year:.0f} PLN/rok")
+                st.metric("üí∞ RAZEM Rocznie", f"{total_passive_year:.0f} PLN/rok")
                 st.caption(f"{fi_dochod:.0f} PLN/mies")
         
         # === 4% RULE EXPLANATION ===
-        with st.expander("?? Co to jest FI Number (4% Rule)?", expanded=False):
+        with st.expander("‚ÑπÔ∏è Co to jest FI Number (4% Rule)?", expanded=False):
             st.markdown("""
             **4% Rule** to klasyczna zasada FIRE (Financial Independence, Retire Early):
             
-            - **FI Number = Roczne wydatki ◊ 25**
-            - Zak≥ada øe moøesz bezpiecznie wyp≥acaÊ 4% rocznie z portfela bez wyczerpania kapita≥u
+            - **FI Number = Roczne wydatki √ó 25**
+            - Zak≈Çada ≈ºe mo≈ºesz bezpiecznie wyp≈Çacaƒá 4% rocznie z portfela bez wyczerpania kapita≈Çu
             - Bazuje na badaniach Trinity Study (1998)
             
             **Twoje dane:**
-            - ?? MiesiÍczne wydatki: {wydatki:.0f} PLN
-            - ?? Roczne wydatki: {roczne:.0f} PLN
-            - ?? **FI Number (x25): {fi_num:.0f} PLN**
+            - üìä Miesiƒôczne wydatki: {wydatki:.0f} PLN
+            - üìÖ Roczne wydatki: {roczne:.0f} PLN
+            - üí∞ **FI Number (x25): {fi_num:.0f} PLN**
             
-            **Kiedy osiπgniesz FI Number:**
-            - Moøesz øyÊ z 4% zwrotu portfela (bez pracy!)
-            - TwÛj kapita≥ bÍdzie rÛs≥ szybciej niø go wydajesz
-            - Financial Independence = WolnoúÊ wyboru! ???
+            **Kiedy osiƒÖgniesz FI Number:**
+            - Mo≈ºesz ≈ºyƒá z 4% zwrotu portfela (bez pracy!)
+            - Tw√≥j kapita≈Ç bƒôdzie r√≥s≈Ç szybciej ni≈º go wydajesz
+            - Financial Independence = Wolno≈õƒá wyboru! üèñÔ∏è
             """.format(
                 wydatki=fi_wydatki,
                 roczne=fi_wydatki * 12,
@@ -3633,11 +3633,11 @@ _{daily_tip['tip_text']}_
     st.markdown("---")
     
     # === ANALIZA CASH FLOW ===
-    st.subheader("?? Analiza Cash Flow")
+    st.subheader("üí∏ Analiza Cash Flow")
     
     wyplaty = load_wyplaty()
     if wyplaty:
-        ostatnia_wyplata_cf = wyplaty[0]['kwota']  # Ostatnia wyp≥ata zamiast úredniej
+        ostatnia_wyplata_cf = wyplaty[0]['kwota']  # Ostatnia wyp≈Çata zamiast ≈õredniej
         wydatki_stale_cf = get_suma_wydatkow_stalych()
         kredyty_cf = load_kredyty()
         raty_cf = sum(k['rata_miesieczna'] for k in kredyty_cf)
@@ -3649,56 +3649,56 @@ _{daily_tip['tip_text']}_
         col1, col2, col3 = st.columns(3)
         
         with col1:
-            st.metric("?? Ostatnia wyp≥ata", f"{ostatnia_wyplata_cf:.0f} PLN")
-            st.caption(f"?? {wyplaty[0]['data']}")
+            st.metric("üí∞ Ostatnia wyp≈Çata", f"{ostatnia_wyplata_cf:.0f} PLN")
+            st.caption(f"üìÖ {wyplaty[0]['data']}")
         with col2:
-            st.metric("?? Wydatki + Raty", f"{wydatki_total_cf:.0f} PLN")
-            st.caption(f"Sta≥e: {wydatki_stale_cf:.0f} | Raty: {raty_cf:.0f}")
+            st.metric("üìä Wydatki + Raty", f"{wydatki_total_cf:.0f} PLN")
+            st.caption(f"Sta≈Çe: {wydatki_stale_cf:.0f} | Raty: {raty_cf:.0f}")
         with col3:
             delta_color = "normal" if nadwyzka >= 0 else "inverse"
             st.metric(
-                "?? Nadwyøka/Deficyt", 
+                "üíµ Nadwy≈ºka/Deficyt", 
                 f"{nadwyzka:.0f} PLN",
-                delta=f"{procent_oszczednosci:.1f}% oszczÍdnoúci"
+                delta=f"{procent_oszczednosci:.1f}% oszczƒôdno≈õci"
             )
         
-        # Pasek postÍpu
+        # Pasek postƒôpu
         if ostatnia_wyplata_cf > 0:
             wydatki_procent = (wydatki_total_cf / ostatnia_wyplata_cf)
             st.progress(min(wydatki_procent, 1.0))
             
             if nadwyzka > 0:
-                st.success(f"? Nadwyøka miesiÍczna: {nadwyzka:.0f} PLN ({procent_oszczednosci:.1f}%)")
+                st.success(f"‚úÖ Nadwy≈ºka miesiƒôczna: {nadwyzka:.0f} PLN ({procent_oszczednosci:.1f}%)")
                 
-                # SzczegÛ≥owy breakdown
-                with st.expander("?? SzczegÛ≥y obliczenia"):
+                # Szczeg√≥≈Çowy breakdown
+                with st.expander("üìä Szczeg√≥≈Çy obliczenia"):
                     st.write(f"""
-                    **Wyp≥ata:** {ostatnia_wyplata_cf:.2f} PLN  
-                    **Wydatki sta≥e:** -{wydatki_stale_cf:.2f} PLN  
-                    **Raty kredytÛw:** -{raty_cf:.2f} PLN  
-                    **===============**  
-                    **Nadwyøka:** {nadwyzka:.2f} PLN
+                    **Wyp≈Çata:** {ostatnia_wyplata_cf:.2f} PLN  
+                    **Wydatki sta≈Çe:** -{wydatki_stale_cf:.2f} PLN  
+                    **Raty kredyt√≥w:** -{raty_cf:.2f} PLN  
+                    **‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê**  
+                    **Nadwy≈ºka:** {nadwyzka:.2f} PLN
                     """)
             elif nadwyzka < 0:
-                st.error(f"?? Deficyt miesiÍczny: {abs(nadwyzka):.0f} PLN")
+                st.error(f"‚ö†Ô∏è Deficyt miesiƒôczny: {abs(nadwyzka):.0f} PLN")
                 
-                with st.expander("?? SzczegÛ≥y obliczenia"):
+                with st.expander("üìä Szczeg√≥≈Çy obliczenia"):
                     st.write(f"""
-                    **Wyp≥ata:** {ostatnia_wyplata_cf:.2f} PLN  
-                    **Wydatki sta≥e:** -{wydatki_stale_cf:.2f} PLN  
-                    **Raty kredytÛw:** -{raty_cf:.2f} PLN  
-                    **===============**  
+                    **Wyp≈Çata:** {ostatnia_wyplata_cf:.2f} PLN  
+                    **Wydatki sta≈Çe:** -{wydatki_stale_cf:.2f} PLN  
+                    **Raty kredyt√≥w:** -{raty_cf:.2f} PLN  
+                    **‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê**  
                     **Deficyt:** {nadwyzka:.2f} PLN
                     """)
             else:
-                st.warning("?? Bilans zerowy")
+                st.warning("‚öñÔ∏è Bilans zerowy")
     else:
-        st.info("?? Dodaj wyp≥aty w zak≥adce 'Kredyty õ Wyp≥aty' aby zobaczyÊ analizÍ.")
+        st.info("‚ÑπÔ∏è Dodaj wyp≈Çaty w zak≈Çadce 'Kredyty ‚Üí Wyp≈Çaty' aby zobaczyƒá analizƒô.")
     
     st.markdown("---")
     
     # Top Holdings
-    st.subheader("?? Top Holdings")
+    st.subheader("üìä Top Holdings")
     
     # Pobierz prawdziwe dane z portfela
     try:
@@ -3715,7 +3715,7 @@ _{daily_tip['tip_text']}_
                     
                     akcje_pozycje.append({
                         'Ticker': ticker,
-                        'WartoúÊ (PLN)': wartosc_pln,
+                        'Warto≈õƒá (PLN)': wartosc_pln,
                         'Zmiana (%)': data.get('zmiana_proc', 0),
                         'Waga (%)': waga,
                         'Typ': 'Akcja/ETF'
@@ -3730,8 +3730,8 @@ _{daily_tip['tip_text']}_
                     
                     krypto_pozycje.append({
                         'Ticker': ticker,
-                        'WartoúÊ (PLN)': wartosc_pln,
-                        'Zmiana (%)': data.get('zmiana_24h', 0),  # Krypto moøe mieÊ zmiana_24h
+                        'Warto≈õƒá (PLN)': wartosc_pln,
+                        'Zmiana (%)': data.get('zmiana_24h', 0),  # Krypto mo≈ºe mieƒá zmiana_24h
                         'Waga (%)': waga,
                         'Typ': 'Crypto'
                     })
@@ -3739,29 +3739,29 @@ _{daily_tip['tip_text']}_
         # Combine and sort
         all_holdings = akcje_pozycje + krypto_pozycje
         
-        # Filtruj pozycje z wartoúciπ > 0
-        all_holdings = [h for h in all_holdings if h['WartoúÊ (PLN)'] > 0]
+        # Filtruj pozycje z warto≈õciƒÖ > 0
+        all_holdings = [h for h in all_holdings if h['Warto≈õƒá (PLN)'] > 0]
         
-        all_holdings = sorted(all_holdings, key=lambda x: x['WartoúÊ (PLN)'], reverse=True)
+        all_holdings = sorted(all_holdings, key=lambda x: x['Warto≈õƒá (PLN)'], reverse=True)
         
         if all_holdings:
             df = pd.DataFrame(all_holdings[:10])  # Top 10
             
             # Format values
-            df['WartoúÊ (PLN)'] = df['WartoúÊ (PLN)'].apply(lambda x: f"{x:,.2f}")
+            df['Warto≈õƒá (PLN)'] = df['Warto≈õƒá (PLN)'].apply(lambda x: f"{x:,.2f}")
             df['Zmiana (%)'] = df['Zmiana (%)'].apply(lambda x: f"{x:+.2f}")
             df['Waga (%)'] = df['Waga (%)'].apply(lambda x: f"{x:.2f}")
             
             st.dataframe(df, width="stretch", hide_index=True)
         else:
-            st.warning("?? Brak danych o pozycjach")
+            st.warning("‚ö†Ô∏è Brak danych o pozycjach")
     
     except Exception as e:
-        st.error(f"B≥πd pobierania danych: {e}")
+        st.error(f"B≈ÇƒÖd pobierania danych: {e}")
         # Fallback to mock data if real data fails
         holdings_data = {
             'Ticker': ['AAPL', 'MSFT', 'VWCE', 'PBR', 'ADD'],
-            'WartoúÊ (PLN)': ['4,520.00', '3,890.00', '2,340.00', '1,980.00', '1,750.00'],
+            'Warto≈õƒá (PLN)': ['4,520.00', '3,890.00', '2,340.00', '1,980.00', '1,750.00'],
             'Zmiana (%)': ['+2.30', '+1.80', '-0.50', '+5.20', '+0.90'],
             'Waga (%)': ['21.60', '18.60', '11.20', '9.50', '8.40'],
             'Typ': ['Akcja', 'Akcja', 'ETF', 'Akcja', 'ETF']
@@ -3774,55 +3774,55 @@ _{daily_tip['tip_text']}_
     col1, col2, col3, col4 = st.columns(4)
     
     with col1:
-        if st.button("?? Odúwieø Portfolio", width="stretch", key="refresh_portfolio_btn"):
+        if st.button("üîÑ Od≈õwie≈º Portfolio", width="stretch", key="refresh_portfolio_btn"):
             st.cache_data.clear()
             st.rerun()
     
     with col2:
-        if st.button("?? Analiza Ryzyka", width="stretch", key="analiza_ryzyka_btn"):
-            st.session_state.page = "?? Analiza"
+        if st.button("üìä Analiza Ryzyka", width="stretch", key="analiza_ryzyka_btn"):
+            st.session_state.page = "üìà Analiza"
             st.rerun()
     
     with col3:
-        if st.button("?? Generuj Raport Excel", width="stretch", key="raport_excel_btn"):
+        if st.button("üìÑ Generuj Raport Excel", width="stretch", key="raport_excel_btn"):
             try:
-                with st.spinner("? GenerujÍ raport..."):
+                with st.spinner("ÔøΩ Generujƒô raport..."):
                     filename = generate_full_report(stan_spolki)
                     
                     # Read file and offer download
                     with open(filename, "rb") as file:
                         btn = st.download_button(
-                            label="?? Pobierz raport",
+                            label="‚¨áÔ∏è Pobierz raport",
                             data=file,
                             file_name=filename,
                             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                         )
                     
-                    st.success(f"? Raport wygenerowany: {filename}")
+                    st.success(f"‚úÖ Raport wygenerowany: {filename}")
             except Exception as e:
-                st.error(f"? B≥πd generowania raportu: {e}")
+                st.error(f"‚ùå B≈ÇƒÖd generowania raportu: {e}")
                 import traceback
                 st.code(traceback.format_exc())
     
     with col4:
-        if st.button("?? Symuluj Scenariusz", width="stretch"):
-            st.session_state.page = "?? Symulacje"
+        if st.button("üéÆ Symuluj Scenariusz", width="stretch"):
+            st.session_state.page = "üéÆ Symulacje"
             st.rerun()
 
 def show_kodeks_page():
-    """Wyúwietla Kodeks SpÛ≥ki z moøliwoúciπ edycji i dynamicznym odúwieøaniem"""
-    st.title("?? Kodeks SpÛ≥ki 'Horyzont PartnerÛw'")
+    """Wy≈õwietla Kodeks Sp√≥≈Çki z mo≈ºliwo≈õciƒÖ edycji i dynamicznym od≈õwie≈ºaniem"""
+    st.title("üìú Kodeks Sp√≥≈Çki 'Horyzont Partner√≥w'")
     
     kodeks_file = "kodeks_spolki.txt"
     
-    # WAØNE: Zawsze wczytuj úwieøy plik (bez cache) - moøe siÍ zmieniaÊ podczas rozmÛw/g≥osowaÒ
+    # WA≈ªNE: Zawsze wczytuj ≈õwie≈ºy plik (bez cache) - mo≈ºe siƒô zmieniaƒá podczas rozm√≥w/g≈Çosowa≈Ñ
     try:
         if not os.path.exists(kodeks_file):
-            st.error(f"? Plik {kodeks_file} nie istnieje!")
-            st.info("UtwÛrz plik `kodeks_spolki.txt` w katalogu g≥Ûwnym projektu.")
+            st.error(f"‚ùå Plik {kodeks_file} nie istnieje!")
+            st.info("Utw√≥rz plik `kodeks_spolki.txt` w katalogu g≈Ç√≥wnym projektu.")
             
             # Debug info
-            st.warning("?? Sprawdzam katalog...")
+            st.warning("üìÇ Sprawdzam katalog...")
             current_dir = os.getcwd()
             st.code(f"Aktualny katalog: {current_dir}")
             
@@ -3835,63 +3835,63 @@ def show_kodeks_page():
         with open(kodeks_file, 'r', encoding='utf-8') as f:
             kodeks_content = f.read()
     except Exception as e:
-        st.error(f"? B≥πd wczytywania Kodeksu: {e}")
+        st.error(f"‚ùå B≈ÇƒÖd wczytywania Kodeksu: {e}")
         import traceback
         st.code(traceback.format_exc())
         return
     
-    # Info o dynamicznym odúwieøaniu
-    st.info("?? **Kodeks jest dynamicznie odúwieøany** - zmiany wprowadzone podczas rozmÛw lub g≥osowaÒ bÍdπ natychmiast widoczne po prze≥adowaniu strony.")
+    # Info o dynamicznym od≈õwie≈ºaniu
+    st.info("‚ÑπÔ∏è **Kodeks jest dynamicznie od≈õwie≈ºany** - zmiany wprowadzone podczas rozm√≥w lub g≈Çosowa≈Ñ bƒôdƒÖ natychmiast widoczne po prze≈Çadowaniu strony.")
     
-    # Tabs: Podglπd i Edycja
-    tab1, tab2, tab3 = st.tabs(["?? Podglπd", "?? Edycja", "?? Statystyki"])
+    # Tabs: PodglƒÖd i Edycja
+    tab1, tab2, tab3 = st.tabs(["üìñ PodglƒÖd", "‚úèÔ∏è Edycja", "üìä Statystyki"])
     
     with tab1:
-        st.markdown("### Pe≥na treúÊ Kodeksu:")
+        st.markdown("### Pe≈Çna tre≈õƒá Kodeksu:")
         st.markdown("---")
         
-        # Wyúwietl kodeks w czytelnym formacie z zachowaniem formatowania
+        # Wy≈õwietl kodeks w czytelnym formacie z zachowaniem formatowania
         st.text(kodeks_content)
         
         col1, col2 = st.columns([3, 1])
         with col1:
-            st.caption(f"?? åcieøka: `{kodeks_file}`")
+            st.caption(f"üìÅ ≈öcie≈ºka: `{kodeks_file}`")
         with col2:
-            if st.button("?? Odúwieø"):
+            if st.button("üîÑ Od≈õwie≈º"):
                 st.rerun()
     
     with tab2:
         st.markdown("### Edytuj Kodeks:")
-        st.warning("?? **Uwaga:** Zmiany w Kodeksie wp≥ywajπ na wszystkie decyzje AI i g≥osowania partnerÛw!")
+        st.warning("‚ö†Ô∏è **Uwaga:** Zmiany w Kodeksie wp≈ÇywajƒÖ na wszystkie decyzje AI i g≈Çosowania partner√≥w!")
         
-        # Text area z moøliwoúciπ edycji
+        # Text area z mo≈ºliwo≈õciƒÖ edycji
         edited_content = st.text_area(
-            "TreúÊ Kodeksu:",
+            "Tre≈õƒá Kodeksu:",
             value=kodeks_content,
             height=500,
-            help="Wprowadü zmiany i kliknij 'Zapisz'"
+            help="Wprowad≈∫ zmiany i kliknij 'Zapisz'"
         )
         
         col1, col2, col3 = st.columns([2, 2, 3])
         
         with col1:
-            if st.button("?? Zapisz zmiany", type="primary"):
+            if st.button("üíæ Zapisz zmiany", type="primary"):
                 try:
                     # Backup przed zapisem
                     backup_file = f"kodeks_spolki_backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
                     with open(backup_file, 'w', encoding='utf-8') as f:
                         f.write(kodeks_content)
                     
-                    # Zapisz nowπ wersjÍ
+                    # Zapisz nowƒÖ wersjƒô
                     with open(kodeks_file, 'w', encoding='utf-8') as f:
                         f.write(edited_content)
                     
-                    # Synchronizuj cel rezerwy gotÛwkowej do cele.json
+                    # Synchronizuj cel rezerwy got√≥wkowej do cele.json
                     try:
                         import re
-                        match = re.search(r'Cel #2: Budowa rezerwy gotÛwkowej do docelowego poziomu ([\d\s,]+) PLN\.', edited_content)
+                        match = re.search(r'Cel #2: Budowa rezerwy got√≥wkowej do docelowego poziomu ([\d\s,]+) PLN\.', edited_content)
                         if match:
-                            # Wyciπgnij liczbÍ (usuÒ spacje i przecinki)
+                            # WyciƒÖgnij liczbƒô (usu≈Ñ spacje i przecinki)
                             cel_str = match.group(1).replace(' ', '').replace(',', '')
                             new_rezerwa_cel = int(cel_str)
                             
@@ -3905,27 +3905,27 @@ def show_kodeks_page():
                             if cele.get('Rezerwa_gotowkowa_PLN') != new_rezerwa_cel:
                                 cele['Rezerwa_gotowkowa_PLN'] = new_rezerwa_cel
                                 save_cele(cele)
-                                st.success(f"? Kodeks zapisany! Cel rezerwy zsynchronizowany: {new_rezerwa_cel:,} PLN. Backup: `{backup_file}`")
+                                st.success(f"‚úÖ Kodeks zapisany! Cel rezerwy zsynchronizowany: {new_rezerwa_cel:,} PLN. Backup: `{backup_file}`")
                             else:
-                                st.success(f"? Kodeks zapisany! Backup: `{backup_file}`")
+                                st.success(f"‚úÖ Kodeks zapisany! Backup: `{backup_file}`")
                         else:
-                            st.success(f"? Kodeks zapisany! Backup: `{backup_file}`")
+                            st.success(f"‚úÖ Kodeks zapisany! Backup: `{backup_file}`")
                     except Exception as sync_error:
-                        st.success(f"? Kodeks zapisany! Backup: `{backup_file}`")
-                        st.warning(f"?? Synchronizacja celu: {str(sync_error)}")
+                        st.success(f"‚úÖ Kodeks zapisany! Backup: `{backup_file}`")
+                        st.warning(f"‚ö†Ô∏è Synchronizacja celu: {str(sync_error)}")
                     
-                    # WYCZYå∆ CACHE aby odúwieøyÊ dane
+                    # WYCZY≈öƒÜ CACHE aby od≈õwie≈ºyƒá dane
                     load_portfolio_data.clear()
                     st.rerun()
                 except Exception as e:
-                    st.error(f"? B≥πd zapisu: {e}")
+                    st.error(f"‚ùå B≈ÇƒÖd zapisu: {e}")
         
         with col2:
-            if st.button("?? Cofnij zmiany"):
+            if st.button("‚Ü©Ô∏è Cofnij zmiany"):
                 st.rerun()
         
         with col3:
-            st.caption("Backup tworzony automatycznie przed kaødym zapisem")
+            st.caption("Backup tworzony automatycznie przed ka≈ºdym zapisem")
     
     with tab3:
         st.markdown("### Statystyki Kodeksu:")
@@ -3938,30 +3938,30 @@ def show_kodeks_page():
         col1, col2, col3 = st.columns(3)
         
         with col1:
-            st.metric("?? Liczba linii", len(lines))
+            st.metric("üìÑ Liczba linii", len(lines))
         with col2:
-            st.metric("?? Liczba s≥Ûw", len(words))
+            st.metric("üìù Liczba s≈Ç√≥w", len(words))
         with col3:
-            st.metric("?? Liczba znakÛw", chars)
+            st.metric("üî§ Liczba znak√≥w", chars)
         
         st.markdown("---")
         
-        # Analiza struktury (artyku≥y, paragrafy)
+        # Analiza struktury (artyku≈Çy, paragrafy)
         import re
-        articles = re.findall(r'(?:Artyku≥|ARTYKU£)\s+[IVXLCDM]+', kodeks_content, re.IGNORECASE)
-        sections = re.findall(r'ß\s*\d+', kodeks_content)
+        articles = re.findall(r'(?:Artyku≈Ç|ARTYKU≈Å)\s+[IVXLCDM]+', kodeks_content, re.IGNORECASE)
+        sections = re.findall(r'¬ß\s*\d+', kodeks_content)
         
         col1, col2 = st.columns(2)
         
         with col1:
-            st.metric("?? Artyku≥y", len(articles))
+            st.metric("üìö Artyku≈Çy", len(articles))
             if articles:
-                with st.expander("Zobacz artyku≥y"):
+                with st.expander("Zobacz artyku≈Çy"):
                     for art in articles:
                         st.write(f"- {art}")
         
         with col2:
-            st.metric("?? Paragrafy (ß)", len(sections))
+            st.metric("üìã Paragrafy (¬ß)", len(sections))
             if sections:
                 with st.expander("Zobacz paragrafy"):
                     for sec in sections[:20]:  # Max 20
@@ -3973,9 +3973,9 @@ def show_kodeks_page():
 def show_alerts_page():
     """
     Strona z alertami i notyfikacjami
-    Pokazuje: nowe pozycje, zmiany cen, terminy kredytÛw, osiπgniÍte cele
+    Pokazuje: nowe pozycje, zmiany cen, terminy kredyt√≥w, osiƒÖgniƒôte cele
     """
-    st.title("?? Alerty i Notyfikacje")
+    st.title("üîî Alerty i Notyfikacje")
     
     try:
         import alert_system as alerts
@@ -3983,40 +3983,40 @@ def show_alerts_page():
         import goal_analytics as goals
         import daily_snapshot as ds
         
-        # Tabs dla rÛønych typÛw alertÛw
+        # Tabs dla r√≥≈ºnych typ√≥w alert√≥w
         tab1, tab2, tab3, tab4, tab5 = st.tabs([
-            "?? Wszystkie", 
-            "?? Nowe Pozycje", 
-            "?? Zmiany Cen", 
-            "?? Kredyty", 
-            "?? Cele"
+            "üìä Wszystkie", 
+            "üÜï Nowe Pozycje", 
+            "üìà Zmiany Cen", 
+            "üí≥ Kredyty", 
+            "üéØ Cele"
         ])
         
         with tab1:
-            st.subheader("?? Wszystkie Alerty")
+            st.subheader("üìä Wszystkie Alerty")
             
             col1, col2 = st.columns([3, 1])
             
             with col1:
-                st.info("?? System automatycznie wykrywa waøne wydarzenia w portfelu")
+                st.info("üí° System automatycznie wykrywa wa≈ºne wydarzenia w portfelu")
             
             with col2:
-                if st.button("?? Skanuj Teraz", width="stretch"):
+                if st.button("üîÑ Skanuj Teraz", width="stretch"):
                     with st.spinner("Skanowanie..."):
                         results = alerts.run_all_detectors(verbose=False)
                         total = sum(len(v) if isinstance(v, list) else 0 for v in results.values())
                         if total > 0:
-                            st.success(f"? Znaleziono {total} nowych alertÛw!")
+                            st.success(f"‚úÖ Znaleziono {total} nowych alert√≥w!")
                         else:
-                            st.info("? Brak nowych alertÛw")
+                            st.info("‚úÖ Brak nowych alert√≥w")
                         st.rerun()
             
-            # Historia alertÛw
+            # Historia alert√≥w
             st.markdown("---")
             history = alerts.get_alerts_history()
             
             if not history:
-                st.info("?? Brak alertÛw w historii. Kliknij 'Skanuj Teraz' aby sprawdziÊ.")
+                st.info("üì≠ Brak alert√≥w w historii. Kliknij 'Skanuj Teraz' aby sprawdziƒá.")
             else:
                 # Filtry
                 col1, col2, col3 = st.columns(3)
@@ -4029,12 +4029,12 @@ def show_alerts_page():
                 
                 with col2:
                     filter_severity = st.selectbox(
-                        "WaønoúÊ",
+                        "Wa≈ºno≈õƒá",
                         ["Wszystkie", "info", "warning", "critical", "success"]
                     )
                 
                 with col3:
-                    show_read = st.checkbox("Pokaø przeczytane", value=True)
+                    show_read = st.checkbox("Poka≈º przeczytane", value=True)
                 
                 # Filtrowanie
                 filtered = history
@@ -4045,19 +4045,19 @@ def show_alerts_page():
                 if not show_read:
                     filtered = [a for a in filtered if not a.get('read', False)]
                 
-                st.caption(f"Wyúwietlam {len(filtered)} / {len(history)} alertÛw")
+                st.caption(f"Wy≈õwietlam {len(filtered)} / {len(history)} alert√≥w")
                 
-                # Wyúwietl alerty
+                # Wy≈õwietl alerty
                 for alert in filtered[:50]:  # Max 50
                     severity = alert.get('severity', 'info')
                     
                     # Emoji na podstawie severity
                     severity_emoji = {
-                        'info': '??',
-                        'warning': '??',
-                        'critical': '??',
-                        'success': '?'
-                    }.get(severity, '??')
+                        'info': '‚ÑπÔ∏è',
+                        'warning': '‚ö†Ô∏è',
+                        'critical': 'üî¥',
+                        'success': '‚úÖ'
+                    }.get(severity, '‚ÑπÔ∏è')
                     
                     # Kolor na podstawie severity
                     color_map = {
@@ -4077,20 +4077,20 @@ def show_alerts_page():
                         
                         with col2:
                             if not alert.get('read', False):
-                                st.markdown("?? **NOWY**")
+                                st.markdown("üîµ **NOWY**")
                         
                         st.markdown("---")
         
         with tab2:
-            st.subheader("?? Nowe Pozycje w Portfelu")
+            st.subheader("üÜï Nowe Pozycje w Portfelu")
             
             history = alerts.get_alerts_history()
             new_position_alerts = [a for a in history if a.get('type') == 'new_position']
             
             if not new_position_alerts:
-                st.info("?? Brak nowych pozycji w historii")
+                st.info("üì≠ Brak nowych pozycji w historii")
             else:
-                st.success(f"? Znaleziono {len(new_position_alerts)} nowych pozycji")
+                st.success(f"‚úÖ Znaleziono {len(new_position_alerts)} nowych pozycji")
                 
                 for alert in new_position_alerts[:20]:
                     meta = alert.get('metadata', {})
@@ -4101,29 +4101,29 @@ def show_alerts_page():
                     
                     timestamp = datetime.fromisoformat(alert['timestamp']).strftime("%Y-%m-%d %H:%M")
                     
-                    with st.expander(f"?? {ticker} - {timestamp}"):
+                    with st.expander(f"üÜï {ticker} - {timestamp}"):
                         col1, col2 = st.columns(2)
                         
                         with col1:
                             st.metric("Typ", asset_type.upper())
-                            st.metric("IloúÊ", f"{quantity:.4f}")
+                            st.metric("Ilo≈õƒá", f"{quantity:.4f}")
                         
                         with col2:
                             st.metric("Cena", f"${price:.2f}")
-                            st.metric("WartoúÊ", f"${quantity * price:.2f}")
+                            st.metric("Warto≈õƒá", f"${quantity * price:.2f}")
                         
                         st.info(alert['message'])
         
         with tab3:
-            st.subheader("?? Znaczπce Zmiany Cen (>10%)")
+            st.subheader("üìà ZnaczƒÖce Zmiany Cen (>10%)")
             
             history = alerts.get_alerts_history()
             price_change_alerts = [a for a in history if a.get('type') == 'price_change']
             
             if not price_change_alerts:
-                st.info("?? Brak znaczπcych zmian cen")
+                st.info("üì≠ Brak znaczƒÖcych zmian cen")
             else:
-                st.warning(f"?? Znaleziono {len(price_change_alerts)} znaczπcych zmian")
+                st.warning(f"‚ö†Ô∏è Znaleziono {len(price_change_alerts)} znaczƒÖcych zmian")
                 
                 for alert in price_change_alerts[:20]:
                     meta = alert.get('metadata', {})
@@ -4135,7 +4135,7 @@ def show_alerts_page():
                     timestamp = datetime.fromisoformat(alert['timestamp']).strftime("%Y-%m-%d %H:%M")
                     
                     # Emoji i kolor
-                    emoji = "????" if change_pct < 0 else "????"
+                    emoji = "üî¥üìâ" if change_pct < 0 else "üü¢üìà"
                     
                     with st.expander(f"{emoji} {ticker}: {change_pct:+.1f}% - {timestamp}"):
                         col1, col2, col3 = st.columns(3)
@@ -4152,15 +4152,15 @@ def show_alerts_page():
                         st.info(alert['message'])
         
         with tab4:
-            st.subheader("?? Zbliøajπce siÍ Terminy P≥atnoúci")
+            st.subheader("üí≥ Zbli≈ºajƒÖce siƒô Terminy P≈Çatno≈õci")
             
             history = alerts.get_alerts_history()
             loan_alerts = [a for a in history if a.get('type') == 'loan_due']
             
             if not loan_alerts:
-                st.success("? Brak zbliøajπcych siÍ terminÛw p≥atnoúci")
+                st.success("‚úÖ Brak zbli≈ºajƒÖcych siƒô termin√≥w p≈Çatno≈õci")
             else:
-                st.warning(f"?? Zbliøa siÍ {len(loan_alerts)} p≥atnoúci")
+                st.warning(f"‚ö†Ô∏è Zbli≈ºa siƒô {len(loan_alerts)} p≈Çatno≈õci")
                 
                 for alert in loan_alerts:
                     meta = alert.get('metadata', {})
@@ -4170,7 +4170,7 @@ def show_alerts_page():
                     amount = meta.get('amount', 0)
                     
                     severity = alert.get('severity', 'info')
-                    emoji = "??" if days_until == 1 else ("??" if days_until == 3 else "??")
+                    emoji = "üî¥" if days_until == 1 else ("üü†" if days_until == 3 else "üü°")
                     
                     with st.container():
                         st.markdown(f"### {emoji} {loan_name}")
@@ -4190,14 +4190,14 @@ def show_alerts_page():
                         st.markdown("---")
         
         with tab5:
-            st.subheader("?? Cele Finansowe")
+            st.subheader("üéØ Cele Finansowe")
             
-            # OsiπgniÍte cele
+            # OsiƒÖgniƒôte cele
             history = alerts.get_alerts_history()
             goal_alerts = [a for a in history if a.get('type') == 'goal_achieved']
             
             if goal_alerts:
-                st.success(f"?? OsiπgniÍto {len(goal_alerts)} celÛw!")
+                st.success(f"üéâ OsiƒÖgniƒôto {len(goal_alerts)} cel√≥w!")
                 
                 for alert in goal_alerts:
                     meta = alert.get('metadata', {})
@@ -4205,33 +4205,33 @@ def show_alerts_page():
                     progress = meta.get('progress_pct', 0)
                     
                     st.balloons()
-                    st.markdown(f"### ?? {goal_name}")
+                    st.markdown(f"### üéâ {goal_name}")
                     st.success(alert['message'])
                     st.progress(min(progress / 100, 1.0))
                     st.markdown("---")
             
-            # Predykcje dla aktywnych celÛw
-            st.markdown("### ?? Predykcje OsiπgniÍcia")
+            # Predykcje dla aktywnych cel√≥w
+            st.markdown("### üîÆ Predykcje OsiƒÖgniƒôcia")
             
             snapshots = ds.load_snapshot_history()
             predictions = goals.predict_all_goals(snapshots)
             
             if not predictions:
-                st.info("?? Brak aktywnych celÛw")
+                st.info("üì≠ Brak aktywnych cel√≥w")
             else:
                 for goal_id, pred in predictions.items():
                     status = pred.get('status', 'unknown')
                     
-                    with st.expander(f"?? {pred['goal_name']} - {pred['progress_pct']:.0f}%"):
+                    with st.expander(f"üìå {pred['goal_name']} - {pred['progress_pct']:.0f}%"):
                         if status == 'achieved':
-                            st.success(pred.get('message', 'Cel osiπgniÍty!'))
+                            st.success(pred.get('message', 'Cel osiƒÖgniƒôty!'))
                             st.progress(1.0)
                         
                         elif status == 'predicted':
                             col1, col2, col3 = st.columns(3)
                             
                             with col1:
-                                st.metric("PostÍp", f"{pred['progress_pct']:.1f}%")
+                                st.metric("Postƒôp", f"{pred['progress_pct']:.1f}%")
                                 st.progress(pred['progress_pct'] / 100)
                             
                             with col2:
@@ -4239,34 +4239,34 @@ def show_alerts_page():
                                 st.caption(f"Data: {pred['predicted_date']}")
                             
                             with col3:
-                                confidence_emoji = {"high": "??", "medium": "??", "low": "??"}
-                                st.metric("PewnoúÊ", pred['confidence'].upper())
-                                st.caption(f"{confidence_emoji.get(pred['confidence'], '?')} R2 = {pred.get('r_squared', 0):.2f}")
+                                confidence_emoji = {"high": "üü¢", "medium": "üü°", "low": "üî¥"}
+                                st.metric("Pewno≈õƒá", pred['confidence'].upper())
+                                st.caption(f"{confidence_emoji.get(pred['confidence'], '‚ö™')} R¬≤ = {pred.get('r_squared', 0):.2f}")
                             
-                            st.info(f"?? Tempo: {pred['daily_rate']:.2f} PLN/dzieÒ")
+                            st.info(f"üìà Tempo: {pred['daily_rate']:.2f} PLN/dzie≈Ñ")
                         
                         else:
                             st.warning(pred.get('message', 'Brak danych do predykcji'))
             
-            # Rekomendacje oszczÍdzania
+            # Rekomendacje oszczƒôdzania
             st.markdown("---")
-            st.markdown("### ?? Rekomendacje OszczÍdzania")
+            st.markdown("### üí∞ Rekomendacje Oszczƒôdzania")
             
-            deadline_months = st.slider("ChcÍ osiπgnπÊ cele w ciπgu (miesiÍcy):", 1, 36, 12)
+            deadline_months = st.slider("Chcƒô osiƒÖgnƒÖƒá cele w ciƒÖgu (miesiƒôcy):", 1, 36, 12)
             
             recommendations = goals.get_all_savings_recommendations(deadline_months)
             
             if not recommendations:
-                st.info("?? Brak aktywnych celÛw wymagajπcych oszczÍdzania")
+                st.info("üì≠ Brak aktywnych cel√≥w wymagajƒÖcych oszczƒôdzania")
             else:
                 for goal_id, rec in recommendations.items():
                     status = rec.get('status', 'unknown')
                     
                     if status == 'achieved':
-                        continue  # Pomijamy juø osiπgniÍte
+                        continue  # Pomijamy ju≈º osiƒÖgniƒôte
                     
                     with st.container():
-                        st.markdown(f"**?? {rec['goal_name']}**")
+                        st.markdown(f"**üíé {rec['goal_name']}**")
                         
                         col1, col2, col3, col4 = st.columns(4)
                         
@@ -4274,7 +4274,7 @@ def show_alerts_page():
                             st.metric("Brakuje", f"{rec['gap']:.0f} PLN")
                         
                         with col2:
-                            st.metric("MiesiÍcznie", f"{rec['required_monthly']:.0f} PLN")
+                            st.metric("Miesiƒôcznie", f"{rec['required_monthly']:.0f} PLN")
                         
                         with col3:
                             st.metric("Dziennie", f"{rec['required_daily']:.0f} PLN")
@@ -4286,22 +4286,22 @@ def show_alerts_page():
                         st.markdown("---")
     
     except ImportError as e:
-        st.error(f"?? B≥πd importu modu≥Ûw: {e}")
-        st.info("Upewnij siÍ øe pliki alert_system.py, benchmark_comparison.py i goal_analytics.py istniejπ")
+        st.error(f"‚ö†Ô∏è B≈ÇƒÖd importu modu≈Ç√≥w: {e}")
+        st.info("Upewnij siƒô ≈ºe pliki alert_system.py, benchmark_comparison.py i goal_analytics.py istniejƒÖ")
     except Exception as e:
-        st.error(f"?? B≥πd: {e}")
+        st.error(f"‚ö†Ô∏è B≈ÇƒÖd: {e}")
         import traceback
         st.code(traceback.format_exc())
 
 def show_autonomous_conversations_page():
     """Strona z autonomicznymi rozmowami Rady"""
-    st.title("??? Autonomiczne Rozmowy Rady PartnerÛw")
+    st.title("üó£Ô∏è Autonomiczne Rozmowy Rady Partner√≥w")
     
     st.markdown("""
-    ### ?? Twoi partnerzy rozmawiajπ nawet gdy CiÍ nie ma!
+    ### ü§ñ Twoi partnerzy rozmawiajƒÖ nawet gdy Ciƒô nie ma!
     
-    System autonomicznych rozmÛw pozwala Radzie PartnerÛw dyskutowaÊ o portfelu, rynkach i strategii
-    nawet bez Twojej obecnoúci. Wszystkie rozmowy sπ zapisywane i moøesz je przejrzeÊ tutaj.
+    System autonomicznych rozm√≥w pozwala Radzie Partner√≥w dyskutowaƒá o portfelu, rynkach i strategii
+    nawet bez Twojej obecno≈õci. Wszystkie rozmowy sƒÖ zapisywane i mo≈ºesz je przejrzeƒá tutaj.
     """)
     
     # Import engine
@@ -4309,20 +4309,20 @@ def show_autonomous_conversations_page():
         from autonomous_conversation_engine import AutonomousConversationEngine
         engine = AutonomousConversationEngine()
     except Exception as e:
-        st.error(f"? B≥πd importu Autonomous Engine: {e}")
-        st.info("?? Upewnij siÍ, øe plik `autonomous_conversation_engine.py` istnieje")
+        st.error(f"‚ùå B≈ÇƒÖd importu Autonomous Engine: {e}")
+        st.info("üí° Upewnij siƒô, ≈ºe plik `autonomous_conversation_engine.py` istnieje")
         import traceback
         st.code(traceback.format_exc())
         return
     
-    # Wyúwietl status API
+    # Wy≈õwietl status API
     st.markdown("---")
-    st.markdown("### ?? Status API & Budøet")
+    st.markdown("### üìä Status API & Bud≈ºet")
     
     try:
         tracker = get_tracker()
     except Exception as e:
-        st.error(f"? B≥πd API Tracker: {e}")
+        st.error(f"‚ùå B≈ÇƒÖd API Tracker: {e}")
         return
     summary = tracker.get_today_summary()
     budgets = tracker.get_all_budgets()
@@ -4331,37 +4331,37 @@ def show_autonomous_conversations_page():
     
     with col1:
         st.metric(
-            "?? Rozmowy dzisiaj",
+            "ü§ñ Rozmowy dzisiaj",
             summary['autonomous_conversations'],
-            help="Liczba autonomicznych rozmÛw przeprowadzonych dzisiaj"
+            help="Liczba autonomicznych rozm√≥w przeprowadzonych dzisiaj"
         )
     
     with col2:
         st.metric(
-            "?? Wywo≥ania API (Autonomous)",
+            "üìû Wywo≈Çania API (Autonomous)",
             summary['autonomous_calls'],
-            help="Liczba wywo≥aÒ API przez autonomiczne rozmowy"
+            help="Liczba wywo≈Ça≈Ñ API przez autonomiczne rozmowy"
         )
     
     with col3:
         st.metric(
-            "?? Wywo≥ania API (User)",
+            "üë§ Wywo≈Çania API (User)",
             summary['user_calls'],
-            help="Liczba wywo≥aÒ API przez Ciebie (normalne rozmowy)"
+            help="Liczba wywo≈Ça≈Ñ API przez Ciebie (normalne rozmowy)"
         )
     
     with col4:
         st.metric(
-            "?? Koszt dzisiaj",
+            "üí∞ Koszt dzisiaj",
             f"${summary['total_cost_usd']:.2f}",
             help="Szacunkowy koszt API dzisiaj"
         )
     
-    # SzczegÛ≥y budøetÛw per API
-    with st.expander("?? SzczegÛ≥y budøetÛw API"):
+    # Szczeg√≥≈Çy bud≈ºet√≥w per API
+    with st.expander("üìã Szczeg√≥≈Çy bud≈ºet√≥w API"):
         for api_name in ['claude', 'gemini', 'openai']:
             budget = budgets[api_name]
-            st.markdown(f"#### ?? {api_name.upper()}")
+            st.markdown(f"#### üîπ {api_name.upper()}")
             
             col_a, col_b = st.columns(2)
             
@@ -4379,36 +4379,36 @@ def show_autonomous_conversations_page():
     
     # Przyciski akcji
     st.markdown("---")
-    st.markdown("### ?? Akcje")
+    st.markdown("### üéÆ Akcje")
     
     col1, col2, col3 = st.columns(3)
     
     with col1:
-        if st.button("?? Uruchom nowπ rozmowÍ", type="primary", width="stretch"):
-            with st.spinner("?? Partnerzy rozmawiajπ..."):
+        if st.button("üöÄ Uruchom nowƒÖ rozmowƒô", type="primary", width="stretch"):
+            with st.spinner("ü§ñ Partnerzy rozmawiajƒÖ..."):
                 conversation = engine.run_conversation(max_messages=12)
                 
                 if conversation:
-                    st.success(f"? Rozmowa zakoÒczona! ID: {conversation['id']}")
-                    st.info(f"?? Liczba wiadomoúci: {len(conversation['messages'])}")
+                    st.success(f"‚úÖ Rozmowa zako≈Ñczona! ID: {conversation['id']}")
+                    st.info(f"üìù Liczba wiadomo≈õci: {len(conversation['messages'])}")
                     st.rerun()
                 else:
-                    st.error("? Nie uda≥o siÍ uruchomiÊ rozmowy (brak budøetu API?)")
+                    st.error("‚ùå Nie uda≈Ço siƒô uruchomiƒá rozmowy (brak bud≈ºetu API?)")
     
     with col2:
-        if st.button("?? Odúwieø listÍ", width="stretch"):
+        if st.button("üîÑ Od≈õwie≈º listƒô", width="stretch"):
             st.rerun()
     
     with col3:
-        if st.button("?? SzczegÛ≥y API", width="stretch"):
-            # Wyúwietl szczegÛ≥owy status w Streamlit (nie terminal)
+        if st.button("üìä Szczeg√≥≈Çy API", width="stretch"):
+            # Wy≈õwietl szczeg√≥≈Çowy status w Streamlit (nie terminal)
             st.markdown("---")
-            st.markdown("#### ?? SzczegÛ≥owy Status API")
+            st.markdown("#### üìä Szczeg√≥≈Çowy Status API")
             
             for api_name in ['claude', 'gemini', 'openai']:
                 budget = budgets[api_name]
                 
-                with st.expander(f"?? {api_name.upper()}", expanded=True):
+                with st.expander(f"üîπ {api_name.upper()}", expanded=True):
                     col_a, col_b, col_c = st.columns(3)
                     
                     with col_a:
@@ -4434,14 +4434,14 @@ def show_autonomous_conversations_page():
             
             st.markdown("---")
     
-    # Lista rozmÛw
+    # Lista rozm√≥w
     st.markdown("---")
-    st.markdown("### ?? Historia RozmÛw")
+    st.markdown("### üìú Historia Rozm√≥w")
     
     conversations = engine.get_recent_conversations(limit=50)
     
     if not conversations:
-        st.info("?? Brak autonomicznych rozmÛw. Kliknij 'Uruchom nowπ rozmowÍ' aby rozpoczπÊ!")
+        st.info("üì≠ Brak autonomicznych rozm√≥w. Kliknij 'Uruchom nowƒÖ rozmowƒô' aby rozpoczƒÖƒá!")
         return
     
     # Filtry
@@ -4449,15 +4449,15 @@ def show_autonomous_conversations_page():
     
     with col1:
         topics = list(set([c.get('topic_name', 'Unknown') for c in conversations]))
-        selected_topic = st.selectbox("??? Filtruj po temacie", ["Wszystkie"] + topics)
+        selected_topic = st.selectbox("üè∑Ô∏è Filtruj po temacie", ["Wszystkie"] + topics)
     
     with col2:
         dates = list(set([c.get('date', '')[:10] for c in conversations if c.get('date')]))
         dates.sort(reverse=True)
-        selected_date = st.selectbox("?? Filtruj po dacie", ["Wszystkie"] + dates)
+        selected_date = st.selectbox("üìÖ Filtruj po dacie", ["Wszystkie"] + dates)
     
     with col3:
-        min_messages = st.slider("?? Min. liczba wiadomoúci", 0, 20, 0)
+        min_messages = st.slider("üìù Min. liczba wiadomo≈õci", 0, 20, 0)
     
     # Zastosuj filtry
     filtered_conversations = conversations
@@ -4471,9 +4471,9 @@ def show_autonomous_conversations_page():
     if min_messages > 0:
         filtered_conversations = [c for c in filtered_conversations if len(c.get('messages', [])) >= min_messages]
     
-    st.info(f"?? Znaleziono: {len(filtered_conversations)} rozmÛw")
+    st.info(f"üìä Znaleziono: {len(filtered_conversations)} rozm√≥w")
     
-    # Wyúwietl rozmowy
+    # Wy≈õwietl rozmowy
     for conv in filtered_conversations:
         conv_id = conv.get('id', 'unknown')
         topic_name = conv.get('topic_name', 'Unknown Topic')
@@ -4484,24 +4484,24 @@ def show_autonomous_conversations_page():
         opening_prompt = conv.get('opening_prompt', '')
         summary = conv.get('summary', None)
         
-        with st.expander(f"?? {date_str} - {topic_name} ({len(messages)} wiadomoúci)"):
+        with st.expander(f"üí¨ {date_str} - {topic_name} ({len(messages)} wiadomo≈õci)"):
             st.markdown(f"**ID:** `{conv_id}`")
             st.markdown(f"**Uczestnicy:** {', '.join(participants)}")
-            st.markdown(f"**Wywo≥ania API:** {api_calls}")
+            st.markdown(f"**Wywo≈Çania API:** {api_calls}")
             st.markdown(f"**Status:** {conv.get('status', 'unknown')}")
             
-            # Pokaø AI Summary jeúli istnieje (NOWE!)
+            # Poka≈º AI Summary je≈õli istnieje (NOWE!)
             if summary:
                 st.markdown("---")
-                st.markdown("### ?? AI Summary")
+                st.markdown("### ü§ñ AI Summary")
                 
                 # Sentiment badge
                 sentiment = summary.get('sentiment', 'neutral')
                 sentiment_emoji = {
-                    'positive': '??',
-                    'neutral': '??',
-                    'negative': '??'
-                }.get(sentiment, '??')
+                    'positive': 'üòä',
+                    'neutral': 'üòê',
+                    'negative': 'üòü'
+                }.get(sentiment, 'üòê')
                 sentiment_color = {
                     'positive': '#27ae60',
                     'neutral': '#95a5a6',
@@ -4510,7 +4510,7 @@ def show_autonomous_conversations_page():
                 
                 col1, col2 = st.columns([3, 1])
                 with col1:
-                    st.info(f"**?? Podsumowanie:**\n\n{summary.get('summary', 'Brak podsumowania')}")
+                    st.info(f"**üìù Podsumowanie:**\n\n{summary.get('summary', 'Brak podsumowania')}")
                 with col2:
                     st.markdown(f"""
                     <div style="background: {sentiment_color}; color: white; padding: 10px; border-radius: 5px; text-align: center;">
@@ -4522,18 +4522,18 @@ def show_autonomous_conversations_page():
                 # Key points
                 key_points = summary.get('key_points', [])
                 if key_points:
-                    st.markdown("**?? Kluczowe wnioski:**")
+                    st.markdown("**üéØ Kluczowe wnioski:**")
                     for point in key_points:
                         st.markdown(f"- {point}")
             
-            # Pokaø opening prompt jeúli istnieje
+            # Poka≈º opening prompt je≈õli istnieje
             if opening_prompt:
                 st.markdown("---")
-                st.markdown("#### ?? Temat dyskusji:")
+                st.markdown("#### üí≠ Temat dyskusji:")
                 st.info(opening_prompt)
             
             st.markdown("---")
-            st.markdown("#### ?? Transkrypt:")
+            st.markdown("#### üìù Transkrypt:")
             
             for msg in messages:
                 partner = msg.get('partner', 'Unknown')
@@ -4545,13 +4545,13 @@ def show_autonomous_conversations_page():
                 st.markdown("")
 
 def show_notifications_page():
-    """Strona z konfiguracjπ i historiπ powiadomieÒ email"""
-    st.title("?? Powiadomienia Email")
+    """Strona z konfiguracjƒÖ i historiƒÖ powiadomie≈Ñ email"""
+    st.title("üìß Powiadomienia Email")
     
     st.markdown("""
-    ### ?? System powiadomieÒ o rozmowach Rady
+    ### üì® System powiadomie≈Ñ o rozmowach Rady
     
-    Otrzymuj emaile gdy Rada PartnerÛw zakoÒczy autonomicznπ rozmowÍ lub wykryje waøne zagadnienie.
+    Otrzymuj emaile gdy Rada Partner√≥w zako≈Ñczy autonomicznƒÖ rozmowƒô lub wykryje wa≈ºne zagadnienie.
     """)
     
     # Inicjalizuj notifier
@@ -4559,56 +4559,56 @@ def show_notifications_page():
     
     # === SEKCJA 1: KONFIGURACJA ===
     st.markdown("---")
-    st.subheader("?? Konfiguracja")
+    st.subheader("‚öôÔ∏è Konfiguracja")
     
     col1, col2 = st.columns(2)
     
     with col1:
-        # W≥πcz/wy≥πcz notyfikacje
+        # W≈ÇƒÖcz/wy≈ÇƒÖcz notyfikacje
         enabled = st.checkbox(
-            "?? W≥πcz powiadomienia email",
+            "üîî W≈ÇƒÖcz powiadomienia email",
             value=notifier.config.get("enabled", False),
-            help="W≥πcz/wy≥πcz ca≥kowicie system powiadomieÒ"
+            help="W≈ÇƒÖcz/wy≈ÇƒÖcz ca≈Çkowicie system powiadomie≈Ñ"
         )
         
         # Email odbiorcy
         email_to = st.text_input(
-            "?? Email odbiorcy",
+            "üìß Email odbiorcy",
             value=notifier.config.get("email_to", ""),
             placeholder="your-email@gmail.com",
-            help="Adres email na ktÛry bÍdπ wysy≥ane powiadomienia"
+            help="Adres email na kt√≥ry bƒôdƒÖ wysy≈Çane powiadomienia"
         )
         
-        # Alert: rozmowa zakoÒczona
+        # Alert: rozmowa zako≈Ñczona
         alert_conversation = st.checkbox(
-            "??? Powiadom o zakoÒczonej rozmowie",
+            "üó£Ô∏è Powiadom o zako≈Ñczonej rozmowie",
             value=notifier.config.get("alerts", {}).get("conversation_completed", True),
-            help="Wyúlij email po kaødej zakoÒczonej autonomicznej rozmowie"
+            help="Wy≈õlij email po ka≈ºdej zako≈Ñczonej autonomicznej rozmowie"
         )
     
     with col2:
         # Daily digest
         daily_digest_enabled = st.checkbox(
-            "?? W≥πcz Daily Digest",
+            "üìä W≈ÇƒÖcz Daily Digest",
             value=notifier.config.get("daily_digest", {}).get("enabled", True),
-            help="Codzienny email z podsumowaniem rozmÛw"
+            help="Codzienny email z podsumowaniem rozm√≥w"
         )
         
-        # Czas wysy≥ki digest
+        # Czas wysy≈Çki digest
         digest_time = st.time_input(
-            "? Godzina wysy≥ki digest",
+            "‚è∞ Godzina wysy≈Çki digest",
             value=datetime.strptime(
                 notifier.config.get("daily_digest", {}).get("time", "18:00"),
                 "%H:%M"
             ).time(),
-            help="O ktÛrej godzinie wys≥aÊ codzienny digest"
+            help="O kt√≥rej godzinie wys≈Çaƒá codzienny digest"
         )
     
-    # Zapisz konfiguracjÍ
+    # Zapisz konfiguracjƒô
     col1, col2, col3 = st.columns([1, 1, 2])
     
     with col1:
-        if st.button("?? Zapisz konfiguracjÍ", type="primary", width="stretch"):
+        if st.button("üíæ Zapisz konfiguracjƒô", type="primary", width="stretch"):
             new_config = {
                 "enabled": enabled,
                 "email_to": email_to,
@@ -4627,56 +4627,56 @@ def show_notifications_page():
             with open("notification_config.json", 'w', encoding='utf-8') as f:
                 json.dump(notifier.config, f, indent=2, ensure_ascii=False)
             
-            st.success("? Konfiguracja zapisana!")
+            st.success("‚úÖ Konfiguracja zapisana!")
             st.rerun()
     
     with col2:
-        if st.button("?? Wyúlij test email", width="stretch"):
+        if st.button("üß™ Wy≈õlij test email", width="stretch"):
             if not enabled:
-                st.error("? Najpierw w≥πcz powiadomienia!")
+                st.error("‚ùå Najpierw w≈ÇƒÖcz powiadomienia!")
             elif not email_to:
-                st.error("? Podaj adres email odbiorcy!")
+                st.error("‚ùå Podaj adres email odbiorcy!")
             else:
-                with st.spinner("Wysy≥am email testowy..."):
+                with st.spinner("Wysy≈Çam email testowy..."):
                     success = notifier.send_test_email()
                     if success:
-                        st.success("? Email testowy wys≥any! Sprawdü skrzynkÍ.")
+                        st.success("‚úÖ Email testowy wys≈Çany! Sprawd≈∫ skrzynkƒô.")
                     else:
-                        st.error("? B≥πd wysy≥ania. Sprawdü GMAIL_USER i GMAIL_APP_PASSWORD w .env")
+                        st.error("‚ùå B≈ÇƒÖd wysy≈Çania. Sprawd≈∫ GMAIL_USER i GMAIL_APP_PASSWORD w .env")
     
     # === SEKCJA 2: INSTRUKCJE SETUP ===
-    with st.expander("?? Jak skonfigurowaÊ Gmail SMTP?"):
+    with st.expander("üìñ Jak skonfigurowaƒá Gmail SMTP?"):
         st.markdown("""
-        ### ?? Krok 1: UtwÛrz App Password w Gmail
+        ### üîê Krok 1: Utw√≥rz App Password w Gmail
         
-        1. Przejdü do [Google Account Security](https://myaccount.google.com/security)
-        2. W≥πcz **2-Step Verification** (jeúli nie masz)
-        3. Przejdü do **App Passwords**
-        4. Wybierz aplikacjÍ: **Mail** + urzπdzenie: **Windows Computer**
-        5. Skopiuj wygenerowane has≥o (16 znakÛw)
+        1. Przejd≈∫ do [Google Account Security](https://myaccount.google.com/security)
+        2. W≈ÇƒÖcz **2-Step Verification** (je≈õli nie masz)
+        3. Przejd≈∫ do **App Passwords**
+        4. Wybierz aplikacjƒô: **Mail** + urzƒÖdzenie: **Windows Computer**
+        5. Skopiuj wygenerowane has≈Ço (16 znak√≥w)
         
-        ### ?? Krok 2: Dodaj do .env
+        ### ‚öôÔ∏è Krok 2: Dodaj do .env
         
-        OtwÛrz plik `.env` i dodaj:
+        Otw√≥rz plik `.env` i dodaj:
         ```
         GMAIL_USER=your-email@gmail.com
         GMAIL_APP_PASSWORD=abcd efgh ijkl mnop
         ```
         
-        ### ?? Krok 3: Testuj
+        ### üß™ Krok 3: Testuj
         
-        1. W≥πcz powiadomienia ??
+        1. W≈ÇƒÖcz powiadomienia ‚òùÔ∏è
         2. Podaj adres email odbiorcy
-        3. Zapisz konfiguracjÍ
-        4. Kliknij "?? Wyúlij test email"
-        5. Sprawdü skrzynkÍ odbiorczπ
+        3. Zapisz konfiguracjƒô
+        4. Kliknij "üß™ Wy≈õlij test email"
+        5. Sprawd≈∫ skrzynkƒô odbiorczƒÖ
         
-        ? Jeúli widzisz email - wszystko dzia≥a!
+        ‚úÖ Je≈õli widzisz email - wszystko dzia≈Ça!
         """)
     
-    # === SEKCJA 3: HISTORIA POWIADOMIE— ===
+    # === SEKCJA 3: HISTORIA POWIADOMIE≈É ===
     st.markdown("---")
-    st.subheader("?? Historia powiadomieÒ")
+    st.subheader("üìú Historia powiadomie≈Ñ")
     
     history = notifier.get_recent_notifications(limit=50)
     
@@ -4702,9 +4702,9 @@ def show_notifications_page():
             if h.get("type") in filter_type and h.get("status") in filter_status
         ]
         
-        st.markdown(f"**Znaleziono:** {len(filtered)} powiadomieÒ")
+        st.markdown(f"**Znaleziono:** {len(filtered)} powiadomie≈Ñ")
         
-        # Wyúwietl tabelÍ
+        # Wy≈õwietl tabelƒô
         if filtered:
             for notif in filtered:
                 timestamp = notif.get("timestamp", "")[:19]
@@ -4714,28 +4714,28 @@ def show_notifications_page():
                 error = notif.get("error", None)
                 
                 # Emoji dla statusu
-                status_emoji = "?" if status == "sent" else "?"
+                status_emoji = "‚úÖ" if status == "sent" else "‚ùå"
                 
                 # Emoji dla typu
                 type_emoji = {
-                    "conversation_completed": "???",
-                    "daily_digest": "??",
-                    "test": "??",
-                    "critical_issue": "??"
-                }.get(notif_type, "??")
+                    "conversation_completed": "üó£Ô∏è",
+                    "daily_digest": "üìä",
+                    "test": "üß™",
+                    "critical_issue": "üö®"
+                }.get(notif_type, "üìß")
                 
                 with st.expander(f"{status_emoji} {timestamp} - {type_emoji} {subject}"):
                     st.markdown(f"**Typ:** {notif_type}")
                     st.markdown(f"**Status:** {status}")
                     if error:
-                        st.error(f"**B≥πd:** {error}")
+                        st.error(f"**B≈ÇƒÖd:** {error}")
     else:
-        st.info("Brak historii powiadomieÒ. Wyúlij pierwszy email!")
+        st.info("Brak historii powiadomie≈Ñ. Wy≈õlij pierwszy email!")
     
     # === SEKCJA 4: STATYSTYKI ===
     if history:
         st.markdown("---")
-        st.subheader("?? Statystyki")
+        st.subheader("üìä Statystyki")
         
         col1, col2, col3, col4 = st.columns(4)
         
@@ -4744,27 +4744,27 @@ def show_notifications_page():
         failed = len([h for h in history if h.get("status") == "failed"])
         success_rate = (sent / total * 100) if total > 0 else 0
         
-        col1.metric("?? Wys≥ane", sent)
-        col2.metric("? B≥Ídy", failed)
-        col3.metric("?? Success Rate", f"{success_rate:.1f}%")
-        col4.metric("?? Ostatni 7 dni", len([
+        col1.metric("üìß Wys≈Çane", sent)
+        col2.metric("‚ùå B≈Çƒôdy", failed)
+        col3.metric("üìà Success Rate", f"{success_rate:.1f}%")
+        col4.metric("üìÖ Ostatni 7 dni", len([
             h for h in history 
             if (datetime.now() - datetime.fromisoformat(h.get("timestamp", "2020-01-01"))).days <= 7
         ]))
 
 def show_consultations_page():
-    """Strona z systemem konsultacji z Radπ PartnerÛw"""
-    st.title("??? Konsultacje z Radπ")
+    """Strona z systemem konsultacji z RadƒÖ Partner√≥w"""
+    st.title("üó≥Ô∏è Konsultacje z RadƒÖ")
     
     st.markdown("""
-    **System konsultacji** pozwala zapytaÊ RadÍ PartnerÛw o opiniÍ na dowolny temat.
-    Kaødy partner AI otrzyma pytanie i wyrazi swojπ opiniÍ (ZA/PRZECIW/NEUTRALNIE).
+    **System konsultacji** pozwala zapytaƒá Radƒô Partner√≥w o opiniƒô na dowolny temat.
+    Ka≈ºdy partner AI otrzyma pytanie i wyrazi swojƒÖ opiniƒô (ZA/PRZECIW/NEUTRALNIE).
     """)
     
     manager = get_consultation_manager()
     
     # === TABS ===
-    tab1, tab2 = st.tabs(["?? Nowa Konsultacja", "?? Historia"])
+    tab1, tab2 = st.tabs(["üìù Nowa Konsultacja", "üìö Historia"])
     
     # === TAB 1: NOWA KONSULTACJA ===
     with tab1:
@@ -4773,38 +4773,38 @@ def show_consultations_page():
         # Formularz
         with st.form("new_consultation_form"):
             question = st.text_area(
-                "? Twoje pytanie lub propozycja:",
-                placeholder="Np. Czy powinienem zwiÍkszyÊ alokacjÍ w krypto do 15%?",
+                "‚ùì Twoje pytanie lub propozycja:",
+                placeholder="Np. Czy powinienem zwiƒôkszyƒá alokacjƒô w krypto do 15%?",
                 height=100
             )
             
-            # Lista partnerÛw (bez Partner Zarzπdzajπcy)
+            # Lista partner√≥w (bez Partner ZarzƒÖdzajƒÖcy)
             available_partners = [
                 p['name'] for p in manager.personas 
-                if p['name'] != 'Partner Zarzπdzajπcy (JA)'
+                if p['name'] != 'Partner ZarzƒÖdzajƒÖcy (JA)'
             ]
             
             selected_partners = st.multiselect(
-                "?? Wybierz partnerÛw do zapytania:",
+                "üë• Wybierz partner√≥w do zapytania:",
                 options=available_partners,
-                default=available_partners  # Domyúlnie wszyscy
+                default=available_partners  # Domy≈õlnie wszyscy
             )
             
-            st.markdown(f"**Wybrano:** {len(selected_partners)} partnerÛw")
+            st.markdown(f"**Wybrano:** {len(selected_partners)} partner√≥w")
             
-            submitted = st.form_submit_button("?? Wyúlij do Rady", type="primary", width="stretch")
+            submitted = st.form_submit_button("üì§ Wy≈õlij do Rady", type="primary", width="stretch")
         
-        # Obs≥uga wys≥ania
+        # Obs≈Çuga wys≈Çania
         if submitted:
             if not question.strip():
-                st.error("? Wpisz pytanie!")
+                st.error("‚ùå Wpisz pytanie!")
             elif len(selected_partners) == 0:
-                st.error("? Wybierz przynajmniej jednego partnera!")
+                st.error("‚ùå Wybierz przynajmniej jednego partnera!")
             else:
-                with st.spinner("?? TworzÍ konsultacjÍ..."):
-                    # 1. UtwÛrz konsultacjÍ
+                with st.spinner("üîÑ Tworzƒô konsultacjƒô..."):
+                    # 1. Utw√≥rz konsultacjƒô
                     consultation = manager.create_consultation(question, selected_partners)
-                    st.success(f"? Konsultacja utworzona (ID: {consultation['id']})")
+                    st.success(f"‚úÖ Konsultacja utworzona (ID: {consultation['id']})")
                 
                 # 2. Zbierz odpowiedzi
                 progress_bar = st.progress(0)
@@ -4814,43 +4814,43 @@ def show_consultations_page():
                 
                 consultation = manager.collect_responses(consultation['id'])
                 
-                # Pokaø odpowiedzi w czasie rzeczywistym
+                # Poka≈º odpowiedzi w czasie rzeczywistym
                 for i, response in enumerate(consultation['responses']):
                     progress = (i + 1) / len(selected_partners)
                     progress_bar.progress(progress)
-                    status_text.text(f"? Zebrano {i+1}/{len(selected_partners)} odpowiedzi...")
+                    status_text.text(f"‚úÖ Zebrano {i+1}/{len(selected_partners)} odpowiedzi...")
                     
                     with responses_container:
                         stance_emoji = {
-                            'for': '?',
-                            'against': '?',
-                            'neutral': '??'
-                        }.get(response['stance'], '??')
+                            'for': '‚úÖ',
+                            'against': '‚ùå',
+                            'neutral': 'ü§î'
+                        }.get(response['stance'], 'ü§î')
                         
                         st.markdown(f"""
-                        **{response['partner']}** {stance_emoji} **{response['stance'].upper()}** (PewnoúÊ: {response['confidence']}/10)
+                        **{response['partner']}** {stance_emoji} **{response['stance'].upper()}** (Pewno≈õƒá: {response['confidence']}/10)
                         > {response['reasoning']}
                         """)
                 
                 progress_bar.progress(1.0)
-                status_text.text("? Wszystkie odpowiedzi zebrane!")
+                status_text.text("‚úÖ Wszystkie odpowiedzi zebrane!")
                 
                 # 3. Wygeneruj AI Summary
-                with st.spinner("?? GenerujÍ podsumowanie..."):
+                with st.spinner("ü§ñ Generujƒô podsumowanie..."):
                     summary = manager.generate_summary(consultation['id'])
                 
                 if summary:
-                    st.success("? Konsultacja zakoÒczona!")
+                    st.success("‚úÖ Konsultacja zako≈Ñczona!")
                     
-                    # Pokaø summary
+                    # Poka≈º summary
                     st.markdown("---")
-                    st.markdown("### ?? Podsumowanie AI")
+                    st.markdown("### ü§ñ Podsumowanie AI")
                     
-                    # Wyniki g≥osowania
+                    # Wyniki g≈Çosowania
                     col1, col2, col3 = st.columns(3)
-                    col1.metric("? ZA", summary['votes_for'])
-                    col2.metric("? PRZECIW", summary['votes_against'])
-                    col3.metric("?? NEUTRALNE", summary['votes_neutral'])
+                    col1.metric("‚úÖ ZA", summary['votes_for'])
+                    col2.metric("‚ùå PRZECIW", summary['votes_against'])
+                    col3.metric("ü§î NEUTRALNE", summary['votes_neutral'])
                     
                     # Konsensus badge
                     consensus = summary.get('consensus', 'medium')
@@ -4862,7 +4862,7 @@ def show_consultations_page():
                     
                     consensus_label = {
                         'high': 'Wysoki Konsensus',
-                        'medium': 'åredni Konsensus',
+                        'medium': '≈öredni Konsensus',
                         'low': 'Niski Konsensus'
                     }.get(consensus, 'Nieznany')
                     
@@ -4873,27 +4873,27 @@ def show_consultations_page():
                     </div>
                     """, unsafe_allow_html=True)
                     
-                    # G≥Ûwne argumenty
+                    # G≈Ç√≥wne argumenty
                     col1, col2 = st.columns(2)
                     
                     with col1:
-                        st.markdown("**? Argumenty ZA:**")
+                        st.markdown("**‚úÖ Argumenty ZA:**")
                         for arg in summary.get('main_arguments_for', []):
                             st.markdown(f"- {arg}")
                     
                     with col2:
-                        st.markdown("**? Argumenty PRZECIW:**")
+                        st.markdown("**‚ùå Argumenty PRZECIW:**")
                         for arg in summary.get('main_arguments_against', []):
                             st.markdown(f"- {arg}")
                     
                     # Rekomendacja
-                    st.info(f"**?? Rekomendacja AI:** {summary.get('recommendation', 'Brak rekomendacji')}")
+                    st.info(f"**üí° Rekomendacja AI:** {summary.get('recommendation', 'Brak rekomendacji')}")
                     
-                    # Opcja wys≥ania emaila (jeúli w≥πczone)
+                    # Opcja wys≈Çania emaila (je≈õli w≈ÇƒÖczone)
                     try:
                         notifier = get_conversation_notifier()
                         if notifier.config.get("enabled", False):
-                            st.success("?? Email z wynikami zosta≥ wys≥any!")
+                            st.success("üìß Email z wynikami zosta≈Ç wys≈Çany!")
                     except:
                         pass
     
@@ -4904,7 +4904,7 @@ def show_consultations_page():
         consultations = manager.get_recent_consultations(limit=50)
         
         if not consultations:
-            st.info("?? Brak konsultacji. UtwÛrz pierwszπ w zak≥adce 'Nowa Konsultacja'!")
+            st.info("üì≠ Brak konsultacji. Utw√≥rz pierwszƒÖ w zak≈Çadce 'Nowa Konsultacja'!")
         else:
             st.markdown(f"**Znaleziono:** {len(consultations)} konsultacji")
             
@@ -4922,35 +4922,35 @@ def show_consultations_page():
             
             st.markdown(f"**Po filtrowaniu:** {len(filtered)} konsultacji")
             
-            # Pokaø kaødπ konsultacjÍ
+            # Poka≈º ka≈ºdƒÖ konsultacjƒô
             for cons in filtered:
                 with st.expander(
-                    f"??? {cons.get('question', 'Brak pytania')[:80]}... | "
+                    f"üó≥Ô∏è {cons.get('question', 'Brak pytania')[:80]}... | "
                     f"{cons.get('created_at', '')[:16]} | "
-                    f"{len(cons.get('participants', []))} partnerÛw"
+                    f"{len(cons.get('participants', []))} partner√≥w"
                 ):
-                    st.markdown(f"**?? ID:** `{cons['id']}`")
-                    st.markdown(f"**? Pytanie:** {cons['question']}")
-                    st.markdown(f"**?? Uczestnicy:** {', '.join(cons['participants'])}")
-                    st.markdown(f"**?? Data:** {cons['created_at'][:19]}")
-                    st.markdown(f"**?? Status:** {cons['status']}")
+                    st.markdown(f"**üìã ID:** `{cons['id']}`")
+                    st.markdown(f"**‚ùì Pytanie:** {cons['question']}")
+                    st.markdown(f"**üë• Uczestnicy:** {', '.join(cons['participants'])}")
+                    st.markdown(f"**üìÖ Data:** {cons['created_at'][:19]}")
+                    st.markdown(f"**üìä Status:** {cons['status']}")
                     
                     # Odpowiedzi
                     responses = cons.get('responses', [])
                     if responses:
                         st.markdown("---")
-                        st.markdown("**?? Odpowiedzi partnerÛw:**")
+                        st.markdown("**üí¨ Odpowiedzi partner√≥w:**")
                         
                         for resp in responses:
                             stance_emoji = {
-                                'for': '?',
-                                'against': '?',
-                                'neutral': '??'
-                            }.get(resp['stance'], '??')
+                                'for': '‚úÖ',
+                                'against': '‚ùå',
+                                'neutral': 'ü§î'
+                            }.get(resp['stance'], 'ü§î')
                             
                             st.markdown(f"""
                             **{resp['partner']}** {stance_emoji} **{resp['stance'].upper()}** 
-                            (PewnoúÊ: {resp['confidence']}/10)
+                            (Pewno≈õƒá: {resp['confidence']}/10)
                             > {resp['reasoning']}
                             """)
                     
@@ -4958,29 +4958,29 @@ def show_consultations_page():
                     summary = cons.get('summary')
                     if summary:
                         st.markdown("---")
-                        st.markdown("### ?? Podsumowanie AI")
+                        st.markdown("### ü§ñ Podsumowanie AI")
                         
                         col1, col2, col3 = st.columns(3)
-                        col1.metric("? ZA", summary['votes_for'])
-                        col2.metric("? PRZECIW", summary['votes_against'])
-                        col3.metric("?? NEUTRALNE", summary['votes_neutral'])
+                        col1.metric("‚úÖ ZA", summary['votes_for'])
+                        col2.metric("‚ùå PRZECIW", summary['votes_against'])
+                        col3.metric("ü§î NEUTRALNE", summary['votes_neutral'])
                         
                         col1, col2 = st.columns(2)
                         with col1:
-                            st.markdown("**? Argumenty ZA:**")
+                            st.markdown("**‚úÖ Argumenty ZA:**")
                             for arg in summary.get('main_arguments_for', []):
                                 st.markdown(f"- {arg}")
                         
                         with col2:
-                            st.markdown("**? Argumenty PRZECIW:**")
+                            st.markdown("**‚ùå Argumenty PRZECIW:**")
                             for arg in summary.get('main_arguments_against', []):
                                 st.markdown(f"- {arg}")
                         
-                        st.info(f"**?? Rekomendacja:** {summary.get('recommendation', '')}")
+                        st.info(f"**üí° Rekomendacja:** {summary.get('recommendation', '')}")
 
 def show_partners_page():
     """Strona z partnerami"""
-    st.title("?? Chat z Partnerami AI")
+    st.title("üí¨ Chat z Partnerami AI")
     
     # Initialize session state for messages
     if 'messages' not in st.session_state:
@@ -4990,57 +4990,57 @@ def show_partners_page():
         st.session_state.selected_partner = "Wszyscy"
     
     # === TABY ===
-    tab_chat, tab_profiles = st.tabs(["?? Chat", "?? Profile PartnerÛw"])
+    tab_chat, tab_profiles = st.tabs(["üí¨ Chat", "üìã Profile Partner√≥w"])
     
     # === TAB 1: CHAT ===
     with tab_chat:
-        # Sidebar z listπ partnerÛw
+        # Sidebar z listƒÖ partner√≥w
         with st.sidebar:
-            st.markdown("### ?? Rada PartnerÛw")
+            st.markdown("### üé≠ Rada Partner√≥w")
             
             partners = {}
             
-            # Za≥aduj prawdziwych partnerÛw z PERSONAS (pomijajπc Partnera Zarzπdzajπcego - to Ty!)
+            # Za≈Çaduj prawdziwych partner√≥w z PERSONAS (pomijajƒÖc Partnera ZarzƒÖdzajƒÖcego - to Ty!)
             if IMPORTS_OK and PERSONAS:
                 # Opcja "Wszyscy"
-                partners["Wszyscy"] = {"emoji": "??", "status": "??", "display": "Wszyscy"}
+                partners["Wszyscy"] = {"emoji": "üë•", "status": "üü¢", "display": "Wszyscy"}
                 
-                # Dodaj kaødego partnera OPR”CZ "Partner Zarzπdzajπcy (JA)"
+                # Dodaj ka≈ºdego partnera OPR√ìCZ "Partner ZarzƒÖdzajƒÖcy (JA)"
                 for name, config in PERSONAS.items():
-                    # PomiÒ Partnera Zarzπdzajπcego - to uøytkownik
-                    if 'Partner Zarzπdzajπcy' in name and '(JA)' in name:
+                    # Pomi≈Ñ Partnera ZarzƒÖdzajƒÖcego - to u≈ºytkownik
+                    if 'Partner ZarzƒÖdzajƒÖcy' in name and '(JA)' in name:
                         continue
                     
-                    # Wyciπgnij samo imiÍ bez dodatkowych opisÛw
+                    # WyciƒÖgnij samo imiƒô bez dodatkowych opis√≥w
                     display_name = name
                     
                     # Dla "Ja (Partner Strategiczny)" -> "Ja"
                     if '(' in name:
                         display_name = name.split('(')[0].strip()
                     
-                    # Dla "Partner ds. Czegoú" -> wyciπgnij kluczowπ nazwÍ
+                    # Dla "Partner ds. Czego≈õ" -> wyciƒÖgnij kluczowƒÖ nazwƒô
                     if display_name.startswith('Partner ds.'):
-                        # Np. "Partner ds. Jakoúci Biznesowej" -> "Partner Jakoúci"
+                        # Np. "Partner ds. Jako≈õci Biznesowej" -> "Partner Jako≈õci"
                         display_name = display_name.replace('Partner ds. ', '')
                     
                     partners[name] = {
-                        "emoji": "??",
-                        "status": "??",
+                        "emoji": "ü§ñ",
+                        "status": "üü¢",
                         "display": display_name
                     }
             else:
-                # Fallback jeúli PERSONAS nie za≥adowa≥o siÍ
+                # Fallback je≈õli PERSONAS nie za≈Çadowa≈Ço siƒô
                 partners = {
-                    "Wszyscy": {"emoji": "??", "status": "??", "display": "Wszyscy"}
+                    "Wszyscy": {"emoji": "üë•", "status": "üü¢", "display": "Wszyscy"}
                 }
             
             for name, info in partners.items():
                 col1, col2 = st.columns([3, 1])
                 with col1:
                     display_name = info.get('display', name)
-                    # Tylko imiÍ, bez opisu roli
+                    # Tylko imiƒô, bez opisu roli
                     if st.button(
-                        f"{info.get('emoji', '??')} {display_name}",
+                        f"{info.get('emoji', 'ü§ñ')} {display_name}",
                         key=f"partner_{name}",
                         width="stretch"
                     ):
@@ -5050,15 +5050,15 @@ def show_partners_page():
             
             st.markdown("---")
             
-            st.markdown("### ?? Opcje")
+            st.markdown("### ‚öôÔ∏è Opcje")
             tryb = st.radio(
                 "Tryb odpowiedzi:",
-                ["ZwiÍz≥y", "Normalny", "SzczegÛ≥owy"],
+                ["Zwiƒôz≈Çy", "Normalny", "Szczeg√≥≈Çowy"],
                 index=1
             )
             
-            fight_club = st.checkbox("?? Fight Club", value=True)
-            auto_vote = st.checkbox("??? Auto g≥osowania", value=False)
+            fight_club = st.checkbox("ü•ä Fight Club", value=True)
+            auto_vote = st.checkbox("üó≥Ô∏è Auto g≈Çosowania", value=False)
         
         # Main chat area
         st.markdown(f"### Rozmowa z: **{st.session_state.selected_partner}**")
@@ -5068,69 +5068,69 @@ def show_partners_page():
             stan_spolki, cele = load_portfolio_data()
             portfolio_mood = analyze_portfolio_mood(stan_spolki, cele)
             
-            # Wyúwietl mood bar
+            # Wy≈õwietl mood bar
             col_mood1, col_mood2, col_mood3 = st.columns([1, 3, 1])
             with col_mood1:
-                st.markdown(f"### {portfolio_mood.get('emoji', '??')}")
+                st.markdown(f"### {portfolio_mood.get('emoji', 'üòê')}")
             with col_mood2:
-                st.markdown(f"**NastrÛj portfela:** {portfolio_mood.get('description', 'Neutralny')}")
+                st.markdown(f"**Nastr√≥j portfela:** {portfolio_mood.get('description', 'Neutralny')}")
                 
                 # Progress bar dla score
                 score = portfolio_mood.get('score', 0)
                 normalized_score = (score + 100) / 200  # -100..100 -> 0..1
                 st.progress(normalized_score, text=f"Score: {score}/100")
             with col_mood3:
-                with st.popover("?? SzczegÛ≥y"):
+                with st.popover("‚ÑπÔ∏è Szczeg√≥≈Çy"):
                     if portfolio_mood.get('highlights'):
-                        st.markdown("**? Dobre znaki:**")
+                        st.markdown("**‚ú® Dobre znaki:**")
                         for h in portfolio_mood['highlights']:
                             st.markdown(f"- {h}")
                     
                     if portfolio_mood.get('warnings'):
-                        st.markdown("**?? Uwagi:**")
+                        st.markdown("**‚ö†Ô∏è Uwagi:**")
                         for w in portfolio_mood['warnings']:
                             st.markdown(f"- {w}")
             
             st.markdown("---")
         except:
-            pass  # Cicho ignoruj b≥Ídy mood
+            pass  # Cicho ignoruj b≈Çƒôdy mood
         
-        # === NOWE: PROAKTYWNE ALERTY (na stronie partnerÛw) ===
+        # === NOWE: PROAKTYWNE ALERTY (na stronie partner√≥w) ===
         try:
             stan_spolki, cele = load_portfolio_data()
             alerts = check_portfolio_alerts(stan_spolki, cele)
 
-            # Pokazuj tylko najwaøniejsze (critical i warning)
+            # Pokazuj tylko najwa≈ºniejsze (critical i warning)
             important_alerts = [a for a in alerts if a["severity"] in ["critical", "warning"]]
 
             if important_alerts:
-                with st.expander(f"?? Aktywne alerty ({len(important_alerts)})", expanded=True):
-                    for alert in important_alerts[:3]:  # Max 3 najwaøniejsze
+                with st.expander(f"üö® Aktywne alerty ({len(important_alerts)})", expanded=True):
+                    for alert in important_alerts[:3]:  # Max 3 najwa≈ºniejsze
                         if alert["severity"] == "critical":
                             st.error(f"**{alert['title']}** - {alert['message']}")
                         else:
                             st.warning(f"**{alert['title']}** - {alert['message']}")
                 
                     if len(important_alerts) > 3:
-                        st.caption(f"...i {len(important_alerts) - 3} wiÍcej. Zobacz Dashboard.")
+                        st.caption(f"...i {len(important_alerts) - 3} wiƒôcej. Zobacz Dashboard.")
             else:
-                with st.expander("? Status portfela", expanded=False):
-                    st.success("**Brak aktywnych alertÛw** - TwÛj portfel wyglπda stabilnie!")
-                    st.caption("MonitorujÍ: spadki, wzrosty, wyceny, düwigniÍ, koncentracjÍ i cele.")
+                with st.expander("‚úÖ Status portfela", expanded=False):
+                    st.success("**Brak aktywnych alert√≥w** - Tw√≥j portfel wyglƒÖda stabilnie!")
+                    st.caption("Monitorujƒô: spadki, wzrosty, wyceny, d≈∫wigniƒô, koncentracjƒô i cele.")
 
             st.markdown("---")
         except:
             pass
         
         # === NOWE: SUGEROWANE PYTANIA ===
-        if len(st.session_state.messages) < 3:  # Pokazuj tylko gdy ma≥o wiadomoúci
+        if len(st.session_state.messages) < 3:  # Pokazuj tylko gdy ma≈Ço wiadomo≈õci
             try:
                 stan_spolki, cele = load_portfolio_data()
                 smart_questions = generate_smart_questions(stan_spolki, cele)
             
                 if smart_questions:
-                    with st.expander("?? Sugerowane pytania (kliknij aby uøyÊ)", expanded=True):
-                        st.caption("AI przeanalizowa≥o TwÛj portfel i sugeruje te pytania:")
+                    with st.expander("üí° Sugerowane pytania (kliknij aby u≈ºyƒá)", expanded=True):
+                        st.caption("AI przeanalizowa≈Ço Tw√≥j portfel i sugeruje te pytania:")
                     
                     cols = st.columns(1)
                     for i, question in enumerate(smart_questions[:5]):
@@ -5140,19 +5140,19 @@ def show_partners_page():
                             width="stretch",
                             type="secondary"
                         ):
-                            # Uøyj pytania jako input
+                            # U≈ºyj pytania jako input
                             st.session_state.messages.append({
                                 "role": "user",
                                 "content": question,
-                                "avatar": "??"
+                                "avatar": "üë§"
                             })
                             
                             # Generate responses
-                            with st.spinner("?? AI myúli..."):
+                            with st.spinner("ü§ñ AI my≈õli..."):
                                 if 'ai_response_mode' in st.session_state:
                                     tryb_odpowiedzi = st.session_state.ai_response_mode
                                 else:
-                                    tryb_map = {"ZwiÍz≥y": "zwiezly", "Normalny": "normalny", "SzczegÛ≥owy": "szczegolowy"}
+                                    tryb_map = {"Zwiƒôz≈Çy": "zwiezly", "Normalny": "normalny", "Szczeg√≥≈Çowy": "szczegolowy"}
                                     tryb_odpowiedzi = tryb_map.get(tryb, "normalny")
                                 
                                 if st.session_state.selected_partner == "Wszyscy":
@@ -5160,13 +5160,13 @@ def show_partners_page():
                                     response_container = st.empty()
                                     
                                     for resp in send_to_all_partners(question, stan_spolki, cele, tryb_odpowiedzi):
-                                        # Formatuj wiadomoúÊ z emoji reakcji i flagπ przerywania
-                                        sentiment = resp.get('sentiment_emoji', '??')
+                                        # Formatuj wiadomo≈õƒá z emoji reakcji i flagƒÖ przerywania
+                                        sentiment = resp.get('sentiment_emoji', 'üí¨')
                                         is_interrupting = resp.get('is_interrupting', False)
                                         is_voting = resp.get('is_voting_summary', False)
                                         
                                         if is_voting:
-                                            # Specjalne formatowanie dla podsumowania g≥osowania
+                                            # Specjalne formatowanie dla podsumowania g≈Çosowania
                                             content = resp['response']
                                         elif is_interrupting:
                                             content = f"{sentiment} **[PRZERWANIE]** **{resp['partner']}**: {resp['response']}"
@@ -5181,7 +5181,7 @@ def show_partners_page():
                                             "knowledge": resp.get('knowledge', [])
                                         })
                                         
-                                        # Wyúwietl natychmiast z avatarem
+                                        # Wy≈õwietl natychmiast z avatarem
                                         with st.chat_message("assistant", avatar=resp['avatar']):
                                             st.markdown(content)
                                 else:
@@ -5192,34 +5192,34 @@ def show_partners_page():
                                         cele,
                                         tryb_odpowiedzi
                                     )
-                                    avatar = "??"
+                                    avatar = "ü§ñ"
                                     if st.session_state.selected_partner in PERSONAS:
                                         color_map = {
-                                            '\033[94m': '??', '\033[93m': '??', '\033[96m': '??',
-                                            '\033[90m': '??', '\033[95m': '??', '\033[91m': '??', '\033[92m': '??'
+                                            '\033[94m': 'üìä', '\033[93m': 'üíº', '\033[96m': 'üíé',
+                                            '\033[90m': 'üõ°', '\033[95m': 'üîç', '\033[91m': 'üåç', '\033[92m': 'üéØ'
                                         }
                                         color = PERSONAS[st.session_state.selected_partner].get('color_code', '')
-                                        avatar = color_map.get(color, "??")
+                                        avatar = color_map.get(color, "ü§ñ")
                                     
                                     st.session_state.messages.append({
                                         "role": "assistant",
                                         "content": f"**{st.session_state.selected_partner}**: {response}",
                                         "avatar": avatar,
-                                        "knowledge": knowledge  # Zapisz knowledge dla pÛüniejszego wyúwietlenia
+                                        "knowledge": knowledge  # Zapisz knowledge dla p√≥≈∫niejszego wy≈õwietlenia
                                     })
                             
                             st.rerun()
             except Exception as e:
-                pass  # Cicho ignoruj b≥Ídy sugestii
+                pass  # Cicho ignoruj b≈Çƒôdy sugestii
         
         # Display messages
         chat_container = st.container()
         with chat_container:
             for msg in st.session_state.messages:
-                with st.chat_message(msg["role"], avatar=msg.get("avatar", "??")):
+                with st.chat_message(msg["role"], avatar=msg.get("avatar", "ü§ñ")):
                     st.markdown(msg["content"])
                     
-                    # Wyúwietl ürÛd≥a wiedzy jeúli sπ
+                    # Wy≈õwietl ≈∫r√≥d≈Ça wiedzy je≈õli sƒÖ
                     if msg["role"] == "assistant" and msg.get("knowledge"):
                         display_knowledge_sources(msg["knowledge"])
         
@@ -5227,11 +5227,11 @@ def show_partners_page():
         col1, col2 = st.columns([6, 1])
         
         with col1:
-            user_input = st.chat_input("Napisz wiadomoúÊ do PartnerÛw...")
+            user_input = st.chat_input("Napisz wiadomo≈õƒá do Partner√≥w...")
         
         with col2:
-            if st.button("??"):
-                st.info("Za≥πczniki wkrÛtce!")
+            if st.button("üìé"):
+                st.info("Za≈ÇƒÖczniki wkr√≥tce!")
         
         # Handle user input
         if user_input:
@@ -5239,7 +5239,7 @@ def show_partners_page():
             st.session_state.messages.append({
                 "role": "user",
                 "content": user_input,
-                "avatar": "??"
+                "avatar": "üë§"
             })
         
             # Get current portfolio data for context
@@ -5249,29 +5249,29 @@ def show_partners_page():
                 stan_spolki, cele = None, None
         
             # Generate real AI responses
-            # Pobierz tryb odpowiedzi z session_state (z ustawieÒ) lub z local radio
+            # Pobierz tryb odpowiedzi z session_state (z ustawie≈Ñ) lub z local radio
             if 'ai_response_mode' in st.session_state:
                 tryb_odpowiedzi = st.session_state.ai_response_mode
             else:
-                # Fallback na lokalny wybÛr
+                # Fallback na lokalny wyb√≥r
                 tryb_map = {
-                "ZwiÍz≥y": "zwiezly",
+                "Zwiƒôz≈Çy": "zwiezly",
                 "Normalny": "normalny",
-                "SzczegÛ≥owy": "szczegolowy"
+                "Szczeg√≥≈Çowy": "szczegolowy"
                 }
                 tryb_odpowiedzi = tryb_map.get(tryb, "normalny")
         
-                with st.spinner("?? AI myúli..."):
+                with st.spinner("ü§ñ AI my≈õli..."):
                     if st.session_state.selected_partner == "Wszyscy":
-                        # Response from all partners - jeden za drugim, wyúwietlaj na øywo
+                        # Response from all partners - jeden za drugim, wy≈õwietlaj na ≈ºywo
                         for resp in send_to_all_partners(user_input, stan_spolki, cele, tryb_odpowiedzi):
-                            # Formatuj wiadomoúÊ z emoji reakcji i flagπ przerywania
-                            sentiment = resp.get('sentiment_emoji', '??')
+                            # Formatuj wiadomo≈õƒá z emoji reakcji i flagƒÖ przerywania
+                            sentiment = resp.get('sentiment_emoji', 'üí¨')
                             is_interrupting = resp.get('is_interrupting', False)
                             is_voting = resp.get('is_voting_summary', False)
                             
                             if is_voting:
-                                # Specjalne formatowanie dla podsumowania g≥osowania
+                                # Specjalne formatowanie dla podsumowania g≈Çosowania
                                 content = resp['response']
                             elif is_interrupting:
                                 content = f"{sentiment} **[PRZERWANIE]** **{resp['partner']}**: {resp['response']}"
@@ -5286,7 +5286,7 @@ def show_partners_page():
                                 "knowledge": resp.get('knowledge', [])
                             })
                             
-                            # Wyúwietl natychmiast z avatarem
+                            # Wy≈õwietl natychmiast z avatarem
                             with st.chat_message("assistant", avatar=resp['avatar']):
                                 st.markdown(content)
                     else:
@@ -5300,11 +5300,11 @@ def show_partners_page():
                         )
                 
                         avatar = {
-                            "Marek": "??",
-                            "Ania": "??", 
-                            "Kasia": "??",
-                            "Tomek": "??"
-                        }.get(st.session_state.selected_partner, "??")
+                            "Marek": "üé≠",
+                            "Ania": "üé®", 
+                            "Kasia": "üìä",
+                            "Tomek": "üî•"
+                        }.get(st.session_state.selected_partner, "ü§ñ")
                 
                         st.session_state.messages.append({
                             "role": "assistant",
@@ -5317,58 +5317,58 @@ def show_partners_page():
         
         # Special commands
         st.markdown("---")
-        st.markdown("### ?? Szybkie akcje")
+        st.markdown("### üéØ Szybkie akcje")
         
         col1, col2, col3 = st.columns(3)
         
         with col1:
-            if st.button("??? Rozpocznij g≥osowanie", width="stretch"):
+            if st.button("üó≥Ô∏è Rozpocznij g≈Çosowanie", width="stretch"):
                 st.session_state.messages.append({
                     "role": "system",
-                    "content": "?? **Nowe g≥osowanie** - Propozycja do g≥osowania otworzona",
-                    "avatar": "??"
+                    "content": "üìã **Nowe g≈Çosowanie** - Propozycja do g≈Çosowania otworzona",
+                    "avatar": "ü§ñ"
                 })
                 st.rerun()
         
         with col2:
-            if st.button("?? Poproú o doradztwo", width="stretch"):
+            if st.button("üéØ Popro≈õ o doradztwo", width="stretch"):
                 st.session_state.messages.append({
                     "role": "system",
-                    "content": "?? **AI Advisor** - GenerujÍ 3 scenariusze...",
-                    "avatar": "??"
+                    "content": "ü§ñ **AI Advisor** - Generujƒô 3 scenariusze...",
+                    "avatar": "ü§ñ"
                 })
                 st.rerun()
         
         with col3:
-            if st.button("?? WyczyúÊ chat", width="stretch"):
+            if st.button("üßπ Wyczy≈õƒá chat", width="stretch"):
                 st.session_state.messages = []
                 st.rerun()
         
-        # Drugi rzπd przyciskÛw - funkcje pamiÍci AI
+        # Drugi rzƒÖd przycisk√≥w - funkcje pamiƒôci AI
         if MEMORY_OK:
-            st.markdown("#### ?? PamiÍÊ AI")
+            st.markdown("#### üß† Pamiƒôƒá AI")
             col4, col5, col6 = st.columns(3)
         
             with col4:
-                if st.button("?? Zapisz decyzjÍ", width="stretch", help="Zapisz ostatniπ rekomendacjÍ AI do pamiÍci"):
-                    # Znajdü ostatniπ odpowiedü AI
+                if st.button("üíæ Zapisz decyzjƒô", width="stretch", help="Zapisz ostatniƒÖ rekomendacjƒô AI do pamiƒôci"):
+                    # Znajd≈∫ ostatniƒÖ odpowied≈∫ AI
                     ai_messages = [m for m in st.session_state.messages if m["role"] == "assistant"]
                     if ai_messages:
                         last_msg = ai_messages[-1]
                         content = last_msg["content"]
                         
                         # Proste parsowanie - szukamy tickera i typu decyzji
-                        # TODO: Uøytkownik powinien podaÊ ticker i typ rÍcznie
+                        # TODO: U≈ºytkownik powinien podaƒá ticker i typ rƒôcznie
                         with st.form("save_decision_form"):
-                            st.write("Zapisz decyzjÍ do pamiÍci:")
+                            st.write("Zapisz decyzjƒô do pamiƒôci:")
                             ticker = st.text_input("Ticker (np. AAPL, BTC)", "")
                             decision_type = st.selectbox("Typ", ["BUY", "SELL", "HOLD", "WARN", "RECOMMEND"])
                             price = st.number_input("Aktualna cena", min_value=0.01, value=100.0)
                             reasoning = st.text_area("Uzasadnienie", content[:200])
                             
-                            submitted = st.form_submit_button("?? Zapisz")
+                            submitted = st.form_submit_button("üíæ Zapisz")
                             if submitted and ticker:
-                                # Zapisz dla wszystkich person ktÛre odpowiada≥y
+                                # Zapisz dla wszystkich person kt√≥re odpowiada≈Çy
                                 for persona_name in PERSONAS.keys():
                                     if persona_name in content:
                                         pmm.record_decision(
@@ -5379,36 +5379,36 @@ def show_partners_page():
                                             current_price=price,
                                             confidence=0.7
                                         )
-                                st.success(f"? Decyzja zapisana: {decision_type} {ticker}")
+                                st.success(f"‚úì Decyzja zapisana: {decision_type} {ticker}")
                                 st.rerun()
                     else:
                         st.info("Brak odpowiedzi AI do zapisania")
         
             with col5:
-                if st.button("?? Leaderboard", width="stretch", help="Zobacz ranking wiarygodnoúci person"):
+                if st.button("üèÜ Leaderboard", width="stretch", help="Zobacz ranking wiarygodno≈õci person"):
                     st.session_state.show_leaderboard = not st.session_state.get("show_leaderboard", False)
                     st.rerun()
         
             with col6:
-                if st.button("?? Audit decyzji", width="stretch", help="OceÒ stare decyzje"):
+                if st.button("üîç Audit decyzji", width="stretch", help="Oce≈Ñ stare decyzje"):
                     st.session_state.show_audit = not st.session_state.get("show_audit", False)
                     st.rerun()
         
             # Leaderboard display
             if st.session_state.get("show_leaderboard", False):
-                with st.expander("?? Ranking Wiarygodnoúci AI PartnerÛw", expanded=True):
+                with st.expander("üèÜ Ranking Wiarygodno≈õci AI Partner√≥w", expanded=True):
                     leaderboard = pmm.get_leaderboard()
                     if leaderboard:
                         for i, entry in enumerate(leaderboard, 1):
-                            emoji = "??" if i == 1 else "??" if i == 2 else "??" if i == 3 else f"{i}."
+                            emoji = "ü•á" if i == 1 else "ü•à" if i == 2 else "ü•â" if i == 3 else f"{i}."
                             st.write(f"{emoji} **{entry['persona']}**: {entry['credibility']*100:.0f}% "
                                     f"({entry['correct']}/{entry['total']} trafnych)")
                     else:
-                        st.info("Brak danych - persony nie podjÍ≥y jeszcze rozliczonych decyzji")
+                        st.info("Brak danych - persony nie podjƒô≈Çy jeszcze rozliczonych decyzji")
         
             # Audit panel
             if st.session_state.get("show_audit", False):
-                with st.expander("?? Panel Auditu Decyzji", expanded=True):
+                with st.expander("üîç Panel Auditu Decyzji", expanded=True):
                     pending = pmm.get_all_pending_decisions()
                     if pending:
                         st.write(f"**{len(pending)} nierozliczonych decyzji:**")
@@ -5417,10 +5417,10 @@ def show_partners_page():
                             with st.container():
                                 col_a, col_b = st.columns([3, 1])
                                 with col_a:
-                                    st.write(f"**{item['persona']}** õ {dec['decision_type']} {dec['ticker']} @ {dec['current_price']}")
+                                    st.write(f"**{item['persona']}** ‚Üí {dec['decision_type']} {dec['ticker']} @ {dec['current_price']}")
                                     st.caption(f"{dec['date']}: {dec['reasoning'][:80]}...")
                                 with col_b:
-                                    if st.button("? OceÒ", key=f"audit_{dec['id']}"):
+                                    if st.button("‚úì Oce≈Ñ", key=f"audit_{dec['id']}"):
                                         st.session_state[f"auditing_{dec['id']}"] = True
                                         st.rerun()
                                 
@@ -5428,75 +5428,75 @@ def show_partners_page():
                                 if st.session_state.get(f"auditing_{dec['id']}", False):
                                     with st.form(f"form_{dec['id']}"):
                                         current_price = st.number_input("Aktualna cena", value=dec['current_price'])
-                                        outcome = st.text_input("Co siÍ sta≥o?", "")
-                                        impact = st.number_input("Wp≥yw (PLN)", value=0.0)
+                                        outcome = st.text_input("Co siƒô sta≈Ço?", "")
+                                        impact = st.number_input("Wp≈Çyw (PLN)", value=0.0)
                                         
-                                        if st.form_submit_button("?? Zapisz audit"):
+                                        if st.form_submit_button("üíæ Zapisz audit"):
                                             result = pmm.audit_decision(dec['id'], current_price, outcome, impact)
                                             if result:
-                                                st.success(f"? {'Poprawna' if result['was_correct'] else 'B≥Ídna'} decyzja ({result['result_pct']:+.1f}%)")
+                                                st.success(f"‚úì {'Poprawna' if result['was_correct'] else 'B≈Çƒôdna'} decyzja ({result['result_pct']:+.1f}%)")
                                                 del st.session_state[f"auditing_{dec['id']}"]
                                                 st.rerun()
                                 st.markdown("---")
                     else:
                         st.info("Brak nierozliczonych decyzji")
         
-    # === TAB 2: PROFILE PARTNER”W ===
+    # === TAB 2: PROFILE PARTNER√ìW ===
     with tab_profiles:
-        st.markdown("### ?? Profile PartnerÛw")
-        st.caption("Poznaj kaødego partnera i sprawdü wagi g≥osÛw z Kodeksu SpÛ≥ki")
+        st.markdown("### üìã Profile Partner√≥w")
+        st.caption("Poznaj ka≈ºdego partnera i sprawd≈∫ wagi g≈Ços√≥w z Kodeksu Sp√≥≈Çki")
         
         if not IMPORTS_OK or not PERSONAS:
-            st.warning("?? Nie moøna za≥adowaÊ danych partnerÛw")
+            st.warning("‚ö†Ô∏è Nie mo≈ºna za≈Çadowaƒá danych partner√≥w")
             return
         
-        # Wczytaj wagi g≥osu z kodeksu spÛ≥ki
+        # Wczytaj wagi g≈Çosu z kodeksu sp√≥≈Çki
         wagi_z_kodeksu = wczytaj_wagi_glosu_z_kodeksu()
         
         if not wagi_z_kodeksu:
-            st.warning("?? Nie moøna wczytaÊ wag g≥osu z kodeksu spÛ≥ki")
+            st.warning("‚ö†Ô∏è Nie mo≈ºna wczytaƒá wag g≈Çosu z kodeksu sp√≥≈Çki")
             return
         
-        # Przygotuj listÍ partnerÛw z wagami g≥osu z KODEKSU
+        # Przygotuj listƒô partner√≥w z wagami g≈Çosu z KODEKSU
         partners_with_weights = []
         for name, config in PERSONAS.items():
-            # Teraz POKAZUJEMY R”WNIEØ Partnera Zarzπdzajπcego (JA)!
+            # Teraz POKAZUJEMY R√ìWNIE≈ª Partnera ZarzƒÖdzajƒÖcego (JA)!
             
-            # Pobierz wagÍ z kodeksu
-            weight = wagi_z_kodeksu.get(name, 0.0)  # Juø jest w procentach (35.0, nie 0.35)
+            # Pobierz wagƒô z kodeksu
+            weight = wagi_z_kodeksu.get(name, 0.0)  # Ju≈º jest w procentach (35.0, nie 0.35)
             
             partners_with_weights.append((name, config, weight))
         
-        # Sortuj wed≥ug wagi g≥osu (malejπco)
+        # Sortuj wed≈Çug wagi g≈Çosu (malejƒÖco)
         partners_with_weights.sort(key=lambda x: x[2], reverse=True)
         total_weight = sum(w for _, _, w in partners_with_weights)
         
         # Informacja o sumie
-        st.info(f"?? **£πczna suma g≥osÛw: {total_weight:.0f}%** (z Kodeksu SpÛ≥ki)")
+        st.info(f"üìä **≈ÅƒÖczna suma g≈Ços√≥w: {total_weight:.0f}%** (z Kodeksu Sp√≥≈Çki)")
         
         # Informacja o bonusach
         bonus_pool = 100 - total_weight
         if bonus_pool > 0:
-            st.success(f"?? **Pula bonusowa: {bonus_pool:.0f}%** - do zdobycia za dobre decyzje!")
-            st.caption("?? Partnerzy mogπ zdobywaÊ dodatkowe % g≥osu jako nagrody za trafne prognozy i wartoúciowe decyzje")
+            st.success(f"üéÅ **Pula bonusowa: {bonus_pool:.0f}%** - do zdobycia za dobre decyzje!")
+            st.caption("üí° Partnerzy mogƒÖ zdobywaƒá dodatkowe % g≈Çosu jako nagrody za trafne prognozy i warto≈õciowe decyzje")
         
         # Opcja do edycji wag
-        if st.checkbox("?? Tryb edycji wag g≥osu", help="ZmieÒ % g≥osu partnerÛw i zapisz do Kodeksu"):
-            st.warning("?? Zmienione wartoúci zostanπ zapisane do `kodeks_spolki.txt`")
+        if st.checkbox("‚öôÔ∏è Tryb edycji wag g≈Çosu", help="Zmie≈Ñ % g≈Çosu partner√≥w i zapisz do Kodeksu"):
+            st.warning("‚ö†Ô∏è Zmienione warto≈õci zostanƒÖ zapisane do `kodeks_spolki.txt`")
             
             with st.form("edit_voting_weights"):
-                st.markdown("#### Edytuj wagi g≥osu:")
+                st.markdown("#### Edytuj wagi g≈Çosu:")
                 
                 nowe_wagi = {}
                 
-                # Podziel na g≥Ûwnych partnerÛw i radÍ
+                # Podziel na g≈Ç√≥wnych partner√≥w i radƒô
                 col_left, col_right = st.columns(2)
                 
                 with col_left:
-                    st.markdown("**?? G≥Ûwni Partnerzy:**")
+                    st.markdown("**üë• G≈Ç√≥wni Partnerzy:**")
                     for name, config, current_weight in partners_with_weights:
-                        # G≥Ûwni: Partner Zarzπdzajπcy, Partner Strategiczny, ds. Jakoúci, ds. AktywÛw Cyfrowych
-                        if any(keyword in name for keyword in ["Zarzπdzajπcy", "Strategiczny", "Jakoúci", "AktywÛw Cyfrowych"]):
+                        # G≈Ç√≥wni: Partner ZarzƒÖdzajƒÖcy, Partner Strategiczny, ds. Jako≈õci, ds. Aktyw√≥w Cyfrowych
+                        if any(keyword in name for keyword in ["ZarzƒÖdzajƒÖcy", "Strategiczny", "Jako≈õci", "Aktyw√≥w Cyfrowych"]):
                             nowe_wagi[name] = st.number_input(
                                 f"{name}",
                                 min_value=0.0,
@@ -5507,7 +5507,7 @@ def show_partners_page():
                             )
                 
                 with col_right:
-                    st.markdown("**??? Rada Nadzorcza & Konsultanci:**")
+                    st.markdown("**üèõÔ∏è Rada Nadzorcza & Konsultanci:**")
                     for name, config, current_weight in partners_with_weights:
                         # Rada: Benjamin Graham, Philip Fisher, George Soros, Warren Buffett, Changpeng Zhao (CZ)
                         if any(keyword in name for keyword in ["Graham", "Fisher", "Soros", "Buffett", "Zhao"]):
@@ -5524,52 +5524,52 @@ def show_partners_page():
                 st.caption(f"Suma nowych wag: {suma_nowych:.1f}%")
                 
                 if suma_nowych > 100:
-                    st.error(f"?? Suma przekracza 100%! (jest {suma_nowych:.1f}%)")
+                    st.error(f"‚ö†Ô∏è Suma przekracza 100%! (jest {suma_nowych:.1f}%)")
                 elif suma_nowych < 95:
-                    st.warning(f"?? Suma jest mniejsza niø 95% (jest {suma_nowych:.1f}%)")
+                    st.warning(f"‚ö†Ô∏è Suma jest mniejsza ni≈º 95% (jest {suma_nowych:.1f}%)")
                 
-                submitted = st.form_submit_button("?? Zapisz do Kodeksu")
+                submitted = st.form_submit_button("üíæ Zapisz do Kodeksu")
                 if submitted:
                     if zapisz_wagi_glosu_do_kodeksu(nowe_wagi):
-                        st.success("? Wagi g≥osu zapisane do kodeksu spÛ≥ki!")
+                        st.success("‚úÖ Wagi g≈Çosu zapisane do kodeksu sp√≥≈Çki!")
                         st.rerun()
                     else:
-                        st.error("? B≥πd zapisu do kodeksu")
+                        st.error("‚ùå B≈ÇƒÖd zapisu do kodeksu")
         
         st.markdown("---")
         
-        # Wyúwietl kaødego partnera
+        # Wy≈õwietl ka≈ºdego partnera
         for name, config, weight in partners_with_weights:
             percentage = (weight / total_weight * 100) if total_weight > 0 else 0
             
-            # Specjalne oznaczenie dla Ciebie (Partner Zarzπdzajπcy)
+            # Specjalne oznaczenie dla Ciebie (Partner ZarzƒÖdzajƒÖcy)
             if "(JA)" in name:
-                emoji_prefix = "????"
-                subtitle = f"{weight:.1f}% g≥osu | TY - G≥os rozstrzygajπcy"
+                emoji_prefix = "üë§üëë"
+                subtitle = f"{weight:.1f}% g≈Çosu | TY - G≈Ços rozstrzygajƒÖcy"
             else:
-                emoji_prefix = config.get('emoji', '??')
-                subtitle = f"{weight:.1f}% g≥osu"
+                emoji_prefix = config.get('emoji', 'ü§ñ')
+                subtitle = f"{weight:.1f}% g≈Çosu"
             
             with st.expander(f"{emoji_prefix} {name} - {subtitle}"):
                 col1, col2 = st.columns([2, 1])
                 
                 with col1:
-                    # Wyúwietl system instruction jako opis roli
+                    # Wy≈õwietl system instruction jako opis roli
                     system_inst = config.get('system_instruction', 'Brak opisu')
-                    st.markdown(f"**?? Rola:** {system_inst[:200]}...")
+                    st.markdown(f"**üë§ Rola:** {system_inst[:200]}...")
                     
                     # Ukryty cel jako spoiler (tylko dla AI)
                     if "(JA)" not in name:
-                        if st.checkbox("Pokaø ukryty cel", key=f"spoiler_{name}"):
-                            st.info(f"?? **Ukryty cel:** {config.get('ukryty_cel', 'Brak')}")
+                        if st.checkbox("Poka≈º ukryty cel", key=f"spoiler_{name}"):
+                            st.info(f"üé≠ **Ukryty cel:** {config.get('ukryty_cel', 'Brak')}")
                     else:
-                        st.success("?? **To TY!** Masz g≥os rozstrzygajπcy w remisach.")
+                        st.success("üéØ **To TY!** Masz g≈Ços rozstrzygajƒÖcy w remisach.")
                 
                 with col2:
-                    st.metric("% g≥osu", f"{weight:.1f}%", help="Waga g≥osu z Kodeksu SpÛ≥ki")
+                    st.metric("% g≈Çosu", f"{weight:.1f}%", help="Waga g≈Çosu z Kodeksu Sp√≥≈Çki")
                     st.progress(weight / 100)
                     
-                    # Memory stats jeúli dostÍpne (tylko dla AI)
+                    # Memory stats je≈õli dostƒôpne (tylko dla AI)
                     if MEMORY_OK and "(JA)" not in name:
                         try:
                             memory_data = load_persona_memory()
@@ -5578,35 +5578,35 @@ def show_partners_page():
                                 stats = persona_data.get('stats', {})
                                 emotions = persona_data.get('emotional_state', {})
                                 
-                                st.caption(f"?? {stats.get('sessions_participated', 0)} sesji")
-                                st.caption(f"?? {stats.get('decisions_made', 0)} decyzji")
-                                st.caption(f"?? NastrÛj: {emotions.get('current_mood', 'neutral')}")
+                                st.caption(f"üí¨ {stats.get('sessions_participated', 0)} sesji")
+                                st.caption(f"üìù {stats.get('decisions_made', 0)} decyzji")
+                                st.caption(f"üòä Nastr√≥j: {emotions.get('current_mood', 'neutral')}")
                         except Exception as e:
                             pass
         
         st.markdown("---")
-        st.info(f"?? **Rada sk≥ada siÍ z {len(partners_with_weights)} cz≥onkÛw** (w≥πcznie z Tobπ jako Partner Zarzπdzajπcy)")
-        st.caption("? Wagi g≥osÛw pochodzπ z Kodeksu SpÛ≥ki")
-        st.caption("?? 30% puli bonusowej - partnerzy mogπ zdobywaÊ dodatkowe % za trafne decyzje i wartoúciowe analizy")
-        st.caption("?? Zmiany wag sπ zapisywane bezpoúrednio w pliku `kodeks_spolki.txt`")
+        st.info(f"üë• **Rada sk≈Çada siƒô z {len(partners_with_weights)} cz≈Çonk√≥w** (w≈ÇƒÖcznie z TobƒÖ jako Partner ZarzƒÖdzajƒÖcy)")
+        st.caption("ÔøΩ Wagi g≈Ços√≥w pochodzƒÖ z Kodeksu Sp√≥≈Çki")
+        st.caption("üéÅ 30% puli bonusowej - partnerzy mogƒÖ zdobywaƒá dodatkowe % za trafne decyzje i warto≈õciowe analizy")
+        st.caption("üìú Zmiany wag sƒÖ zapisywane bezpo≈õrednio w pliku `kodeks_spolki.txt`")
 
 def show_analytics_page(stan_spolki):
-    """Strona z analitykπ"""
-    st.title("?? Zaawansowana Analityka & Ryzyko")
+    """Strona z analitykƒÖ"""
+    st.title("üìà Zaawansowana Analityka & Ryzyko")
     
-    # Check if we have historical data - uøywamy daily_snapshots.json
+    # Check if we have historical data - u≈ºywamy daily_snapshots.json
     history_file = "daily_snapshots.json"
     
     if not os.path.exists(history_file):
-        st.warning("?? Brak danych historycznych. UtwÛrz pierwszy snapshot w zak≥adce ?? Snapshots.")
-        st.info("?? TIP: System automatycznie zapisuje snapshoty codziennie o 21:00 (jeúli skonfigurujesz Task Scheduler).")
+        st.warning("‚ö†Ô∏è Brak danych historycznych. Utw√≥rz pierwszy snapshot w zak≈Çadce üì∏ Snapshots.")
+        st.info("üí° TIP: System automatycznie zapisuje snapshoty codziennie o 21:00 (je≈õli skonfigurujesz Task Scheduler).")
         
-        # Pokaø instrukcjÍ
-        with st.expander("?? Jak utworzyÊ snapshot?"):
+        # Poka≈º instrukcjƒô
+        with st.expander("üìù Jak utworzyƒá snapshot?"):
             st.markdown("""
             **Opcja 1: Manualnie w aplikacji**
-            - Przejdü do zak≥adki ?? Snapshots
-            - Kliknij "?? UtwÛrz Nowy Snapshot"
+            - Przejd≈∫ do zak≈Çadki üì∏ Snapshots
+            - Kliknij "üì∏ Utw√≥rz Nowy Snapshot"
             
             **Opcja 2: Z linii komend**
             ```bash
@@ -5626,11 +5626,11 @@ def show_analytics_page(stan_spolki):
         history = ds.load_snapshot_history()
         
         if len(history) < 2:
-            st.warning(f"?? Za ma≥o danych ({len(history)} snapshot). Potrzeba minimum 2 dla analizy ryzyka.")
-            st.info("?? UtwÛrz wiÍcej snapshotÛw aby zobaczyÊ analizÍ (zak≥adka ?? Snapshots)")
+            st.warning(f"‚ö†Ô∏è Za ma≈Ço danych ({len(history)} snapshot). Potrzeba minimum 2 dla analizy ryzyka.")
+            st.info("üí° Utw√≥rz wiƒôcej snapshot√≥w aby zobaczyƒá analizƒô (zak≈Çadka üì∏ Snapshots)")
             return
         
-        st.success(f"? Za≥adowano {len(history)} snapshots historii portfela")
+        st.success(f"‚úÖ Za≈Çadowano {len(history)} snapshots historii portfela")
         
         # Create analytics
         analyzer = RiskAnalytics(stan_spolki, history)
@@ -5638,7 +5638,7 @@ def show_analytics_page(stan_spolki):
         metrics = report.get('metrics', {})
         
         # Display metrics in columns
-        st.markdown("### ?? Kluczowe Metryki Ryzyka")
+        st.markdown("### üéØ Kluczowe Metryki Ryzyka")
         
         col1, col2, col3, col4 = st.columns(4)
         
@@ -5646,42 +5646,42 @@ def show_analytics_page(stan_spolki):
             sharpe = metrics.get('sharpe_ratio', 0)
             delta_color = "normal" if sharpe > 1 else "inverse"
             st.metric(
-                label="?? Sharpe Ratio",
+                label="üìä Sharpe Ratio",
                 value=f"{sharpe:.3f}",
-                delta="Dobry" if sharpe > 1 else "S≥aby",
+                delta="Dobry" if sharpe > 1 else "S≈Çaby",
                 delta_color=delta_color
             )
-            st.caption(">1 = dobre, >2 = doskona≥e")
+            st.caption(">1 = dobre, >2 = doskona≈Çe")
         
         with col2:
             sortino = metrics.get('sortino_ratio', 0)
             st.metric(
-                label="?? Sortino Ratio",
+                label="üìâ Sortino Ratio",
                 value=f"{sortino:.3f}",
-                delta="Dobry" if sortino > 1.5 else "S≥aby",
+                delta="Dobry" if sortino > 1.5 else "S≈Çaby",
                 delta_color="normal" if sortino > 1.5 else "inverse"
             )
-            st.caption("UwzglÍdnia tylko straty")
+            st.caption("Uwzglƒôdnia tylko straty")
         
         with col3:
             max_dd = metrics.get('max_drawdown_percent', 0)
             st.metric(
-                label="?? Max Drawdown",
+                label="‚ö†Ô∏è Max Drawdown",
                 value=f"{max_dd:.2f}%",
                 delta="Wysokie" if max_dd > 20 else "OK",
                 delta_color="inverse" if max_dd > 20 else "normal"
             )
-            st.caption("NajwiÍkszy spadek")
+            st.caption("Najwiƒôkszy spadek")
         
         with col4:
             var_95 = metrics.get('var_95', 0)
             st.metric(
-                label="?? VaR (95%)",
+                label="üíî VaR (95%)",
                 value=f"{var_95:.2f}%",
                 delta="Ryzykowne" if var_95 > 10 else "OK",
                 delta_color="inverse" if var_95 > 10 else "normal"
             )
-            st.caption("Max strata z 95% pewnoúciπ")
+            st.caption("Max strata z 95% pewno≈õciƒÖ")
         
         st.markdown("---")
         
@@ -5689,20 +5689,20 @@ def show_analytics_page(stan_spolki):
         col1, col2 = st.columns(2)
         
         with col1:
-            st.markdown("### ?? Dodatkowe Metryki")
+            st.markdown("### üìä Dodatkowe Metryki")
             
             vol = metrics.get('annual_volatility_percent', 0)
-            st.metric("?? ZmiennoúÊ roczna", f"{vol:.2f}%")
+            st.metric("üåä Zmienno≈õƒá roczna", f"{vol:.2f}%")
             
             ret = metrics.get('total_return_percent', 0)
-            st.metric("?? Ca≥kowity zwrot", f"{ret:+.2f}%")
+            st.metric("üí∞ Ca≈Çkowity zwrot", f"{ret:+.2f}%")
             
             beta = metrics.get('beta', 0)
-            st.metric("?? Beta (vs S&P 500)", f"{beta:.3f}")
+            st.metric("üìà Beta (vs S&P 500)", f"{beta:.3f}")
             st.caption("<1 = mniej zmienne, >1 = bardziej zmienne")
         
         with col2:
-            st.markdown("### ?? Ocena Ryzyka")
+            st.markdown("### üé≤ Ocena Ryzyka")
             
             level, score, description = analyzer.risk_score()
             
@@ -5716,9 +5716,9 @@ def show_analytics_page(stan_spolki):
         st.markdown("---")
         
         # Chart: Portfolio value over time
-        st.markdown("### ?? WartoúÊ Portfela w Czasie")
+        st.markdown("### üìà Warto≈õƒá Portfela w Czasie")
         
-        # Parsuj daty i wartoúci - obs≥uø rÛøne formaty
+        # Parsuj daty i warto≈õci - obs≈Çu≈º r√≥≈ºne formaty
         dates = []
         values = []
         
@@ -5729,7 +5729,7 @@ def show_analytics_page(stan_spolki):
             elif 'date' in h:
                 dates.append(datetime.fromisoformat(h['date']))
             
-            # WartoúÊ netto
+            # Warto≈õƒá netto
             if 'totals' in h and 'net_worth_pln' in h['totals']:
                 values.append(h['totals']['net_worth_pln'])
             elif 'wartosc_netto' in h:
@@ -5742,15 +5742,15 @@ def show_analytics_page(stan_spolki):
             x=dates,
             y=values,
             mode='lines+markers',
-            name='WartoúÊ Netto',
+            name='Warto≈õƒá Netto',
             line=dict(color='#1f77b4', width=2),
             marker=dict(size=8)
         ))
         
         fig.update_layout(
-            title="WartoúÊ Netto Portfela",
+            title="Warto≈õƒá Netto Portfela",
             xaxis_title="Data",
-            yaxis_title="WartoúÊ (PLN)",
+            yaxis_title="Warto≈õƒá (PLN)",
             height=400,
             hovermode='x unified'
         )
@@ -5758,38 +5758,38 @@ def show_analytics_page(stan_spolki):
         st.plotly_chart(fig, width="stretch")
         
     except Exception as e:
-        st.error(f"? B≥πd podczas analizy: {e}")
+        st.error(f"‚ùå B≈ÇƒÖd podczas analizy: {e}")
         import traceback
         st.code(traceback.format_exc())
 
 def show_timeline_page(stan_spolki):
     """Strona z animated timeline"""
-    st.title("?? Animated Timeline - Ewolucja Portfela")
+    st.title("üïê Animated Timeline - Ewolucja Portfela")
     
-    # Uøywaj nowego systemu daily snapshots
+    # U≈ºywaj nowego systemu daily snapshots
     try:
         import daily_snapshot as ds
         import benchmark_comparison as bench
     except ImportError as e:
-        st.error(f"? B≥πd importu: {e}")
+        st.error(f"‚ùå B≈ÇƒÖd importu: {e}")
         return
     
     history = ds.load_snapshot_history()
     
     if len(history) < 2:
-        st.warning(f"?? Za ma≥o danych ({len(history)} snapshot). Potrzeba minimum 2 dla timeline.")
+        st.warning(f"‚ö†Ô∏è Za ma≈Ço danych ({len(history)} snapshot). Potrzeba minimum 2 dla timeline.")
         st.info("""
-        **Jak zgromadziÊ historiÍ?**
-        1. System zapisuje snapshot codziennie o 21:00 (jeúli skonfigurujesz Windows Task)
-        2. Moøesz teø rÍcznie: `python daily_snapshot.py`
-        3. Lub w zak≥adce ?? Snapshots õ UtwÛrz snapshot
+        **Jak zgromadziƒá historiƒô?**
+        1. System zapisuje snapshot codziennie o 21:00 (je≈õli skonfigurujesz Windows Task)
+        2. Mo≈ºesz te≈º rƒôcznie: `python daily_snapshot.py`
+        3. Lub w zak≈Çadce üì∏ Snapshots ‚Üí Utw√≥rz snapshot
         """)
         return
     
-    st.success(f"? Za≥adowano {len(history)} snapshots - generujÍ timeline...")
+    st.success(f"‚úÖ Za≈Çadowano {len(history)} snapshots - generujƒô timeline...")
     
     # Tabs: Portfolio vs Benchmarki
-    tab1, tab2 = st.tabs(["?? WartoúÊ Portfela", "?? PorÛwnanie z Benchmarkami"])
+    tab1, tab2 = st.tabs(["üìä Warto≈õƒá Portfela", "üèÜ Por√≥wnanie z Benchmarkami"])
     
     with tab1:
         # Przygotuj dane do wykresu
@@ -5802,15 +5802,15 @@ def show_timeline_page(stan_spolki):
             x=dates,
             y=values,
             mode='lines+markers',
-            name='WartoúÊ Netto',
+            name='Warto≈õƒá Netto',
             line=dict(color='#1f77b4', width=3),
             marker=dict(size=10)
         ))
         
         fig.update_layout(
-            title="WartoúÊ Portfela w Czasie",
+            title="Warto≈õƒá Portfela w Czasie",
             xaxis_title="Data",
-            yaxis_title="WartoúÊ (PLN)",
+            yaxis_title="Warto≈õƒá (PLN)",
             height=500,
             hovermode='x unified'
         )
@@ -5824,23 +5824,23 @@ def show_timeline_page(stan_spolki):
         growth = (current_value - initial_value) / initial_value * 100
         
         with col1:
-            st.metric("?? WartoúÊ poczπtkowa", format_currency(initial_value))
+            st.metric("üìä Warto≈õƒá poczƒÖtkowa", format_currency(initial_value))
         with col2:
-            st.metric("?? WartoúÊ aktualna", format_currency(current_value), delta=f"{growth:+.2f}%")
+            st.metric("üí∞ Warto≈õƒá aktualna", format_currency(current_value), delta=f"{growth:+.2f}%")
         with col3:
-            st.metric("?? Liczba snapshots", len(history))
+            st.metric("üìà Liczba snapshots", len(history))
     
     with tab2:
-        st.subheader("?? TwÛj Portfel vs Rynek")
-        st.info("?? PorÛwnanie znormalizowane do 100 punktÛw na start okresu")
+        st.subheader("üèÜ Tw√≥j Portfel vs Rynek")
+        st.info("üí° Por√≥wnanie znormalizowane do 100 punkt√≥w na start okresu")
         
-        with st.spinner("? Pobieranie danych benchmarkÛw..."):
+        with st.spinner("‚è≥ Pobieranie danych benchmark√≥w..."):
             comparison_data = bench.prepare_comparison_data(history)
         
         if "error" in comparison_data:
-            st.error(f"? {comparison_data['error']}")
+            st.error(f"‚ùå {comparison_data['error']}")
         else:
-            # Wykres porÛwnawczy
+            # Wykres por√≥wnawczy
             fig = go.Figure()
             
             # Portfolio
@@ -5865,9 +5865,9 @@ def show_timeline_page(stan_spolki):
                 ))
             
             fig.update_layout(
-                title="PorÛwnanie Wydajnoúci (Normalized to 100)",
+                title="Por√≥wnanie Wydajno≈õci (Normalized to 100)",
                 xaxis_title="Data",
-                yaxis_title="WartoúÊ Znormalizowana (start = 100)",
+                yaxis_title="Warto≈õƒá Znormalizowana (start = 100)",
                 height=600,
                 hovermode='x unified',
                 legend=dict(
@@ -5880,9 +5880,9 @@ def show_timeline_page(stan_spolki):
             
             st.plotly_chart(fig, width="stretch")
             
-            # Statystyki porÛwnawcze
+            # Statystyki por√≥wnawcze
             st.markdown("---")
-            st.markdown("### ?? Statystyki PorÛwnawcze")
+            st.markdown("### üìä Statystyki Por√≥wnawcze")
             
             stats = bench.calculate_comparison_stats(history)
             
@@ -5891,7 +5891,7 @@ def show_timeline_page(stan_spolki):
                 
                 with col1:
                     st.metric(
-                        "?? TwÛj Portfel",
+                        "üíº Tw√≥j Portfel",
                         f"{stats['portfolio']['total_return_pct']:+.2f}%",
                         delta=f"{stats['portfolio']['days']} dni"
                     )
@@ -5901,7 +5901,7 @@ def show_timeline_page(stan_spolki):
                 for idx, (bench_id, bench_stats) in enumerate(stats['benchmarks'].items()):
                     if idx < 3:
                         with cols[idx]:
-                            emoji = "??" if bench_stats['outperformance_pct'] > 0 else "??"
+                            emoji = "üü¢" if bench_stats['outperformance_pct'] > 0 else "üî¥"
                             st.metric(
                                 f"{emoji} {bench_stats['name']}",
                                 f"{bench_stats['total_return_pct']:+.2f}%",
@@ -5909,44 +5909,44 @@ def show_timeline_page(stan_spolki):
                             )
                 
                 st.markdown("---")
-                st.caption("?? Delta pokazuje Twojπ przewagÍ (+) lub stratÍ (-) wzglÍdem benchmarku")
+                st.caption("üí° Delta pokazuje TwojƒÖ przewagƒô (+) lub stratƒô (-) wzglƒôdem benchmarku")
 
 def show_simulations_page(stan_spolki):
     """Strona z symulacjami"""
-    st.title("?? Symulator Portfela - Testuj Scenariusze")
+    st.title("üéÆ Symulator Portfela - Testuj Scenariusze")
     
     try:
         from portfolio_simulator import PortfolioSimulator, ScenarioAnalyzer
     except ImportError:
-        st.error("? Nie moøna za≥adowaÊ modu≥u portfolio_simulator")
+        st.error("‚ùå Nie mo≈ºna za≈Çadowaƒá modu≈Çu portfolio_simulator")
         return
     
     # Initialize simulator
     simulator = PortfolioSimulator(stan_spolki)
     
-    # Tabs dla rÛønych typÛw symulacji
-    tab1, tab2, tab3 = st.tabs(["? Scenariusze Rynkowe", "?? Transakcje", "?? PorÛwnanie"])
+    # Tabs dla r√≥≈ºnych typ√≥w symulacji
+    tab1, tab2, tab3 = st.tabs(["ÔøΩ Scenariusze Rynkowe", "üí∞ Transakcje", "üìä Por√≥wnanie"])
     
     with tab1:
-        st.markdown("### ?? Symuluj Scenariusze Rynkowe")
+        st.markdown("### üìà Symuluj Scenariusze Rynkowe")
         
         col1, col2 = st.columns(2)
         
         with col1:
-            st.markdown("#### ?? Scenariusz Bullish")
-            st.info("Wszystkie aktywa rosnπ o 20%")
+            st.markdown("#### üêÇ Scenariusz Bullish")
+            st.info("Wszystkie aktywa rosnƒÖ o 20%")
             
-            if st.button("?? Uruchom Bullish", key="bullish", width="stretch"):
+            if st.button("‚ñ∂Ô∏è Uruchom Bullish", key="bullish", width="stretch"):
                 result = simulator.simulate_bullish_scenario()
                 
-                st.success("? Symulacja zakoÒczona!")
+                st.success("‚úÖ Symulacja zako≈Ñczona!")
                 
                 col_a, col_b = st.columns(2)
                 with col_a:
-                    st.metric("WartoúÊ przed", format_currency(result['before']['wartosc_netto']))
+                    st.metric("Warto≈õƒá przed", format_currency(result['before']['wartosc_netto']))
                 with col_b:
                     st.metric(
-                        "WartoúÊ po",
+                        "Warto≈õƒá po",
                         format_currency(result['after']['wartosc_netto']),
                         delta=f"+{result['zmiana_procent']:.2f}%"
                     )
@@ -5954,20 +5954,20 @@ def show_simulations_page(stan_spolki):
                 st.json(result['zmiany'])
         
         with col2:
-            st.markdown("#### ?? Scenariusz Bearish")
-            st.info("Wszystkie aktywa spadajπ o 20%")
+            st.markdown("#### üêª Scenariusz Bearish")
+            st.info("Wszystkie aktywa spadajƒÖ o 20%")
             
-            if st.button("?? Uruchom Bearish", key="bearish", width="stretch"):
+            if st.button("‚ñ∂Ô∏è Uruchom Bearish", key="bearish", width="stretch"):
                 result = simulator.simulate_bearish_scenario()
                 
-                st.warning("?? Symulacja spadku!")
+                st.warning("‚ö†Ô∏è Symulacja spadku!")
                 
                 col_a, col_b = st.columns(2)
                 with col_a:
-                    st.metric("WartoúÊ przed", format_currency(result['before']['wartosc_netto']))
+                    st.metric("Warto≈õƒá przed", format_currency(result['before']['wartosc_netto']))
                 with col_b:
                     st.metric(
-                        "WartoúÊ po",
+                        "Warto≈õƒá po",
                         format_currency(result['after']['wartosc_netto']),
                         delta=f"{result['zmiana_procent']:.2f}%"
                     )
@@ -5975,42 +5975,42 @@ def show_simulations_page(stan_spolki):
                 st.json(result['zmiany'])
     
     with tab2:
-        st.markdown("### ?? Symuluj Transakcje")
+        st.markdown("### üí∞ Symuluj Transakcje")
         
         col1, col2 = st.columns(2)
         
         with col1:
-            st.markdown("#### ?? Kupno")
+            st.markdown("#### üõí Kupno")
             ticker_buy = st.text_input("Ticker", key="buy_ticker", value="AAPL")
-            quantity_buy = st.number_input("IloúÊ", min_value=1, value=10, key="buy_qty")
-            price_buy = st.number_input("Cena za sztukÍ (PLN)", min_value=0.01, value=100.0, key="buy_price")
+            quantity_buy = st.number_input("Ilo≈õƒá", min_value=1, value=10, key="buy_qty")
+            price_buy = st.number_input("Cena za sztukƒô (PLN)", min_value=0.01, value=100.0, key="buy_price")
             
-            if st.button("?? Kup", width="stretch"):
+            if st.button("üí≥ Kup", width="stretch"):
                 result = simulator.simulate_buy(ticker_buy, quantity_buy, price_buy)
                 
                 if result['success']:
-                    st.success(f"? {result['message']}")
+                    st.success(f"‚úÖ {result['message']}")
                     st.metric(
-                        "Wp≥yw na wartoúÊ",
+                        "Wp≈Çyw na warto≈õƒá",
                         format_currency(result['wplyw_na_wartosc']),
                         delta=f"{result['zmiana_procent']:+.2f}%"
                     )
                 else:
-                    st.error(f"? {result['message']}")
+                    st.error(f"‚ùå {result['message']}")
         
         with col2:
-            st.markdown("#### ?? Sprzedaø")
+            st.markdown("#### üí∏ Sprzeda≈º")
             ticker_sell = st.text_input("Ticker", key="sell_ticker", value="AAPL")
-            quantity_sell = st.number_input("IloúÊ", min_value=1, value=5, key="sell_qty")
-            price_sell = st.number_input("Cena za sztukÍ (PLN)", min_value=0.01, value=120.0, key="sell_price")
+            quantity_sell = st.number_input("Ilo≈õƒá", min_value=1, value=5, key="sell_qty")
+            price_sell = st.number_input("Cena za sztukƒô (PLN)", min_value=0.01, value=120.0, key="sell_price")
             
-            if st.button("?? Sprzedaj", width="stretch"):
+            if st.button("üí∞ Sprzedaj", width="stretch"):
                 result = simulator.simulate_sell(ticker_sell, quantity_sell, price_sell)
                 
                 if result['success']:
-                    st.success(f"? {result['message']}")
+                    st.success(f"‚úÖ {result['message']}")
                     st.metric(
-                        "Wp≥yw na wartoúÊ",
+                        "Wp≈Çyw na warto≈õƒá",
                         format_currency(result['wplyw_na_wartosc']),
                         delta=f"{result['zmiana_procent']:+.2f}%"
                     )
@@ -6023,25 +6023,25 @@ def show_simulations_page(stan_spolki):
                             delta="Zysk" if profit > 0 else "Strata"
                         )
                 else:
-                    st.error(f"? {result['message']}")
+                    st.error(f"‚ùå {result['message']}")
         
         # Reset button
         st.markdown("---")
-        if st.button("?? Reset Symulacji", width="stretch"):
+        if st.button("üîÑ Reset Symulacji", width="stretch"):
             simulator.reset()
-            st.success("? Symulacja zresetowana do stanu poczπtkowego")
+            st.success("‚úÖ Symulacja zresetowana do stanu poczƒÖtkowego")
     
     with tab3:
-        st.markdown("### ?? PorÛwnaj Scenariusze")
-        st.info("?? Funkcja w budowie - bÍdzie pokazywaÊ porÛwnanie rÛønych scenariuszy")
+        st.markdown("### üìä Por√≥wnaj Scenariusze")
+        st.info("üöß Funkcja w budowie - bƒôdzie pokazywaƒá por√≥wnanie r√≥≈ºnych scenariuszy")
         
         # TODO: Implement scenario comparison
         st.markdown("""
-        Tutaj bÍdzie moøna:
-            - PorÛwnaÊ wyniki rÛønych scenariuszy
-        - ZobaczyÊ wykres zmian wartoúci
-        - AnalizowaÊ wp≥yw poszczegÛlnych transakcji
-        - EksportowaÊ wyniki do raportu
+        Tutaj bƒôdzie mo≈ºna:
+            - Por√≥wnaƒá wyniki r√≥≈ºnych scenariuszy
+        - Zobaczyƒá wykres zmian warto≈õci
+        - Analizowaƒá wp≈Çyw poszczeg√≥lnych transakcji
+        - Eksportowaƒá wyniki do raportu
         """)
 
 # =====================================================
@@ -6057,24 +6057,24 @@ def load_kredyty():
     except FileNotFoundError:
         return []
     except Exception as e:
-        st.error(f"B≥πd wczytywania kredytÛw: {e}")
+        st.error(f"B≈ÇƒÖd wczytywania kredyt√≥w: {e}")
         return []
 
 def get_suma_kredytow():
-    """Pobierz sumÍ pozosta≥ych d≥ugÛw z kredyty.json"""
+    """Pobierz sumƒô pozosta≈Çych d≈Çug√≥w z kredyty.json"""
     kredyty = load_kredyty()
     return sum(k['kwota_poczatkowa'] - k['splacono'] for k in kredyty)
 
 def get_ostatnia_wyplata():
-    """Pobierz ostatniπ wyp≥atÍ z wyplaty.json"""
+    """Pobierz ostatniƒÖ wyp≈Çatƒô z wyplaty.json"""
     wyplaty = load_wyplaty()
     if wyplaty:
-        # Wyp≥aty sπ posortowane od najnowszej
+        # Wyp≈Çaty sƒÖ posortowane od najnowszej
         return wyplaty[0]['kwota']
     return 0
 
 def get_srednia_wyplata(liczba_miesiecy=3):
-    """Oblicz úredniπ wyp≥atÍ z ostatnich N miesiÍcy"""
+    """Oblicz ≈õredniƒÖ wyp≈Çatƒô z ostatnich N miesiƒôcy"""
     wyplaty = load_wyplaty()
     if not wyplaty:
         return 0
@@ -6085,12 +6085,12 @@ def get_srednia_wyplata(liczba_miesiecy=3):
     return 0
 
 def get_suma_wydatkow_stalych():
-    """Pobierz sumÍ sta≥ych wydatkÛw miesiÍcznych z wydatki.json"""
+    """Pobierz sumƒô sta≈Çych wydatk√≥w miesiƒôcznych z wydatki.json"""
     wydatki = load_wydatki()
     return sum(w['kwota'] for w in wydatki if not w.get('nadprogramowy', False))
 
 def get_suma_wydatkow_nadprogramowych():
-    """Pobierz sumÍ wydatkÛw nadprogramowych z wydatki.json"""
+    """Pobierz sumƒô wydatk√≥w nadprogramowych z wydatki.json"""
     wydatki = load_wydatki()
     return sum(w['kwota'] for w in wydatki if w.get('nadprogramowy', False))
 
@@ -6101,7 +6101,7 @@ def save_kredyty(kredyty):
             json.dump({'kredyty': kredyty}, f, indent=2, ensure_ascii=False)
         return True
     except Exception as e:
-        st.error(f"B≥πd zapisu kredytÛw: {e}")
+        st.error(f"B≈ÇƒÖd zapisu kredyt√≥w: {e}")
         return False
 
 def save_cele(cele):
@@ -6111,11 +6111,11 @@ def save_cele(cele):
             json.dump(cele, f, indent=2, ensure_ascii=False)
         return True
     except Exception as e:
-        st.error(f"B≥πd zapisu celÛw: {e}")
+        st.error(f"B≈ÇƒÖd zapisu cel√≥w: {e}")
         return False
 
 def load_wyplaty():
-    """Wczytaj wyp≥aty z pliku JSON"""
+    """Wczytaj wyp≈Çaty z pliku JSON"""
     try:
         with open('wyplaty.json', 'r', encoding='utf-8') as f:
             data = json.load(f)
@@ -6123,17 +6123,17 @@ def load_wyplaty():
     except FileNotFoundError:
         return []
     except Exception as e:
-        st.error(f"B≥πd wczytywania wyp≥at: {e}")
+        st.error(f"B≈ÇƒÖd wczytywania wyp≈Çat: {e}")
         return []
 
 def save_wyplaty(wyplaty):
-    """Zapisz wyp≥aty do pliku JSON"""
+    """Zapisz wyp≈Çaty do pliku JSON"""
     try:
         with open('wyplaty.json', 'w', encoding='utf-8') as f:
             json.dump({'wyplaty': wyplaty}, f, indent=2, ensure_ascii=False)
         return True
     except Exception as e:
-        st.error(f"B≥πd zapisu wyp≥at: {e}")
+        st.error(f"B≈ÇƒÖd zapisu wyp≈Çat: {e}")
         return False
 
 def load_wydatki():
@@ -6145,7 +6145,7 @@ def load_wydatki():
     except FileNotFoundError:
         return []
     except Exception as e:
-        st.error(f"B≥πd wczytywania wydatkÛw: {e}")
+        st.error(f"B≈ÇƒÖd wczytywania wydatk√≥w: {e}")
         return []
 
 def save_wydatki(wydatki):
@@ -6155,7 +6155,7 @@ def save_wydatki(wydatki):
             json.dump({'wydatki': wydatki}, f, indent=2, ensure_ascii=False)
         return True
     except Exception as e:
-        st.error(f"B≥πd zapisu wydatkÛw: {e}")
+        st.error(f"B≈ÇƒÖd zapisu wydatk√≥w: {e}")
         return False
 
 def load_krypto():
@@ -6167,7 +6167,7 @@ def load_krypto():
     except FileNotFoundError:
         return []
     except Exception as e:
-        st.error(f"B≥πd wczytywania krypto: {e}")
+        st.error(f"B≈ÇƒÖd wczytywania krypto: {e}")
         return []
 
 def save_krypto(krypto):
@@ -6177,34 +6177,34 @@ def save_krypto(krypto):
             json.dump({'krypto': krypto}, f, indent=2, ensure_ascii=False)
         return True
     except Exception as e:
-        st.error(f"B≥πd zapisu krypto: {e}")
+        st.error(f"B≈ÇƒÖd zapisu krypto: {e}")
         return False
 
 def show_kredyty_page(stan_spolki, cele):
-    """Strona zarzπdzania kredytami i celami finansowymi"""
-    st.title("?? Centrum Finansowe")
-    st.caption("Kompleksowe zarzπdzanie: Cele ï Kredyty ï Sp≥aty ï Wyp≥aty ï Wydatki ï Krypto ï Track Record AI")
+    """Strona zarzƒÖdzania kredytami i celami finansowymi"""
+    st.title("üí≥ Centrum Finansowe")
+    st.caption("Kompleksowe zarzƒÖdzanie: Cele ‚Ä¢ Kredyty ‚Ä¢ Sp≈Çaty ‚Ä¢ Wyp≈Çaty ‚Ä¢ Wydatki ‚Ä¢ Krypto ‚Ä¢ Track Record AI")
     
     tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
-        "?? Cele Finansowe", 
-        "?? Kredyty", 
-        "?? Analiza Sp≥at", 
-        "?? Wyp≥aty", 
-        "?? Sta≥e Wydatki", 
-        "? Krypto",
-        "?? Track Record AI"
+        "üí∞ Cele Finansowe", 
+        "üí≥ Kredyty", 
+        "üìä Analiza Sp≈Çat", 
+        "üí∏ Wyp≈Çaty", 
+        "üìã Sta≈Çe Wydatki", 
+        "‚Çø Krypto",
+        "üèÜ Track Record AI"
     ])
     
     # ===== TAB 1: CELE FINANSOWE =====
     with tab1:
-        st.header("?? Edycja CelÛw Finansowych")
+        st.header("üí∞ Edycja Cel√≥w Finansowych")
         
         col1, col2 = st.columns(2)
         
         with col1:
-            st.subheader("?? Rezerwa GotÛwkowa")
+            st.subheader("üíµ Rezerwa Got√≥wkowa")
             
-            # Pobierz aktualne wartoúci
+            # Pobierz aktualne warto≈õci
             rezerwa_obecna = cele.get('Rezerwa_gotowkowa_obecna_PLN', 39904) if cele else 39904
             rezerwa_cel = cele.get('Rezerwa_gotowkowa_PLN', 70000) if cele else 70000
             
@@ -6214,7 +6214,7 @@ def show_kredyty_page(stan_spolki, cele):
                 min_value=0,
                 value=int(rezerwa_obecna),
                 step=1000,
-                help="Aktualna kwota rezerwy gotÛwkowej"
+                help="Aktualna kwota rezerwy got√≥wkowej"
             )
             
             new_rezerwa_cel = st.number_input(
@@ -6222,69 +6222,69 @@ def show_kredyty_page(stan_spolki, cele):
                 min_value=0,
                 value=int(rezerwa_cel),
                 step=5000,
-                help="Kwota do osiπgniÍcia"
+                help="Kwota do osiƒÖgniƒôcia"
             )
             
             # Progress
             progress = new_rezerwa_obecna / new_rezerwa_cel if new_rezerwa_cel > 0 else 0
             st.progress(min(progress, 1.0))
-            st.caption(f"PostÍp: {progress*100:.1f}% ({format_currency(new_rezerwa_obecna)} / {format_currency(new_rezerwa_cel)})")
+            st.caption(f"Postƒôp: {progress*100:.1f}% ({format_currency(new_rezerwa_obecna)} / {format_currency(new_rezerwa_cel)})")
             
-            if st.button("?? Zapisz RezerwÍ", key="save_rezerwa"):
+            if st.button("üíæ Zapisz Rezerwƒô", key="save_rezerwa"):
                 if cele is None:
                     cele = {}
                 cele['Rezerwa_gotowkowa_obecna_PLN'] = new_rezerwa_obecna
                 cele['Rezerwa_gotowkowa_PLN'] = new_rezerwa_cel
                 if save_cele(cele):
-                    # Synchronizuj cel w kodeksie spÛ≥ki
+                    # Synchronizuj cel w kodeksie sp√≥≈Çki
                     try:
                         with open('kodeks_spolki.txt', 'r', encoding='utf-8') as f:
                             kodeks_content = f.read()
                         
-                        # ZamieÒ liniÍ z celem rezerwy gotÛwkowej
+                        # Zamie≈Ñ liniƒô z celem rezerwy got√≥wkowej
                         import re
-                        pattern = r'Cel #2: Budowa rezerwy gotÛwkowej do docelowego poziomu \d+[\s,]*\d* PLN\.'
-                        replacement = f'Cel #2: Budowa rezerwy gotÛwkowej do docelowego poziomu {new_rezerwa_cel:,} PLN.'.replace(',', ' ')
+                        pattern = r'Cel #2: Budowa rezerwy got√≥wkowej do docelowego poziomu \d+[\s,]*\d* PLN\.'
+                        replacement = f'Cel #2: Budowa rezerwy got√≥wkowej do docelowego poziomu {new_rezerwa_cel:,} PLN.'.replace(',', ' ')
                         
                         new_kodeks = re.sub(pattern, replacement, kodeks_content)
                         
                         if new_kodeks != kodeks_content:
                             with open('kodeks_spolki.txt', 'w', encoding='utf-8') as f:
                                 f.write(new_kodeks)
-                            st.success("? Rezerwa gotÛwkowa zaktualizowana w cele.json i kodeksie spÛ≥ki!")
+                            st.success("‚úÖ Rezerwa got√≥wkowa zaktualizowana w cele.json i kodeksie sp√≥≈Çki!")
                         else:
-                            st.success("? Rezerwa gotÛwkowa zaktualizowana!")
+                            st.success("‚úÖ Rezerwa got√≥wkowa zaktualizowana!")
                     except Exception as e:
-                        st.success("? Rezerwa gotÛwkowa zaktualizowana w cele.json!")
-                        st.warning(f"?? Nie uda≥o siÍ zaktualizowaÊ kodeksu: {str(e)}")
+                        st.success("‚úÖ Rezerwa got√≥wkowa zaktualizowana w cele.json!")
+                        st.warning(f"‚ö†Ô∏è Nie uda≈Ço siƒô zaktualizowaƒá kodeksu: {str(e)}")
                     
-                    # WYCZYå∆ CACHE aby odúwieøyÊ dane
+                    # WYCZY≈öƒÜ CACHE aby od≈õwie≈ºyƒá dane
                     load_portfolio_data.clear()
                     st.rerun()
         
         with col2:
-            st.subheader("?? Zarzπdzanie Kredytami")
-            st.info("?? Przejdü do zak≥adki **?? Kredyty** aby zarzπdzaÊ swoimi kredytami")
+            st.subheader("üí≥ ZarzƒÖdzanie Kredytami")
+            st.info("üìã Przejd≈∫ do zak≈Çadki **üí≥ Kredyty** aby zarzƒÖdzaƒá swoimi kredytami")
             st.markdown("""
-            W zak≥adce Kredyty moøesz:
-                - ? DodawaÊ nowe kredyty z pe≥nymi szczegÛ≥ami
-            - ?? åledziÊ daty sp≥at
-            - ? AktualizowaÊ sp≥acone kwoty
-            - ?? AnalizowaÊ postÍp sp≥at
-            - ? OtrzymywaÊ przypomnienia o p≥atnoúciach
+            W zak≈Çadce Kredyty mo≈ºesz:
+                - ‚ûï Dodawaƒá nowe kredyty z pe≈Çnymi szczeg√≥≈Çami
+            - üìÖ ≈öledziƒá daty sp≈Çat
+            - ÔøΩ Aktualizowaƒá sp≈Çacone kwoty
+            - üìä Analizowaƒá postƒôp sp≈Çat
+            - ‚è∞ Otrzymywaƒá przypomnienia o p≈Çatno≈õciach
             """)
             
-            if st.button("? Przejdü do KredytÛw", key="goto_kredyty_from_cele"):
-                st.session_state['goto_page'] = "?? Kredyty"
+            if st.button("ÔøΩ Przejd≈∫ do Kredyt√≥w", key="goto_kredyty_from_cele"):
+                st.session_state['goto_page'] = "üí≥ Kredyty"
                 st.rerun()
     
     # ===== TAB 2: KREDYTY =====
     with tab2:
-        st.header("?? SzczegÛ≥owe Zarzπdzanie Kredytami")
+        st.header("üí≥ Szczeg√≥≈Çowe ZarzƒÖdzanie Kredytami")
         
         kredyty = load_kredyty()
         
-        # Przypomnienia o nadchodzπcych sp≥atach
+        # Przypomnienia o nadchodzƒÖcych sp≈Çatach
         if kredyty:
             dzis = datetime.now().day
             najblizsze_splaty = []
@@ -6304,41 +6304,41 @@ def show_kredyty_page(stan_spolki, cele):
                 # Sortuj po liczbie dni
                 najblizsze_splaty.sort(key=lambda x: x['dni_do'])
                 
-                with st.expander(f"?? Nadchodzπce sp≥aty ({len(najblizsze_splaty)})", expanded=True):
+                with st.expander(f"üîî NadchodzƒÖce sp≈Çaty ({len(najblizsze_splaty)})", expanded=True):
                     for splata in najblizsze_splaty:
                         if splata['dni_do'] == 0:
-                            st.error(f"?? **DZIå!** {splata['nazwa']} - {splata['kwota']:.0f} PLN (dzieÒ {splata['dzien']})")
+                            st.error(f"üö® **DZI≈ö!** {splata['nazwa']} - {splata['kwota']:.0f} PLN (dzie≈Ñ {splata['dzien']})")
                         elif splata['dni_do'] <= 3:
-                            st.warning(f"?? Za {splata['dni_do']} dni: {splata['nazwa']} - {splata['kwota']:.0f} PLN (dzieÒ {splata['dzien']})")
+                            st.warning(f"‚ö†Ô∏è Za {splata['dni_do']} dni: {splata['nazwa']} - {splata['kwota']:.0f} PLN (dzie≈Ñ {splata['dzien']})")
                         else:
-                            st.info(f"?? Za {splata['dni_do']} dni: {splata['nazwa']} - {splata['kwota']:.0f} PLN (dzieÒ {splata['dzien']})")
+                            st.info(f"üìÖ Za {splata['dni_do']} dni: {splata['nazwa']} - {splata['kwota']:.0f} PLN (dzie≈Ñ {splata['dzien']})")
                 
                 st.markdown("---")
         
         # Formularz dodawania nowego kredytu
-        with st.expander("? Dodaj Nowy Kredyt", expanded=len(kredyty)==0):
+        with st.expander("‚ûï Dodaj Nowy Kredyt", expanded=len(kredyty)==0):
             with st.form("add_kredyt"):
                 col1, col2 = st.columns(2)
                 
                 with col1:
                     nazwa = st.text_input("Nazwa kredytu *", placeholder="np. Kredyt mieszkaniowy")
-                    kwota_poczatkowa = st.number_input("Kwota poczπtkowa (PLN) *", min_value=0, step=1000, value=0)
-                    data_zaciagniecia = st.date_input("Data zaciπgniÍcia *", value=datetime.now())
-                    dzien_splaty = st.number_input("DzieÒ sp≥aty w miesiπcu *", min_value=1, max_value=31, value=10, help="KtÛry dzieÒ miesiπca przypada sp≥ata?")
+                    kwota_poczatkowa = st.number_input("Kwota poczƒÖtkowa (PLN) *", min_value=0, step=1000, value=0)
+                    data_zaciagniecia = st.date_input("Data zaciƒÖgniƒôcia *", value=datetime.now())
+                    dzien_splaty = st.number_input("Dzie≈Ñ sp≈Çaty w miesiƒÖcu *", min_value=1, max_value=31, value=10, help="Kt√≥ry dzie≈Ñ miesiƒÖca przypada sp≈Çata?")
                 
                 with col2:
                     oprocentowanie = st.number_input("Oprocentowanie roczne (%)", min_value=0.0, max_value=100.0, step=0.1, format="%.2f", value=0.0)
-                    rata_miesieczna = st.number_input("Rata miesiÍczna (PLN)", min_value=0, step=100, value=0)
-                    splacono = st.number_input("Juø sp≥acono (PLN)", min_value=0, step=1000, value=0)
+                    rata_miesieczna = st.number_input("Rata miesiƒôczna (PLN)", min_value=0, step=100, value=0)
+                    splacono = st.number_input("Ju≈º sp≈Çacono (PLN)", min_value=0, step=1000, value=0)
                 
                 notatki = st.text_area("Notatki", placeholder="Dodatkowe informacje, np. bank, numer umowy...")
                 
-                submitted = st.form_submit_button("?? Dodaj Kredyt")
+                submitted = st.form_submit_button("üíæ Dodaj Kredyt")
                 if submitted:
                     if not nazwa:
-                        st.error("? Podaj nazwÍ kredytu")
+                        st.error("‚ùå Podaj nazwƒô kredytu")
                     elif kwota_poczatkowa <= 0:
-                        st.error("? Kwota musi byÊ wiÍksza od 0")
+                        st.error("‚ùå Kwota musi byƒá wiƒôksza od 0")
                     else:
                         nowy_kredyt = {
                             'id': str(datetime.now().timestamp()),
@@ -6353,51 +6353,51 @@ def show_kredyty_page(stan_spolki, cele):
                         }
                         kredyty.append(nowy_kredyt)
                         if save_kredyty(kredyty):
-                            st.success("? Kredyt dodany!")
+                            st.success("‚úÖ Kredyt dodany!")
                             st.rerun()
         
-        # Lista kredytÛw
+        # Lista kredyt√≥w
         if kredyty:
-            st.markdown("### ?? Twoje Kredyty")
+            st.markdown("### üìã Twoje Kredyty")
             
             for i, kredyt in enumerate(kredyty):
                 pozostalo = kredyt['kwota_poczatkowa'] - kredyt['splacono']
-                with st.expander(f"**{kredyt['nazwa']}** - {format_currency(pozostalo)} pozosta≥o"):
-                    # Informacje g≥Ûwne
+                with st.expander(f"**{kredyt['nazwa']}** - {format_currency(pozostalo)} pozosta≈Ço"):
+                    # Informacje g≈Ç√≥wne
                     col1, col2, col3 = st.columns([2, 2, 1])
                     
                     with col1:
-                        st.metric("Kwota poczπtkowa", format_currency(kredyt['kwota_poczatkowa']))
-                        st.metric("Sp≥acono", format_currency(kredyt['splacono']))
-                        st.caption(f"?? Data zaciπgniÍcia: {kredyt['data_zaciagniecia']}")
+                        st.metric("Kwota poczƒÖtkowa", format_currency(kredyt['kwota_poczatkowa']))
+                        st.metric("Sp≈Çacono", format_currency(kredyt['splacono']))
+                        st.caption(f"üìÖ Data zaciƒÖgniƒôcia: {kredyt['data_zaciagniecia']}")
                     
                     with col2:
-                        st.metric("Pozosta≥o", format_currency(pozostalo))
+                        st.metric("Pozosta≈Ço", format_currency(pozostalo))
                         postep = kredyt['splacono'] / kredyt['kwota_poczatkowa'] * 100 if kredyt['kwota_poczatkowa'] > 0 else 0
                         st.progress(min(postep / 100, 1.0))
-                        st.caption(f"PostÍp: {postep:.1f}%")
+                        st.caption(f"Postƒôp: {postep:.1f}%")
                     
                     with col3:
                         st.metric("Oprocentowanie", f"{kredyt['oprocentowanie']:.2f}%")
-                        st.metric("Rata miesiÍczna", f"{kredyt['rata_miesieczna']:.0f} PLN")
-                        st.caption(f"??? Sp≥ata: {kredyt['dzien_splaty']} dzieÒ miesiπca")
+                        st.metric("Rata miesiƒôczna", f"{kredyt['rata_miesieczna']:.0f} PLN")
+                        st.caption(f"üóìÔ∏è Sp≈Çata: {kredyt['dzien_splaty']} dzie≈Ñ miesiƒÖca")
                     
-                    # Oblicz ile miesiÍcy do sp≥aty
+                    # Oblicz ile miesiƒôcy do sp≈Çaty
                     if kredyt['rata_miesieczna'] > 0:
                         miesiace = pozostalo / kredyt['rata_miesieczna']
-                        st.info(f"? **Przewidywany czas sp≥aty:** {int(miesiace)} miesiÍcy ({int(miesiace/12)} lat {int(miesiace%12)} miesiÍcy)")
+                        st.info(f"‚è∞ **Przewidywany czas sp≈Çaty:** {int(miesiace)} miesiƒôcy ({int(miesiace/12)} lat {int(miesiace%12)} miesiƒôcy)")
                     
                     if kredyt.get('notatki'):
                         st.text_area("Notatki", value=kredyt['notatki'], disabled=True, key=f"notatki_view_{i}")
                     
-                    # Edycja sp≥aty
+                    # Edycja sp≈Çaty
                     st.markdown("---")
-                    st.markdown("**?? Aktualizuj sp≥atÍ**")
+                    st.markdown("**üí∞ Aktualizuj sp≈Çatƒô**")
                     col_edit1, col_edit2, col_edit3 = st.columns([2, 2, 1])
                     
                     with col_edit1:
                         nowa_splacona_kwota = st.number_input(
-                            "Sp≥acona kwota (PLN)",
+                            "Sp≈Çacona kwota (PLN)",
                             min_value=0,
                             max_value=int(kredyt['kwota_poczatkowa']),
                             value=int(kredyt['splacono']),
@@ -6406,35 +6406,35 @@ def show_kredyty_page(stan_spolki, cele):
                         )
                     
                     with col_edit2:
-                        if st.button("? Zapisz sp≥atÍ", key=f"save_{i}"):
+                        if st.button("ÔøΩ Zapisz sp≈Çatƒô", key=f"save_{i}"):
                             kredyty[i]['splacono'] = nowa_splacona_kwota
                             if save_kredyty(kredyty):
-                                st.success("? Zaktualizowano sp≥atÍ!")
+                                st.success("‚úÖ Zaktualizowano sp≈Çatƒô!")
                                 st.rerun()
                     
                     with col_edit3:
-                        if st.button("??? UsuÒ kredyt", key=f"delete_{i}", type="secondary"):
+                        if st.button("üóëÔ∏è Usu≈Ñ kredyt", key=f"delete_{i}", type="secondary"):
                             if st.session_state.get(f'confirm_delete_{i}', False):
                                 kredyty.pop(i)
                                 if save_kredyty(kredyty):
-                                    st.success("? UsuniÍto kredyt!")
+                                    st.success("‚úÖ Usuniƒôto kredyt!")
                                     st.rerun()
                             else:
                                 st.session_state[f'confirm_delete_{i}'] = True
-                                st.warning("?? Kliknij ponownie aby potwierdziÊ!")
+                                st.warning("‚ö†Ô∏è Kliknij ponownie aby potwierdziƒá!")
         else:
-            st.info("?? Nie masz jeszcze øadnych kredytÛw. Dodaj pierwszy powyøej!")
+            st.info("‚ÑπÔ∏è Nie masz jeszcze ≈ºadnych kredyt√≥w. Dodaj pierwszy powy≈ºej!")
     
     # ===== TAB 3: ANALIZA =====
     with tab3:
-        st.header("?? Analiza Sp≥at i Prognoza")
+        st.header("üìä Analiza Sp≈Çat i Prognoza")
         
         kredyty = load_kredyty()
         
         if not kredyty:
-            st.info("?? Dodaj kredyty w zak≥adce 'Kredyty', aby zobaczyÊ analizÍ.")
+            st.info("‚ÑπÔ∏è Dodaj kredyty w zak≈Çadce 'Kredyty', aby zobaczyƒá analizƒô.")
         else:
-            # Suma wszystkich kredytÛw
+            # Suma wszystkich kredyt√≥w
             suma_poczatkowa = sum(k['kwota_poczatkowa'] for k in kredyty)
             suma_splacona = sum(k['splacono'] for k in kredyty)
             suma_pozostala = suma_poczatkowa - suma_splacona
@@ -6443,16 +6443,16 @@ def show_kredyty_page(stan_spolki, cele):
             col1, col2, col3, col4 = st.columns(4)
             
             with col1:
-                st.metric("Suma poczπtkowa", format_currency(suma_poczatkowa))
+                st.metric("Suma poczƒÖtkowa", format_currency(suma_poczatkowa))
             with col2:
-                st.metric("Suma sp≥acona", format_currency(suma_splacona))
+                st.metric("Suma sp≈Çacona", format_currency(suma_splacona))
             with col3:
-                st.metric("Suma pozosta≥a", format_currency(suma_pozostala))
+                st.metric("Suma pozosta≈Ça", format_currency(suma_pozostala))
             with col4:
-                st.metric("MiesiÍczne raty", f"{suma_rat:.0f} PLN")
+                st.metric("Miesiƒôczne raty", f"{suma_rat:.0f} PLN")
             
-            # Prognoza sp≥aty
-            st.markdown("### ?? Prognoza Sp≥aty")
+            # Prognoza sp≈Çaty
+            st.markdown("### üìà Prognoza Sp≈Çaty")
             
             if suma_rat > 0 and suma_pozostala > 0:
                 miesiace_do_splaty = suma_pozostala / suma_rat
@@ -6461,11 +6461,11 @@ def show_kredyty_page(stan_spolki, cele):
                 
                 data_splaty = datetime.now() + timedelta(days=miesiace_do_splaty * 30)
                 
-                st.success(f"?? **Przewidywana data sp≥aty:** {data_splaty.strftime('%Y-%m-%d')}")
-                st.caption(f"? Czas do pe≥nej sp≥aty: {lata} lat i {miesiace} miesiÍcy")
+                st.success(f"üéØ **Przewidywana data sp≈Çaty:** {data_splaty.strftime('%Y-%m-%d')}")
+                st.caption(f"‚è∞ Czas do pe≈Çnej sp≈Çaty: {lata} lat i {miesiace} miesiƒôcy")
             
-            # Tabela kredytÛw
-            st.markdown("### ?? SzczegÛ≥y KredytÛw")
+            # Tabela kredyt√≥w
+            st.markdown("### üìã Szczeg√≥≈Çy Kredyt√≥w")
             
             df_kredyty = []
             for k in kredyty:
@@ -6473,22 +6473,22 @@ def show_kredyty_page(stan_spolki, cele):
                 postep = k['splacono'] / k['kwota_poczatkowa'] * 100 if k['kwota_poczatkowa'] > 0 else 0
                 df_kredyty.append({
                     'Nazwa': k['nazwa'],
-                    'Poczπtek': f"{k['kwota_poczatkowa']:.0f} PLN",
-                    'Sp≥acono': f"{k['splacono']:.0f} PLN",
-                    'Pozosta≥o': f"{pozostalo:.0f} PLN",
-                    'PostÍp': f"{postep:.1f}%",
+                    'PoczƒÖtek': f"{k['kwota_poczatkowa']:.0f} PLN",
+                    'Sp≈Çacono': f"{k['splacono']:.0f} PLN",
+                    'Pozosta≈Ço': f"{pozostalo:.0f} PLN",
+                    'Postƒôp': f"{postep:.1f}%",
                     'Oprocentowanie': f"{k['oprocentowanie']:.2f}%",
                     'Rata': f"{k['rata_miesieczna']:.0f} PLN",
-                    'DzieÒ sp≥aty': str(k['dzien_splaty']),
-                    'Data zaciπgniÍcia': k['data_zaciagniecia']
+                    'Dzie≈Ñ sp≈Çaty': str(k['dzien_splaty']),
+                    'Data zaciƒÖgniƒôcia': k['data_zaciagniecia']
                 })
             
             if df_kredyty:
                 import pandas as pd
                 st.dataframe(pd.DataFrame(df_kredyty), width="stretch", hide_index=True)
                 
-                # Wykres postÍpu sp≥at
-                st.markdown("### ?? PostÍp Sp≥at (wizualizacja)")
+                # Wykres postƒôpu sp≈Çat
+                st.markdown("### üìä Postƒôp Sp≈Çat (wizualizacja)")
                 
                 fig = go.Figure()
                 
@@ -6496,7 +6496,7 @@ def show_kredyty_page(stan_spolki, cele):
                     pozostalo = k['kwota_poczatkowa'] - k['splacono']
                     fig.add_trace(go.Bar(
                         name=k['nazwa'],
-                        x=['Sp≥acono', 'Pozosta≥o'],
+                        x=['Sp≈Çacono', 'Pozosta≈Ço'],
                         y=[k['splacono'], pozostalo],
                         text=[f"{k['splacono']:.0f}", f"{pozostalo:.0f}"],
                         textposition='auto',
@@ -6504,7 +6504,7 @@ def show_kredyty_page(stan_spolki, cele):
                 
                 fig.update_layout(
                     barmode='stack',
-                    title="PostÍp sp≥aty kredytÛw",
+                    title="Postƒôp sp≈Çaty kredyt√≥w",
                     xaxis_title="",
                     yaxis_title="Kwota (PLN)",
                     showlegend=True,
@@ -6513,16 +6513,16 @@ def show_kredyty_page(stan_spolki, cele):
                 
                 st.plotly_chart(fig, width="stretch")
     
-    # ===== TAB 4: WYP£ATY =====
+    # ===== TAB 4: WYP≈ÅATY =====
     with tab4:
-        st.header("?? Historia Wyp≥at")
+        st.header("üí∏ Historia Wyp≈Çat")
         
         wyplaty = load_wyplaty()
         
         # Informacja o systemie
         st.info("""
-        ?? **System wyp≥at:**
-        - Wyp≥ata oko≥o **10-go** kaødego miesiπca
+        üìã **System wyp≈Çat:**
+        - Wyp≈Çata oko≈Ço **10-go** ka≈ºdego miesiƒÖca
         - Podstawa + premia w jednym przelewie
         """)
         
@@ -6530,7 +6530,7 @@ def show_kredyty_page(stan_spolki, cele):
         if wyplaty:
             col1, col2, col3 = st.columns(3)
             
-            # Ostatnie 12 miesiÍcy
+            # Ostatnie 12 miesiƒôcy
             rok_temu = datetime.now() - timedelta(days=365)
             wyplaty_12m = [w for w in wyplaty if datetime.fromisoformat(w['data']) >= rok_temu]
             
@@ -6538,32 +6538,32 @@ def show_kredyty_page(stan_spolki, cele):
             srednia_12m = suma_total_12m / len(wyplaty_12m) if wyplaty_12m else 0
             
             with col1:
-                st.metric("?? Suma (12 mies.)", format_currency(suma_total_12m))
+                st.metric("üí∞ Suma (12 mies.)", format_currency(suma_total_12m))
             with col2:
-                st.metric("?? årednia", format_currency(srednia_12m))
+                st.metric("üìä ≈örednia", format_currency(srednia_12m))
             with col3:
                 if wyplaty:
-                    st.metric("? Liczba wyp≥at", len(wyplaty))
+                    st.metric("ÔøΩ Liczba wyp≈Çat", len(wyplaty))
         
-        # === DODAWANIE WYP£ATY ===
-        st.markdown("### ? Dodaj Wyp≥atÍ")
+        # === DODAWANIE WYP≈ÅATY ===
+        st.markdown("### ‚ûï Dodaj Wyp≈Çatƒô")
         
         col1, col2 = st.columns(2)
         
         with col1:
             with st.form("add_wyplata"):
                 data_wyplaty = st.date_input(
-                    "Data wyp≥aty *",
+                    "Data wyp≈Çaty *",
                     value=datetime.now().replace(day=10),
-                    help="Domyúlnie 10-ty dzieÒ miesiπca"
+                    help="Domy≈õlnie 10-ty dzie≈Ñ miesiƒÖca"
                 )
                 
                 kwota = st.number_input(
-                    "Kwota wyp≥aty (PLN) *",
+                    "Kwota wyp≈Çaty (PLN) *",
                     min_value=0.0,
                     value=3500.0,
                     step=100.0,
-                    help="Ca≥kowita kwota wyp≥aty (podstawa + premia)"
+                    help="Ca≈Çkowita kwota wyp≈Çaty (podstawa + premia)"
                 )
                 
                 notatki = st.text_area(
@@ -6571,19 +6571,19 @@ def show_kredyty_page(stan_spolki, cele):
                     help="Opcjonalne notatki (np. bonus, nadgodziny, urlop)"
                 )
                 
-                submitted = st.form_submit_button("?? Zapisz Wyp≥atÍ")
+                submitted = st.form_submit_button("üíæ Zapisz Wyp≈Çatƒô")
                 
                 if submitted:
                     # Walidacja
                     if kwota <= 0:
-                        st.error("? Kwota musi byÊ wiÍksza od 0")
+                        st.error("‚ùå Kwota musi byƒá wiƒôksza od 0")
                     else:
-                        # Sprawdü czy nie ma juø wyp≥aty w tym miesiπcu
+                        # Sprawd≈∫ czy nie ma ju≈º wyp≈Çaty w tym miesiƒÖcu
                         miesiac_rok = data_wyplaty.strftime('%Y-%m')
                         duplikat = any(w['data'].startswith(miesiac_rok) for w in wyplaty)
                         
                         if duplikat:
-                            st.warning(f"?? Wyp≥ata za {miesiac_rok} juø istnieje. Zostanie dodana jako dodatkowa.")
+                            st.warning(f"‚ö†Ô∏è Wyp≈Çata za {miesiac_rok} ju≈º istnieje. Zostanie dodana jako dodatkowa.")
                         
                         nowa_wyplata = {
                             'id': str(datetime.now().timestamp()),
@@ -6597,33 +6597,33 @@ def show_kredyty_page(stan_spolki, cele):
                         wyplaty.sort(key=lambda x: x['data'], reverse=True)
                         
                         if save_wyplaty(wyplaty):
-                            st.success("? Wyp≥ata zapisana!")
+                            st.success("‚úÖ Wyp≈Çata zapisana!")
                             st.rerun()
                         else:
-                            st.error("? B≥πd zapisu wyp≥aty")
+                            st.error("‚ùå B≈ÇƒÖd zapisu wyp≈Çaty")
         
         with col2:
-            st.markdown("### ?? Szybkie Statystyki")
+            st.markdown("### üìä Szybkie Statystyki")
             if wyplaty:
                 ostatnia = wyplaty[0]
                 st.info(f"""
-                **Ostatnia wyp≥ata:**
-                - ?? Data: {ostatnia['data']}
-                - ?? Kwota: {ostatnia['kwota']:.2f} PLN
+                **Ostatnia wyp≈Çata:**
+                - üìÖ Data: {ostatnia['data']}
+                - üí∞ Kwota: {ostatnia['kwota']:.2f} PLN
                 """)
                 
-                # Trend wyp≥at (ostatnie 3 miesiπce)
+                # Trend wyp≈Çat (ostatnie 3 miesiƒÖce)
                 ostatnie_3 = wyplaty[:3]
                 if len(ostatnie_3) >= 3:
                     kwoty = [w['kwota'] for w in ostatnie_3]
-                    trend = "?? Rosnπca" if kwoty[0] > kwoty[-1] else "?? Malejπca" if kwoty[0] < kwoty[-1] else "?? Stabilna"
+                    trend = "üìà RosnƒÖca" if kwoty[0] > kwoty[-1] else "üìâ MalejƒÖca" if kwoty[0] < kwoty[-1] else "‚û°Ô∏è Stabilna"
                     st.caption(f"Trend (3 mies.): {trend}")
             else:
                 st.caption("Brak danych")
         
-        # === HISTORIA WYP£AT ===
+        # === HISTORIA WYP≈ÅAT ===
         if wyplaty:
-            st.markdown("### ?? Historia Wyp≥at")
+            st.markdown("### üìã Historia Wyp≈Çat")
             
             # Filtr roku
             lata = sorted(set(w['data'][:4] for w in wyplaty), reverse=True)
@@ -6637,16 +6637,16 @@ def show_kredyty_page(stan_spolki, cele):
             
             # Tabela
             for wyplata in wyplaty_filtr:
-                with st.expander(f"?? {wyplata['data']} - **{wyplata['kwota']:.2f} PLN**"):
-                    st.metric("?? Kwota wyp≥aty", f"{wyplata['kwota']:.2f} PLN")
+                with st.expander(f"üí∏ {wyplata['data']} - **{wyplata['kwota']:.2f} PLN**"):
+                    st.metric("üí∞ Kwota wyp≈Çaty", f"{wyplata['kwota']:.2f} PLN")
                     
                     if wyplata.get('notatki'):
-                        st.caption(f"?? {wyplata['notatki']}")
+                        st.caption(f"üìù {wyplata['notatki']}")
                     
-                    # Edycja kwoty (jeúli potrzeba korekty)
+                    # Edycja kwoty (je≈õli potrzeba korekty)
                     st.markdown("---")
                     with st.form(f"edit_wyplata_{wyplata['id']}"):
-                        st.caption("Edytuj kwotÍ:")
+                        st.caption("Edytuj kwotƒô:")
                         nowa_kwota = st.number_input(
                             "Nowa kwota (PLN)",
                             min_value=0.0,
@@ -6658,29 +6658,29 @@ def show_kredyty_page(stan_spolki, cele):
                         col_save, col_delete = st.columns([1, 1])
                         
                         with col_save:
-                            if st.form_submit_button("?? Zapisz", width="stretch"):
+                            if st.form_submit_button("üíæ Zapisz", width="stretch"):
                                 wyplata['kwota'] = nowa_kwota
                                 if save_wyplaty(wyplaty):
-                                    st.success("? Zaktualizowano!")
+                                    st.success("‚úÖ Zaktualizowano!")
                                     st.rerun()
                         
                         with col_delete:
-                            if st.form_submit_button("??? UsuÒ", width="stretch", type="secondary"):
-                                # Potwierdü usuniÍcie
+                            if st.form_submit_button("üóëÔ∏è Usu≈Ñ", width="stretch", type="secondary"):
+                                # Potwierd≈∫ usuniƒôcie
                                 if f'confirm_delete_{wyplata["id"]}' not in st.session_state:
                                     st.session_state[f'confirm_delete_{wyplata["id"]}'] = True
-                                    st.warning("?? Kliknij ponownie aby potwierdziÊ")
+                                    st.warning("‚ö†Ô∏è Kliknij ponownie aby potwierdziƒá")
                                 else:
                                     wyplaty.remove(wyplata)
                                     if save_wyplaty(wyplaty):
                                         del st.session_state[f'confirm_delete_{wyplata["id"]}']
-                                        st.success("? UsuniÍto!")
+                                        st.success("‚úÖ Usuniƒôto!")
                                         st.rerun()
             
-            # === WYKRES WYP£AT ===
-            st.markdown("### ?? Wizualizacja Wyp≥at")
+            # === WYKRES WYP≈ÅAT ===
+            st.markdown("### üìä Wizualizacja Wyp≈Çat")
             
-            # Przygotuj dane dla wykresu (ostatnie 12 miesiÍcy)
+            # Przygotuj dane dla wykresu (ostatnie 12 miesiƒôcy)
             wyplaty_wykres = sorted(wyplaty_filtr, key=lambda x: x['data'])[-12:]
             
             if wyplaty_wykres:
@@ -6690,7 +6690,7 @@ def show_kredyty_page(stan_spolki, cele):
                 kwoty = [w['kwota'] for w in wyplaty_wykres]
                 
                 fig.add_trace(go.Bar(
-                    name='Wyp≥ata',
+                    name='Wyp≈Çata',
                     x=daty,
                     y=kwoty,
                     marker_color='#1f77b4',
@@ -6699,7 +6699,7 @@ def show_kredyty_page(stan_spolki, cele):
                 ))
                 
                 fig.update_layout(
-                    title="Wyp≥aty - Ostatnie 12 miesiÍcy",
+                    title="Wyp≈Çaty - Ostatnie 12 miesiƒôcy",
                     xaxis_title="Data",
                     yaxis_title="Kwota (PLN)",
                     hovermode='x unified',
@@ -6709,16 +6709,16 @@ def show_kredyty_page(stan_spolki, cele):
                 
                 st.plotly_chart(fig, width="stretch")
     
-    # ===== TAB 5: STA£E WYDATKI =====
+    # ===== TAB 5: STA≈ÅE WYDATKI =====
     with tab5:
-        st.header("?? Sta≥e Wydatki MiesiÍczne")
+        st.header("üìã Sta≈Çe Wydatki Miesiƒôczne")
         
         wydatki = load_wydatki()
         
         # Informacja o systemie
         st.info("""
-        ?? **System wydatkÛw:**
-        - Wydatki sta≥e: powtarzajπ siÍ co miesiπc
+        üìã **System wydatk√≥w:**
+        - Wydatki sta≈Çe: powtarzajƒÖ siƒô co miesiƒÖc
         - Wydatki nadprogramowe: jednorazowe, niecykliczne
         """)
         
@@ -6734,16 +6734,16 @@ def show_kredyty_page(stan_spolki, cele):
             col1, col2, col3, col4 = st.columns(4)
             
             with col1:
-                st.metric("?? Suma Sta≥e", format_currency(suma_stale))
+                st.metric("üí∞ Suma Sta≈Çe", format_currency(suma_stale))
             with col2:
-                st.metric("?? Nadprogramowe", format_currency(suma_nadprog))
+                st.metric("üî• Nadprogramowe", format_currency(suma_nadprog))
             with col3:
-                st.metric("?? Total", format_currency(suma_total))
+                st.metric("üìä Total", format_currency(suma_total))
             with col4:
-                st.metric("?? Liczba wydatkÛw", len(wydatki))
+                st.metric("üî¢ Liczba wydatk√≥w", len(wydatki))
         
         # === DODAWANIE WYDATKU ===
-        st.markdown("### ? Dodaj Wydatek")
+        st.markdown("### ‚ûï Dodaj Wydatek")
         
         col1, col2 = st.columns(2)
         
@@ -6769,22 +6769,22 @@ def show_kredyty_page(stan_spolki, cele):
                 
                 nadprogramowy = st.checkbox(
                     "Wydatek nadprogramowy",
-                    help="Zaznacz jeúli to jednorazowy wydatek (nie powtarza siÍ co miesiπc)"
+                    help="Zaznacz je≈õli to jednorazowy wydatek (nie powtarza siƒô co miesiƒÖc)"
                 )
                 
                 notatki = st.text_area(
                     "Notatki",
-                    help="Opcjonalne szczegÛ≥y"
+                    help="Opcjonalne szczeg√≥≈Çy"
                 )
                 
-                submitted = st.form_submit_button("?? Zapisz Wydatek")
+                submitted = st.form_submit_button("üíæ Zapisz Wydatek")
                 
                 if submitted:
                     # Walidacja
                     if not nazwa:
-                        st.error("? Nazwa jest wymagana")
+                        st.error("‚ùå Nazwa jest wymagana")
                     elif kwota <= 0:
-                        st.error("? Kwota musi byÊ wiÍksza od 0")
+                        st.error("‚ùå Kwota musi byƒá wiƒôksza od 0")
                     else:
                         nowy_wydatek = {
                             'id': str(datetime.now().timestamp()),
@@ -6801,18 +6801,18 @@ def show_kredyty_page(stan_spolki, cele):
                         wydatki.sort(key=lambda x: x['nazwa'])
                         
                         if save_wydatki(wydatki):
-                            st.success("? Wydatek zapisany!")
+                            st.success("‚úÖ Wydatek zapisany!")
                             st.rerun()
                         else:
-                            st.error("? B≥πd zapisu wydatku")
+                            st.error("‚ùå B≈ÇƒÖd zapisu wydatku")
         
         with col2:
-            st.markdown("### ?? Podzia≥ po Kategoriach")
+            st.markdown("### üìä Podzia≈Ç po Kategoriach")
             if wydatki:
                 # Grupuj po kategoriach
                 kategorie_suma = {}
                 for w in wydatki:
-                    if not w.get('nadprogramowy', False):  # Tylko sta≥e
+                    if not w.get('nadprogramowy', False):  # Tylko sta≈Çe
                         kat = w['kategoria']
                         kategorie_suma[kat] = kategorie_suma.get(kat, 0) + w['kwota']
                 
@@ -6821,24 +6821,24 @@ def show_kredyty_page(stan_spolki, cele):
                         procent = (suma / suma_stale * 100) if suma_stale > 0 else 0
                         st.caption(f"**{kat}**: {suma:.0f} PLN ({procent:.1f}%)")
                 else:
-                    st.caption("Brak wydatkÛw sta≥ych")
+                    st.caption("Brak wydatk√≥w sta≈Çych")
             else:
                 st.caption("Brak danych")
         
-        # === LISTA WYDATK”W ===
+        # === LISTA WYDATK√ìW ===
         if wydatki:
             st.markdown("---")
-            st.markdown("### ?? Lista WydatkÛw")
+            st.markdown("### üìã Lista Wydatk√≥w")
             
             # Filtr
             filtr = st.radio(
-                "Pokaø:",
-                ["Wszystkie", "Sta≥e", "Nadprogramowe"],
+                "Poka≈º:",
+                ["Wszystkie", "Sta≈Çe", "Nadprogramowe"],
                 horizontal=True
             )
             
             # Filtrowanie
-            if filtr == "Sta≥e":
+            if filtr == "Sta≈Çe":
                 wydatki_filtr = [w for w in wydatki if not w.get('nadprogramowy', False)]
             elif filtr == "Nadprogramowe":
                 wydatki_filtr = [w for w in wydatki if w.get('nadprogramowy', False)]
@@ -6853,35 +6853,35 @@ def show_kredyty_page(stan_spolki, cele):
                     kategorie[kat] = []
                 kategorie[kat].append(w)
             
-            # Wyúwietl po kategoriach
+            # Wy≈õwietl po kategoriach
             for kategoria, lista in sorted(kategorie.items()):
                 suma_kat = sum(w['kwota'] for w in lista)
                 
-                with st.expander(f"**{kategoria}** - {format_currency(suma_kat)} ({len(lista)} wydatkÛw)", expanded=True):
+                with st.expander(f"**{kategoria}** - {format_currency(suma_kat)} ({len(lista)} wydatk√≥w)", expanded=True):
                     for wydatek in lista:
                         col1, col2, col3 = st.columns([2, 1, 1])
                         
                         with col1:
-                            ikona = "??" if wydatek.get('nadprogramowy', False) else "??"
+                            ikona = "üî•" if wydatek.get('nadprogramowy', False) else "üí∞"
                             st.write(f"{ikona} **{wydatek['nazwa']}**")
                             if wydatek.get('notatki'):
-                                st.caption(f"?? {wydatek['notatki']}")
+                                st.caption(f"üìù {wydatek['notatki']}")
                         
                         with col2:
                             st.metric("Kwota", f"{wydatek['kwota']:.2f} PLN")
                         
                         with col3:
-                            # Edycja/UsuniÍcie
+                            # Edycja/Usuniƒôcie
                             with st.form(f"action_{wydatek['id']}"):
                                 col_edit, col_del = st.columns(2)
                                 
                                 with col_edit:
-                                    if st.form_submit_button("??", width="stretch"):
+                                    if st.form_submit_button("‚úèÔ∏è", width="stretch"):
                                         st.session_state[f'edit_{wydatek["id"]}'] = True
                                         st.rerun()
                                 
                                 with col_del:
-                                    if st.form_submit_button("???", width="stretch"):
+                                    if st.form_submit_button("üóëÔ∏è", width="stretch"):
                                         if f'confirm_del_{wydatek["id"]}' not in st.session_state:
                                             st.session_state[f'confirm_del_{wydatek["id"]}'] = True
                                             st.warning("Kliknij ponownie")
@@ -6889,10 +6889,10 @@ def show_kredyty_page(stan_spolki, cele):
                                             wydatki.remove(wydatek)
                                             if save_wydatki(wydatki):
                                                 del st.session_state[f'confirm_del_{wydatek["id"]}']
-                                                st.success("? UsuniÍto!")
+                                                st.success("‚úÖ Usuniƒôto!")
                                                 st.rerun()
                         
-                        # Formularz edycji (jeúli aktywny)
+                        # Formularz edycji (je≈õli aktywny)
                         if st.session_state.get(f'edit_{wydatek["id"]}', False):
                             st.markdown("---")
                             with st.form(f"edit_form_{wydatek['id']}"):
@@ -6915,25 +6915,25 @@ def show_kredyty_page(stan_spolki, cele):
                                 col_save, col_cancel = st.columns(2)
                                 
                                 with col_save:
-                                    if st.form_submit_button("?? Zapisz", width="stretch"):
+                                    if st.form_submit_button("üíæ Zapisz", width="stretch"):
                                         wydatek['kwota'] = nowa_kwota
                                         wydatek['nadprogramowy'] = nowy_nadprog
                                         if save_wydatki(wydatki):
                                             del st.session_state[f'edit_{wydatek["id"]}']
-                                            st.success("? Zaktualizowano!")
+                                            st.success("‚úÖ Zaktualizowano!")
                                             st.rerun()
                                 
                                 with col_cancel:
-                                    if st.form_submit_button("? Anuluj", width="stretch"):
+                                    if st.form_submit_button("‚ùå Anuluj", width="stretch"):
                                         del st.session_state[f'edit_{wydatek["id"]}']
                                         st.rerun()
                         
                         st.markdown("---")
             
-            # === WYKRES WYDATK”W ===
-            st.markdown("### ?? Wizualizacja WydatkÛw")
+            # === WYKRES WYDATK√ìW ===
+            st.markdown("### üìä Wizualizacja Wydatk√≥w")
             
-            # Wykres po kategoriach (tylko sta≥e)
+            # Wykres po kategoriach (tylko sta≈Çe)
             wydatki_stale_wykres = [w for w in wydatki if not w.get('nadprogramowy', False)]
             
             if wydatki_stale_wykres:
@@ -6953,7 +6953,7 @@ def show_kredyty_page(stan_spolki, cele):
                 ])
                 
                 fig.update_layout(
-                    title="Podzia≥ WydatkÛw Sta≥ych po Kategoriach",
+                    title="Podzia≈Ç Wydatk√≥w Sta≈Çych po Kategoriach",
                     height=400
                 )
                 
@@ -6961,28 +6961,28 @@ def show_kredyty_page(stan_spolki, cele):
     
     # ===== TAB 6: KRYPTO =====
     with tab6:
-        st.header("? Portfel Kryptowalut")
+        st.header("‚Çø Portfel Kryptowalut")
         
         krypto = load_krypto()
         
-        # === POBIERZ AKTUALNE CENY DLA CA£EGO TAB (raz na poczπtku) ===
+        # === POBIERZ AKTUALNE CENY DLA CA≈ÅEGO TAB (raz na poczƒÖtku) ===
         current_prices = {}
         if krypto and CRYPTO_MANAGER_OK:
             try:
                 symbols = list(set(k['symbol'] for k in krypto))
                 current_prices = get_cached_crypto_prices(symbols)
             except Exception as e:
-                st.warning(f"?? Nie uda≥o siÍ pobraÊ aktualnych cen: {e}")
+                st.warning(f"‚ö†Ô∏è Nie uda≈Ço siƒô pobraƒá aktualnych cen: {e}")
         
         # Informacja o systemie
         st.info("""
-        ?? **Zarzπdzanie kryptowalutami (Lokalne dane - krypto.json):**
-        - ? **Pe≥na kontrola** - wszystkie dane przechowywane lokalnie
-        - ?? Obs≥uga wielu platform (Binance, Gate.io, MEXC, etc.)
-        - ?? åledü iloúÊ, úredniπ cenÍ zakupu i wartoúÊ pozycji
-        - ?? Monitoruj APY/Staking dla pozycji generujπcych dochÛd
-        - ?? **NOWOå∆:** Real-time ceny z CoinGecko + P&L analysis!
-        - ?? **Dane NIE sπ pobierane z Google Sheets** - zarzπdzaj wszystkim tutaj!
+        üìã **ZarzƒÖdzanie kryptowalutami (Lokalne dane - krypto.json):**
+        - ‚úÖ **Pe≈Çna kontrola** - wszystkie dane przechowywane lokalnie
+        - üè¶ Obs≈Çuga wielu platform (Binance, Gate.io, MEXC, etc.)
+        - üí∞ ≈öled≈∫ ilo≈õƒá, ≈õredniƒÖ cenƒô zakupu i warto≈õƒá pozycji
+        - üìà Monitoruj APY/Staking dla pozycji generujƒÖcych doch√≥d
+        - üü¢ **NOWO≈öƒÜ:** Real-time ceny z CoinGecko + P&L analysis!
+        - ‚ö†Ô∏è **Dane NIE sƒÖ pobierane z Google Sheets** - zarzƒÖdzaj wszystkim tutaj!
         """)
         
         # === FEAR & GREED INDEX (Feature #5) ===
@@ -6993,27 +6993,27 @@ def show_kredyty_page(stan_spolki, cele):
                     value = fg_data['value']
                     classification = fg_data['value_classification']
                     
-                    # Kolor bazowany na wartoúci
+                    # Kolor bazowany na warto≈õci
                     if value < 25:
                         color = "#DC2626"  # Extreme Fear - czerwony
-                        emoji = "??"
-                        interpretation = "Skrajny strach - moøe byÊ dobry moment na zakupy!"
+                        emoji = "üò±"
+                        interpretation = "Skrajny strach - mo≈ºe byƒá dobry moment na zakupy!"
                     elif value < 45:
-                        color = "#F59E0B"  # Fear - pomaraÒczowy
-                        emoji = "??"
+                        color = "#F59E0B"  # Fear - pomara≈Ñczowy
+                        emoji = "üò∞"
                         interpretation = "Strach na rynku - okazje inwestycyjne?"
                     elif value < 55:
                         color = "#10B981"  # Neutral - zielony
-                        emoji = "??"
+                        emoji = "üòê"
                         interpretation = "Neutralny sentyment rynkowy"
                     elif value < 75:
                         color = "#3B82F6"  # Greed - niebieski
-                        emoji = "??"
-                        interpretation = "ChciwoúÊ - rynek roúnie, bπdü ostroøny"
+                        emoji = "üòä"
+                        interpretation = "Chciwo≈õƒá - rynek ro≈õnie, bƒÖd≈∫ ostro≈ºny"
                     else:
                         color = "#8B5CF6"  # Extreme Greed - fioletowy
-                        emoji = "??"
-                        interpretation = "Skrajna chciwoúÊ - moøliwa korekta!"
+                        emoji = "ü§ë"
+                        interpretation = "Skrajna chciwo≈õƒá - mo≈ºliwa korekta!"
                     
                     st.markdown(f"""
                     <div style="background: linear-gradient(135deg, {color}22 0%, {color}11 100%); 
@@ -7027,7 +7027,7 @@ def show_kredyty_page(stan_spolki, cele):
                     </div>
                     """, unsafe_allow_html=True)
             except Exception as e:
-                pass  # Cicho ignoruj b≥Ídy Fear & Greed
+                pass  # Cicho ignoruj b≈Çƒôdy Fear & Greed
         
         # === PODSUMOWANIE Z REAL-TIME DATA (Feature #1, #7) ===
         if krypto:
@@ -7037,12 +7037,12 @@ def show_kredyty_page(stan_spolki, cele):
             liczba_aktywow = len(krypto)
             srednie_apy = sum(k.get('apy', 0) for k in krypto) / len(krypto) if krypto else 0
             
-            # Oblicz aktualnπ wartoúÊ i P&L (uøywa current_prices z gÛry TAB)
+            # Oblicz aktualnƒÖ warto≈õƒá i P&L (u≈ºywa current_prices z g√≥ry TAB)
             total_wartosc_current = 0
             total_pnl = 0
             
             if current_prices:
-                # Oblicz aktualnπ wartoúÊ i P&L
+                # Oblicz aktualnƒÖ warto≈õƒá i P&L
                 for k in krypto:
                     symbol = k['symbol']
                     if symbol in current_prices and current_prices[symbol].get('current_price'):
@@ -7058,36 +7058,36 @@ def show_kredyty_page(stan_spolki, cele):
             col1, col2, col3, col4, col5 = st.columns(5)
             
             with col1:
-                st.metric("?? WartoúÊ zakupu", f"${total_wartosc_zakupu:.2f}", 
-                         help="WartoúÊ wed≥ug úredniej ceny zakupu")
+                st.metric("üí∞ Warto≈õƒá zakupu", f"${total_wartosc_zakupu:.2f}", 
+                         help="Warto≈õƒá wed≈Çug ≈õredniej ceny zakupu")
             
             with col2:
                 if total_wartosc_current > 0:
-                    st.metric("?? WartoúÊ aktualna", f"${total_wartosc_current:.2f}",
+                    st.metric("üìà Warto≈õƒá aktualna", f"${total_wartosc_current:.2f}",
                              delta=f"${total_pnl:.2f}",
-                             help="Aktualna wartoúÊ rynkowa (live prices)")
+                             help="Aktualna warto≈õƒá rynkowa (live prices)")
                 else:
-                    st.metric("?? Liczba aktywÛw", liczba_aktywow)
+                    st.metric("üî¢ Liczba aktyw√≥w", liczba_aktywow)
             
             with col3:
                 if total_pnl != 0 and total_wartosc_zakupu > 0:
                     pnl_percent = (total_pnl / total_wartosc_zakupu) * 100
-                    st.metric("?? Zysk/Strata", 
+                    st.metric("üíµ Zysk/Strata", 
                              f"{'+' if total_pnl > 0 else ''}{pnl_percent:.2f}%",
                              delta=f"${total_pnl:.2f}",
-                             help="Ca≥kowity profit/loss")
+                             help="Ca≈Çkowity profit/loss")
                 else:
-                    st.metric("?? Liczba aktywÛw", liczba_aktywow)
+                    st.metric("üî¢ Liczba aktyw√≥w", liczba_aktywow)
             
             with col4:
-                st.metric("?? Platformy", liczba_platform)
+                st.metric("üè¶ Platformy", liczba_platform)
             
             with col5:
-                st.metric("?? årednie APY", f"{srednie_apy:.2f}%")
+                st.metric("üìà ≈örednie APY", f"{srednie_apy:.2f}%")
             
             # === RISK ANALYTICS (Feature #8) ===
             st.markdown("---")
-            st.markdown("### ?? Analiza Ryzyka Portfela")
+            st.markdown("### ‚ö†Ô∏è Analiza Ryzyka Portfela")
             
             # Oblicz concentration metrics
             coin_concentration = {}
@@ -7121,32 +7121,32 @@ def show_kredyty_page(stan_spolki, cele):
                 max_coin = max(coin_concentration.items(), key=lambda x: x[1])
                 max_coin_percent = (max_coin[1] / total_value * 100) if total_value > 0 else 0
                 if max_coin_percent > 40:
-                    alerts.append(f"?? **Wysoka koncentracja:** {max_coin[0]} stanowi {max_coin_percent:.1f}% portfela")
+                    alerts.append(f"üî¥ **Wysoka koncentracja:** {max_coin[0]} stanowi {max_coin_percent:.1f}% portfela")
                 elif max_coin_percent > 25:
-                    alerts.append(f"?? **årednia koncentracja:** {max_coin[0]} stanowi {max_coin_percent:.1f}% portfela")
+                    alerts.append(f"üü° **≈örednia koncentracja:** {max_coin[0]} stanowi {max_coin_percent:.1f}% portfela")
             
             # Check platform concentration (>60% on one platform)
             if platform_concentration:
                 max_platform = max(platform_concentration.items(), key=lambda x: x[1])
                 max_platform_percent = (max_platform[1] / total_value * 100) if total_value > 0 else 0
                 if max_platform_percent > 70:
-                    alerts.append(f"?? **Ryzyko platformy:** {max_platform[0]} - {max_platform_percent:.1f}% aktywÛw")
+                    alerts.append(f"üî¥ **Ryzyko platformy:** {max_platform[0]} - {max_platform_percent:.1f}% aktyw√≥w")
                 elif max_platform_percent > 50:
-                    alerts.append(f"?? **Koncentracja platformy:** {max_platform[0]} - {max_platform_percent:.1f}% aktywÛw")
+                    alerts.append(f"üü° **Koncentracja platformy:** {max_platform[0]} - {max_platform_percent:.1f}% aktyw√≥w")
             
             # Check stablecoin ratio
             stablecoin_percent = (stablecoin_value / total_value * 100) if total_value > 0 else 0
             if stablecoin_percent > 60:
-                alerts.append(f"?? **Wysoki % stablecoinÛw:** {stablecoin_percent:.1f}% (ma≥a ekspozycja na wzrosty)")
+                alerts.append(f"üîµ **Wysoki % stablecoin√≥w:** {stablecoin_percent:.1f}% (ma≈Ça ekspozycja na wzrosty)")
             elif stablecoin_percent < 10:
-                alerts.append(f"?? **Niski % stablecoinÛw:** {stablecoin_percent:.1f}% (wiÍksze ryzyko zmiennoúci)")
+                alerts.append(f"üü° **Niski % stablecoin√≥w:** {stablecoin_percent:.1f}% (wiƒôksze ryzyko zmienno≈õci)")
             
             # Display alerts or OK status
             if alerts:
                 for alert in alerts:
                     st.warning(alert)
             else:
-                st.success("? **Portfel dobrze zdywersyfikowany!** Brak alertÛw ryzyka.")
+                st.success("‚úÖ **Portfel dobrze zdywersyfikowany!** Brak alert√≥w ryzyka.")
             
             # Risk metrics w kolumnach
             col_r1, col_r2, col_r3 = st.columns(3)
@@ -7154,23 +7154,23 @@ def show_kredyty_page(stan_spolki, cele):
             with col_r1:
                 max_coin = max(coin_concentration.items(), key=lambda x: x[1]) if coin_concentration else ("N/A", 0)
                 max_coin_pct = (max_coin[1] / total_value * 100) if total_value > 0 else 0
-                st.metric("?? NajwiÍksza pozycja", f"{max_coin[0]}", f"{max_coin_pct:.1f}%")
+                st.metric("ü™ô Najwiƒôksza pozycja", f"{max_coin[0]}", f"{max_coin_pct:.1f}%")
             
             with col_r2:
                 max_plat = max(platform_concentration.items(), key=lambda x: x[1]) if platform_concentration else ("N/A", 0)
                 max_plat_pct = (max_plat[1] / total_value * 100) if total_value > 0 else 0
-                st.metric("?? G≥Ûwna platforma", f"{max_plat[0]}", f"{max_plat_pct:.1f}%")
+                st.metric("üè¶ G≈Ç√≥wna platforma", f"{max_plat[0]}", f"{max_plat_pct:.1f}%")
             
             with col_r3:
-                st.metric("?? Stablecoiny", f"${stablecoin_value:.2f}", f"{stablecoin_percent:.1f}%")
+                st.metric("üíµ Stablecoiny", f"${stablecoin_value:.2f}", f"{stablecoin_percent:.1f}%")
         
         # === APY EARNINGS BREAKDOWN (Feature #2) ===
         if krypto:
             st.markdown("---")
-            st.markdown("### ?? Zarobki z APY/Staking/Earn")
+            st.markdown("### üí∞ Zarobki z APY/Staking/Earn")
             
             # Oblicz earnings
-            kurs_usd = 3.65  # Default, moøna pobraÊ z API
+            kurs_usd = 3.65  # Default, mo≈ºna pobraƒá z API
             crypto_earnings = calculate_crypto_apy_earnings(krypto, current_prices, kurs_usd)
             
             if crypto_earnings['liczba_earning_positions'] > 0:
@@ -7178,26 +7178,26 @@ def show_kredyty_page(stan_spolki, cele):
                 col_e1, col_e2, col_e3, col_e4 = st.columns(4)
                 
                 with col_e1:
-                    st.metric("?? Dziennie", 
+                    st.metric("üìÖ Dziennie", 
                              f"${crypto_earnings['dziennie_usd']:.2f}",
                              delta=f"{crypto_earnings['dziennie_pln']:.2f} PLN")
                 
                 with col_e2:
-                    st.metric("?? MiesiÍcznie", 
+                    st.metric("üìÜ Miesiƒôcznie", 
                              f"${crypto_earnings['miesieczne_usd']:.2f}",
                              delta=f"{crypto_earnings['miesieczne_pln']:.2f} PLN")
                 
                 with col_e3:
-                    st.metric("?? Rocznie", 
+                    st.metric("üìä Rocznie", 
                              f"${crypto_earnings['roczne_usd']:.2f}",
                              delta=f"{crypto_earnings['roczne_pln']:.2f} PLN")
                 
                 with col_e4:
-                    st.metric("?? Earning Positions", 
+                    st.metric("üíé Earning Positions", 
                              crypto_earnings['liczba_earning_positions'])
                 
                 # Detailed breakdown
-                st.markdown("#### ?? SzczegÛ≥y zarobkÛw po pozycjach:")
+                st.markdown("#### üìã Szczeg√≥≈Çy zarobk√≥w po pozycjach:")
                 
                 for detail in crypto_earnings['szczegoly']:
                     col_d1, col_d2, col_d3, col_d4 = st.columns([2, 1, 1, 2])
@@ -7207,22 +7207,22 @@ def show_kredyty_page(stan_spolki, cele):
                         st.caption(f"APY: {detail['apy']:.2f}%")
                     
                     with col_d2:
-                        st.caption(f"WartoúÊ: ${detail['value_usd']:.2f}")
+                        st.caption(f"Warto≈õƒá: ${detail['value_usd']:.2f}")
                     
                     with col_d3:
                         st.caption(f"Dziennie: ${detail['dziennie_usd']:.2f}")
                     
                     with col_d4:
-                        st.caption(f"MiesiÍcznie: ${detail['miesieczne_usd']:.2f}")
+                        st.caption(f"Miesiƒôcznie: ${detail['miesieczne_usd']:.2f}")
                         st.caption(f"Rocznie: ${detail['roczne_usd']:.2f}")
                 
-                st.success(f"?? **Tip:** TwÛj portfel crypto generuje pasywny dochÛd {crypto_earnings['miesieczne_pln']:.0f} PLN/mies bez dodatkowej pracy!")
+                st.success(f"üí° **Tip:** Tw√≥j portfel crypto generuje pasywny doch√≥d {crypto_earnings['miesieczne_pln']:.0f} PLN/mies bez dodatkowej pracy!")
             else:
-                st.info("?? Brak pozycji generujπcych dochÛd pasywny (APY/Staking/Earn). Rozwaø earning products!")
+                st.info("‚ÑπÔ∏è Brak pozycji generujƒÖcych doch√≥d pasywny (APY/Staking/Earn). Rozwa≈º earning products!")
         
         # === DODAWANIE KRYPTO ===
         st.markdown("---")
-        st.markdown("### ? Dodaj KryptowalutÍ")
+        st.markdown("### ‚ûï Dodaj Kryptowalutƒô")
         
         col1, col2 = st.columns(2)
         
@@ -7231,11 +7231,11 @@ def show_kredyty_page(stan_spolki, cele):
                 symbol = st.text_input(
                     "Symbol/Ticker *",
                     placeholder="np. BTC, ETH, BNB",
-                    help="SkrÛt kryptowaluty"
+                    help="Skr√≥t kryptowaluty"
                 ).upper()
                 
                 ilosc = st.number_input(
-                    "IloúÊ *",
+                    "Ilo≈õƒá *",
                     min_value=0.0,
                     value=0.0,
                     step=0.01,
@@ -7243,7 +7243,7 @@ def show_kredyty_page(stan_spolki, cele):
                 )
                 
                 cena_zakupu = st.number_input(
-                    "årednia cena zakupu (USD) *",
+                    "≈örednia cena zakupu (USD) *",
                     min_value=0.0,
                     value=0.0,
                     step=0.01,
@@ -7263,7 +7263,7 @@ def show_kredyty_page(stan_spolki, cele):
                 )
                 
                 apy = st.number_input(
-                    "APY % (jeúli dotyczy)",
+                    "APY % (je≈õli dotyczy)",
                     min_value=0.0,
                     value=0.0,
                     step=0.1,
@@ -7275,16 +7275,16 @@ def show_kredyty_page(stan_spolki, cele):
                     help="Dodatkowe informacje"
                 )
                 
-                submitted = st.form_submit_button("?? Zapisz KryptowalutÍ")
+                submitted = st.form_submit_button("üíæ Zapisz Kryptowalutƒô")
                 
                 if submitted:
                     # Walidacja
                     if not symbol:
-                        st.error("? Symbol jest wymagany")
+                        st.error("‚ùå Symbol jest wymagany")
                     elif ilosc <= 0:
-                        st.error("? IloúÊ musi byÊ wiÍksza od 0")
+                        st.error("‚ùå Ilo≈õƒá musi byƒá wiƒôksza od 0")
                     elif cena_zakupu <= 0:
-                        st.error("? Cena zakupu musi byÊ wiÍksza od 0")
+                        st.error("‚ùå Cena zakupu musi byƒá wiƒôksza od 0")
                     else:
                         nowe_krypto = {
                             'id': str(datetime.now().timestamp()),
@@ -7303,13 +7303,13 @@ def show_kredyty_page(stan_spolki, cele):
                         krypto.sort(key=lambda x: x['symbol'])
                         
                         if save_krypto(krypto):
-                            st.success("? Kryptowaluta zapisana!")
+                            st.success("‚úÖ Kryptowaluta zapisana!")
                             st.rerun()
                         else:
-                            st.error("? B≥πd zapisu")
+                            st.error("‚ùå B≈ÇƒÖd zapisu")
         
         with col2:
-            st.markdown("### ?? Podzia≥ po Platformach")
+            st.markdown("### üìä Podzia≈Ç po Platformach")
             if krypto:
                 # Grupuj po platformach
                 platformy_suma = {}
@@ -7329,10 +7329,10 @@ def show_kredyty_page(stan_spolki, cele):
         # === LISTA KRYPTOWALUT ===
         if krypto:
             st.markdown("---")
-            st.markdown("### ?? Twoje Kryptowaluty")
+            st.markdown("### üìã Twoje Kryptowaluty")
             
-            # === TABELA POR”WNAWCZA CEN ===
-            st.markdown("#### ?? PorÛwnanie Cen: Zakup vs Aktualne")
+            # === TABELA POR√ìWNAWCZA CEN ===
+            st.markdown("#### üí∞ Por√≥wnanie Cen: Zakup vs Aktualne")
             
             # Grupuj po symbolach dla tabeli
             price_comparison = []
@@ -7342,12 +7342,12 @@ def show_kredyty_page(stan_spolki, cele):
                 total_cost = sum(k['ilosc'] * k['cena_zakupu_usd'] for k in holdings_of_symbol)
                 avg_purchase_price = total_cost / total_qty if total_qty > 0 else 0
                 
-                # Pobierz aktualnπ cenÍ
+                # Pobierz aktualnƒÖ cenƒô
                 current_price = None
                 change_24h = None
                 pnl_usd = None
                 pnl_pct = None
-                price_source = ""  # Skπd pochodzi cena
+                price_source = ""  # SkƒÖd pochodzi cena
                 
                 # Priorytet 1: API (live data)
                 if CRYPTO_MANAGER_OK and symbol in current_prices:
@@ -7356,24 +7356,24 @@ def show_kredyty_page(stan_spolki, cele):
                         current_price = coin_data['current_price']
                         change_24h = coin_data.get('price_change_percentage_24h')
                         
-                        # Sprawdü ürÛd≥o API
+                        # Sprawd≈∫ ≈∫r√≥d≈Ço API
                         api_source = coin_data.get('source', 'CoinGecko')
                         if 'MEXC' in api_source:
-                            price_source = "?? MEXC"
+                            price_source = "üü† MEXC"
                         elif 'Gate.io' in api_source:
-                            price_source = "?? Gate.io"
+                            price_source = "üîµ Gate.io"
                         else:
-                            price_source = "?? CoinGecko"
+                            price_source = "üü¢ CoinGecko"
                 
                 # Priorytet 2: Manual price z pierwszego holdingu (backup)
                 if current_price is None:
                     for holding in holdings_of_symbol:
                         if holding.get('manual_price'):
                             current_price = float(holding['manual_price'])
-                            price_source = "?? Manual"
+                            price_source = "üü° Manual"
                             break
                 
-                # Oblicz P&L jeúli mamy cenÍ
+                # Oblicz P&L je≈õli mamy cenƒô
                 if current_price:
                     current_value = total_qty * current_price
                     pnl_usd = current_value - total_cost
@@ -7381,18 +7381,18 @@ def show_kredyty_page(stan_spolki, cele):
                 
                 price_comparison.append({
                     'Symbol': symbol,
-                    'IloúÊ': f"{total_qty:.6f}",
+                    'Ilo≈õƒá': f"{total_qty:.6f}",
                     'Cena Zakupu': f"${avg_purchase_price:.4f}",
-                    'Cena Aktualna': f"${current_price:.4f} {price_source}" if current_price else "? Brak (dodaj manual_price)",
+                    'Cena Aktualna': f"${current_price:.4f} {price_source}" if current_price else "‚ùå Brak (dodaj manual_price)",
                     'Zmiana 24h': f"{change_24h:+.2f}%" if change_24h is not None else "N/A",
                     'P&L': f"${pnl_usd:+.2f} ({pnl_pct:+.2f}%)" if pnl_usd is not None else "N/A",
                     '_pnl_raw': pnl_pct if pnl_pct is not None else 0  # do sortowania
                 })
             
-            # Sortuj po P&L (najlepsze na gÛrze)
+            # Sortuj po P&L (najlepsze na g√≥rze)
             price_comparison.sort(key=lambda x: x['_pnl_raw'], reverse=True)
             
-            # Wyúwietl jako tabelÍ z kolorami
+            # Wy≈õwietl jako tabelƒô z kolorami
             if price_comparison:
                 st.markdown("""
                 <style>
@@ -7417,7 +7417,7 @@ def show_kredyty_page(stan_spolki, cele):
                 """, unsafe_allow_html=True)
                 
                 table_html = "<table class='price-table'><tr>"
-                table_html += "<th>Symbol</th><th>IloúÊ</th><th>Cena Zakupu</th><th>Cena Aktualna</th><th>Zmiana 24h</th><th>P&L</th></tr>"
+                table_html += "<th>Symbol</th><th>Ilo≈õƒá</th><th>Cena Zakupu</th><th>Cena Aktualna</th><th>Zmiana 24h</th><th>P&L</th></tr>"
                 
                 for row in price_comparison:
                     pnl_class = "positive" if row['_pnl_raw'] > 0 else "negative" if row['_pnl_raw'] < 0 else ""
@@ -7428,7 +7428,7 @@ def show_kredyty_page(stan_spolki, cele):
                     
                     table_html += f"<tr>"
                     table_html += f"<td><strong>{row['Symbol']}</strong></td>"
-                    table_html += f"<td>{row['IloúÊ']}</td>"
+                    table_html += f"<td>{row['Ilo≈õƒá']}</td>"
                     table_html += f"<td>{row['Cena Zakupu']}</td>"
                     table_html += f"<td>{row['Cena Aktualna']}</td>"
                     table_html += f"<td class='{change_class}'>{row['Zmiana 24h']}</td>"
@@ -7440,19 +7440,19 @@ def show_kredyty_page(stan_spolki, cele):
                 
                 # Podsumowanie
                 total_pnl = sum(float(r['P&L'].split('$')[1].split('(')[0]) for r in price_comparison if r['P&L'] != "N/A")
-                st.caption(f"?? **Total Portfolio P&L:** ${total_pnl:+.2f} USD")
+                st.caption(f"üìä **Total Portfolio P&L:** ${total_pnl:+.2f} USD")
                 
-                # Info o brakujπcych cenach
+                # Info o brakujƒÖcych cenach
                 missing_prices = [r['Symbol'] for r in price_comparison if "Brak" in r['Cena Aktualna']]
                 if missing_prices:
-                    with st.expander(f"?? Jak dodaÊ ceny dla {', '.join(missing_prices)}?", expanded=False):
+                    with st.expander(f"‚ÑπÔ∏è Jak dodaƒá ceny dla {', '.join(missing_prices)}?", expanded=False):
                         st.markdown("""
-                        **System automatycznie prÛbuje pobraÊ ceny z wielu ürÛde≥:**
-                        - ?? **CoinGecko API** - g≥Ûwne ürÛd≥o (Top 250 coinÛw)
-                        - ?? **MEXC API** - dla MX Token (auto)
-                        - ?? **Gate.io API** - dla GUSD i tokenÛw gie≥dowych (auto)
+                        **System automatycznie pr√≥buje pobraƒá ceny z wielu ≈∫r√≥de≈Ç:**
+                        - üü¢ **CoinGecko API** - g≈Ç√≥wne ≈∫r√≥d≈Ço (Top 250 coin√≥w)
+                        - üü† **MEXC API** - dla MX Token (auto)
+                        - üîµ **Gate.io API** - dla GUSD i token√≥w gie≈Çdowych (auto)
                         
-                        **Jeúli token nadal nie ma ceny, moøesz dodaÊ rÍcznie jako backup:**
+                        **Je≈õli token nadal nie ma ceny, mo≈ºesz dodaƒá rƒôcznie jako backup:**
                         
                         Edytuj `krypto.json` i dodaj pole `"manual_price"`:
                             ```json
@@ -7463,10 +7463,10 @@ def show_kredyty_page(stan_spolki, cele):
                         }
                         ```
                         
-                        ?? Manual price to fallback - system zawsze najpierw prÛbuje live API!
+                        üí° Manual price to fallback - system zawsze najpierw pr√≥buje live API!
                         """)
             else:
-                st.info("Brak danych do porÛwnania cen")
+                st.info("Brak danych do por√≥wnania cen")
             
             st.markdown("---")
             
@@ -7491,7 +7491,7 @@ def show_kredyty_page(stan_spolki, cele):
                     symbole[sym] = []
                 symbole[sym].append(k)
             
-            # Wyúwietl po symbolach
+            # Wy≈õwietl po symbolach
             for symbol, lista in sorted(symbole.items()):
                 total_ilosc = sum(k['ilosc'] for k in lista)
                 total_wartosc_zakupu = sum(k['ilosc'] * k['cena_zakupu_usd'] for k in lista)
@@ -7516,16 +7516,16 @@ def show_kredyty_page(stan_spolki, cele):
                     if coin_data.get('price_change_percentage_24h') is not None:
                         change_val = coin_data['price_change_percentage_24h']
                         change_24h = f" | 24h: {change_val:+.2f}%"
-                        change_color = "??" if change_val > 0 else "??" if change_val < 0 else "?"
+                        change_color = "üü¢" if change_val > 0 else "üî¥" if change_val < 0 else "‚ö™"
                     
                     if coin_data.get('current_price'):
                         current_price_symbol = coin_data['current_price']
                         total_wartosc_current = total_ilosc * current_price_symbol
                         pnl_symbol = total_wartosc_current - total_wartosc_zakupu
                 
-                # Tytu≥ expandera z enhanced info
+                # Tytu≈Ç expandera z enhanced info
                 if current_price_symbol:
-                    pnl_emoji = "??" if pnl_symbol > 0 else "??" if pnl_symbol < 0 else "??"
+                    pnl_emoji = "üìà" if pnl_symbol > 0 else "üìâ" if pnl_symbol < 0 else "‚û°Ô∏è"
                     expander_title = f"**{symbol}** ({coin_name}){coin_rank}{change_color}{change_24h} {pnl_emoji} ${total_wartosc_current:.2f}"
                 else:
                     expander_title = f"**{symbol}** ({coin_name}){coin_rank} - {total_ilosc:.8f} (${total_wartosc_zakupu:.2f})"
@@ -7535,21 +7535,21 @@ def show_kredyty_page(stan_spolki, cele):
                     col_h1, col_h2, col_h3 = st.columns(3)
                     
                     with col_h1:
-                        st.caption(f"?? årednia cena zakupu: **${srednia_cena:.2f}**")
+                        st.caption(f"üí∞ ≈örednia cena zakupu: **${srednia_cena:.2f}**")
                     
                     with col_h2:
                         if current_price_symbol:
-                            st.caption(f"?? Aktualna cena: **${current_price_symbol:.2f}**")
+                            st.caption(f"üìä Aktualna cena: **${current_price_symbol:.2f}**")
                         else:
-                            st.caption(f"?? Aktualna cena: **N/A**")
+                            st.caption(f"üìä Aktualna cena: **N/A**")
                     
                     with col_h3:
                         if pnl_symbol != 0:
                             pnl_percent = (pnl_symbol / total_wartosc_zakupu * 100) if total_wartosc_zakupu > 0 else 0
                             pnl_color = "green" if pnl_symbol > 0 else "red"
-                            st.caption(f"?? P&L: :{pnl_color}[**{pnl_percent:+.2f}%** (${pnl_symbol:+.2f})]")
+                            st.caption(f"üíµ P&L: :{pnl_color}[**{pnl_percent:+.2f}%** (${pnl_symbol:+.2f})]")
                         else:
-                            st.caption(f"?? P&L: **N/A**")
+                            st.caption(f"üíµ P&L: **N/A**")
                     
                     st.markdown("---")
                     
@@ -7558,30 +7558,30 @@ def show_kredyty_page(stan_spolki, cele):
                         col1, col2, col3 = st.columns([2, 1, 1])
                         
                         with col1:
-                            st.write(f"?? **{krypto_item['platforma']}** - {krypto_item['status']}")
-                            st.caption(f"IloúÊ: {krypto_item['ilosc']:.8f}")
+                            st.write(f"üè¶ **{krypto_item['platforma']}** - {krypto_item['status']}")
+                            st.caption(f"Ilo≈õƒá: {krypto_item['ilosc']:.8f}")
                             st.caption(f"Cena zakupu: ${krypto_item['cena_zakupu_usd']:.2f}")
                             if krypto_item.get('apy', 0) > 0:
-                                st.caption(f"?? APY: {krypto_item['apy']:.2f}%")
+                                st.caption(f"üìà APY: {krypto_item['apy']:.2f}%")
                             if krypto_item.get('notatki'):
-                                st.caption(f"?? {krypto_item['notatki']}")
+                                st.caption(f"üìù {krypto_item['notatki']}")
                         
                         with col2:
                             wartosc_pozycji = krypto_item['ilosc'] * krypto_item['cena_zakupu_usd']
-                            st.metric("WartoúÊ", f"${wartosc_pozycji:.2f}")
+                            st.metric("Warto≈õƒá", f"${wartosc_pozycji:.2f}")
                         
                         with col3:
-                            # Edycja/UsuniÍcie
+                            # Edycja/Usuniƒôcie
                             with st.form(f"action_krypto_{krypto_item['id']}"):
                                 col_edit, col_del = st.columns(2)
                                 
                                 with col_edit:
-                                    if st.form_submit_button("??", width="stretch"):
+                                    if st.form_submit_button("‚úèÔ∏è", width="stretch"):
                                         st.session_state[f'edit_krypto_{krypto_item["id"]}'] = True
                                         st.rerun()
                                 
                                 with col_del:
-                                    if st.form_submit_button("???", width="stretch"):
+                                    if st.form_submit_button("üóëÔ∏è", width="stretch"):
                                         if f'confirm_del_krypto_{krypto_item["id"]}' not in st.session_state:
                                             st.session_state[f'confirm_del_krypto_{krypto_item["id"]}'] = True
                                             st.warning("Kliknij ponownie")
@@ -7589,16 +7589,16 @@ def show_kredyty_page(stan_spolki, cele):
                                             krypto.remove(krypto_item)
                                             if save_krypto(krypto):
                                                 del st.session_state[f'confirm_del_krypto_{krypto_item["id"]}']
-                                                st.success("? UsuniÍto!")
+                                                st.success("‚úÖ Usuniƒôto!")
                                                 st.rerun()
                         
                         # Formularz edycji
                         if st.session_state.get(f'edit_krypto_{krypto_item["id"]}', False):
                             with st.form(f"edit_form_krypto_{krypto_item['id']}"):
-                                st.caption("Edytuj pozycjÍ:")
+                                st.caption("Edytuj pozycjƒô:")
                                 
                                 nowa_ilosc = st.number_input(
-                                    "IloúÊ",
+                                    "Ilo≈õƒá",
                                     min_value=0.0,
                                     value=float(krypto_item['ilosc']),
                                     step=0.01,
@@ -7618,23 +7618,23 @@ def show_kredyty_page(stan_spolki, cele):
                                 col_save, col_cancel = st.columns(2)
                                 
                                 with col_save:
-                                    if st.form_submit_button("?? Zapisz", width="stretch"):
+                                    if st.form_submit_button("üíæ Zapisz", width="stretch"):
                                         krypto_item['ilosc'] = nowa_ilosc
                                         krypto_item['cena_zakupu_usd'] = nowa_cena
                                         if save_krypto(krypto):
                                             del st.session_state[f'edit_krypto_{krypto_item["id"]}']
-                                            st.success("? Zaktualizowano!")
+                                            st.success("‚úÖ Zaktualizowano!")
                                             st.rerun()
                                 
                                 with col_cancel:
-                                    if st.form_submit_button("? Anuluj", width="stretch"):
+                                    if st.form_submit_button("‚ùå Anuluj", width="stretch"):
                                         del st.session_state[f'edit_krypto_{krypto_item["id"]}']
                                         st.rerun()
             
             # === WYKRES KRYPTO ===
-            st.markdown("### ?? Wizualizacja Portfela Krypto")
+            st.markdown("### üìä Wizualizacja Portfela Krypto")
             
-            # Wykres ko≥owy po symbolach
+            # Wykres ko≈Çowy po symbolach
             symbole_dane = {}
             for k in krypto:
                 sym = k['symbol']
@@ -7653,7 +7653,7 @@ def show_kredyty_page(stan_spolki, cele):
                 ])
                 
                 fig.update_layout(
-                    title="Podzia≥ Portfela Krypto po Symbolach (wartoúÊ zakupu)",
+                    title="Podzia≈Ç Portfela Krypto po Symbolach (warto≈õƒá zakupu)",
                     height=400
                 )
                 
@@ -7661,20 +7661,20 @@ def show_kredyty_page(stan_spolki, cele):
     
     # ===== TAB 7: TRACK RECORD AI =====
     with tab7:
-        st.header("?? Track Record AI PartnerÛw")
+        st.header("üèÜ Track Record AI Partner√≥w")
         
         if not MEMORY_OK:
-            st.warning("?? System pamiÍci AI niedostÍpny")
-            st.info("Aby aktywowaÊ ten system, upewnij siÍ øe persona_memory_manager.py jest dostÍpny")
+            st.warning("‚ö†Ô∏è System pamiƒôci AI niedostƒôpny")
+            st.info("Aby aktywowaƒá ten system, upewnij siƒô ≈ºe persona_memory_manager.py jest dostƒôpny")
             return
         
         st.markdown("""
-        System pamiÍci AI úledzi decyzje kaødej persony, ich trafnoúÊ i ewolucjÍ charakteru.
-        **Twoi partnerzy uczπ siÍ na b≥Ídach i sukcesach!**
+        System pamiƒôci AI ≈õledzi decyzje ka≈ºdej persony, ich trafno≈õƒá i ewolucjƒô charakteru.
+        **Twoi partnerzy uczƒÖ siƒô na b≈Çƒôdach i sukcesach!**
         """)
         
         # Leaderboard
-        st.markdown("### ?? Ranking Wiarygodnoúci")
+        st.markdown("### üèÜ Ranking Wiarygodno≈õci")
         
         leaderboard = pmm.get_leaderboard()
         
@@ -7687,7 +7687,7 @@ def show_kredyty_page(stan_spolki, cele):
                     if len(leaderboard) >= 1:
                         entry = leaderboard[0]
                         st.metric(
-                            "?? Miejsce 1",
+                            "ü•á Miejsce 1",
                             entry['persona'],
                             f"{entry['credibility']*100:.0f}% ({entry['correct']}/{entry['total']})"
                         )
@@ -7696,7 +7696,7 @@ def show_kredyty_page(stan_spolki, cele):
                     if len(leaderboard) >= 2:
                         entry = leaderboard[1]
                         st.metric(
-                            "?? Miejsce 2",
+                            "ü•à Miejsce 2",
                             entry['persona'],
                             f"{entry['credibility']*100:.0f}% ({entry['correct']}/{entry['total']})"
                         )
@@ -7705,36 +7705,36 @@ def show_kredyty_page(stan_spolki, cele):
                     if len(leaderboard) >= 3:
                         entry = leaderboard[2]
                         st.metric(
-                            "?? Miejsce 3",
+                            "ü•â Miejsce 3",
                             entry['persona'],
                             f"{entry['credibility']*100:.0f}% ({entry['correct']}/{entry['total']})"
                         )
             
-            # Pe≥na tabela
-            st.markdown("#### Pe≥ny Ranking")
+            # Pe≈Çna tabela
+            st.markdown("#### Pe≈Çny Ranking")
             
             df_leaderboard = pd.DataFrame(leaderboard)
             df_leaderboard['Ranking'] = range(1, len(df_leaderboard) + 1)
-            df_leaderboard['WiarygodnoúÊ'] = df_leaderboard['credibility'].apply(lambda x: f"{x*100:.0f}%")
+            df_leaderboard['Wiarygodno≈õƒá'] = df_leaderboard['credibility'].apply(lambda x: f"{x*100:.0f}%")
             df_leaderboard['Track Record'] = df_leaderboard.apply(
                 lambda row: f"{row['correct']}/{row['total']}", axis=1
             )
-            df_leaderboard['Wp≥yw (PLN)'] = df_leaderboard['impact'].apply(lambda x: f"{x:,.0f}")
+            df_leaderboard['Wp≈Çyw (PLN)'] = df_leaderboard['impact'].apply(lambda x: f"{x:,.0f}")
             
             st.dataframe(
-                df_leaderboard[['Ranking', 'persona', 'WiarygodnoúÊ', 'Track Record', 'Wp≥yw (PLN)']].rename(
+                df_leaderboard[['Ranking', 'persona', 'Wiarygodno≈õƒá', 'Track Record', 'Wp≈Çyw (PLN)']].rename(
                     columns={'persona': 'Persona'}
                 ),
                 width="stretch",
                 hide_index=True
             )
         else:
-            st.info("?? Brak danych - persony nie podjÍ≥y jeszcze rozliczonych decyzji")
+            st.info("üìä Brak danych - persony nie podjƒô≈Çy jeszcze rozliczonych decyzji")
         
         st.markdown("---")
         
         # Historia decyzji
-        st.markdown("### ?? Historia Decyzji")
+        st.markdown("### üìú Historia Decyzji")
         
         memory = pmm.load_memory()
         all_decisions = []
@@ -7751,7 +7751,7 @@ def show_kredyty_page(stan_spolki, cele):
                     "Ticker": dec.get("ticker", ""),
                     "Cena": dec.get("current_price", 0),
                     "Wynik": dec.get("result_pct"),
-                    "Status": "?" if dec.get("was_correct") else "?" if dec.get("was_correct") is not None else "?",
+                    "Status": "‚úì" if dec.get("was_correct") else "‚úó" if dec.get("was_correct") is not None else "‚è≥",
                     "Uzasadnienie": dec.get("reasoning", "")[:80] + "..."
                 })
         
@@ -7773,7 +7773,7 @@ def show_kredyty_page(stan_spolki, cele):
             with col_filter2:
                 filter_status = st.selectbox(
                     "Filtruj po statusie",
-                    ["Wszystkie", "? Trafne", "? B≥Ídne", "? Nierozliczone"]
+                    ["Wszystkie", "‚úì Trafne", "‚úó B≈Çƒôdne", "‚è≥ Nierozliczone"]
                 )
             
             # Aplikuj filtry
@@ -7784,9 +7784,9 @@ def show_kredyty_page(stan_spolki, cele):
             
             if filter_status != "Wszystkie":
                 status_map = {
-                    "? Trafne": "?",
-                    "? B≥Ídne": "?",
-                    "? Nierozliczone": "?"
+                    "‚úì Trafne": "‚úì",
+                    "‚úó B≈Çƒôdne": "‚úó",
+                    "‚è≥ Nierozliczone": "‚è≥"
                 }
                 df_filtered = df_filtered[df_filtered["Status"] == status_map[filter_status]]
             
@@ -7801,30 +7801,30 @@ def show_kredyty_page(stan_spolki, cele):
             
             with col_stat1:
                 total_decisions = len(all_decisions)
-                st.metric("?? Wszystkie decyzje", total_decisions)
+                st.metric("üìä Wszystkie decyzje", total_decisions)
             
             with col_stat2:
-                audited = len([d for d in all_decisions if d["Status"] in ["?", "?"]])
-                st.metric("? Rozliczone", audited)
+                audited = len([d for d in all_decisions if d["Status"] in ["‚úì", "‚úó"]])
+                st.metric("‚úÖ Rozliczone", audited)
             
             with col_stat3:
-                pending = len([d for d in all_decisions if d["Status"] == "?"])
-                st.metric("? Oczekujπce", pending)
+                pending = len([d for d in all_decisions if d["Status"] == "‚è≥"])
+                st.metric("‚è≥ OczekujƒÖce", pending)
         else:
-            st.info("?? Brak decyzji w historii")
+            st.info("üìä Brak decyzji w historii")
         
         st.markdown("---")
         
         # Ewolucja charakteru
-        st.markdown("### ?? Ewolucja Charakteru Person")
+        st.markdown("### üß¨ Ewolucja Charakteru Person")
         
         st.markdown("""
-        Cechy charakteru person zmieniajπ siÍ na podstawie ich sukcesÛw i poraøek.
+        Cechy charakteru person zmieniajƒÖ siƒô na podstawie ich sukces√≥w i pora≈ºek.
         """)
         
-        # Wybierz personÍ do analizy
+        # Wybierz personƒô do analizy
         persona_to_analyze = st.selectbox(
-            "Wybierz personÍ",
+            "Wybierz personƒô",
             [p for p in memory.keys() if p != "meta"]
         )
         
@@ -7860,14 +7860,14 @@ def show_kredyty_page(stan_spolki, cele):
                 st.plotly_chart(fig, width="stretch")
                 
                 # Tabela cech
-                st.markdown("#### SzczegÛ≥y Cech")
+                st.markdown("#### Szczeg√≥≈Çy Cech")
                 
                 trait_descriptions = {
-                    "risk_tolerance": "Tolerancja ryzyka - sk≥onnoúÊ do ryzykownych inwestycji",
+                    "risk_tolerance": "Tolerancja ryzyka - sk≈Çonno≈õƒá do ryzykownych inwestycji",
                     "optimism_bias": "Optymizm - tendencja do pozytywnych prognoz",
-                    "analytical_depth": "G≥ÍbokoúÊ analityczna - szczegÛ≥owoúÊ analiz",
-                    "patience": "CierpliwoúÊ - preferencja dla d≥ugoterminowych strategii",
-                    "innovation_focus": "InnowacyjnoúÊ - zainteresowanie nowymi technologiami"
+                    "analytical_depth": "G≈Çƒôboko≈õƒá analityczna - szczeg√≥≈Çowo≈õƒá analiz",
+                    "patience": "Cierpliwo≈õƒá - preferencja dla d≈Çugoterminowych strategii",
+                    "innovation_focus": "Innowacyjno≈õƒá - zainteresowanie nowymi technologiami"
                 }
                 
                 for trait, value in traits.items():
@@ -7876,7 +7876,7 @@ def show_kredyty_page(stan_spolki, cele):
                     
                     # Normalize value to 0-1 range (handle negative values)
                     normalized_value = max(0.0, min(1.0, (value + 1) / 2 if value < 0 else value))
-                    progress_bar = "-" * int(normalized_value * 20) + "-" * (20 - int(normalized_value * 20))
+                    progress_bar = "‚ñà" * int(normalized_value * 20) + "‚ñë" * (20 - int(normalized_value * 20))
                     
                     st.write(f"**{trait_name}** ({value:.2f})")
                     st.progress(normalized_value)
@@ -7887,7 +7887,7 @@ def show_kredyty_page(stan_spolki, cele):
             # Kluczowe lekcje
             lessons = persona_data.get("key_lessons", [])
             if lessons:
-                st.markdown("#### ?? Kluczowe Lekcje")
+                st.markdown("#### üìö Kluczowe Lekcje")
                 
                 for lesson in lessons[-5:]:
                     if isinstance(lesson, dict):
@@ -7898,25 +7898,25 @@ def show_kredyty_page(stan_spolki, cele):
         # === NOWE FEATURY V2.0 ===
         if MEMORY_V2:
             st.markdown("---")
-            st.markdown("### ?? System Osobowoúci v2.0")
-            st.success("? Zaawansowane featury aktywne!")
+            st.markdown("### üé≠ System Osobowo≈õci v2.0")
+            st.success("‚úÖ Zaawansowane featury aktywne!")
             
             # Emocje
             emotions = persona_data.get('emotional_state', {})
             if emotions:
-                st.markdown("#### ?? Stan Emocjonalny")
+                st.markdown("#### üé≠ Stan Emocjonalny")
                 
                 mood = emotions.get('current_mood', 'neutral')
                 mood_emojis = {
-                    'excited': '??', 'confident': '??', 'optimistic': '??',
-                    'neutral': '??', 'cautious': '??', 'worried': '??',
-                    'fearful': '??', 'angry': '??', 'disappointed': '??'
+                    'excited': 'üî•', 'confident': 'üí™', 'optimistic': 'üòä',
+                    'neutral': 'üòê', 'cautious': 'ü§î', 'worried': 'üòü',
+                    'fearful': 'üò∞', 'angry': 'üò†', 'disappointed': 'üòû'
                 }
                 
                 col_mood1, col_mood2, col_mood3 = st.columns(3)
                 
                 with col_mood1:
-                    st.metric("NastrÛj", f"{mood_emojis.get(mood, '??')} {mood.upper()}")
+                    st.metric("Nastr√≥j", f"{mood_emojis.get(mood, 'üòê')} {mood.upper()}")
                 
                 with col_mood2:
                     st.metric("Stres", f"{emotions.get('stress_level', 0.3):.0%}")
@@ -7929,12 +7929,12 @@ def show_kredyty_page(stan_spolki, cele):
                 if mood_hist:
                     st.markdown("**Ostatnie zmiany nastroju:**")
                     for change in mood_hist[-3:]:
-                        st.caption(f"{change.get('date')}: {change.get('from')} õ {change.get('to')}")
+                        st.caption(f"{change.get('date')}: {change.get('from')} ‚Üí {change.get('to')}")
             
             # Relacje
             relationships = persona_data.get('relationships', {})
             if relationships:
-                st.markdown("#### ?? Relacje z Partnerami")
+                st.markdown("#### ü§ù Relacje z Partnerami")
                 
                 # Sortuj po trust
                 sorted_rels = sorted(relationships.items(), key=lambda x: x[1].get('trust', 0), reverse=True)
@@ -7943,7 +7943,7 @@ def show_kredyty_page(stan_spolki, cele):
                     trust = rel.get('trust', 0.5)
                     agree = rel.get('agreement_rate', 0.5)
                     
-                    trust_emoji = '??' if trust > 0.7 else '??' if trust > 0.4 else '??'
+                    trust_emoji = 'üü¢' if trust > 0.7 else 'üü°' if trust > 0.4 else 'üî¥'
                     
                     col_r1, col_r2, col_r3 = st.columns([2, 1, 1])
                     
@@ -7959,7 +7959,7 @@ def show_kredyty_page(stan_spolki, cele):
             # Voting weight
             voting = persona_data.get('voting_weight_modifier', {})
             if voting:
-                st.markdown("#### ??? Si≥a G≥osu w Radzie")
+                st.markdown("#### üó≥Ô∏è Si≈Ça G≈Çosu w Radzie")
                 
                 col_v1, col_v2, col_v3 = st.columns(3)
                 
@@ -7968,7 +7968,7 @@ def show_kredyty_page(stan_spolki, cele):
                 
                 with col_v2:
                     bonus = voting.get('credibility_bonus', 0)
-                    st.metric("Bonus za WiarygodnoúÊ", f"{bonus:+.1f}%")
+                    st.metric("Bonus za Wiarygodno≈õƒá", f"{bonus:+.1f}%")
                 
                 with col_v3:
                     effective = voting.get('effective_weight', 5)
@@ -7977,7 +7977,7 @@ def show_kredyty_page(stan_spolki, cele):
             # Ekspertyza
             expertise = persona_data.get('expertise_areas', {})
             if expertise:
-                st.markdown("#### ?? Obszary Ekspertyzy")
+                st.markdown("#### üéØ Obszary Ekspertyzy")
                 
                 sectors = expertise.get('sectors', {})
                 if sectors:
@@ -7996,37 +7996,37 @@ def show_kredyty_page(stan_spolki, cele):
             # Personal agenda
             agenda = persona_data.get('personal_agenda', {})
             if agenda:
-                st.markdown("#### ?? Osobista Agenda")
+                st.markdown("#### üéØ Osobista Agenda")
                 
                 goal = agenda.get('primary_goal', '')
                 progress = agenda.get('progress', 0)
                 
                 if goal:
                     st.info(f"**Cel:** {goal}")
-                    st.progress(progress, text=f"PostÍp: {progress:.0%}")
+                    st.progress(progress, text=f"Postƒôp: {progress:.0%}")
                 
                 tactics = agenda.get('tactics', [])
                 if tactics:
                     st.markdown("**Taktyki:**")
                     for tactic in tactics:
-                        st.write(f"ï {tactic}")
+                        st.write(f"‚Ä¢ {tactic}")
             
             # Communication style
             comm = persona_data.get('communication_style', {})
             if comm:
-                st.markdown("#### ?? Styl Komunikacji")
+                st.markdown("#### üí¨ Styl Komunikacji")
                 
                 catchphrases = comm.get('catchphrases', [])
                 if catchphrases:
                     st.markdown("**Ulubione zwroty:**")
                     for phrase in catchphrases[:3]:
-                        st.write(f"?? \"{phrase}\"")
+                        st.write(f"üí¨ \"{phrase}\"")
                 
                 col_c1, col_c2, col_c3 = st.columns(3)
                 
                 with col_c1:
                     verbosity = comm.get('verbosity', 0.5)
-                    st.metric("SzczegÛ≥owoúÊ", f"{verbosity:.0%}")
+                    st.metric("Szczeg√≥≈Çowo≈õƒá", f"{verbosity:.0%}")
                 
                 with col_c2:
                     humor = comm.get('humor', 0.3)
@@ -8034,49 +8034,49 @@ def show_kredyty_page(stan_spolki, cele):
                 
                 with col_c3:
                     formality = comm.get('formality', 0.5)
-                    st.metric("FormalnoúÊ", f"{formality:.0%}")
+                    st.metric("Formalno≈õƒá", f"{formality:.0%}")
 
 def show_markets_page(stan_spolki, cele):
-    """Strona analizy rynkÛw geograficznych"""
-    st.title("?? Analiza RynkÛw Globalnych")
+    """Strona analizy rynk√≥w geograficznych"""
+    st.title("üåç Analiza Rynk√≥w Globalnych")
     
     st.markdown("""
-    Analiza úwiatowych indeksÛw, Twojego portfela i ekspozycji geograficznej.
+    Analiza ≈õwiatowych indeks√≥w, Twojego portfela i ekspozycji geograficznej.
     """)
     
-    # === TABS - dodaj nowy tab dla indeksÛw ===
+    # === TABS - dodaj nowy tab dla indeks√≥w ===
     tab_indices, tab_portfolio, tab_correlations, tab_insights, tab_recommendations = st.tabs([
-        "?? åwiatowe Indeksy", "??? TwÛj Portfel", "?? Korelacje", "?? Insights", "?? Rekomendacje"
+        "üìä ≈öwiatowe Indeksy", "üó∫Ô∏è Tw√≥j Portfel", "üîó Korelacje", "üí° Insights", "üéØ Rekomendacje"
     ])
     
-    # === TAB 1: åWIATOWE INDEKSY ===
+    # === TAB 1: ≈öWIATOWE INDEKSY ===
     with tab_indices:
-        st.markdown("### ?? G≥Ûwne Indeksy Gie≥dowe")
+        st.markdown("### üìä G≈Ç√≥wne Indeksy Gie≈Çdowe")
         
-        # Definicje indeksÛw
+        # Definicje indeks√≥w
         indices = {
-            "???? S&P 500": "^GSPC",
-            "???? Nasdaq": "^IXIC",
-            "???? Dow Jones": "^DJI",
-            "???? Euro Stoxx 50": "^STOXX50E",
-            "???? FTSE 100": "^FTSE",
-            "???? DAX": "^GDAXI",
-            "???? Nikkei 225": "^N225",
-            "???? Shanghai Composite": "000001.SS",
-            "?? Bitcoin": "BTC-USD",
-            "?? Ethereum": "ETH-USD"
+            "üá∫üá∏ S&P 500": "^GSPC",
+            "üá∫üá∏ Nasdaq": "^IXIC",
+            "üá∫üá∏ Dow Jones": "^DJI",
+            "üá™üá∫ Euro Stoxx 50": "^STOXX50E",
+            "üá¨üáß FTSE 100": "^FTSE",
+            "üá©üá™ DAX": "^GDAXI",
+            "üáØüáµ Nikkei 225": "^N225",
+            "üá®üá≥ Shanghai Composite": "000001.SS",
+            "ü™ô Bitcoin": "BTC-USD",
+            "ü™ô Ethereum": "ETH-USD"
         }
         
         # Pobierz dane
-        st.caption("?? Dane z ostatnich 30 dni")
+        st.caption("üìà Dane z ostatnich 30 dni")
         
         col1, col2 = st.columns([2, 1])
         
         with col1:
             # Multi-line chart z wszystkimi indeksami (znormalizowane do 100)
-            st.markdown("**?? PorÛwnanie Wydajnoúci (znormalizowane do 100)**")
+            st.markdown("**üìà Por√≥wnanie Wydajno≈õci (znormalizowane do 100)**")
             
-            with st.spinner("Pobieranie danych indeksÛw..."):
+            with st.spinner("Pobieranie danych indeks√≥w..."):
                 fig = go.Figure()
                 
                 for name, ticker in indices.items():
@@ -8093,15 +8093,15 @@ def show_markets_page(stan_spolki, cele):
                                 y=normalized.values,
                                 mode='lines',
                                 name=name,
-                                hovertemplate=f'<b>{name}</b><br>Data: %{{x}}<br>WartoúÊ: %{{y:.2f}}<extra></extra>'
+                                hovertemplate=f'<b>{name}</b><br>Data: %{{x}}<br>Warto≈õƒá: %{{y:.2f}}<extra></extra>'
                             ))
                     except Exception as e:
-                        st.caption(f"?? Nie uda≥o siÍ pobraÊ {name}: {str(e)[:50]}")
+                        st.caption(f"‚ö†Ô∏è Nie uda≈Ço siƒô pobraƒá {name}: {str(e)[:50]}")
                 
                 fig.update_layout(
-                    title="WydajnoúÊ IndeksÛw (ostatnie 30 dni)",
+                    title="Wydajno≈õƒá Indeks√≥w (ostatnie 30 dni)",
                     xaxis_title="Data",
-                    yaxis_title="WartoúÊ znormalizowana (start = 100)",
+                    yaxis_title="Warto≈õƒá znormalizowana (start = 100)",
                     height=500,
                     hovermode='x unified',
                     legend=dict(
@@ -8116,7 +8116,7 @@ def show_markets_page(stan_spolki, cele):
                 st.plotly_chart(fig, width="stretch")
         
         with col2:
-            st.markdown("**?? Zmiana 1M:**")
+            st.markdown("**üìä Zmiana 1M:**")
             
             # Tabela zmian
             changes_data = []
@@ -8131,8 +8131,8 @@ def show_markets_page(stan_spolki, cele):
                         end_price = data['Close'].iloc[-1]
                         change_pct = ((end_price - start_price) / start_price) * 100
                         
-                        emoji = "??" if change_pct > 0 else "??"
-                        color = "??" if change_pct > 0 else "??"
+                        emoji = "üìà" if change_pct > 0 else "üìâ"
+                        color = "üü¢" if change_pct > 0 else "üî¥"
                         
                         changes_data.append({
                             "Indeks": name,
@@ -8155,13 +8155,13 @@ def show_markets_page(stan_spolki, cele):
                 )
         
         st.markdown("---")
-        st.caption("?? Dane pobierane z Yahoo Finance w czasie rzeczywistym")
+        st.caption("üí° Dane pobierane z Yahoo Finance w czasie rzeczywistym")
     
-    # === TAB 2: TW”J PORTFEL (stary content) ===
+    # === TAB 2: TW√ìJ PORTFEL (stary content) ===
     with tab_portfolio:
-        st.markdown("### ??? Geograficzna Alokacja Twojego Portfela")
+        st.markdown("### üó∫Ô∏è Geograficzna Alokacja Twojego Portfela")
         
-        # Analiza sk≥adu rynkÛw
+        # Analiza sk≈Çadu rynk√≥w
         market_analysis = analyze_market_composition(stan_spolki)
         correlations = calculate_market_correlations(stan_spolki)
         insights = generate_market_insights(market_analysis, correlations)
@@ -8171,13 +8171,13 @@ def show_markets_page(stan_spolki, cele):
         
         with col1:
             st.metric(
-                "?? WartoúÊ Portfela",
+                "üíº Warto≈õƒá Portfela",
                 f"{market_analysis['total_value']:,.0f} PLN"
             )
         
         with col2:
             st.metric(
-                "?? Dywersyfikacja Geo",
+                "üåç Dywersyfikacja Geo",
                 f"{market_analysis['diversification_score']:.0f}/100",
                 delta="Dobra" if market_analysis['diversification_score'] > 60 else "Niska"
             )
@@ -8185,14 +8185,14 @@ def show_markets_page(stan_spolki, cele):
         with col3:
             markets_count = sum(1 for m in market_analysis['markets'].values() if m['count'] > 0)
             st.metric(
-                "??? Aktywne Rynki",
+                "üó∫Ô∏è Aktywne Rynki",
                 markets_count
             )
         
         st.markdown("---")
         
         # Alokacja geograficzna
-        st.markdown("### ?? Alokacja Geograficzna")
+        st.markdown("### üìä Alokacja Geograficzna")
         
         col_chart1, col_chart2 = st.columns([2, 1])
         
@@ -8210,21 +8210,21 @@ def show_markets_page(stan_spolki, cele):
                         colors=['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b']
                     ),
                     textinfo='label+percent',
-                    hovertemplate='<b>%{label}</b><br>WartoúÊ: %{value:,.0f} PLN<br>Udzia≥: %{percent}<extra></extra>'
+                    hovertemplate='<b>%{label}</b><br>Warto≈õƒá: %{value:,.0f} PLN<br>Udzia≈Ç: %{percent}<extra></extra>'
                 )])
                 
                 fig.update_layout(
-                    title="Podzia≥ Portfela wed≥ug RynkÛw",
+                    title="Podzia≈Ç Portfela wed≈Çug Rynk√≥w",
                     height=400,
                     showlegend=True
                 )
                 
                 st.plotly_chart(fig, width="stretch")
             else:
-                st.info("Brak danych do wyúwietlenia")
+                st.info("Brak danych do wy≈õwietlenia")
         
         with col_chart2:
-            st.markdown("**?? SzczegÛ≥y po rynkach:**")
+            st.markdown("**üìà Szczeg√≥≈Çy po rynkach:**")
             
             for market_name, market_data in sorted(
                 markets.items(), 
@@ -8237,37 +8237,37 @@ def show_markets_page(stan_spolki, cele):
                     st.caption(f"{market_data['percentage']:.1f}% | {market_data['count']} pozycji | {market_data['value_pln']:,.0f} PLN")
                     st.markdown("---")
         
-        # Tabela szczegÛ≥Ûw
-        st.markdown("### ?? Lista TickerÛw wed≥ug RynkÛw")
+        # Tabela szczeg√≥≈Ç√≥w
+        st.markdown("### üìã Lista Ticker√≥w wed≈Çug Rynk√≥w")
         
         for market_name, market_data in sorted(markets.items(), key=lambda x: x[1]['percentage'], reverse=True):
             if market_data['tickers']:
-                with st.expander(f"{market_name} - {len(market_data['tickers'])} tickerÛw"):
+                with st.expander(f"{market_name} - {len(market_data['tickers'])} ticker√≥w"):
                     st.write(", ".join(market_data['tickers']))
     
     # === TAB 3: KORELACJE ===
     with tab_correlations:
-        st.markdown("### ?? Korelacje miÍdzy Rynkami")
+        st.markdown("### üîó Korelacje miƒôdzy Rynkami")
         
         st.info("""
         **Interpretacja korelacji:**
-        - **+0.7 do +1.0**: Silna pozytywna korelacja (rynki poruszajπ siÍ razem)
+        - **+0.7 do +1.0**: Silna pozytywna korelacja (rynki poruszajƒÖ siƒô razem)
         - **+0.3 do +0.7**: Umiarkowana korelacja
-        - **-0.3 to +0.3**: S≥aba/brak korelacji (dobre dla dywersyfikacji!)
+        - **-0.3 to +0.3**: S≈Çaba/brak korelacji (dobre dla dywersyfikacji!)
         - **-0.7 to -0.3**: Umiarkowana negatywna korelacja
-        - **-1.0 to -0.7**: Silna negatywna korelacja (rynki poruszajπ siÍ w przeciwnych kierunkach)
+        - **-1.0 to -0.7**: Silna negatywna korelacja (rynki poruszajƒÖ siƒô w przeciwnych kierunkach)
         """)
         
         market_changes = correlations.get('market_changes', {})
         
         if market_changes:
             # Performance table
-            st.markdown("**?? Aktualna WydajnoúÊ RynkÛw:**")
+            st.markdown("**üìä Aktualna Wydajno≈õƒá Rynk√≥w:**")
             
             perf_data = []
             for market, change in sorted(market_changes.items(), key=lambda x: x[1], reverse=True):
-                emoji = "??" if change > 0 else "??"
-                color = "??" if change > 2 else "??" if change < -2 else "??"
+                emoji = "üìà" if change > 0 else "üìâ"
+                color = "üü¢" if change > 2 else "üî¥" if change < -2 else "üü°"
                 
                 perf_data.append({
                     "Rynek": market,
@@ -8285,14 +8285,14 @@ def show_markets_page(stan_spolki, cele):
             st.markdown("---")
             
             # Heatmapa korelacji (uproszczona)
-            st.markdown("**?? Macierz Korelacji (uproszczona):**")
+            st.markdown("**üî• Macierz Korelacji (uproszczona):**")
             
             corr_data = correlations.get('correlations', {})
             
             if corr_data:
                 markets_list = list(market_changes.keys())
                 
-                # StwÛrz macierz
+                # Stw√≥rz macierz
                 corr_matrix = []
                 for m1 in markets_list:
                     row = []
@@ -8316,7 +8316,7 @@ def show_markets_page(stan_spolki, cele):
                 ))
                 
                 fig.update_layout(
-                    title="Korelacje miÍdzy Rynkami",
+                    title="Korelacje miƒôdzy Rynkami",
                     xaxis_title="Rynek",
                     yaxis_title="Rynek",
                     height=500
@@ -8324,11 +8324,11 @@ def show_markets_page(stan_spolki, cele):
                 
                 st.plotly_chart(fig, width="stretch")
         else:
-            st.warning("Brak danych o zmianach cen - nie moøna obliczyÊ korelacji")
+            st.warning("Brak danych o zmianach cen - nie mo≈ºna obliczyƒá korelacji")
     
     # === TAB 4: INSIGHTS ===
     with tab_insights:
-        st.markdown("### ?? Insights & Analiza")
+        st.markdown("### üí° Insights & Analiza")
         
         if insights:
             for insight in insights:
@@ -8339,28 +8339,28 @@ def show_markets_page(stan_spolki, cele):
                 else:
                     st.info(f"{insight['icon']} **{insight['title']}**\n\n{insight['description']}")
         else:
-            st.info("Brak insights do wyúwietlenia")
+            st.info("Brak insights do wy≈õwietlenia")
     
     # === TAB 5: REKOMENDACJE ===
     with tab_recommendations:
-        st.markdown("### ?? Rekomendacje Rebalancingu")
+        st.markdown("### üéØ Rekomendacje Rebalancingu")
         
         markets = market_analysis['markets']
         
         st.markdown("""
         **Idealna alokacja geograficzna (benchmark):**
-        - ???? **US**: 50-60% (najwiÍkszy, najbardziej p≥ynny rynek)
-        - ???? **EU**: 15-25% (stabilny, dywidendy)
-        - ???? **Canada**: 5-10% (surowce, banki)
-        - ?? **Emerging**: 5-15% (wyøszy potencja≥ wzrostu, wyøsze ryzyko)
-        - ?? **Crypto**: 2-10% (opcjonalne, wysokie ryzyko)
+        - üá∫üá∏ **US**: 50-60% (najwiƒôkszy, najbardziej p≈Çynny rynek)
+        - üá™üá∫ **EU**: 15-25% (stabilny, dywidendy)
+        - üá®üá¶ **Canada**: 5-10% (surowce, banki)
+        - üåè **Emerging**: 5-15% (wy≈ºszy potencja≈Ç wzrostu, wy≈ºsze ryzyko)
+        - üíé **Crypto**: 2-10% (opcjonalne, wysokie ryzyko)
         """)
         
         st.markdown("---")
         
-        st.markdown("**?? Twoja Alokacja vs Benchmark:**")
+        st.markdown("**üìä Twoja Alokacja vs Benchmark:**")
         
-        # PorÛwnaj z benchmarkiem
+        # Por√≥wnaj z benchmarkiem
         benchmark = {
             "US": {"min": 50, "max": 60, "ideal": 55},
             "EU": {"min": 15, "max": 25, "ideal": 20},
@@ -8381,19 +8381,19 @@ def show_markets_page(stan_spolki, cele):
             action = ""
             
             if current < min_val:
-                status = "?? Niedowaga"
-                action = f"ZwiÍksz ekspozycjÍ o {min_val - current:.1f}%"
+                status = "üî¥ Niedowaga"
+                action = f"Zwiƒôksz ekspozycjƒô o {min_val - current:.1f}%"
             elif current > max_val:
-                status = "?? Nadwaga"
-                action = f"Zmniejsz ekspozycjÍ o {current - max_val:.1f}%"
+                status = "üî¥ Nadwaga"
+                action = f"Zmniejsz ekspozycjƒô o {current - max_val:.1f}%"
             elif current < ideal - 5:
-                status = "?? Lekka niedowaga"
-                action = f"Rozwaø zwiÍkszenie o {ideal - current:.1f}%"
+                status = "üü° Lekka niedowaga"
+                action = f"Rozwa≈º zwiƒôkszenie o {ideal - current:.1f}%"
             elif current > ideal + 5:
-                status = "?? Lekka nadwaga"
-                action = f"Rozwaø zmniejszenie o {current - ideal:.1f}%"
+                status = "üü° Lekka nadwaga"
+                action = f"Rozwa≈º zmniejszenie o {current - ideal:.1f}%"
             else:
-                status = "?? OK"
+                status = "üü¢ OK"
                 action = "Alokacja w normie"
             
             recommendations.append({
@@ -8409,7 +8409,7 @@ def show_markets_page(stan_spolki, cele):
         
         st.markdown("---")
         
-        st.markdown("**?? Konkretne Akcje:**")
+        st.markdown("**üí° Konkretne Akcje:**")
         
         # Generuj konkretne sugestie
         us_pct = markets.get("US", {}).get('percentage', 0)
@@ -8418,121 +8418,121 @@ def show_markets_page(stan_spolki, cele):
         emerging_pct = markets.get("Emerging", {}).get('percentage', 0)
         
         if us_pct < 50:
-            st.info("?? **ZwiÍksz US**: Kup ETF S&P 500 (np. VOO, SPY) lub pojedyncze blue chips (AAPL, MSFT, GOOGL)")
+            st.info("üìå **Zwiƒôksz US**: Kup ETF S&P 500 (np. VOO, SPY) lub pojedyncze blue chips (AAPL, MSFT, GOOGL)")
         
         if eu_pct > 30:
-            st.warning("?? **Zmniejsz EU**: Rozwaø sprzedaø czÍúci VWCE.DE lub europejskich akcji")
+            st.warning("üìå **Zmniejsz EU**: Rozwa≈º sprzeda≈º czƒô≈õci VWCE.DE lub europejskich akcji")
         
         if crypto_pct > 10:
-            st.warning("?? **Zmniejsz Crypto**: Sprzedaj czÍúÊ BTC/ETH, reinwestuj w tradycyjne aktywa")
+            st.warning("üìå **Zmniejsz Crypto**: Sprzedaj czƒô≈õƒá BTC/ETH, reinwestuj w tradycyjne aktywa")
         elif crypto_pct < 2 and market_analysis['total_value'] > 20000:
-            st.info("?? **Dodaj Crypto**: Rozwaø ma≥π pozycjÍ w BTC lub ETH (2-5% portfela)")
+            st.info("üìå **Dodaj Crypto**: Rozwa≈º ma≈ÇƒÖ pozycjƒô w BTC lub ETH (2-5% portfela)")
         
         if emerging_pct < 5:
-            st.info("?? **Dodaj Emerging Markets**: Rozwaø ETF (VWO) lub pojedyncze akcje (TSM, BABA, VALE)")
+            st.info("üìå **Dodaj Emerging Markets**: Rozwa≈º ETF (VWO) lub pojedyncze akcje (TSM, BABA, VALE)")
 
 def show_snapshots_page():
-    """Strona Daily Snapshots - historia codziennych zapisÛw portfela"""
-    st.title("?? Daily Snapshots")
-    st.markdown("*Automatyczny system codziennych zapisÛw stanu portfela*")
+    """Strona Daily Snapshots - historia codziennych zapis√≥w portfela"""
+    st.title("üì∏ Daily Snapshots")
+    st.markdown("*Automatyczny system codziennych zapis√≥w stanu portfela*")
     
-    # Import modu≥u
+    # Import modu≈Çu
     try:
         import daily_snapshot as ds
     except ImportError:
-        st.error("? Modu≥ daily_snapshot.py nie znaleziony")
-        st.info("Upewnij siÍ øe plik daily_snapshot.py znajduje siÍ w tym samym folderze co streamlit_app.py")
+        st.error("‚ùå Modu≈Ç daily_snapshot.py nie znaleziony")
+        st.info("Upewnij siƒô ≈ºe plik daily_snapshot.py znajduje siƒô w tym samym folderze co streamlit_app.py")
         return
     
-    # Pokaø statystyki
+    # Poka≈º statystyki
     stats = ds.get_snapshot_stats()
     
     if stats['count'] == 0:
-        st.warning("?? Brak zapisanych snapshots")
+        st.warning("‚ö†Ô∏è Brak zapisanych snapshots")
         
-        # Sprawdü czy istnieje monthly_snapshot.json do migracji
+        # Sprawd≈∫ czy istnieje monthly_snapshot.json do migracji
         if os.path.exists('monthly_snapshot.json'):
             st.info("""
-            **?? Wykryto historyczne dane!**
+            **üîÑ Wykryto historyczne dane!**
             
             Znaleziono `monthly_snapshot.json` z historycznymi danymi portfela.
-            Moøesz zmigrowaÊ te dane do nowego systemu daily snapshots.
+            Mo≈ºesz zmigrowaƒá te dane do nowego systemu daily snapshots.
             """)
             
             col1, col2 = st.columns(2)
             
             with col1:
-                if st.button("?? Migruj dane historyczne", type="primary"):
-                    with st.spinner("MigrujÍ monthly_snapshot.json..."):
+                if st.button("üîÑ Migruj dane historyczne", type="primary"):
+                    with st.spinner("Migrujƒô monthly_snapshot.json..."):
                         count = ds.migrate_monthly_to_daily_snapshots()
                         if count > 0:
-                            st.success(f"? Zmigrowano {count} snapshot!")
+                            st.success(f"‚úÖ Zmigrowano {count} snapshot!")
                             st.rerun()
                         else:
-                            st.info("?? Dane juø zmigrowane lub brak nowych danych")
+                            st.info("‚ÑπÔ∏è Dane ju≈º zmigrowane lub brak nowych danych")
             
             with col2:
-                if st.button("?? UtwÛrz nowy snapshot"):
-                    with st.spinner("TworzÍ snapshot..."):
+                if st.button("üì∏ Utw√≥rz nowy snapshot"):
+                    with st.spinner("Tworzƒô snapshot..."):
                         success = ds.save_daily_snapshot()
                         if success:
-                            st.success("? Snapshot zapisany!")
+                            st.success("‚úÖ Snapshot zapisany!")
                             st.rerun()
                         else:
-                            st.error("? B≥πd przy tworzeniu snapshotu")
+                            st.error("‚ùå B≈ÇƒÖd przy tworzeniu snapshotu")
         else:
             st.info("""
-            **Jak zaczπÊ?**
-            1. Uruchom rÍcznie: `python daily_snapshot.py`
-            2. Lub kliknij przycisk poniøej
+            **Jak zaczƒÖƒá?**
+            1. Uruchom rƒôcznie: `python daily_snapshot.py`
+            2. Lub kliknij przycisk poni≈ºej
             3. Skonfiguruj automatyczne uruchamianie (Windows Task Scheduler o 21:00)
             """)
             
-            if st.button("?? UtwÛrz pierwszy snapshot teraz"):
-                with st.spinner("TworzÍ snapshot..."):
+            if st.button("üì∏ Utw√≥rz pierwszy snapshot teraz"):
+                with st.spinner("Tworzƒô snapshot..."):
                     success = ds.save_daily_snapshot()
                     if success:
-                        st.success("? Snapshot zapisany!")
+                        st.success("‚úÖ Snapshot zapisany!")
                         st.rerun()
                     else:
-                        st.error("? B≥πd przy tworzeniu snapshotu")
+                        st.error("‚ùå B≈ÇƒÖd przy tworzeniu snapshotu")
         return
     
-    # Metryki g≥Ûwne
+    # Metryki g≈Ç√≥wne
     col1, col2, col3, col4 = st.columns(4)
     
     with col1:
-        st.metric("?? Liczba Snapshots", stats['count'])
+        st.metric("üìä Liczba Snapshots", stats['count'])
     
     with col2:
-        st.metric("?? Dni åledzenia", stats['days_tracked'])
+        st.metric("üìÖ Dni ≈öledzenia", stats['days_tracked'])
     
     with col3:
         delta = f"{stats['net_worth_change_pct']:+.1f}%"
         st.metric(
-            "?? Net Worth", 
+            "üíé Net Worth", 
             f"{stats['last_net_worth']:,.0f} PLN",
             delta=delta
         )
     
     with col4:
-        st.metric("? Snapshots/tydzieÒ", f"{stats['avg_snapshots_per_week']:.1f}")
+        st.metric("‚ö° Snapshots/tydzie≈Ñ", f"{stats['avg_snapshots_per_week']:.1f}")
     
     st.markdown("---")
     
-    # Wczytaj pe≥nπ historiÍ
+    # Wczytaj pe≈ÇnƒÖ historiƒô
     history = ds.load_snapshot_history()
     
-    # Zak≥adki
+    # Zak≈Çadki
     tab1, tab2, tab3, tab4 = st.tabs([
-        "?? Wykresy", 
-        "?? Historia Tabela", 
-        "?? SzczegÛ≥y Ostatniego",
-        "?? Zarzπdzanie"
+        "üìà Wykresy", 
+        "üìä Historia Tabela", 
+        "üéØ Szczeg√≥≈Çy Ostatniego",
+        "‚öôÔ∏è ZarzƒÖdzanie"
     ])
     
     with tab1:
-        st.subheader("?? Net Worth Over Time")
+        st.subheader("üìà Net Worth Over Time")
         
         # Przygotuj dane do wykresu
         dates = [s['date'][:10] for s in history]
@@ -8541,7 +8541,7 @@ def show_snapshots_page():
         crypto_pln = [s['crypto']['value_pln'] if s.get('crypto') else 0 for s in history]
         debt_pln = [s['debt']['total_pln'] if s.get('debt') else 0 for s in history]
         
-        # Wykres g≥Ûwny - Net Worth
+        # Wykres g≈Ç√≥wny - Net Worth
         fig1 = go.Figure()
         
         fig1.add_trace(go.Scatter(
@@ -8556,7 +8556,7 @@ def show_snapshots_page():
         ))
         
         fig1.update_layout(
-            title='?? Net Worth (WartoúÊ Netto)',
+            title='üíé Net Worth (Warto≈õƒá Netto)',
             xaxis_title='Data',
             yaxis_title='PLN',
             hovermode='x unified',
@@ -8565,8 +8565,8 @@ def show_snapshots_page():
         
         st.plotly_chart(fig1, width="stretch", key="snapshot_networth_chart")
         
-        # Wykres sk≥adowych
-        st.subheader("?? Sk≥adowe Portfela")
+        # Wykres sk≈Çadowych
+        st.subheader("üìä Sk≈Çadowe Portfela")
         
         fig2 = go.Figure()
         
@@ -8592,12 +8592,12 @@ def show_snapshots_page():
             x=dates,
             y=debt_pln,
             mode='lines',
-            name='Zobowiπzania',
+            name='ZobowiƒÖzania',
             line=dict(color='#F44336', width=2, dash='dash')
         ))
         
         fig2.update_layout(
-            title='Sk≥adowe AktywÛw i PasywÛw',
+            title='Sk≈Çadowe Aktyw√≥w i Pasyw√≥w',
             xaxis_title='Data',
             yaxis_title='PLN',
             hovermode='x unified',
@@ -8607,7 +8607,7 @@ def show_snapshots_page():
         st.plotly_chart(fig2, width="stretch", key="snapshot_components_chart")
         
         # Wykres % change
-        st.subheader("?? Zmiana Procentowa (od poczπtku)")
+        st.subheader("üìä Zmiana Procentowa (od poczƒÖtku)")
         
         if net_worths:
             base_value = net_worths[0]
@@ -8639,18 +8639,18 @@ def show_snapshots_page():
             st.plotly_chart(fig3, width="stretch", key="snapshot_percent_change_chart")
     
     with tab2:
-        st.subheader("?? Historia Wszystkich Snapshots")
+        st.subheader("üìä Historia Wszystkich Snapshots")
         
-        # Przygotuj tabelÍ
+        # Przygotuj tabelƒô
         table_data = []
-        for i, s in enumerate(reversed(history)):  # Najnowsze na gÛrze
+        for i, s in enumerate(reversed(history)):  # Najnowsze na g√≥rze
             table_data.append({
                 '#': len(history) - i,
                 'Data': s['date'][:10],
                 'Godzina': s['date'][11:16],
                 'Akcje (PLN)': f"{s['stocks']['value_pln']:,.0f}" if s.get('stocks') else '-',
                 'Crypto (PLN)': f"{s['crypto']['value_pln']:,.0f}" if s.get('crypto') else '-',
-                'Zobowiπzania': f"{s['debt']['total_pln']:,.0f}" if s.get('debt') else '-',
+                'ZobowiƒÖzania': f"{s['debt']['total_pln']:,.0f}" if s.get('debt') else '-',
                 'Net Worth': f"{s['totals']['net_worth_pln']:,.0f}",
                 'USD/PLN': f"{s['usd_pln_rate']:.4f}"
             })
@@ -8661,28 +8661,28 @@ def show_snapshots_page():
         # Opcja exportu
         csv = df.to_csv(index=False).encode('utf-8')
         st.download_button(
-            label="?? Pobierz jako CSV",
+            label="üì• Pobierz jako CSV",
             data=csv,
             file_name=f"snapshots_history_{datetime.now().strftime('%Y%m%d')}.csv",
             mime='text/csv'
         )
     
     with tab3:
-        st.subheader("?? SzczegÛ≥y Ostatniego Snapshotu")
+        st.subheader("üéØ Szczeg√≥≈Çy Ostatniego Snapshotu")
         
         last = history[-1]
         
         col1, col2 = st.columns(2)
         
         with col1:
-            st.markdown("**?? Informacje Podstawowe**")
+            st.markdown("**üìÖ Informacje Podstawowe**")
             st.write(f"Data: `{last['date']}`")
             st.write(f"Kurs USD/PLN: `{last['usd_pln_rate']:.4f}`")
         
         with col2:
-            st.markdown("**?? Podsumowanie**")
+            st.markdown("**üí∞ Podsumowanie**")
             st.write(f"Aktywa: `{last['totals']['assets_pln']:,.2f} PLN`")
-            st.write(f"Zobowiπzania: `{last['totals']['debt_pln']:,.2f} PLN`")
+            st.write(f"ZobowiƒÖzania: `{last['totals']['debt_pln']:,.2f} PLN`")
             st.write(f"**Net Worth: `{last['totals']['net_worth_pln']:,.2f} PLN`**")
         
         st.markdown("---")
@@ -8691,119 +8691,119 @@ def show_snapshots_page():
         
         with col1:
             if last.get('stocks'):
-                st.markdown("**?? Akcje**")
-                st.write(f"WartoúÊ: `${last['stocks']['value_usd']:,.2f}` = `{last['stocks']['value_pln']:,.2f} PLN`")
+                st.markdown("**üìà Akcje**")
+                st.write(f"Warto≈õƒá: `${last['stocks']['value_usd']:,.2f}` = `{last['stocks']['value_pln']:,.2f} PLN`")
                 st.write(f"Pozycje: `{last['stocks']['positions']}`")
                 st.write(f"Cash: `${last['stocks']['cash_usd']:,.2f}`")
         
         with col2:
             if last.get('crypto'):
-                st.markdown("**? Kryptowaluty**")
-                st.write(f"WartoúÊ: `${last['crypto']['value_usd']:,.2f}` = `{last['crypto']['value_pln']:,.2f} PLN`")
+                st.markdown("**‚Çø Kryptowaluty**")
+                st.write(f"Warto≈õƒá: `${last['crypto']['value_usd']:,.2f}` = `{last['crypto']['value_pln']:,.2f} PLN`")
                 st.write(f"Pozycje: `{last['crypto']['positions']}`")
         
         if last.get('debt'):
-            st.markdown("**?? Zobowiπzania**")
+            st.markdown("**üí≥ ZobowiƒÖzania**")
             st.write(f"Suma: `{last['debt']['total_pln']:,.2f} PLN`")
-            st.write(f"Liczba kredytÛw: `{last['debt']['loans_count']}`")
+            st.write(f"Liczba kredyt√≥w: `{last['debt']['loans_count']}`")
         
-        # Pokaø raw JSON
-        with st.expander("?? Zobacz Raw JSON"):
+        # Poka≈º raw JSON
+        with st.expander("üîç Zobacz Raw JSON"):
             st.json(last)
     
     with tab4:
-        st.subheader("?? Zarzπdzanie Snapshots")
+        st.subheader("‚öôÔ∏è ZarzƒÖdzanie Snapshots")
         
-        st.markdown("**?? Tworzenie Snapshot**")
+        st.markdown("**üì∏ Tworzenie Snapshot**")
         
         col1, col2 = st.columns(2)
         
         with col1:
-            if st.button("?? UtwÛrz snapshot TERAZ"):
-                with st.spinner("TworzÍ snapshot..."):
+            if st.button("üì∏ Utw√≥rz snapshot TERAZ"):
+                with st.spinner("Tworzƒô snapshot..."):
                     success = ds.save_daily_snapshot()
                     if success:
-                        st.success("? Snapshot zapisany!")
+                        st.success("‚úÖ Snapshot zapisany!")
                         st.rerun()
                     else:
-                        st.error("? B≥πd")
+                        st.error("‚ùå B≈ÇƒÖd")
         
         with col2:
             should_create = ds.should_create_snapshot(target_hour=21)
             if should_create:
-                st.info("? Pora na dzienny snapshot (po 21:00)")
+                st.info("‚úÖ Pora na dzienny snapshot (po 21:00)")
             else:
                 today = datetime.now().strftime('%Y-%m-%d')
                 today_snapshots = [s for s in history if s['date'][:10] == today]
                 if today_snapshots:
-                    st.success(f"? Snapshot z dzisiaj juø istnieje ({today_snapshots[0]['date'][11:16]})")
+                    st.success(f"‚úÖ Snapshot z dzisiaj ju≈º istnieje ({today_snapshots[0]['date'][11:16]})")
                 else:
-                    st.warning("? Za wczeúnie (snapshot tworzone po 21:00)")
+                    st.warning("‚è≥ Za wcze≈õnie (snapshot tworzone po 21:00)")
         
         st.markdown("---")
         
-        st.markdown("**?? Konfiguracja Automatycznego Uruchamiania**")
+        st.markdown("**‚öôÔ∏è Konfiguracja Automatycznego Uruchamiania**")
         
         st.info("""
         **Windows Task Scheduler:**
-        1. OtwÛrz Task Scheduler (`taskschd.msc`)
-        2. Create Basic Task õ Nazwa: "Portfolio Daily Snapshot"
+        1. Otw√≥rz Task Scheduler (`taskschd.msc`)
+        2. Create Basic Task ‚Üí Nazwa: "Portfolio Daily Snapshot"
         3. Trigger: Daily o 21:00
         4. Action: Start a program
         5. Program: `run_daily_snapshot.bat`
-        6. Start in: `C:\\Users\\alech\\Desktop\\Horyzont PartnerÛw`
+        6. Start in: `C:\\Users\\alech\\Desktop\\Horyzont Partner√≥w`
         
-        **Plik .bat zosta≥ utworzony:** `run_daily_snapshot.bat`
+        **Plik .bat zosta≈Ç utworzony:** `run_daily_snapshot.bat`
         """)
         
         st.markdown("---")
         
-        st.markdown("**??? Zarzπdzanie Danymi**")
+        st.markdown("**üóëÔ∏è ZarzƒÖdzanie Danymi**")
         
-        st.write(f"?? Plik: `daily_snapshots.json`")
-        st.write(f"?? Rozmiar historii: {stats['count']} snapshots")
-        st.write(f"??  Automatyczna rotacja: ostatnie {ds.MAX_HISTORY_DAYS} dni")
+        st.write(f"üìÅ Plik: `daily_snapshots.json`")
+        st.write(f"üìä Rozmiar historii: {stats['count']} snapshots")
+        st.write(f"‚è±Ô∏è  Automatyczna rotacja: ostatnie {ds.MAX_HISTORY_DAYS} dni")
         
-        # Opcja usuniÍcia wszystkich snapshots (niebezpieczne!)
-        with st.expander("?? Niebezpieczna Strefa"):
-            st.warning("**Uwaga!** Poniøsze akcje sπ nieodwracalne!")
+        # Opcja usuniƒôcia wszystkich snapshots (niebezpieczne!)
+        with st.expander("‚ö†Ô∏è Niebezpieczna Strefa"):
+            st.warning("**Uwaga!** Poni≈ºsze akcje sƒÖ nieodwracalne!")
             
-            if st.button("??? USU— WSZYSTKIE SNAPSHOTS", type="secondary"):
+            if st.button("üóëÔ∏è USU≈É WSZYSTKIE SNAPSHOTS", type="secondary"):
                 if st.session_state.get('confirm_delete_snapshots'):
                     try:
                         os.remove('daily_snapshots.json')
-                        st.success("? UsuniÍto wszystkie snapshots")
+                        st.success("‚úÖ Usuniƒôto wszystkie snapshots")
                         st.session_state.confirm_delete_snapshots = False
                         st.rerun()
                     except Exception as e:
-                        st.error(f"? B≥πd: {e}")
+                        st.error(f"‚ùå B≈ÇƒÖd: {e}")
                 else:
                     st.session_state.confirm_delete_snapshots = True
-                    st.warning("?? Kliknij ponownie aby potwierdziÊ usuniÍcie")
+                    st.warning("‚ö†Ô∏è Kliknij ponownie aby potwierdziƒá usuniƒôcie")
 
 def show_settings_page():
-    """Strona ustawieÒ"""
-    st.title("?? Ustawienia")
+    """Strona ustawie≈Ñ"""
+    st.title("‚öôÔ∏è Ustawienia")
     
     # === NOWA SEKCJA: AI PARTNERZY ===
-    st.subheader("?? Partnerzy AI")
+    st.subheader("ü§ñ Partnerzy AI")
     
     col1, col2 = st.columns(2)
     
     with col1:
         tryb_ai = st.selectbox(
-            "Tryb odpowiedzi partnerÛw",
-            ["ZwiÍz≥y", "Normalny", "SzczegÛ≥owy"],
-            index=1,  # Normalny jako domyúlny
+            "Tryb odpowiedzi partner√≥w",
+            ["Zwiƒôz≈Çy", "Normalny", "Szczeg√≥≈Çowy"],
+            index=1,  # Normalny jako domy≈õlny
             key="ai_mode_select",
-            help="ZwiÍz≥y: 2-4 zdania | Normalny: 4-6 zdaÒ | SzczegÛ≥owy: 8-12 zdaÒ"
+            help="Zwiƒôz≈Çy: 2-4 zdania | Normalny: 4-6 zda≈Ñ | Szczeg√≥≈Çowy: 8-12 zda≈Ñ"
         )
         
-        # Mapuj wybÛr na wartoúÊ uøywanπ w kodzie
+        # Mapuj wyb√≥r na warto≈õƒá u≈ºywanƒÖ w kodzie
         mode_map = {
-            "ZwiÍz≥y": "zwiezly",
+            "Zwiƒôz≈Çy": "zwiezly",
             "Normalny": "normalny",
-            "SzczegÛ≥owy": "szczegolowy"
+            "Szczeg√≥≈Çowy": "szczegolowy"
         }
         
         if 'ai_response_mode' not in st.session_state:
@@ -8815,31 +8815,31 @@ def show_settings_page():
     
     with col2:
         st.info("""
-        **Opis trybÛw:**
+        **Opis tryb√≥w:**
         
-        ?? **ZwiÍz≥y**: KrÛtkie, konkretne odpowiedzi (2-4 zdania)
+        üéØ **Zwiƒôz≈Çy**: Kr√≥tkie, konkretne odpowiedzi (2-4 zdania)
         
-        ?? **Normalny**: Zbalansowane odpowiedzi z danymi (4-6 zdaÒ)
+        üìä **Normalny**: Zbalansowane odpowiedzi z danymi (4-6 zda≈Ñ)
         
-        ?? **SzczegÛ≥owy**: Pe≥na analiza z uzasadnieniami (8-12 zdaÒ)
+        üìö **Szczeg√≥≈Çowy**: Pe≈Çna analiza z uzasadnieniami (8-12 zda≈Ñ)
         """)
     
-    # Statystyki historii rozmÛw (Session)
+    # Statystyki historii rozm√≥w (Session)
     if 'partner_history' in st.session_state and st.session_state.partner_history:
         st.markdown("---")
-        st.markdown("**?? Historia rozmÛw (Sesja bieøπca):**")
+        st.markdown("**üìù Historia rozm√≥w (Sesja bie≈ºƒÖca):**")
         
         total_messages = sum(len(history) for history in st.session_state.partner_history.values())
-        st.metric("Wiadomoúci w tej sesji", total_messages)
+        st.metric("Wiadomo≈õci w tej sesji", total_messages)
         
-        if st.button("??? WyczyúÊ historiÍ sesji", width="stretch", key="clear_session"):
+        if st.button("üóëÔ∏è Wyczy≈õƒá historiƒô sesji", width="stretch", key="clear_session"):
             st.session_state.partner_history = {}
-            st.success("? Historia sesji wyczyszczona!")
+            st.success("‚úÖ Historia sesji wyczyszczona!")
             st.rerun()
     
-    # Statystyki pamiÍci d≥ugoterminowej
+    # Statystyki pamiƒôci d≈Çugoterminowej
     st.markdown("---")
-    st.markdown("**?? PamiÍÊ D≥ugoterminowa (Permanentna):**")
+    st.markdown("**üß† Pamiƒôƒá D≈Çugoterminowa (Permanentna):**")
     
     if IMPORTS_OK and PERSONAS:
         col_mem1, col_mem2 = st.columns(2)
@@ -8849,7 +8849,7 @@ def show_settings_page():
         
         with col_mem1:
             for name in PERSONAS.keys():
-                if 'Partner Zarzπdzajπcy' in name and '(JA)' in name:
+                if 'Partner ZarzƒÖdzajƒÖcy' in name and '(JA)' in name:
                     continue
                     
                 stats = get_memory_statistics(name)
@@ -8857,25 +8857,25 @@ def show_settings_page():
                     partners_with_memory += 1
                     total_permanent_messages += stats.get('total_messages', 0)
             
-            st.metric("Partnerzy z pamiÍciπ", partners_with_memory)
-            st.metric("Ca≥kowita liczba rozmÛw", total_permanent_messages)
+            st.metric("Partnerzy z pamiƒôciƒÖ", partners_with_memory)
+            st.metric("Ca≈Çkowita liczba rozm√≥w", total_permanent_messages)
         
         with col_mem2:
-            st.info("?? PamiÍÊ d≥ugoterminowa:\n- Zapisana na dysku\n- Przetrwa restart\n- Partner pamiÍta historiÍ")
+            st.info("üí° Pamiƒôƒá d≈Çugoterminowa:\n- Zapisana na dysku\n- Przetrwa restart\n- Partner pamiƒôta historiƒô")
             
-            if st.button("??? WyczyúÊ CA£• pamiÍÊ", width="stretch", key="clear_memory", type="primary"):
-                if st.checkbox("?? Potwierdü usuniÍcie", key="confirm_delete"):
+            if st.button("üóëÔ∏è Wyczy≈õƒá CA≈ÅƒÑ pamiƒôƒá", width="stretch", key="clear_memory", type="primary"):
+                if st.checkbox("‚ö†Ô∏è Potwierd≈∫ usuniƒôcie", key="confirm_delete"):
                     import shutil
                     if MEMORY_FOLDER.exists():
                         shutil.rmtree(MEMORY_FOLDER)
                         MEMORY_FOLDER.mkdir(exist_ok=True)
-                    st.success("? PamiÍÊ d≥ugoterminowa wyczyszczona!")
+                    st.success("‚úÖ Pamiƒôƒá d≈Çugoterminowa wyczyszczona!")
                     st.rerun()
         
-        # SzczegÛ≥y per partner
-        with st.expander("?? SzczegÛ≥y pamiÍci partnerÛw"):
+        # Szczeg√≥≈Çy per partner
+        with st.expander("üìä Szczeg√≥≈Çy pamiƒôci partner√≥w"):
             for name in PERSONAS.keys():
-                if 'Partner Zarzπdzajπcy' in name and '(JA)' in name:
+                if 'Partner ZarzƒÖdzajƒÖcy' in name and '(JA)' in name:
                     continue
                 
                 stats = get_memory_statistics(name)
@@ -8886,7 +8886,7 @@ def show_settings_page():
                     with col_a:
                         st.markdown(f"**{display_name}**")
                     with col_b:
-                        st.caption(f"{stats.get('total_messages', 0)} rozmÛw")
+                        st.caption(f"{stats.get('total_messages', 0)} rozm√≥w")
                     with col_c:
                         if stats.get('last_interaction'):
                             last = datetime.fromisoformat(stats['last_interaction'])
@@ -8894,8 +8894,8 @@ def show_settings_page():
     
     st.markdown("---")
     
-    st.subheader("?? Wyglπd")
-    st.caption("?? Ustawienia sπ automatycznie zapisywane")
+    st.subheader("üé® WyglƒÖd")
+    st.caption("üíæ Ustawienia sƒÖ automatycznie zapisywane")
     
     col1, col2 = st.columns(2)
     
@@ -8918,7 +8918,7 @@ def show_settings_page():
                 "refresh_interval": st.session_state.refresh_interval
             }
             if save_user_preferences(preferences):
-                st.toast("?? Motyw zapisany!", icon="?")
+                st.toast("üíæ Motyw zapisany!", icon="‚úÖ")
             st.rerun()
         elif theme_option == "Ciemny" and st.session_state.theme != "dark":
             st.session_state.theme = "dark"
@@ -8931,7 +8931,7 @@ def show_settings_page():
                 "refresh_interval": st.session_state.refresh_interval
             }
             if save_user_preferences(preferences):
-                st.toast("?? Motyw zapisany!", icon="?")
+                st.toast("üíæ Motyw zapisany!", icon="‚úÖ")
             st.rerun()
     
     with col2:
@@ -8939,18 +8939,18 @@ def show_settings_page():
     
     st.markdown("---")
     
-    st.subheader("?? Powiadomienia")
+    st.subheader("üîî Powiadomienia")
     
     col1, col2 = st.columns(2)
     
     with col1:
         notifications = st.checkbox(
-            "W≥πcz powiadomienia",
+            "W≈ÇƒÖcz powiadomienia",
             value=st.session_state.notifications_enabled,
             key="notif_checkbox"
         )
         
-        # Jeúli zmieniono ustawienie powiadomieÒ
+        # Je≈õli zmieniono ustawienie powiadomie≈Ñ
         if notifications != st.session_state.notifications_enabled:
             st.session_state.notifications_enabled = notifications
             # Zapisz preferencje
@@ -8964,28 +8964,28 @@ def show_settings_page():
             save_user_preferences(preferences)
         
         if notifications:
-            st.success("? Powiadomienia w≥πczone")
+            st.success("‚úÖ Powiadomienia w≈ÇƒÖczone")
             
-            # Opcje powiadomieÒ
+            # Opcje powiadomie≈Ñ
             st.markdown("**Powiadamiaj o:**")
             col_a, col_b = st.columns(2)
             with col_a:
-                st.checkbox("?? Spadki >5%", value=True)
-                st.checkbox("?? Cele osiπgniÍte", value=True)
+                st.checkbox("üìâ Spadki >5%", value=True)
+                st.checkbox("üéØ Cele osiƒÖgniƒôte", value=True)
             with col_b:
-                st.checkbox("?? Nowe dywidendy", value=True)
-                st.checkbox("?? Wysokie ryzyko", value=False)
+                st.checkbox("üí∞ Nowe dywidendy", value=True)
+                st.checkbox("‚ö†Ô∏è Wysokie ryzyko", value=False)
         else:
-            st.warning("?? Powiadomienia wy≥πczone")
+            st.warning("‚ö†Ô∏è Powiadomienia wy≈ÇƒÖczone")
     
     with col2:
-        if st.button("?? Testuj powiadomienie", width="stretch"):
-            st.toast("?? To jest testowe powiadomienie!")
+        if st.button("üîî Testuj powiadomienie", width="stretch"):
+            st.toast("üéâ To jest testowe powiadomienie!")
             st.balloons()
     
     st.markdown("---")
     
-    st.subheader("?? Dane i Cache")
+    st.subheader("üìä Dane i Cache")
     
     col1, col2 = st.columns(2)
     
@@ -8999,23 +8999,23 @@ def show_settings_page():
         )
         st.session_state.cache_ttl = cache_ttl
         
-        st.caption(f"Dane bÍdπ odúwieøane co {cache_ttl} minut")
+        st.caption(f"Dane bƒôdƒÖ od≈õwie≈ºane co {cache_ttl} minut")
     
     with col2:
-        if st.button("??? WyczyúÊ cache teraz", width="stretch"):
+        if st.button("üóëÔ∏è Wyczy≈õƒá cache teraz", width="stretch"):
             st.cache_data.clear()
-            st.success("? Cache wyczyszczony!")
+            st.success("‚úÖ Cache wyczyszczony!")
             st.rerun()
     
     st.markdown("---")
     
-    st.subheader("?? Auto-refresh")
+    st.subheader("üîÑ Auto-refresh")
     
     col1, col2 = st.columns(2)
     
     with col1:
         auto_refresh = st.checkbox(
-            "W≥πcz automatyczne odúwieøanie",
+            "W≈ÇƒÖcz automatyczne od≈õwie≈ºanie",
             value=st.session_state.auto_refresh,
             key="auto_refresh_checkbox"
         )
@@ -9023,7 +9023,7 @@ def show_settings_page():
         
         if auto_refresh:
             refresh_interval = st.slider(
-                "Interwa≥ odúwieøania (sekundy)",
+                "Interwa≈Ç od≈õwie≈ºania (sekundy)",
                 min_value=10,
                 max_value=300,
                 value=st.session_state.refresh_interval,
@@ -9032,7 +9032,7 @@ def show_settings_page():
             )
             st.session_state.refresh_interval = refresh_interval
             
-            st.info(f"?? Auto-refresh co {refresh_interval}s")
+            st.info(f"‚è±Ô∏è Auto-refresh co {refresh_interval}s")
             
             # Auto-refresh logic
             import time
@@ -9041,13 +9041,13 @@ def show_settings_page():
     
     with col2:
         if auto_refresh:
-            st.success("? Auto-refresh aktywny")
+            st.success("‚úÖ Auto-refresh aktywny")
         else:
-            st.warning("?? Auto-refresh wy≥πczony")
+            st.warning("‚ö†Ô∏è Auto-refresh wy≈ÇƒÖczony")
     
     st.markdown("---")
     
-    st.subheader("?? Eksport UstawieÒ")
+    st.subheader("üíæ Eksport Ustawie≈Ñ")
     
     col1, col2 = st.columns(2)
     
@@ -9063,12 +9063,12 @@ def show_settings_page():
         st.json(settings_dict)
     
     with col2:
-        if st.button("?? Zapisz ustawienia do pliku", width="stretch"):
+        if st.button("üíæ Zapisz ustawienia do pliku", width="stretch"):
             with open("streamlit_settings.json", "w") as f:
                 json.dump(settings_dict, f, indent=2)
-            st.success("? Ustawienia zapisane do streamlit_settings.json")
+            st.success("‚úÖ Ustawienia zapisane do streamlit_settings.json")
         
-        if st.button("?? Wczytaj ustawienia z pliku", width="stretch"):
+        if st.button("üìÇ Wczytaj ustawienia z pliku", width="stretch"):
             try:
                 with open("streamlit_settings.json", "r") as f:
                     loaded_settings = json.load(f)
@@ -9079,72 +9079,72 @@ def show_settings_page():
                 st.session_state.auto_refresh = loaded_settings.get("auto_refresh", False)
                 st.session_state.refresh_interval = loaded_settings.get("refresh_interval", 60)
                 
-                st.success("? Ustawienia wczytane!")
+                st.success("‚úÖ Ustawienia wczytane!")
                 st.rerun()
             except FileNotFoundError:
-                st.error("? Plik streamlit_settings.json nie istnieje")
+                st.error("‚ùå Plik streamlit_settings.json nie istnieje")
     
     st.markdown("---")
     
     # === NOWA SEKCJA: PORTFOLIO CO-PILOT ===
-    st.subheader("?? Portfolio Co-Pilot")
+    st.subheader("üìä Portfolio Co-Pilot")
     
     st.markdown("""
-    System automatycznego generowania tygodniowych raportÛw portfela.
-    Raport zawiera: osiπgniÍcia, ostrzeøenia, rekomendacje i statystyki.
+    System automatycznego generowania tygodniowych raport√≥w portfela.
+    Raport zawiera: osiƒÖgniƒôcia, ostrze≈ºenia, rekomendacje i statystyki.
     """)
     
-    # === OSTATNI RAPORT (jeúli istnieje) ===
+    # === OSTATNI RAPORT (je≈õli istnieje) ===
     latest_reports = load_weekly_reports(limit=1)
     if latest_reports:
         latest_report = latest_reports[0]
         
-        st.info(f"?? **Ostatni raport:** TydzieÒ {latest_report.get('week_number', '?')}/{latest_report.get('year', '?')}")
+        st.info(f"üìä **Ostatni raport:** Tydzie≈Ñ {latest_report.get('week_number', '?')}/{latest_report.get('year', '?')}")
         
-        # Szybki podglπd - kluczowe metryki w kolumnach
+        # Szybki podglƒÖd - kluczowe metryki w kolumnach
         col_m1, col_m2, col_m3, col_m4 = st.columns(4)
         
         with col_m1:
-            mood_emoji = latest_report.get("mood", {}).get("emoji", "??")
+            mood_emoji = latest_report.get("mood", {}).get("emoji", "üòê")
             mood_level = latest_report.get("mood", {}).get("level", "neutral")
-            st.metric("NastrÛj", f"{mood_emoji} {mood_level.title()}")
+            st.metric("Nastr√≥j", f"{mood_emoji} {mood_level.title()}")
         
         with col_m2:
             achievements = latest_report.get("achievements", [])
-            st.metric("OsiπgniÍcia", len(achievements), delta="pozytywne" if achievements else None)
+            st.metric("OsiƒÖgniƒôcia", len(achievements), delta="pozytywne" if achievements else None)
         
         with col_m3:
             warnings = latest_report.get("warnings", [])
-            st.metric("Ostrzeøenia", len(warnings), delta="negatywne" if warnings else None)
+            st.metric("Ostrze≈ºenia", len(warnings), delta="negatywne" if warnings else None)
         
         with col_m4:
             actions = latest_report.get("action_items", [])
             st.metric("Akcje", len(actions))
         
-        # Szybki przeglπd - najwaøniejsze informacje
+        # Szybki przeglƒÖd - najwa≈ºniejsze informacje
         summary = latest_report.get("summary", "")
         if summary:
             st.success(f"**Streszczenie:** {summary}")
         
-        # Top osiπgniÍcia i ostrzeøenia
+        # Top osiƒÖgniƒôcia i ostrze≈ºenia
         col_preview1, col_preview2 = st.columns(2)
         
         with col_preview1:
             achievements = latest_report.get("achievements", [])
             if achievements:
-                st.markdown("**?? Top 3 OsiπgniÍcia:**")
+                st.markdown("**üéâ Top 3 OsiƒÖgniƒôcia:**")
                 for ach in achievements[:3]:
-                    st.markdown(f"- {ach.get('icon', '?')} {ach.get('title', 'N/A')}")
+                    st.markdown(f"- {ach.get('icon', '‚úì')} {ach.get('title', 'N/A')}")
         
         with col_preview2:
             warnings = latest_report.get("warnings", [])
             if warnings:
-                st.markdown("**?? Top 3 Ostrzeøenia:**")
+                st.markdown("**‚ö†Ô∏è Top 3 Ostrze≈ºenia:**")
                 for warn in warnings[:3]:
-                    st.markdown(f"- {warn.get('icon', '?')} {warn.get('title', 'N/A')}")
+                    st.markdown(f"- {warn.get('icon', '‚ö†')} {warn.get('title', 'N/A')}")
         
-        # Pe≥ny raport w expanderze
-        with st.expander("?? Pokaø pe≥ny raport", expanded=False):
+        # Pe≈Çny raport w expanderze
+        with st.expander("üìñ Poka≈º pe≈Çny raport", expanded=False):
             display_weekly_report(latest_report)
         
         st.markdown("---")
@@ -9152,8 +9152,8 @@ def show_settings_page():
     col_cp1, col_cp2, col_cp3 = st.columns([3, 2, 1])
     
     with col_cp1:
-        if st.button("?? Generuj Raport Tygodniowy", width="stretch", type="primary"):
-            with st.spinner("?? GenerujÍ raport..."):
+        if st.button("üìù Generuj Raport Tygodniowy", width="stretch", type="primary"):
+            with st.spinner("üìä Generujƒô raport..."):
                 try:
                     stan_spolki, cele = load_portfolio_data()
                     report = generate_weekly_report(stan_spolki, cele)
@@ -9162,80 +9162,80 @@ def show_settings_page():
                         filepath = save_weekly_report(report)
                         
                         if filepath:
-                            st.success(f"? Raport wygenerowany: `{filepath.name}`")
+                            st.success(f"‚úÖ Raport wygenerowany: `{filepath.name}`")
                             st.balloons()
                             
-                            # Automatyczne odúwieøenie strony
+                            # Automatyczne od≈õwie≈ºenie strony
                             st.rerun()
                         else:
-                            st.error("? B≥πd zapisu raportu")
+                            st.error("‚ùå B≈ÇƒÖd zapisu raportu")
                     else:
-                        st.error(f"? B≥πd generowania: {report.get('error', 'Unknown')}")
+                        st.error(f"‚ùå B≈ÇƒÖd generowania: {report.get('error', 'Unknown')}")
                         
                 except Exception as e:
-                    st.error(f"? B≥πd: {e}")
+                    st.error(f"‚ùå B≈ÇƒÖd: {e}")
                     import traceback
                     st.code(traceback.format_exc())
     
     with col_cp2:
-        st.info(f"**Aktualny tydzieÒ:** {datetime.now().isocalendar()[1]}")
+        st.info(f"**Aktualny tydzie≈Ñ:** {datetime.now().isocalendar()[1]}")
         st.caption(f"Rok: {datetime.now().year}")
     
     with col_cp3:
-        if st.button("??", width="stretch", help="Odúwieø stronÍ"):
+        if st.button("üîÑ", width="stretch", help="Od≈õwie≈º stronƒô"):
             st.rerun()
     
-    # Historia raportÛw
-    st.markdown("**?? Historia RaportÛw:**")
+    # Historia raport√≥w
+    st.markdown("**üìö Historia Raport√≥w:**")
     
     reports = load_weekly_reports(limit=5)
     
     if reports:
-        st.caption(f"Znaleziono {len(reports)} ostatnich raportÛw")
+        st.caption(f"Znaleziono {len(reports)} ostatnich raport√≥w")
         
         for i, report in enumerate(reports):
-            with st.expander(f"?? TydzieÒ {report.get('week_number', '?')}/{report.get('year', '?')} - {report.get('summary', 'Brak opisu')[:60]}..."):
+            with st.expander(f"üìÑ Tydzie≈Ñ {report.get('week_number', '?')}/{report.get('year', '?')} - {report.get('summary', 'Brak opisu')[:60]}..."):
                 display_weekly_report(report)
                 
                 col_del1, col_del2, col_del3 = st.columns([2, 1, 1])
                 
                 with col_del2:
-                    if st.button("?? Eksportuj", key=f"export_report_{i}"):
-                        st.info("Eksport wkrÛtce!")
+                    if st.button("üì• Eksportuj", key=f"export_report_{i}"):
+                        st.info("Eksport wkr√≥tce!")
                 
                 with col_del3:
-                    if st.button("??? UsuÒ", key=f"delete_report_{i}"):
+                    if st.button("üóëÔ∏è Usu≈Ñ", key=f"delete_report_{i}"):
                         try:
                             reports_folder = Path("weekly_reports")
                             filepath = reports_folder / report.get("filename", "")
                             if filepath.exists():
                                 filepath.unlink()
-                                st.success("? Raport usuniÍty")
+                                st.success("‚úÖ Raport usuniƒôty")
                                 st.rerun()
                         except Exception as e:
-                            st.error(f"? B≥πd usuwania: {e}")
+                            st.error(f"‚ùå B≈ÇƒÖd usuwania: {e}")
     else:
-        st.info("Brak raportÛw. Wygeneruj pierwszy raport przyciskiem powyøej!")
+        st.info("Brak raport√≥w. Wygeneruj pierwszy raport przyciskiem powy≈ºej!")
     
     # Ustawienia auto-generowania
-    with st.expander("?? Ustawienia Auto-generowania"):
+    with st.expander("‚öôÔ∏è Ustawienia Auto-generowania"):
         auto_gen = st.checkbox(
-            "Automatycznie generuj raport w niedzielÍ",
+            "Automatycznie generuj raport w niedzielƒô",
             value=False,
-            help="System automatycznie wygeneruje raport w kaødπ niedzielÍ o 20:00"
+            help="System automatycznie wygeneruje raport w ka≈ºdƒÖ niedzielƒô o 20:00"
         )
         
         if auto_gen:
-            st.success("? Auto-generowanie w≥πczone")
-            st.caption("Raport bÍdzie generowany kaødπ niedzielÍ o 20:00")
+            st.success("‚úÖ Auto-generowanie w≈ÇƒÖczone")
+            st.caption("Raport bƒôdzie generowany ka≈ºdƒÖ niedzielƒô o 20:00")
         else:
-            st.info("?? Auto-generowanie wy≥πczone - generuj rÍcznie")
+            st.info("‚ÑπÔ∏è Auto-generowanie wy≈ÇƒÖczone - generuj rƒôcznie")
     
     st.markdown("---")
     
-    st.subheader("?? Zaawansowane")
+    st.subheader("üîß Zaawansowane")
     
-    with st.expander("?? Debug Info"):
+    with st.expander("üêõ Debug Info"):
         st.write("**Session State:**")
         st.json(dict(st.session_state))
         
@@ -9245,7 +9245,7 @@ def show_settings_page():
         st.write("**Cache Stats:**")
         st.write(f"Cache TTL: {st.session_state.cache_ttl} min")
     
-    with st.expander("? Performance"):
+    with st.expander("‚ö° Performance"):
         st.write("**Optymalizacje:**")
         st.checkbox("Enable caching", value=True, disabled=True)
         st.checkbox("Lazy loading", value=True)
@@ -9256,25 +9256,24 @@ def show_settings_page():
     col1, col2, col3 = st.columns(3)
     
     with col1:
-        if st.button("?? Reset do domyúlnych", width="stretch"):
+        if st.button("üîÑ Reset do domy≈õlnych", width="stretch"):
             st.session_state.theme = "light"
             st.session_state.notifications_enabled = True
             st.session_state.cache_ttl = 5
             st.session_state.auto_refresh = False
             st.session_state.refresh_interval = 60
-            st.success("? PrzywrÛcono domyúlne ustawienia")
+            st.success("‚úÖ Przywr√≥cono domy≈õlne ustawienia")
             st.rerun()
     
     with col2:
-        if st.button("?? Zapisz i zamknij", width="stretch"):
-            st.success("? Ustawienia zapisane!")
+        if st.button("üíæ Zapisz i zamknij", width="stretch"):
+            st.success("‚úÖ Ustawienia zapisane!")
             st.balloons()
     
     with col3:
-        if st.button("? Anuluj zmiany", width="stretch"):
+        if st.button("‚ùå Anuluj zmiany", width="stretch"):
             st.rerun()
 
 if __name__ == "__main__":
     main()
-
 
