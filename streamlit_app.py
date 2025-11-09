@@ -7709,35 +7709,37 @@ def show_kredyty_page(stan_spolki, cele):
         - **Synchronizacja z GitHub co godzinę** (GitHub Actions)
         - Sprawdź status synchronizacji w sidebar (🔄)
         
-        📋 **System wypłat:**
-        - Wypłata około **10-go** każdego miesiąca
-        - Podstawa + premia w jednym przelewie
+        📋 **System wpływów:**
+        - 💰 **Wypłata** - regularna pensja (około 10-go każdego miesiąca)
+        - 🎁 **Premia** - miesięczna premia (razem z wypłatą)
+        - 🎉 **Bonus** - jednorazowe bonusy (nieregularne, nie wpływają na predykcje)
         """)
         
         wyplaty = load_wyplaty()
-        
-        # Informacja o systemie
-        st.info("""
-        📋 **System wypłat:**
-        - Wypłata około **10-go** każdego miesiąca
-        - Podstawa + premia w jednym przelewie
-        """)
         
         # === PODSUMOWANIE ===
         if wyplaty:
             # Sortuj wypłaty po dacie
             wyplaty_sorted = sorted(wyplaty, key=lambda x: x['data'], reverse=True)
             
-            # Różne okresy
+            # Rozdziel wypłaty regularne (Wypłata + Premia) od Bonusów
+            wyplaty_regularne = [w for w in wyplaty_sorted if w.get('typ', 'Wypłata') in ['Wypłata', 'Premia']]
+            bonusy = [w for w in wyplaty_sorted if w.get('typ', 'Wypłata') == 'Bonus']
+            
+            # Różne okresy (tylko regularne wypłaty do statystyk)
             rok_temu = datetime.now() - timedelta(days=365)
             pol_roku_temu = datetime.now() - timedelta(days=180)
             kwartal_temu = datetime.now() - timedelta(days=90)
             
-            wyplaty_12m = [w for w in wyplaty_sorted if datetime.fromisoformat(w['data']) >= rok_temu]
-            wyplaty_6m = [w for w in wyplaty_sorted if datetime.fromisoformat(w['data']) >= pol_roku_temu]
-            wyplaty_3m = [w for w in wyplaty_sorted if datetime.fromisoformat(w['data']) >= kwartal_temu]
+            wyplaty_12m = [w for w in wyplaty_regularne if datetime.fromisoformat(w['data']) >= rok_temu]
+            wyplaty_6m = [w for w in wyplaty_regularne if datetime.fromisoformat(w['data']) >= pol_roku_temu]
+            wyplaty_3m = [w for w in wyplaty_regularne if datetime.fromisoformat(w['data']) >= kwartal_temu]
             
-            # Średnie
+            # Bonusy w okresach
+            bonusy_12m = [b for b in bonusy if datetime.fromisoformat(b['data']) >= rok_temu]
+            bonusy_suma_12m = sum(b['kwota'] for b in bonusy_12m)
+            
+            # Średnie (tylko wypłaty regularne)
             srednia_12m = sum(w['kwota'] for w in wyplaty_12m) / len(wyplaty_12m) if wyplaty_12m else 0
             srednia_6m = sum(w['kwota'] for w in wyplaty_6m) / len(wyplaty_6m) if wyplaty_6m else 0
             srednia_3m = sum(w['kwota'] for w in wyplaty_3m) / len(wyplaty_3m) if wyplaty_3m else 0
@@ -7745,67 +7747,89 @@ def show_kredyty_page(stan_spolki, cele):
             col1, col2, col3, col4 = st.columns(4)
             
             with col1:
-                st.metric("💰 Ostatnia wypłata", format_currency(wyplaty_sorted[0]['kwota']))
-                st.caption(f"📅 {wyplaty_sorted[0]['data']}")
+                if wyplaty_sorted:
+                    ostatnia = wyplaty_sorted[0]
+                    typ_emoji = "💰" if ostatnia.get('typ', 'Wypłata') == "Wypłata" else "🎁" if ostatnia.get('typ') == "Premia" else "🎉"
+                    st.metric(f"{typ_emoji} Ostatni wpływ", format_currency(ostatnia['kwota']))
+                    st.caption(f"{ostatnia.get('typ', 'Wypłata')} • {ostatnia['data']}")
             
             with col2:
                 st.metric("📊 Średnia (3 mies.)", format_currency(srednia_3m))
                 trend_3_6 = ((srednia_3m - srednia_6m) / srednia_6m * 100) if srednia_6m > 0 else 0
-                st.caption(f"Trend: {trend_3_6:+.1f}% vs 6m")
+                st.caption(f"Wypłaty regularne • {trend_3_6:+.1f}% vs 6m")
             
             with col3:
                 st.metric("📊 Średnia (6 mies.)", format_currency(srednia_6m))
                 trend_6_12 = ((srednia_6m - srednia_12m) / srednia_12m * 100) if srednia_12m > 0 else 0
-                st.caption(f"Trend: {trend_6_12:+.1f}% vs 12m")
+                st.caption(f"Wypłaty regularne • {trend_6_12:+.1f}% vs 12m")
             
             with col4:
-                st.metric("📊 Średnia (12 mies.)", format_currency(srednia_12m))
-                st.caption(f"Liczba wypłat: {len(wyplaty_12m)}")
+                st.metric("🎉 Bonusy (12 mies.)", format_currency(bonusy_suma_12m))
+                st.caption(f"Liczba bonusów: {len(bonusy_12m)}")
             
             st.markdown("---")
             
             # === WYKRES HISTORII WYPŁAT ===
-            st.markdown("### 📈 Historia Wypłat")
+            st.markdown("### 📈 Historia Wpływów")
             
             # Przygotuj dane do wykresu
             wyplaty_chart = sorted(wyplaty, key=lambda x: x['data'])
-            dates = [w['data'] for w in wyplaty_chart]
-            amounts = [w['kwota'] for w in wyplaty_chart]
+            
+            # Rozdziel po typach
+            wyplaty_reg = [w for w in wyplaty_chart if w.get('typ', 'Wypłata') in ['Wypłata', 'Premia']]
+            bonusy_chart = [w for w in wyplaty_chart if w.get('typ', 'Wypłata') == 'Bonus']
             
             fig_income = go.Figure()
             
-            # Linia główna
-            fig_income.add_trace(go.Scatter(
-                x=dates,
-                y=amounts,
-                mode='lines+markers',
-                name='Wypłata',
-                line=dict(color='#00CC96', width=3),
-                marker=dict(size=8),
-                hovertemplate='<b>%{x}</b><br>Wypłata: %{y:,.0f} PLN<extra></extra>'
-            ))
-            
-            # Średnie kroczące
-            if len(wyplaty_chart) >= 3:
-                # 3-miesięczna średnia krocząca
-                ma_3 = []
-                for i in range(len(amounts)):
-                    if i < 2:
-                        ma_3.append(None)
-                    else:
-                        ma_3.append(sum(amounts[i-2:i+1]) / 3)
+            # Wypłaty regularne (linia)
+            if wyplaty_reg:
+                dates_reg = [w['data'] for w in wyplaty_reg]
+                amounts_reg = [w['kwota'] for w in wyplaty_reg]
                 
                 fig_income.add_trace(go.Scatter(
-                    x=dates,
-                    y=ma_3,
-                    mode='lines',
-                    name='Średnia 3m',
-                    line=dict(color='orange', width=2, dash='dash'),
-                    hovertemplate='<b>%{x}</b><br>Śr. 3m: %{y:,.0f} PLN<extra></extra>'
+                    x=dates_reg,
+                    y=amounts_reg,
+                    mode='lines+markers',
+                    name='Wypłata/Premia',
+                    line=dict(color='#00CC96', width=3),
+                    marker=dict(size=8),
+                    hovertemplate='<b>%{x}</b><br>%{y:,.0f} PLN<extra></extra>'
+                ))
+                
+                # Średnie kroczące (tylko dla regularnych)
+                if len(wyplaty_reg) >= 3:
+                    ma_3 = []
+                    for i in range(len(amounts_reg)):
+                        if i < 2:
+                            ma_3.append(None)
+                        else:
+                            ma_3.append(sum(amounts_reg[i-2:i+1]) / 3)
+                    
+                    fig_income.add_trace(go.Scatter(
+                        x=dates_reg,
+                        y=ma_3,
+                        mode='lines',
+                        name='Średnia 3m',
+                        line=dict(color='orange', width=2, dash='dash'),
+                        hovertemplate='<b>%{x}</b><br>Śr. 3m: %{y:,.0f} PLN<extra></extra>'
+                    ))
+            
+            # Bonusy (scatter - punkty)
+            if bonusy_chart:
+                dates_bonus = [b['data'] for b in bonusy_chart]
+                amounts_bonus = [b['kwota'] for b in bonusy_chart]
+                
+                fig_income.add_trace(go.Scatter(
+                    x=dates_bonus,
+                    y=amounts_bonus,
+                    mode='markers',
+                    name='Bonus 🎉',
+                    marker=dict(size=15, color='gold', symbol='star', line=dict(color='orange', width=2)),
+                    hovertemplate='<b>%{x}</b><br>💰 Bonus: %{y:,.0f} PLN<extra></extra>'
                 ))
             
             fig_income.update_layout(
-                title="Trend wypłat w czasie",
+                title="Trend wpływów w czasie (regularne + bonusy)",
                 xaxis_title="Data",
                 yaxis_title="Kwota (PLN)",
                 hovermode='x unified',
@@ -7820,11 +7844,18 @@ def show_kredyty_page(stan_spolki, cele):
             # === YoY COMPARISON ===
             st.markdown("### 📅 Porównanie Rok do Roku (YoY)")
             
+            col_toggle = st.columns([1, 3])
+            with col_toggle[0]:
+                include_bonuses_yoy = st.checkbox("Uwzględnij bonusy", value=False, help="Włącz bonusy do porównania YoY")
+            
             # Grupuj wypłaty po miesiącach i latach
             from collections import defaultdict
             wyplaty_by_month = defaultdict(list)
             
-            for w in wyplaty:
+            # Wybierz które wypłaty uwzględnić
+            wyplaty_do_yoy = wyplaty if include_bonuses_yoy else wyplaty_regularne
+            
+            for w in wyplaty_do_yoy:
                 date = datetime.fromisoformat(w['data'])
                 month_key = f"{date.year}-{date.month:02d}"
                 wyplaty_by_month[month_key].append(w['kwota'])
@@ -7845,12 +7876,15 @@ def show_kredyty_page(stan_spolki, cele):
                 
                 with col_yoy1:
                     st.metric("Bieżący miesiąc", format_currency(current))
+                    st.caption("Łącznie za bieżący miesiąc")
                 
                 with col_yoy2:
                     st.metric("Rok wcześniej", format_currency(last_year))
+                    st.caption("Ten sam miesiąc rok temu")
                 
                 with col_yoy3:
                     st.metric("Zmiana YoY", f"{yoy_change:+.1f}%", delta=f"{current - last_year:+.0f} PLN")
+                    st.caption(f"{'Z bonusami' if include_bonuses_yoy else 'Tylko regularne'}")
             else:
                 st.info("ℹ️ Brak wystarczających danych do porównania rok do roku")
             
@@ -7859,22 +7893,22 @@ def show_kredyty_page(stan_spolki, cele):
             # === PREDICTED NEXT PAYCHECK ===
             st.markdown("### 🔮 Przewidywana Następna Wypłata")
             
-            if len(wyplaty_sorted) >= 3:
-                # Prosta predykcja bazująca na średniej z ostatnich 3
-                ostatnie_3 = wyplaty_sorted[:3]
-                predicted_amount = sum(w['kwota'] for w in ostatnie_3) / 3
+            if len(wyplaty_regularne) >= 3:
+                # Predykcja tylko na podstawie wypłat regularnych (bez bonusów)
+                ostatnie_3_reg = wyplaty_regularne[:3]
+                predicted_amount = sum(w['kwota'] for w in ostatnie_3_reg) / 3
                 
                 # Znajdź następny dzień wypłaty (zakładamy 10-ty dzień miesiąca)
                 today = datetime.now()
                 
-                # Sprawdź czy w bieżącym miesiącu już była wypłata
+                # Sprawdź czy w bieżącym miesiącu już była REGULARNA wypłata
                 current_month = today.month
                 current_year = today.year
                 
                 already_paid_this_month = any(
                     datetime.strptime(w['data'], "%Y-%m-%d").month == current_month and
                     datetime.strptime(w['data'], "%Y-%m-%d").year == current_year
-                    for w in wyplaty_sorted
+                    for w in wyplaty_regularne
                 )
                 
                 if already_paid_this_month:
@@ -7900,7 +7934,7 @@ def show_kredyty_page(stan_spolki, cele):
                 
                 with col_pred1:
                     st.metric("💰 Przewidywana kwota", f"{predicted_amount:.0f} PLN")
-                    st.caption(f"Na podstawie średniej z ostatnich 3 wypłat")
+                    st.caption(f"Średnia z ostatnich 3 wypłat regularnych")
                 
                 with col_pred2:
                     st.metric("📅 Przewidywana data", next_paycheck_date.strftime("%Y-%m-%d"))
@@ -7911,18 +7945,28 @@ def show_kredyty_page(stan_spolki, cele):
                         st.caption("⏰ **JUTRO!**")
                     else:
                         st.caption(f"⏰ Za {dni_do_wyplaty} dni")
+                
+                # Informacja o bonusach
+                if bonusy:
+                    st.info(f"ℹ️ **Bonusy nie są uwzględniane w predykcji** (są nieregularne). Ostatni bonus: {bonusy[0]['data']} ({bonusy[0]['kwota']:,.0f} PLN)")
             else:
-                st.info("ℹ️ Dodaj więcej wypłat aby zobaczyć predykcję")
+                st.info("ℹ️ Dodaj więcej wypłat regularnych aby zobaczyć predykcję")
         
         st.markdown("---")
         
         # === DODAWANIE WYPŁATY ===
-        st.markdown("### ➕ Dodaj Wypłatę")
+        st.markdown("### ➕ Dodaj Wpływ")
         
         col1, col2 = st.columns(2)
         
         with col1:
             with st.form("add_wyplata"):
+                typ_wyplaty = st.selectbox(
+                    "Typ wpływu *",
+                    ["Wypłata", "Premia", "Bonus"],
+                    help="Wypłata = regularna pensja, Premia = miesięczna premia, Bonus = jednorazowy bonus"
+                )
+                
                 data_wyplaty = st.date_input(
                     "Data wypłaty *",
                     value=datetime.now().replace(day=10),
@@ -7930,34 +7974,39 @@ def show_kredyty_page(stan_spolki, cele):
                 )
                 
                 kwota = st.number_input(
-                    "Kwota wypłaty (PLN) *",
+                    "Kwota (PLN) *",
                     min_value=0.0,
-                    value=3500.0,
+                    value=3500.0 if typ_wyplaty != "Bonus" else 1000.0,
                     step=100.0,
-                    help="Całkowita kwota wypłaty (podstawa + premia)"
+                    help="Całkowita kwota"
                 )
                 
                 notatki = st.text_area(
                     "Notatki",
-                    help="Opcjonalne notatki (np. bonus, nadgodziny, urlop)"
+                    help="Opcjonalne notatki (np. za co bonus, projekt, etc.)"
                 )
                 
-                submitted = st.form_submit_button("💾 Zapisz Wypłatę")
+                submitted = st.form_submit_button("💾 Zapisz")
                 
                 if submitted:
                     # Walidacja
                     if kwota <= 0:
                         st.error("❌ Kwota musi być większa od 0")
                     else:
-                        # Sprawdź czy nie ma już wypłaty w tym miesiącu
-                        miesiac_rok = data_wyplaty.strftime('%Y-%m')
-                        duplikat = any(w['data'].startswith(miesiac_rok) for w in wyplaty)
-                        
-                        if duplikat:
-                            st.warning(f"⚠️ Wypłata za {miesiac_rok} już istnieje. Zostanie dodana jako dodatkowa.")
+                        # Sprawdź czy nie ma już wypłaty w tym miesiącu (tylko dla Wypłat, nie Bonusów)
+                        if typ_wyplaty == "Wypłata":
+                            miesiac_rok = data_wyplaty.strftime('%Y-%m')
+                            duplikat = any(
+                                w['data'].startswith(miesiac_rok) and w.get('typ', 'Wypłata') == 'Wypłata' 
+                                for w in wyplaty
+                            )
+                            
+                            if duplikat:
+                                st.warning(f"⚠️ Wypłata za {miesiac_rok} już istnieje. Zostanie dodana jako dodatkowa.")
                         
                         nowa_wyplata = {
                             'id': str(datetime.now().timestamp()),
+                            'typ': typ_wyplaty,
                             'data': data_wyplaty.isoformat(),
                             'kwota': kwota,
                             'notatki': notatki
@@ -7968,27 +8017,44 @@ def show_kredyty_page(stan_spolki, cele):
                         wyplaty.sort(key=lambda x: x['data'], reverse=True)
                         
                         if save_wyplaty(wyplaty):
-                            st.success("✅ Wypłata zapisana!")
+                            emoji = "💰" if typ_wyplaty == "Wypłata" else "🎁" if typ_wyplaty == "Premia" else "🎉"
+                            st.success(f"✅ {emoji} {typ_wyplaty} zapisana!")
                             st.rerun()
                         else:
-                            st.error("❌ Błąd zapisu wypłaty")
+                            st.error("❌ Błąd zapisu")
         
         with col2:
             st.markdown("### 📊 Szybkie Statystyki")
             if wyplaty:
+                # Rozdziel po typach
+                wyplaty_regularne = [w for w in wyplaty if w.get('typ', 'Wypłata') in ['Wypłata', 'Premia']]
+                bonusy = [w for w in wyplaty if w.get('typ', 'Wypłata') == 'Bonus']
+                
                 ostatnia = wyplaty[0]
+                typ_emoji = "💰" if ostatnia.get('typ', 'Wypłata') == "Wypłata" else "🎁" if ostatnia.get('typ') == "Premia" else "🎉"
+                
                 st.info(f"""
-                **Ostatnia wypłata:**
+                **Ostatni wpływ:**
+                - {typ_emoji} Typ: {ostatnia.get('typ', 'Wypłata')}
                 - 📅 Data: {ostatnia['data']}
-                - 💰 Kwota: {ostatnia['kwota']:.2f} PLN
+                - � Kwota: {ostatnia['kwota']:.2f} PLN
                 """)
                 
-                # Trend wypłat (ostatnie 3 miesiące)
-                ostatnie_3 = wyplaty[:3]
-                if len(ostatnie_3) >= 3:
-                    kwoty = [w['kwota'] for w in ostatnie_3]
+                # Statystyki bonusów
+                if bonusy:
+                    suma_bonusow = sum(b['kwota'] for b in bonusy)
+                    st.success(f"""
+                    **🎉 Bonusy (łącznie):**
+                    - Liczba: {len(bonusy)}
+                    - Suma: {suma_bonusow:,.0f} PLN
+                    """)
+                
+                # Trend wypłat regularnych (ostatnie 3)
+                if len(wyplaty_regularne) >= 3:
+                    ostatnie_3_reg = wyplaty_regularne[:3]
+                    kwoty = [w['kwota'] for w in ostatnie_3_reg]
                     trend = "📈 Rosnąca" if kwoty[0] > kwoty[-1] else "📉 Malejąca" if kwoty[0] < kwoty[-1] else "➡️ Stabilna"
-                    st.caption(f"Trend (3 mies.): {trend}")
+                    st.caption(f"Trend wypłat (3 mies.): {trend}")
             else:
                 st.caption("Brak danych")
         
@@ -7996,47 +8062,80 @@ def show_kredyty_page(stan_spolki, cele):
         if wyplaty:
             st.markdown("### 📋 Historia Wypłat")
             
-            # Filtr roku
-            lata = sorted(set(w['data'][:4] for w in wyplaty), reverse=True)
-            if len(lata) > 1:
-                filtr_rok = st.selectbox("Filtruj rok:", ["Wszystkie"] + lata)
-            else:
-                filtr_rok = "Wszystkie"
+            # Filtr roku i typu
+            col_filter1, col_filter2 = st.columns(2)
+            
+            with col_filter1:
+                lata = sorted(set(w['data'][:4] for w in wyplaty), reverse=True)
+                if len(lata) > 1:
+                    filtr_rok = st.selectbox("Filtruj rok:", ["Wszystkie"] + lata)
+                else:
+                    filtr_rok = "Wszystkie"
+            
+            with col_filter2:
+                filtr_typ = st.selectbox("Filtruj typ:", ["Wszystkie", "Wypłata", "Premia", "Bonus"])
             
             # Filtrowanie
-            wyplaty_filtr = wyplaty if filtr_rok == "Wszystkie" else [w for w in wyplaty if w['data'].startswith(filtr_rok)]
+            wyplaty_filtr = wyplaty
+            if filtr_rok != "Wszystkie":
+                wyplaty_filtr = [w for w in wyplaty_filtr if w['data'].startswith(filtr_rok)]
+            if filtr_typ != "Wszystkie":
+                wyplaty_filtr = [w for w in wyplaty_filtr if w.get('typ', 'Wypłata') == filtr_typ]
+            
+            # Podsumowanie po filtrach
+            if wyplaty_filtr:
+                suma_filtr = sum(w['kwota'] for w in wyplaty_filtr)
+                st.caption(f"**{len(wyplaty_filtr)} wpływ(ów)** | Suma: **{suma_filtr:,.0f} PLN**")
             
             # Tabela
             for wyplata in wyplaty_filtr:
-                with st.expander(f"💸 {wyplata['data']} - **{wyplata['kwota']:.2f} PLN**"):
-                    st.metric("💰 Kwota wypłaty", f"{wyplata['kwota']:.2f} PLN")
+                typ = wyplata.get('typ', 'Wypłata')
+                typ_emoji = "💰" if typ == "Wypłata" else "🎁" if typ == "Premia" else "🎉"
+                
+                with st.expander(f"{typ_emoji} {wyplata['data']} - **{wyplata['kwota']:.2f} PLN** ({typ})"):
+                    col_m1, col_m2 = st.columns(2)
+                    with col_m1:
+                        st.metric("� Kwota", f"{wyplata['kwota']:.2f} PLN")
+                    with col_m2:
+                        st.metric("📌 Typ", typ)
                     
                     if wyplata.get('notatki'):
                         st.caption(f"📝 {wyplata['notatki']}")
                     
-                    # Edycja kwoty (jeśli potrzeba korekty)
+                    # Edycja (jeśli potrzeba korekty)
                     st.markdown("---")
                     with st.form(f"edit_wyplata_{wyplata['id']}"):
-                        st.caption("Edytuj kwotę:")
-                        nowa_kwota = st.number_input(
-                            "Nowa kwota (PLN)",
-                            min_value=0.0,
-                            value=float(wyplata['kwota']),
-                            step=100.0,
-                            key=f"kwota_{wyplata['id']}"
-                        )
+                        st.caption("Edytuj:")
+                        
+                        col_edit1, col_edit2 = st.columns(2)
+                        with col_edit1:
+                            nowy_typ = st.selectbox(
+                                "Typ",
+                                ["Wypłata", "Premia", "Bonus"],
+                                index=["Wypłata", "Premia", "Bonus"].index(typ),
+                                key=f"typ_{wyplata['id']}"
+                            )
+                        with col_edit2:
+                            nowa_kwota = st.number_input(
+                                "Kwota (PLN)",
+                                min_value=0.0,
+                                value=float(wyplata['kwota']),
+                                step=100.0,
+                                key=f"kwota_{wyplata['id']}"
+                            )
                         
                         col_save, col_delete = st.columns([1, 1])
                         
                         with col_save:
-                            if st.form_submit_button("💾 Zapisz", width="stretch"):
+                            if st.form_submit_button("💾 Zapisz", use_container_width=True):
                                 wyplata['kwota'] = nowa_kwota
+                                wyplata['typ'] = nowy_typ
                                 if save_wyplaty(wyplaty):
                                     st.success("✅ Zaktualizowano!")
                                     st.rerun()
                         
                         with col_delete:
-                            if st.form_submit_button("🗑️ Usuń", width="stretch", type="secondary"):
+                            if st.form_submit_button("🗑️ Usuń", use_container_width=True, type="secondary"):
                                 # Potwierdź usunięcie
                                 if f'confirm_delete_{wyplata["id"]}' not in st.session_state:
                                     st.session_state[f'confirm_delete_{wyplata["id"]}'] = True
