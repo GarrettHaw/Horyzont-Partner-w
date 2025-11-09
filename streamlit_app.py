@@ -7795,16 +7795,23 @@ def show_kredyty_page(stan_spolki, cele):
             
             fig_income = go.Figure()
             
-            # Wypłaty regularne (linia)
+            # Wypłaty regularne (linia) - GRUPUJ PO DACIE (łącz Wypłatę + Premię z tego samego dnia)
             if wyplaty_reg:
-                dates_reg = [w['data'] for w in wyplaty_reg]
-                amounts_reg = [w['kwota'] for w in wyplaty_reg]
+                from collections import defaultdict
+                # Grupuj po dacie i sumuj kwoty
+                wyplaty_grouped = defaultdict(float)
+                for w in wyplaty_reg:
+                    wyplaty_grouped[w['data']] += w['kwota']
+                
+                # Sortuj i przygotuj dane
+                dates_reg = sorted(wyplaty_grouped.keys())
+                amounts_reg = [wyplaty_grouped[d] for d in dates_reg]
                 
                 fig_income.add_trace(go.Scatter(
                     x=dates_reg,
                     y=amounts_reg,
                     mode='lines+markers',
-                    name='Wypłata/Premia',
+                    name='Wypłata regularna',
                     line=dict(color='#00CC96', width=3),
                     marker=dict(size=8),
                     hovertemplate='<b>%{x}</b><br>%{y:,.0f} PLN<extra></extra>'
@@ -8144,95 +8151,191 @@ def show_kredyty_page(stan_spolki, cele):
                     filtr_rok = "Wszystkie"
             
             with col_filter2:
-                filtr_typ = st.selectbox("Filtruj typ:", ["Wszystkie", "Wypłata", "Premia", "Bonus"])
+                filtr_typ = st.selectbox("Filtruj typ:", ["Wszystkie", "Wypłata regularna", "Bonus"])
+            
+            # GRUPUJ WYPŁATY - połącz Wypłatę + Premia z tego samego dnia
+            from collections import defaultdict
+            wyplaty_grouped = defaultdict(lambda: {'kwota': 0, 'typy': [], 'notatki': [], 'ids': [], 'minimalna': None})
+            
+            for w in wyplaty:
+                data = w['data']
+                typ = w.get('typ', 'Wypłata')
+                
+                if typ in ['Wypłata', 'Premia']:
+                    # Wypłaty regularne - grupuj po dacie
+                    wyplaty_grouped[data]['kwota'] += w['kwota']
+                    wyplaty_grouped[data]['typy'].append(typ)
+                    wyplaty_grouped[data]['ids'].append(w['id'])
+                    if w.get('notatki'):
+                        wyplaty_grouped[data]['notatki'].append(w['notatki'])
+                    if w.get('minimalna_krajowa'):
+                        wyplaty_grouped[data]['minimalna'] = w['minimalna_krajowa']
+                    wyplaty_grouped[data]['is_bonus'] = False
+                else:
+                    # Bonusy - każdy osobno
+                    bonus_key = f"{data}_bonus_{w['id']}"
+                    wyplaty_grouped[bonus_key] = {
+                        'kwota': w['kwota'],
+                        'typy': ['Bonus'],
+                        'notatki': [w.get('notatki', '')] if w.get('notatki') else [],
+                        'ids': [w['id']],
+                        'minimalna': None,
+                        'is_bonus': True,
+                        'data': data
+                    }
+            
+            # Sortuj po dacie (od najnowszej)
+            wyplaty_sorted_grouped = sorted(
+                [(k, v) for k, v in wyplaty_grouped.items()],
+                key=lambda x: x[1].get('data', x[0]) if x[1]['is_bonus'] else x[0],
+                reverse=True
+            )
             
             # Filtrowanie
-            wyplaty_filtr = wyplaty
-            if filtr_rok != "Wszystkie":
-                wyplaty_filtr = [w for w in wyplaty_filtr if w['data'].startswith(filtr_rok)]
-            if filtr_typ != "Wszystkie":
-                wyplaty_filtr = [w for w in wyplaty_filtr if w.get('typ', 'Wypłata') == filtr_typ]
+            wyplaty_filtr = []
+            for key, group in wyplaty_sorted_grouped:
+                data = group.get('data', key) if group['is_bonus'] else key
+                
+                # Filtr roku
+                if filtr_rok != "Wszystkie" and not data.startswith(filtr_rok):
+                    continue
+                
+                # Filtr typu
+                if filtr_typ == "Wypłata regularna" and group['is_bonus']:
+                    continue
+                elif filtr_typ == "Bonus" and not group['is_bonus']:
+                    continue
+                
+                wyplaty_filtr.append((key, group, data))
             
             # Podsumowanie po filtrach
             if wyplaty_filtr:
-                suma_filtr = sum(w['kwota'] for w in wyplaty_filtr)
+                suma_filtr = sum(g[1]['kwota'] for g in wyplaty_filtr)
                 st.caption(f"**{len(wyplaty_filtr)} wpływ(ów)** | Suma: **{suma_filtr:,.0f} PLN**")
             
-            # Tabela
-            for wyplata in wyplaty_filtr:
-                typ = wyplata.get('typ', 'Wypłata')
-                typ_emoji = "💰" if typ == "Wypłata" else "🎁" if typ == "Premia" else "🎉"
+            # Tabela - wyświetl pogrupowane
+            for key, group, data in wyplaty_filtr:
+                if group['is_bonus']:
+                    typ_display = "🎉 Bonus"
+                    typ_label = "Bonus"
+                else:
+                    typ_display = "💰 Wypłata regularna"
+                    typ_label = "Regularna"
+                    if 'Premia' in group['typy'] and 'Wypłata' in group['typy']:
+                        typ_display += " (Wypłata + Premia)"
                 
-                with st.expander(f"{typ_emoji} {wyplata['data']} - **{wyplata['kwota']:.2f} PLN** ({typ})"):
+                with st.expander(f"{typ_display.split()[0]} {data} - **{group['kwota']:,.0f} PLN** ({typ_label})"):
                     col_m1, col_m2 = st.columns(2)
                     with col_m1:
-                        st.metric("� Kwota", f"{wyplata['kwota']:.2f} PLN")
+                        st.metric("💵 Kwota łączna", f"{group['kwota']:,.0f} PLN")
                     with col_m2:
-                        st.metric("📌 Typ", typ)
+                        st.metric("📌 Typ", typ_label)
                     
-                    if wyplata.get('notatki'):
-                        st.caption(f"📝 {wyplata['notatki']}")
+                    # Szczegóły składowych (jeśli wypłata + premia)
+                    if len(group['typy']) > 1:
+                        st.caption("📊 **Składowe:**")
+                        for orig_w in wyplaty:
+                            if orig_w['id'] in group['ids']:
+                                st.caption(f"  • {orig_w.get('typ', 'Wypłata')}: {orig_w['kwota']:,.0f} PLN")
+                    
+                    if group['notatki']:
+                        st.caption(f"📝 {' | '.join(group['notatki'])}")
                     
                     # Pokaż zapisaną minimalną krajową (jeśli jest)
-                    if wyplata.get('minimalna_krajowa'):
-                        st.info(f"⚙️ **Minimalna krajowa w tym okresie:** {wyplata['minimalna_krajowa']:,.0f} PLN")
+                    if group['minimalna']:
+                        st.info(f"⚙️ **Minimalna krajowa w tym okresie:** {group['minimalna']:,.0f} PLN")
                     
-                    # Edycja (jeśli potrzeba korekty)
-                    st.markdown("---")
-                    with st.form(f"edit_wyplata_{wyplata['id']}"):
-                        st.caption("Edytuj:")
+                    # Edycja/usuwanie - tylko dla bonusów
+                    if group['is_bonus']:
+                        st.markdown("---")
+                        orig_wyplata = next((w for w in wyplaty if w['id'] == group['ids'][0]), None)
                         
-                        col_edit1, col_edit2 = st.columns(2)
-                        with col_edit1:
-                            nowy_typ = st.selectbox(
-                                "Typ",
-                                ["Wypłata", "Premia", "Bonus"],
-                                index=["Wypłata", "Premia", "Bonus"].index(typ),
-                                key=f"typ_{wyplata['id']}"
-                            )
-                        with col_edit2:
-                            nowa_kwota = st.number_input(
-                                "Kwota (PLN)",
-                                min_value=0.0,
-                                value=float(wyplata['kwota']),
-                                step=100.0,
-                                key=f"kwota_{wyplata['id']}"
-                            )
-                        
-                        col_save, col_delete = st.columns([1, 1])
-                        
-                        with col_save:
-                            if st.form_submit_button("💾 Zapisz", use_container_width=True):
-                                wyplata['kwota'] = nowa_kwota
-                                wyplata['typ'] = nowy_typ
-                                if save_wyplaty(wyplaty):
-                                    st.success("✅ Zaktualizowano!")
-                                    st.rerun()
-                        
-                        with col_delete:
-                            if st.form_submit_button("🗑️ Usuń", use_container_width=True, type="secondary"):
-                                # Potwierdź usunięcie
-                                if f'confirm_delete_{wyplata["id"]}' not in st.session_state:
-                                    st.session_state[f'confirm_delete_{wyplata["id"]}'] = True
-                                    st.warning("⚠️ Kliknij ponownie aby potwierdzić")
-                                else:
-                                    wyplaty.remove(wyplata)
-                                    if save_wyplaty(wyplaty):
-                                        del st.session_state[f'confirm_delete_{wyplata["id"]}']
-                                        st.success("✅ Usunięto!")
-                                        st.rerun()
-            
+                        if orig_wyplata:
+                            with st.form(f"edit_wyplata_{orig_wyplata['id']}"):
+                                st.caption("Edytuj bonus:")
+                                
+                                col_edit1, col_edit2 = st.columns(2)
+                                with col_edit1:
+                                    nowa_data = st.date_input(
+                                        "Data",
+                                        value=datetime.fromisoformat(orig_wyplata['data']),
+                                        key=f"data_{orig_wyplata['id']}"
+                                    )
+                                with col_edit2:
+                                    nowa_kwota = st.number_input(
+                                        "Kwota (PLN)",
+                                        min_value=0.0,
+                                        value=float(orig_wyplata['kwota']),
+                                        step=100.0,
+                                        key=f"kwota_{orig_wyplata['id']}"
+                                    )
+                                
+                                nowe_notatki = st.text_input(
+                                    "Notatki",
+                                    value=orig_wyplata.get('notatki', ''),
+                                    key=f"notatki_{orig_wyplata['id']}"
+                                )
+                                
+                                col_save, col_delete = st.columns([1, 1])
+                                
+                                with col_save:
+                                    if st.form_submit_button("💾 Zapisz", use_container_width=True):
+                                        orig_wyplata['kwota'] = nowa_kwota
+                                        orig_wyplata['data'] = nowa_data.isoformat()
+                                        orig_wyplata['notatki'] = nowe_notatki
+                                        wyplaty.sort(key=lambda x: x['data'], reverse=True)
+                                        if save_wyplaty(wyplaty):
+                                            st.success("✅ Zaktualizowano!")
+                                            st.rerun()
+                                
+                                with col_delete:
+                                    if st.form_submit_button("🗑️ Usuń", use_container_width=True, type="secondary"):
+                                        wyplaty.remove(orig_wyplata)
+                                        if save_wyplaty(wyplaty):
+                                            st.success("✅ Usunięto!")
+                                            st.rerun()
+                    else:
+                        # Dla wypłat regularnych - przycisk usuwania grupy
+                        st.markdown("---")
+                        st.caption("💡 Aby skorygować kwotę, usuń i dodaj ponownie.")
+                        if st.button(f"🗑️ Usuń tę wypłatę", key=f"delete_group_{key}"):
+                            for wid in group['ids']:
+                                wpis_to_remove = next((w for w in wyplaty if w['id'] == wid), None)
+                                if wpis_to_remove:
+                                    wyplaty.remove(wpis_to_remove)
+                            if save_wyplaty(wyplaty):
+                                st.success("✅ Usunięto!")
+                                st.rerun()
+                
             # === WYKRES WYPŁAT ===
             st.markdown("### 📊 Wizualizacja Wypłat")
             
-            # Przygotuj dane dla wykresu (ostatnie 12 miesięcy)
-            wyplaty_wykres = sorted(wyplaty_filtr, key=lambda x: x['data'])[-12:]
+            # Przygotuj dane dla wykresu (ostatnie 12 miesięcy) - pogrupowane
+            wyplaty_do_wykresu = wyplaty
+            if filtr_rok != "Wszystkie":
+                wyplaty_do_wykresu = [w for w in wyplaty_do_wykresu if w['data'].startswith(filtr_rok)]
             
-            if wyplaty_wykres:
+            # Grupuj także dla wykresu (łącz Wypłata + Premia)
+            from collections import defaultdict
+            wyplaty_wykres_grouped = defaultdict(float)
+            bonusy_wykres = []
+            
+            for w in wyplaty_do_wykresu:
+                typ = w.get('typ', 'Wypłata')
+                if typ in ['Wypłata', 'Premia']:
+                    wyplaty_wykres_grouped[w['data']] += w['kwota']
+                elif filtr_typ in ["Wszystkie", "Bonus"]:  # Pokaż bonusy jeśli filtr pozwala
+                    bonusy_wykres.append(w)
+            
+            # Sortuj i weź ostatnie 12 pozycji
+            wyplaty_wykres_sorted = sorted(wyplaty_wykres_grouped.items(), key=lambda x: x[0])[-12:]
+            
+            if wyplaty_wykres_sorted or bonusy_wykres:
                 fig = go.Figure()
                 
-                daty = [w['data'] for w in wyplaty_wykres]
-                kwoty = [w['kwota'] for w in wyplaty_wykres]
+                if wyplaty_wykres_sorted:
+                    daty = [x[0] for x in wyplaty_wykres_sorted]
+                    kwoty = [x[1] for x in wyplaty_wykres_sorted]
                 
                 fig.add_trace(go.Bar(
                     name='Wypłata',
