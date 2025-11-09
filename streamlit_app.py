@@ -8085,8 +8085,6 @@ def show_kredyty_page(stan_spolki, cele):
                                 st.rerun()
                             else:
                                 st.error("❌ Błąd zapisu")
-                        else:
-                            st.error("❌ Błąd zapisu")
         
         with col2:
             st.markdown("### 📊 Szybkie Statystyki")
