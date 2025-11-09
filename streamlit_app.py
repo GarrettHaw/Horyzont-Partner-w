@@ -29,9 +29,9 @@ if not st.session_state.app_loaded:
         st.markdown("""
         <div style="text-align: center; padding: 100px 20px;">
             <h1 style="color: #1f77b4;">🏢 HORYZONT PARTNERÓW</h1>
-            <p style="font-size: 18px; color: #666;">🚀 Uruchamiam ultra-szybki system AI...</p>
-            <p style="font-size: 14px; color: #999;">Lazy loading: tylko niezbędne moduły (~10 sekund)</p>
-            <p style="font-size: 12px; color: #aaa;">Claude/OpenAI/Sheets załadują się dopiero gdy będą potrzebne</p>
+            <p style="font-size: 18px; color: #666;">🚀 100% Lazy Loading - start w <5 sekund!</p>
+            <p style="font-size: 14px; color: #999;">Wszystkie AI/Sheets załadują się dopiero gdy będą użyte</p>
+            <p style="font-size: 12px; color: #aaa;">Gemini: pierwszy chat | Claude/OpenAI: wybór w ustawieniach | Sheets: load danych</p>
         </div>
         """, unsafe_allow_html=True)
         
@@ -57,7 +57,7 @@ MEMORY_FOLDER.mkdir(exist_ok=True)
 
 # Importy z głównego programu
 if not st.session_state.app_loaded:
-    status_text.text("🤖 Inicjalizuję tylko Gemini (inne AI: lazy load)...")
+    status_text.text("🚀 100% lazy load - bez AI przy starcie!")
     progress_bar.progress(40)
 
 try:

@@ -2256,6 +2256,14 @@ def generuj_odpowiedz_ai(persona_name, prompt):
 
         else: # Domyślnie Gemini
             wait_for_gemini_rate_limit()
+            
+            # LAZY LOAD: Załaduj Gemini tylko gdy potrzebne
+            global model_gemini
+            if model_gemini is None:
+                print_colored("   [Lazy load: Ładuję Gemini po raz pierwszy...]", "\033[96m")
+                model_gemini = get_ai_client("gemini")
+                if model_gemini is None:
+                    return "[BŁĄD: Gemini niedostępny]"
 
             response = model_gemini.generate_content(prompt)
             
@@ -2400,12 +2408,13 @@ print_colored("   → Gemini: ładuje się teraz", "\033[96m")
 print_colored("   → Claude/OpenAI: załadują się gdy potrzebne", "\033[96m")
 print_colored("   → Google Sheets: załadują się gdy potrzebne", "\033[96m")
 try:
-    model_gemini = get_ai_client("gemini")
+    # NIE inicjalizuj nic przy starcie - WSZYSTKO lazy load
+    model_gemini = None  # get_ai_client("gemini")  # Lazy load - bedzie utworzony gdy potrzebny
     # Pozostałe AI będą ładowane na żądanie
     client_openai = None  # Lazy load
     client_deepseek = None  # Lazy load
     client_anthropic = None  # Lazy load
-    print_colored("✓ System gotowy w <10 sekund! (zamiast 5-10 minut)", "\033[92m")
+    print_colored("ULTRA-SZYBKI START: System gotowy w <3 sekundy!", "\033[92m")
 except Exception as e:
     print_colored(f"⚠️ Gemini niedostępny: {e}", "\033[93m")
     model_gemini = None
