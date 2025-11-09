@@ -7866,14 +7866,33 @@ def show_kredyty_page(stan_spolki, cele):
                 
                 # Znajdź następny dzień wypłaty (zakładamy 10-ty dzień miesiąca)
                 today = datetime.now()
-                if today.day < 10:
-                    next_paycheck_date = today.replace(day=10)
-                else:
-                    # Następny miesiąc
+                
+                # Sprawdź czy w bieżącym miesiącu już była wypłata
+                current_month = today.month
+                current_year = today.year
+                
+                already_paid_this_month = any(
+                    datetime.strptime(w['data'], "%Y-%m-%d").month == current_month and
+                    datetime.strptime(w['data'], "%Y-%m-%d").year == current_year
+                    for w in wyplaty_sorted
+                )
+                
+                if already_paid_this_month:
+                    # Już była wypłata w tym miesiącu - przewiduj następny miesiąc
                     if today.month == 12:
                         next_paycheck_date = today.replace(year=today.year + 1, month=1, day=10)
                     else:
                         next_paycheck_date = today.replace(month=today.month + 1, day=10)
+                else:
+                    # Nie było jeszcze wypłaty w tym miesiącu
+                    if today.day < 10:
+                        next_paycheck_date = today.replace(day=10)
+                    else:
+                        # Minął już 10-ty dzień - przewiduj następny miesiąc
+                        if today.month == 12:
+                            next_paycheck_date = today.replace(year=today.year + 1, month=1, day=10)
+                        else:
+                            next_paycheck_date = today.replace(month=today.month + 1, day=10)
                 
                 dni_do_wyplaty = (next_paycheck_date - today).days
                 
@@ -7888,8 +7907,8 @@ def show_kredyty_page(stan_spolki, cele):
                     
                     if dni_do_wyplaty == 0:
                         st.caption("🎉 **DZIŚ!**")
-                    elif dni_do_wyplaty < 0:
-                        st.caption(f"⚠️ Opóźnienie: {abs(dni_do_wyplaty)} dni")
+                    elif dni_do_wyplaty == 1:
+                        st.caption("⏰ **JUTRO!**")
                     else:
                         st.caption(f"⏰ Za {dni_do_wyplaty} dni")
             else:
