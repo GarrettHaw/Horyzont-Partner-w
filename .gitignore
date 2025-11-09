@@ -95,7 +95,7 @@ sprawdz_pliki.bat
 kodeks_spolki.txt
 historia_firmy.txt
 kronika_spotkan.txt
-finalna_konfiguracja_person.txt
+# finalna_konfiguracja_person.txt  # POTRZEBNE na Streamlit Cloud - odkomentowane
 glowne_streszczenie.txt
 gemini_last_call.txt
 kompilator_pamieci.txt
