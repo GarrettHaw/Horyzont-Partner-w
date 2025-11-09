@@ -1,0 +1,63 @@
+name: Autonomous AI Conversations
+
+on:
+  schedule:
+    # 2x dziennie: 10:00 i 18:00 UTC
+    - cron: '0 10 * * *'
+    - cron: '0 18 * * *'
+  workflow_dispatch:
+
+jobs:
+  ai-discussion:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: 📦 Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: 🔐 Configure environment
+        run: |
+          echo "GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}" >> $GITHUB_ENV
+          echo "TRADING212_API_KEY=${{ secrets.TRADING212_API_KEY }}" >> $GITHUB_ENV
+          echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> $GITHUB_ENV
+          echo "ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }}" >> $GITHUB_ENV
+          echo "DEEPSEEK_API_KEY=${{ secrets.DEEPSEEK_API_KEY }}" >> $GITHUB_ENV
+          echo "GROQ_API_KEY=${{ secrets.GROQ_API_KEY }}" >> $GITHUB_ENV
+          echo "OPENROUTER_API_KEY=${{ secrets.OPENROUTER_API_KEY }}" >> $GITHUB_ENV
+      
+      - name: 🤖 Run AI Conversations
+        run: |
+          python autonomous_conversation_engine.py
+          echo "✓ AI partners completed their discussion"
+      
+      - name: 💾 Save conversation logs
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "GitHub Actions Bot"
+          git add autonomous_conversations.json
+          git add persona_memory.json
+          git add api_usage.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "🤖 AI Discussion: $(date +'%Y-%m-%d %H:%M')" && git push)
+      
+      - name: 📊 Summary
+        run: |
+          echo "### 🤖 AI Discussion Complete! 💬" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Partners analyzed portfolio" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Conversations logged" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Memory updated" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "⏰ Next discussion: $(date -d '+8 hours' +'%H:%M UTC')" >> $GITHUB_STEP_SUMMARY

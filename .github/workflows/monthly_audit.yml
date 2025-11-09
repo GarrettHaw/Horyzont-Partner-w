@@ -1,0 +1,58 @@
+name: Monthly Portfolio Audit
+
+on:
+  schedule:
+    # 1. dzień każdego miesiąca o 09:00 UTC
+    - cron: '0 9 1 * *'
+  workflow_dispatch:
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: 📦 Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: 🔐 Configure environment
+        run: |
+          echo "GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}" >> $GITHUB_ENV
+          echo "TRADING212_API_KEY=${{ secrets.TRADING212_API_KEY }}" >> $GITHUB_ENV
+          echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> $GITHUB_ENV
+          echo "ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }}" >> $GITHUB_ENV
+      
+      - name: 🔍 Run Monthly Audit
+        run: |
+          python monthly_audit.py
+          echo "✓ Monthly audit completed"
+      
+      - name: 💾 Commit results
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "GitHub Actions Bot"
+          git add monthly_snapshot.json
+          git add compliance_log.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "🔍 Monthly audit: $(date +'%B %Y')" && git push)
+      
+      - name: 📊 Summary
+        run: |
+          echo "### 🔍 Monthly Audit Complete! 📊" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Portfolio analyzed" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Compliance checked" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Performance reviewed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "⏰ Next audit: 1st of next month" >> $GITHUB_STEP_SUMMARY

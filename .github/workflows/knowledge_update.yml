@@ -1,0 +1,53 @@
+name: Weekly Knowledge Base Update
+
+on:
+  schedule:
+    # Każdy poniedziałek o 08:00 UTC
+    - cron: '0 8 * * 1'
+  workflow_dispatch:
+
+jobs:
+  update-knowledge:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: 📦 Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: 🔐 Configure environment
+        run: |
+          echo "GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}" >> $GITHUB_ENV
+      
+      - name: 📰 Update Knowledge Base
+        run: |
+          python knowledge_base_updater.py
+          echo "✓ Knowledge base updated with latest market news"
+      
+      - name: 💾 Commit updates
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "GitHub Actions Bot"
+          git add *.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "📰 Knowledge update: $(date +'%Y-%m-%d')" && git push)
+      
+      - name: 📊 Summary
+        run: |
+          echo "### 📰 Knowledge Base Updated! 🧠" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Market news aggregated" >> $GITHUB_STEP_SUMMARY
+          echo "✅ AI context enriched" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "⏰ Next update: Next Monday 08:00 UTC" >> $GITHUB_STEP_SUMMARY
