@@ -92,7 +92,7 @@ sprawdz_pliki.bat
 *.html
 
 # Pliki tekstowe z danymi
-kodeks_spolki.txt
+# kodeks_spolki.txt  # POTRZEBNE na Streamlit Cloud - odkomentowane
 historia_firmy.txt
 kronika_spotkan.txt
 # finalna_konfiguracja_person.txt  # POTRZEBNE na Streamlit Cloud - odkomentowane
