@@ -29,10 +29,16 @@ class ConsultationManager:
         if self.gemini_key:
             genai.configure(api_key=self.gemini_key)
         
-        # Load personas
-        with open('NOWE_skompilowane_persony.txt', 'r', encoding='utf-8') as f:
-            content = f.read()
-            self.personas = self._parse_personas(content)
+        # Load personas - fallback if NOWE_skompilowane doesn't exist
+        persona_file = 'NOWE_skompilowane_persony.txt'
+        if not os.path.exists(persona_file) or os.path.getsize(persona_file) == 0:
+            # Fallback: create empty personas or use finalna_konfiguracja_person
+            print("⚠️ NOWE_skompilowane_persony.txt nie istnieje - używam pustej listy person")
+            self.personas = []
+        else:
+            with open(persona_file, 'r', encoding='utf-8') as f:
+                content = f.read()
+                self.personas = self._parse_personas(content)
     
     def _parse_personas(self, content: str) -> List[Dict]:
         """Parse personas from compiled file"""
