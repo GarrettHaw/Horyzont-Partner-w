@@ -123,9 +123,20 @@ def print_colored(text, color_code):
     """Drukuje tekst w kolorze."""
     print(f"{color_code}{text}\033[0m")
 
+# Funkcja do bezpiecznego pobierania kluczy API
+def get_api_key(key_name):
+    """Pobiera klucz API z Streamlit Secrets lub zmiennych środowiskowych."""
+    try:
+        import streamlit as st
+        if hasattr(st, 'secrets') and key_name in st.secrets:
+            return st.secrets[key_name]
+    except:
+        pass
+    return os.getenv(key_name)
+
 load_dotenv()
-GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
-TRADING212_API_KEY = os.getenv("TRADING212_API_KEY")  # NOWY: Trading212 API
+GOOGLE_API_KEY = get_api_key("GOOGLE_API_KEY")
+TRADING212_API_KEY = get_api_key("TRADING212_API_KEY")
 
 if not GOOGLE_API_KEY or GOOGLE_API_KEY == "":
     print("\033[91m" + "="*60)
@@ -133,10 +144,9 @@ if not GOOGLE_API_KEY or GOOGLE_API_KEY == "":
     print("="*60)
     print("Nie znaleziono klucza GOOGLE_API_KEY.")
     print("\nAby naprawić:")
-    print("1. Utwórz plik '.env' w tym samym folderze co skrypt")
-    print("2. Dodaj do niego linię: GOOGLE_API_KEY=twoj_klucz_tutaj")
-    print("3. Zainstaluj bibliotekę: pip install python-dotenv")
-    print("4. Dodaj '.env' do .gitignore!")
+    print("1. W Streamlit Cloud: Settings → Secrets → dodaj GOOGLE_API_KEY")
+    print("2. Lokalnie: Utwórz plik '.env' i dodaj: GOOGLE_API_KEY=twoj_klucz")
+    print("3. Zainstaluj: pip install python-dotenv")
     print("="*60 + "\033[0m")
     exit(1)
 def wait_for_gemini_rate_limit():
@@ -2219,7 +2229,7 @@ def generuj_odpowiedz_ai(persona_name, prompt):
     try:
         if model_engine.startswith('openrouter'):
             client = openai.OpenAI(
-                api_key=os.getenv("OPENROUTER_API_KEY"),
+                api_key=get_api_key("OPENROUTER_API_KEY"),
                 base_url="https://openrouter.ai/api/v1"
             )
             
@@ -2337,25 +2347,25 @@ try:
     print_colored("🔌 Inicjalizuję połączenia z silnikami AI...", "\033[96m")
     
     # Google Gemini
-    genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
+    genai.configure(api_key=get_api_key("GOOGLE_API_KEY"))
     model_gemini = genai.GenerativeModel('gemini-2.5-pro')
     
     # OpenAI (dla GPT)
-    client_openai = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    client_openai = openai.OpenAI(api_key=get_api_key("OPENAI_API_KEY"))
     
     # DeepSeek (używa interfejsu OpenAI)
     client_deepseek = openai.OpenAI(
-        api_key=os.getenv("DEEPSEEK_API_KEY"),
+        api_key=get_api_key("DEEPSEEK_API_KEY"),
         base_url="https://api.deepseek.com/v1"
     )
 
     # Anthropic
-    client_anthropic = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+    client_anthropic = anthropic.Anthropic(api_key=get_api_key("ANTHROPIC_API_KEY"))
     
     print_colored("✓ Wszystkie silniki AI zostały pomyślnie skonfigurowane.", "\033[92m")
 except Exception as e:
     print_colored(f"❌ BŁĄD KRYTYCZNY: Nie udało się skonfigurować jednego z API: {e}", "\033[91m")
-    print_colored("   Sprawdź swoje klucze API w pliku .env i połączenie z internetem.", "\033[93m")
+    print_colored("   Sprawdź swoje klucze API w Streamlit Secrets lub pliku .env", "\033[93m")
     exit(1)
 
 if not os.path.exists(NAZWA_PLIKU_KREDENCJALI):
