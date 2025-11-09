@@ -11,6 +11,36 @@ import json
 import os
 from pathlib import Path
 
+# Konfiguracja strony - MUSI być jako pierwsze
+st.set_page_config(
+    page_title="Horyzont Partnerów",
+    page_icon="🏢",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
+# === EKRAN ŁADOWANIA ===
+if 'app_loaded' not in st.session_state:
+    st.session_state.app_loaded = False
+
+if not st.session_state.app_loaded:
+    # Pokaż ekran ładowania
+    with st.spinner(''):
+        st.markdown("""
+        <div style="text-align: center; padding: 100px 20px;">
+            <h1 style="color: #1f77b4;">🏢 HORYZONT PARTNERÓW</h1>
+            <p style="font-size: 18px; color: #666;">Inicjalizuję system AI...</p>
+            <p style="font-size: 14px; color: #999;">Ładowanie może potrwać 30-60 sekund przy pierwszym uruchomieniu</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        progress_bar = st.progress(0)
+        status_text = st.empty()
+        
+        # Krok 1: Podstawowe moduły
+        status_text.text("📦 Ładowanie modułów podstawowych...")
+        progress_bar.progress(20)
+
 # API Usage Tracker
 from api_usage_tracker import get_tracker
 
@@ -25,6 +55,10 @@ MEMORY_FOLDER = Path("partner_memories")
 MEMORY_FOLDER.mkdir(exist_ok=True)
 
 # Importy z głównego programu
+if not st.session_state.app_loaded:
+    status_text.text("🤖 Inicjalizuję silniki AI (Gemini, Claude, OpenAI)...")
+    progress_bar.progress(40)
+
 try:
     from gra_rpg import (
         pobierz_stan_spolki,
@@ -33,16 +67,34 @@ try:
         generuj_odpowiedz_ai,
         PERSONAS
     )
+    
+    if not st.session_state.app_loaded:
+        status_text.text("📊 Ładowanie modułów analitycznych...")
+        progress_bar.progress(60)
+    
     from risk_analytics import RiskAnalytics, PortfolioHistory
     from animated_timeline import AnimatedTimeline
     from excel_reporter import ExcelReportGenerator, generate_full_report
+    
+    if not st.session_state.app_loaded:
+        status_text.text("🧠 Inicjalizuję pamięć AI partnerów...")
+        progress_bar.progress(80)
+    
     import persona_memory_manager as pmm
     from persona_context_builder import build_enhanced_context, get_emotional_modifier, load_persona_memory
     from crypto_portfolio_manager import CryptoPortfolioManager
+    
     IMPORTS_OK = True
     MEMORY_OK = True
     MEMORY_V2 = True
     CRYPTO_MANAGER_OK = True
+    
+    if not st.session_state.app_loaded:
+        status_text.text("✅ Gotowe! Uruchamiam dashboard...")
+        progress_bar.progress(100)
+        st.session_state.app_loaded = True
+        st.rerun()
+        
 except ImportError as e:
     if "persona_memory_manager" in str(e) or "persona_context_builder" in str(e):
         IMPORTS_OK = True
@@ -62,12 +114,21 @@ except ImportError as e:
         MEMORY_V2 = False
         CRYPTO_MANAGER_OK = False
         st.error(f"⚠️ Błąd importu: {e}")
+    
+    if not st.session_state.app_loaded:
+        st.session_state.app_loaded = True
+        st.rerun()
+        
 except Exception as e:
     IMPORTS_OK = False
     MEMORY_OK = False
     MEMORY_V2 = False
     CRYPTO_MANAGER_OK = False
     st.error(f"⚠️ Błąd importu: {e}")
+    
+    if not st.session_state.app_loaded:
+        st.session_state.app_loaded = True
+        st.rerun()
     import traceback
     st.code(traceback.format_exc())
 
@@ -979,6 +1040,7 @@ def generate_smart_questions(stan_spolki, cele=None):
 # KNOWLEDGE BASE FUNCTIONS
 # =====================================================
 
+@st.cache_data(ttl=3600)  # Cache na 1 godzinę
 def load_knowledge_base():
     """Wczytuje bazę wiedzy z artykułów i raportów kwartalnych"""
     knowledge = {
@@ -2743,6 +2805,7 @@ def normalize_stan_spolki(stan_spolki):
 
 # Funkcja do ładowania danych
 @st.cache_data(ttl=60)  # Cache na 1 minutę (zmniejszono z 5 minut dla szybszej synchronizacji)
+@st.cache_data(ttl=300)  # Cache na 5 minut
 def load_portfolio_data():
     """Pobiera dane portfela"""
     if not IMPORTS_OK:
