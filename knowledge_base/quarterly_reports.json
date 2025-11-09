@@ -1,0 +1,128 @@
+{
+  "quarterly_reports": [
+    {
+      "ticker": "AAPL",
+      "company": "Apple Inc.",
+      "quarter": "Q3 2024",
+      "date": "2024-08-01",
+      "revenue": "$85.8B",
+      "revenue_growth": "+5% YoY",
+      "eps": "$1.40",
+      "eps_growth": "+8% YoY",
+      "highlights": [
+        "iPhone 15 sprzedaż przekroczyła oczekiwania o 12%",
+        "Services osiągnęły rekordowe $22.3B (+15% YoY)",
+        "Marża brutto 45.2% - najwyższa od 5 lat",
+        "Wykup akcji $25B w Q3 - kontynuacja programu",
+        "Guidance Q4: $89-93B revenue (pozytywny)"
+      ],
+      "concerns": [
+        "Sprzedaż w Chinach spadła -3% YoY (konkurencja lokalna)",
+        "Mac i iPad w dół odpowiednio -7% i -5%",
+        "Wysokie P/E 29 wymaga utrzymania wzrostu"
+      ],
+      "analyst_rating": "Buy",
+      "price_target": "$200-220"
+    },
+    {
+      "ticker": "MSFT",
+      "company": "Microsoft Corporation",
+      "quarter": "Q3 2024",
+      "date": "2024-07-28",
+      "revenue": "$64.7B",
+      "revenue_growth": "+16% YoY",
+      "eps": "$2.95",
+      "eps_growth": "+20% YoY",
+      "highlights": [
+        "Azure wzrost +29% YoY - lider cloud computing",
+        "AI Copilot adoption przekroczyła 1M użytkowników biznesowych",
+        "Gaming revenue +44% dzięki Activision Blizzard",
+        "Office 365 Commercial +15% - stabilny wzrost",
+        "Free cash flow $23B - silna pozycja finansowa"
+      ],
+      "concerns": [
+        "Wysokie koszty AI infrastructure (capex +50%)",
+        "Konkurencja w cloud (AWS, Google) zwiększa presję na marże",
+        "Regulacje antitrust w UE mogą ograniczyć bundling"
+      ],
+      "analyst_rating": "Strong Buy",
+      "price_target": "$450-480"
+    },
+    {
+      "ticker": "NVDA",
+      "company": "NVIDIA Corporation",
+      "quarter": "Q2 2024",
+      "date": "2024-08-25",
+      "revenue": "$30.0B",
+      "revenue_growth": "+122% YoY",
+      "eps": "$0.68",
+      "eps_growth": "+152% YoY",
+      "highlights": [
+        "Data Center revenue $26.3B (+154% YoY) - AI boom",
+        "H100 GPU demand przekracza podaż o 300%",
+        "Nowy chip Blackwell już wyprzedany na 2025",
+        "Marża brutto 78% - najwyższa w sektorze",
+        "Guidance Q3: $32.5B (+170% YoY) - bardzo optymistyczne"
+      ],
+      "concerns": [
+        "Ekstremalna wycena P/E 67 - bańka AI?",
+        "Konkurencja (AMD, Intel) wprowadza własne AI chips",
+        "Zależność od kilku mega-klientów (Microsoft, Meta, Google)",
+        "Geopolityczne ryzyka (eksport do Chin ograniczony)"
+      ],
+      "analyst_rating": "Buy",
+      "price_target": "$700-850"
+    },
+    {
+      "ticker": "TSLA",
+      "company": "Tesla Inc.",
+      "quarter": "Q3 2024",
+      "date": "2024-10-20",
+      "revenue": "$25.2B",
+      "revenue_growth": "+8% YoY",
+      "eps": "$0.72",
+      "eps_growth": "+12% YoY",
+      "highlights": [
+        "Deliveries 462k vehicles (+6% YoY) pomimo obniżek cen",
+        "Energy storage deployment +73% - rekordowy kwartał",
+        "FSD Beta v12 dostępne dla wszystkich w USA",
+        "Cybertruck produkcja na dobrej drodze (50k/rok)",
+        "Marża operacyjna 8.2% - lepsza niż oczekiwano"
+      ],
+      "concerns": [
+        "Marże pod presją z powodu wojny cenowej",
+        "Konkurencja EVs (BYD, VW) rośnie w siłę",
+        "Robotaxi announcement przesunięty na 2025",
+        "P/E 66 bardzo wysokie jak na auto manufacturer",
+        "Musk spends more time on X/Twitter than Tesla"
+      ],
+      "analyst_rating": "Hold",
+      "price_target": "$220-280"
+    },
+    {
+      "ticker": "GOOGL",
+      "company": "Alphabet Inc.",
+      "quarter": "Q3 2024",
+      "date": "2024-10-25",
+      "revenue": "$76.7B",
+      "revenue_growth": "+11% YoY",
+      "eps": "$1.55",
+      "eps_growth": "+15% YoY",
+      "highlights": [
+        "Search advertising +10% pomimo AI disruption",
+        "YouTube ads +12% - short-form content działa",
+        "Cloud revenue $8.4B (+25% YoY) - catching up to AWS/Azure",
+        "Operating margin 28% - poprawa efektywności",
+        "AI integration w Search przyciąga młodszych użytkowników"
+      ],
+      "concerns": [
+        "DOJ antitrust case - możliwy break-up?",
+        "ChatGPT/Bing grozi disruption w search",
+        "Cloud wciąż nierentowny w niektórych segmentach",
+        "Koszty AI R&D rosną szybciej niż revenue"
+      ],
+      "analyst_rating": "Buy",
+      "price_target": "$160-180"
+    }
+  ]
+}

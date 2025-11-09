@@ -1,0 +1,58 @@
+{
+  "wydatki": [
+    {
+      "id": "1760985973.192625",
+      "nazwa": "AppleTV",
+      "kwota": 11.99,
+      "kategoria": "Subskrypcje",
+      "nadprogramowy": false,
+      "notatki": "",
+      "data_dodania": "2025-10-20T20:46:13.192630"
+    },
+    {
+      "id": "1760985773.965555",
+      "nazwa": "Czynsz",
+      "kwota": 1600.0,
+      "kategoria": "Mieszkanie",
+      "nadprogramowy": false,
+      "notatki": "",
+      "data_dodania": "2025-10-20T20:42:53.965561"
+    },
+    {
+      "id": "1760986012.364521",
+      "nazwa": "Github",
+      "kwota": 36.5,
+      "kategoria": "Subskrypcje",
+      "nadprogramowy": false,
+      "notatki": "",
+      "data_dodania": "2025-10-20T20:46:52.364526"
+    },
+    {
+      "id": "1761415781.148627",
+      "nazwa": "Inne",
+      "kwota": 500.0,
+      "kategoria": "Inne",
+      "nadprogramowy": false,
+      "notatki": "",
+      "data_dodania": "2025-10-25T20:09:41.148633"
+    },
+    {
+      "id": "1760985860.420085",
+      "nazwa": "Paliwo",
+      "kwota": 500.0,
+      "kategoria": "Transport",
+      "nadprogramowy": false,
+      "notatki": "",
+      "data_dodania": "2025-10-20T20:44:20.420090"
+    },
+    {
+      "id": "1760985935.707431",
+      "nazwa": "YouTube",
+      "kwota": 59.99,
+      "kategoria": "Subskrypcje",
+      "nadprogramowy": false,
+      "notatki": "",
+      "data_dodania": "2025-10-20T20:45:35.707436"
+    }
+  ]
+}

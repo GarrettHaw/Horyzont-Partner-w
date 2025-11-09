@@ -1,0 +1,38 @@
+{
+  "date": "2025-10-20T21:39:18.359434",
+  "week_number": 43,
+  "year": 2025,
+  "portfolio_stats": {
+    "net_worth": 18692.89,
+    "stocks_value": 20920.89,
+    "crypto_value": 0.0,
+    "cash_reserve": 4437,
+    "debt": 6665,
+    "leverage_ratio": 26.283732597625438,
+    "total_positions": 56
+  },
+  "mood": {
+    "level": "neutral",
+    "emoji": "😐",
+    "description": "Stabilna sytuacja, bez większych zmian",
+    "score": 0
+  },
+  "achievements": [
+    {
+      "type": "debt_reduced",
+      "icon": "💪",
+      "title": "Świetna spłata długów!",
+      "description": "Spłacono 25000 PLN z 25000 PLN (100%)"
+    }
+  ],
+  "warnings": [],
+  "action_items": [
+    {
+      "priority": "medium",
+      "icon": "📋",
+      "title": "Action: Goal Achieved",
+      "description": "Czas na inwestowanie bez obciążeń!"
+    }
+  ],
+  "summary": "Wartość netto: 18,693 PLN | Nastrój: Stabilna sytuacja, bez większych zmian | 1 osiągnięć | 1 rekomendacji"
+}

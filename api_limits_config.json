@@ -1,0 +1,17 @@
+{
+  "claude": {
+    "daily_limit": 1000,
+    "autonomous_percentage": 60,
+    "cost_per_call": 0.01
+  },
+  "gemini": {
+    "daily_limit": 1500,
+    "autonomous_percentage": 60,
+    "cost_per_call": 0.005
+  },
+  "openai": {
+    "daily_limit": 500,
+    "autonomous_percentage": 60,
+    "cost_per_call": 0.02
+  }
+}

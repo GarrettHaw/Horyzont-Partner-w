@@ -1,0 +1,282 @@
+# 🚀 QUICK REFERENCE - AI Personality System v2.0
+
+## 📋 Podstawowe Komendy
+
+### Testy i Diagnostyka
+```powershell
+# Test systemu v2.0
+python -c "from persona_context_builder import build_enhanced_context; print('✅ OK')"
+
+# Zobacz kontekst AI
+python persona_context_builder.py
+
+# Sprawdź knowledge base
+python knowledge_base_updater.py
+
+# Audyt miesięczny
+python monthly_audit.py
+```
+
+### Backup i Maintenance
+```powershell
+# Backup pamięci
+Copy-Item persona_memory.json "persona_memory_backup_$(Get-Date -Format 'yyyyMMdd_HHmmss').json"
+
+# Sprawdź rozmiar pliku
+(Get-Item persona_memory.json).Length / 1KB
+```
+
+---
+
+## 🎭 Profile Partnerów (Quick Ref)
+
+| Persona | Mood Default | Risk | Voting | Goal |
+|---------|--------------|------|--------|------|
+| **Benjamin Graham** 🛡️ | neutral | 0.3 | 5% | Zero strat |
+| **Warren Buffett** 🏡 | optimistic | 0.5 | 5% | Quality compounders |
+| **Philip Fisher** 🔬 | excited | 0.7 | 5% | Growth 25%+ ROE |
+| **George Soros** 🌍 | cautious | 0.6 | 5% | Reflexivity detection |
+| **CZ** ⚡ | excited | 0.8 | 5% | 30% crypto allocation |
+| **Partner Zarządzający** 👔 | neutral | 0.6 | 35% | Sustainable growth |
+| **Partner Strategiczny** 🎯 | confident | 0.7 | 30% | Market leadership |
+
+---
+
+## 📊 Voting Weight Bonuses
+
+```
+Base Weight (Kodeks): 
+- JA: 35%
+- Partner Strategiczny: 30%
+- Others: 5% each
+
+Credibility Bonus Range: -2% to +3%
+
+Formula:
+effective_weight = base_weight + ((credibility_score - 1.0) * 3)
+
+Examples:
+- credibility 1.0 (100%) → bonus 0% → effective = base
+- credibility 0.8 (80%) → bonus -0.6% → effective = base - 0.6%
+- credibility 1.2 (120% impossible but...) → bonus +0.6% → effective = base + 0.6%
+```
+
+---
+
+## 🎯 Mood System
+
+### Moods
+| Mood | Emoji | Trigger |
+|------|-------|---------|
+| **excited** | 🔥 | Big win (>500 PLN) |
+| **confident** | 💪 | Multiple wins |
+| **optimistic** | 😊 | Small win |
+| **neutral** | 😐 | Default |
+| **cautious** | 🤔 | High market volatility |
+| **worried** | 😟 | Small loss |
+| **fearful** | 😰 | Big loss (>1000 PLN) |
+| **angry** | 😠 | Failed prediction |
+| **disappointed** | 😞 | Missed opportunity |
+
+### Mood Affects
+- **excited** → More aggressive recommendations, higher risk tolerance
+- **fearful** → Conservative moves, recommends cash
+- **confident** → Bold calls, references past wins
+- **worried** → Extra cautious, mentions concerns frequently
+
+---
+
+## 🤝 Relationship Dynamics
+
+### Trust Levels
+- 🟢 **High (>70%)**: "I agree with [Partner]", supportive tone
+- 🟡 **Medium (40-70%)**: Neutral, objective analysis
+- 🔴 **Low (<40%)**: "I disagree with [Partner]", contrarian stance
+
+### Trust Changes
+```python
+Agreement on decision: trust += 0.05
+Disagreement (one correct): trust -= 0.1
+Alliance (joint proposal): trust += 0.1
+Conflict (opposing views): trust -= 0.05
+```
+
+---
+
+## 📚 Knowledge Base
+
+### Update Frequency
+⏰ **Every 12 hours** (via Task Scheduler)
+
+### Sources
+- **Yahoo Finance**: Market news, earnings
+- **Seeking Alpha**: Analysis, opinions
+- **Bloomberg**: Global macro news
+
+### Tags
+- `macro` → Fed, interest rates, GDP
+- `earnings` → Company results
+- `tech` → Apple, Microsoft, Google
+- `crypto` → Bitcoin, Ethereum, Binance
+- `m&a` → Mergers, acquisitions
+- `energy` → Oil, gas, renewables
+
+### Usage in Prompts
+AI partners automatically reference recent articles when relevant:
+> "Based on recent Yahoo Finance report about Fed rate cuts..."
+
+---
+
+## 🔮 Prediction System
+
+### Recording Prediction
+```python
+{
+  "ticker": "AAPL",
+  "direction": "UP",  # UP, DOWN, NEUTRAL
+  "entry_price": 175.50,
+  "forecast_price": 190.00,
+  "confidence": 0.75,  # 0-1
+  "timeframe": "3M",
+  "reasoning": "Strong iPhone sales...",
+  "due_date": "2026-01-21",
+  "status": "active"  # active, resolved
+}
+```
+
+### Monthly Audit Checks
+1. Fetches current price
+2. Compares direction: `current_price > entry_price`
+3. Calculates accuracy: `100 - abs(forecast_change% - actual_change%)`
+4. Updates credibility score
+5. Changes mood based on result
+6. Evolves personality traits
+7. Adjusts voting weight bonus
+
+---
+
+## 🧬 Personality Evolution
+
+### Traits That Evolve
+- `risk_tolerance` → After losses: -0.05, After wins: +0.05
+- `optimism_bias` → After failed predictions: -0.1
+- `patience` → After impulsive losses: +0.05
+
+### Learning Patterns
+```json
+{
+  "mistake_categories": {
+    "crypto_overallocation": 3,  # Count
+    "timing_error": 2
+  },
+  "improvement_strategies": [
+    "Reduce crypto exposure to <20%",
+    "Wait for RSI < 30 before buying"
+  ]
+}
+```
+
+---
+
+## ⚙️ Configuration Files
+
+### `persona_memory.json`
+**Current size**: 1626 lines  
+**Backup frequency**: Before each major operation  
+**Location**: Root directory
+
+### `knowledge_base/articles.json`
+**Max age**: 14 days (older removed)  
+**Current count**: 9 articles  
+**Update**: Every 12h via `run_knowledge_updater.bat`
+
+### `monthly_snapshot.json`
+**Generated by**: `monthly_audit.py`  
+**Contains**: Summary of predictions evaluated, persona results
+
+---
+
+## 🐛 Troubleshooting
+
+### "No module named 'feedparser'"
+```powershell
+pip install feedparser beautifulsoup4 requests
+```
+
+### "MEMORY_V2 not found"
+Check imports in `streamlit_app.py` line 30:
+```python
+from persona_context_builder import build_enhanced_context, get_emotional_modifier
+```
+
+### Knowledge base not updating
+1. Check Task Scheduler: task enabled?
+2. Check logs: `logs\knowledge_base.log`
+3. Manual run: `python knowledge_base_updater.py`
+
+### Credibility not changing
+1. Ensure decisions have `outcome` field ('success'/'failure')
+2. Run `monthly_audit.py` manually
+3. Check `persona_memory.json` for updated `credibility_score`
+
+### Progress bar crash (negative values)
+Fixed in streamlit_app.py line 4935:
+```python
+normalized_value = max(0.0, min(1.0, value))
+st.progress(normalized_value)
+```
+
+---
+
+## 📈 Performance Tips
+
+### Optimize Token Usage
+- Limit context: `build_enhanced_context(name, limit=3)` instead of 5
+- Reduce verbosity in communication_style
+- Shorten catchphrases list
+
+### Reduce File Size
+- Archive old decisions (>6 months)
+- Limit mood_history to last 10 (currently 20)
+- Compress notable_moments in relationships
+
+### Speed Up Knowledge Base
+- Reduce max articles per source (currently 10)
+- Increase deduplication frequency
+- Cache HTTP requests
+
+---
+
+## 🎯 Best Practices
+
+### When Talking to AI Partners
+1. ✅ Reference recent portfolio performance
+2. ✅ Ask about specific tickers
+3. ✅ Request confidence levels
+4. ✅ Save important decisions with 💾 button
+
+### After Big Portfolio Changes
+1. 🔄 Update emotional states manually if needed
+2. 📝 Record key decisions immediately
+3. 📊 Check Track Record tab (TAB 7)
+
+### Monthly Routine
+1. 📅 1st of month: Run `monthly_audit.py`
+2. 📊 Check leaderboard in TAB 7
+3. 📈 Review personality evolution
+4. 💾 Backup persona_memory.json
+
+---
+
+## 🔗 Related Files
+
+- **Documentation**: `AI_PERSONALITY_SYSTEM_V2.md`
+- **Upgrade Summary**: `UPGRADE_SUMMARY_V2.md`
+- **Original Guide**: `AI_MEMORY_GUIDE.md`
+- **Quick Start**: `QUICK_START.md`
+
+---
+
+**Version**: 2.0  
+**Last Updated**: 21.10.2025  
+**Status**: Production Ready ✅

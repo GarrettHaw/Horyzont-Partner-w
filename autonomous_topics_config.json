@@ -1,0 +1,37 @@
+{
+  "portfolio_analysis": {
+    "name": "Analiza Portfela",
+    "description": "Przegląd aktualnego stanu portfela i jego alokacji",
+    "priority": "MEDIUM",
+    "frequency": "daily",
+    "prompt_template": "Przeanalizujmy aktualny stan portfela. Wartość akcji: {stocks_value} PLN, Krypto: {crypto_value} USD, Długi: {debt_value} PLN. Jak oceniacie obecną alokację?"
+  },
+  "market_trends": {
+    "name": "Trendy Rynkowe",
+    "description": "Dyskusja o aktualnych trendach na rynkach",
+    "priority": "LOW",
+    "frequency": "weekly",
+    "prompt_template": "Co sądzicie o aktualnych trendach rynkowych? Bitcoin ostatnio {btc_trend}, rynek akcji {stock_trend}."
+  },
+  "risk_assessment": {
+    "name": "Ocena Ryzyka",
+    "description": "Analiza ryzyka w portfelu",
+    "priority": "HIGH",
+    "frequency": "daily",
+    "prompt_template": "Przeanalizujmy poziom ryzyka w portfelu. Czy jesteśmy odpowiednio zdywersyfikowani? Jakie są największe zagrożenia?"
+  },
+  "goals_review": {
+    "name": "Przegląd Celów",
+    "description": "Dyskusja o postępach w realizacji celów",
+    "priority": "MEDIUM",
+    "frequency": "weekly",
+    "prompt_template": "Sprawdźmy postępy w realizacji naszych celów finansowych. Czy jesteśmy na dobrej drodze?"
+  },
+  "strategy_debate": {
+    "name": "Debata Strategiczna",
+    "description": "Dyskusja o długoterminowej strategii",
+    "priority": "HIGH",
+    "frequency": "weekly",
+    "prompt_template": "Porozmawiajmy o naszej długoterminowej strategii inwestycyjnej. Czy powinna się zmienić? Co dostosować?"
+  }
+}

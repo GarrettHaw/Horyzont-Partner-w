@@ -1,0 +1,12 @@
+{
+  "enabled": false,
+  "email_to": "your-email@gmail.com",
+  "daily_digest": {
+    "enabled": true,
+    "time": "18:00"
+  },
+  "alerts": {
+    "conversation_completed": true,
+    "critical_issue": true
+  }
+}

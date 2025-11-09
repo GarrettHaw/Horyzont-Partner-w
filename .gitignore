@@ -1,0 +1,103 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Environment
+.env
+
+# Secrets & Credentials
+credentials.json
+*.json.bak
+api_keys.txt
+
+# Cache & Temporary Files
+*.cache
+cache_manager.json
+benchmark_cache.json
+crypto_cache.json
+crypto_metadata_cache.json
+crypto_prices_cache.json
+cache_migrated.flag
+
+# Data Files - uncommit these if needed
+cele.json
+kredyty.json
+krypto.json
+portfolio_history.json
+monthly_snapshot.json
+daily_snapshots.json
+autonomous_conversations.json
+persona_memory.json
+api_usage.json
+compliance_log.json
+
+# Keep config files
+!autonomous_topics_config.json
+!notification_config.json
+!api_limits_config.json
+
+# Logs
+*.log
+
+# Backup Files
+*.bak
+backup.sh
+*.txt.bak
+*_backup_*.txt
+
+# OS Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Streamlit - keep config.toml but hide secrets
+.streamlit/secrets.toml
+
+# Batch files (lokalne skrypty)
+run_dashboard.bat
+run_daily_snapshot.bat
+run_knowledge_updater.bat
+sprawdz_pliki.bat
+
+# Pliki HTML (wygenerowane lokalnie)
+*.html
+
+# Pliki tekstowe z danymi
+kodeks_spolki.txt
+historia_firmy.txt
+kronika_spotkan.txt
+finalna_konfiguracja_person.txt
+glowne_streszczenie.txt
+gemini_last_call.txt
+kompilator_pamieci.txt
+NOWE_skompilowane_persony.txt
+Nowy*.txt

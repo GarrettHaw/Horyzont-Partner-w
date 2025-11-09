@@ -1,0 +1,7 @@
+{
+  "theme": "dark",
+  "notifications_enabled": true,
+  "cache_ttl": 5,
+  "auto_refresh": false,
+  "refresh_interval": 60
+}
