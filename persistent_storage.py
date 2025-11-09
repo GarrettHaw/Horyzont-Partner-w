@@ -150,7 +150,7 @@ def show_sync_widget():
         with col1:
             if st.button("💾 Zapisz teraz", key="sync_now_btn", type="primary", use_container_width=True):
                 # Spróbuj automatycznego triggera
-                if GITHUB_API_OK:
+                if GITHUB_API_OK and 'GITHUB_TOKEN' in st.secrets:
                     with st.spinner("Uruchamiam synchronizację..."):
                         success, msg = trigger_sync_workflow()
                         if success:
@@ -158,16 +158,28 @@ def show_sync_widget():
                             st.sidebar.caption("Sprawdź status: [GitHub Actions](https://github.com/GarrettHaw/Horyzont-Partner-w/actions)")
                         else:
                             st.sidebar.error(msg)
-                            st.sidebar.info("💡 Użyj ręcznego triggera (link poniżej)")
+                            st.sidebar.info("💡 Spróbuj użyć ręcznego triggera")
                 else:
-                    st.sidebar.info("""
-                    🚀 **Aby zapisać dane:**
+                    # Brak tokena - pokaż szczegółową instrukcję
+                    st.sidebar.warning("⚙️ **Konfiguracja wymagana**")
+                    st.sidebar.markdown("""
+                    **Krok 1:** Wygeneruj GitHub Token
+                    - Idź na: [GitHub Tokens](https://github.com/settings/tokens)
+                    - Kliknij "Generate new token (classic)"
+                    - Zaznacz scope: `repo`
+                    - Skopiuj token (format: `ghp_...`)
                     
-                    1. Idź na [GitHub Actions](https://github.com/GarrettHaw/Horyzont-Partner-w/actions/workflows/sync_data.yml)
-                    2. Kliknij "Run workflow" → "Run workflow"
-                    3. Poczekaj ~1 min na zakończenie
+                    **Krok 2:** Dodaj do Streamlit Secrets
+                    - [Otwórz Settings](https://share.streamlit.io/)
+                    - Znajdź swoją aplikację → Settings → Secrets
+                    - Dodaj: `GITHUB_TOKEN = "ghp_..."`
+                    - Zapisz i poczekaj 30 sekund
                     
-                    ✅ Dane zostaną zapisane trwale!
+                    **Alternatywa (teraz):**
+                    - [Ręczny trigger →](https://github.com/GarrettHaw/Horyzont-Partner-w/actions/workflows/sync_data.yml)
+                    - Kliknij "Run workflow"
+                    
+                    📖 [Pełna instrukcja](https://github.com/GarrettHaw/Horyzont-Partner-w/blob/master/GITHUB_TOKEN_SETUP.md)
                     """)
         
         with col2:
