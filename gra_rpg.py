@@ -2342,31 +2342,63 @@ if not PERSONAS:
 KODEKS_SPOLKI = wczytaj_kodeks()
 CELE = wczytaj_cele()
 
-# Inicjalizacja wszystkich klientów AI
-try:
-    print_colored("🔌 Inicjalizuję połączenia z silnikami AI...", "\033[96m")
-    
-    # Google Gemini
-    genai.configure(api_key=get_api_key("GOOGLE_API_KEY"))
-    model_gemini = genai.GenerativeModel('gemini-2.5-pro')
-    
-    # OpenAI (dla GPT)
-    client_openai = openai.OpenAI(api_key=get_api_key("OPENAI_API_KEY"))
-    
-    # DeepSeek (używa interfejsu OpenAI)
-    client_deepseek = openai.OpenAI(
-        api_key=get_api_key("DEEPSEEK_API_KEY"),
-        base_url="https://api.deepseek.com/v1"
-    )
+# === LAZY LOADING AI CLIENTS ===
+# Zamiast inicjalizować wszystkie AI na starcie, tworzymy je na żądanie
+_ai_clients = {}
 
-    # Anthropic
-    client_anthropic = anthropic.Anthropic(api_key=get_api_key("ANTHROPIC_API_KEY"))
+def get_ai_client(engine_name):
+    """
+    Lazy loading AI clients - tworzy tylko gdy potrzebne.
+    Oszczędza RAM i przyspiesza start aplikacji.
+    """
+    global _ai_clients
     
-    print_colored("✓ Wszystkie silniki AI zostały pomyślnie skonfigurowane.", "\033[92m")
+    if engine_name in _ai_clients:
+        return _ai_clients[engine_name]
+    
+    try:
+        if engine_name == "gemini":
+            genai.configure(api_key=get_api_key("GOOGLE_API_KEY"))
+            client = genai.GenerativeModel('gemini-2.5-pro')
+            print_colored("✓ Gemini AI zainicjalizowany.", "\033[92m")
+            
+        elif engine_name == "openai":
+            client = openai.OpenAI(api_key=get_api_key("OPENAI_API_KEY"))
+            print_colored("✓ OpenAI GPT zainicjalizowany.", "\033[92m")
+            
+        elif engine_name == "deepseek":
+            client = openai.OpenAI(
+                api_key=get_api_key("DEEPSEEK_API_KEY"),
+                base_url="https://api.deepseek.com/v1"
+            )
+            print_colored("✓ DeepSeek AI zainicjalizowany.", "\033[92m")
+            
+        elif engine_name == "anthropic":
+            client = anthropic.Anthropic(api_key=get_api_key("ANTHROPIC_API_KEY"))
+            print_colored("✓ Anthropic Claude zainicjalizowany.", "\033[92m")
+            
+        else:
+            raise ValueError(f"Nieznany silnik AI: {engine_name}")
+        
+        _ai_clients[engine_name] = client
+        return client
+        
+    except Exception as e:
+        print_colored(f"⚠️ Nie udało się zainicjalizować {engine_name}: {e}", "\033[93m")
+        return None
+
+# Inicjalizacja tylko Gemini (domyślny, darmowy)
+print_colored("🔌 Inicjalizuję domyślny silnik AI (Gemini)...", "\033[96m")
+try:
+    model_gemini = get_ai_client("gemini")
+    # Pozostałe AI będą ładowane na żądanie
+    client_openai = None  # Lazy load
+    client_deepseek = None  # Lazy load
+    client_anthropic = None  # Lazy load
+    print_colored("✓ Silnik AI gotowy (inne będą ładowane na żądanie).", "\033[92m")
 except Exception as e:
-    print_colored(f"❌ BŁĄD KRYTYCZNY: Nie udało się skonfigurować jednego z API: {e}", "\033[91m")
-    print_colored("   Sprawdź swoje klucze API w Streamlit Secrets lub pliku .env", "\033[93m")
-    exit(1)
+    print_colored(f"⚠️ Gemini niedostępny: {e}", "\033[93m")
+    model_gemini = None
 
 if not os.path.exists(NAZWA_PLIKU_KREDENCJALI):
     print_colored(f"BŁĄD KRYTYCZNY: Nie znaleziono pliku '{NAZWA_PLIKU_KREDENCJALI}'.", "\033[91m")
