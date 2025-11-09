@@ -29,16 +29,26 @@ class ConsultationManager:
         if self.gemini_key:
             genai.configure(api_key=self.gemini_key)
         
-        # Load personas - fallback if NOWE_skompilowane doesn't exist
-        persona_file = 'NOWE_skompilowane_persony.txt'
-        if not os.path.exists(persona_file) or os.path.getsize(persona_file) == 0:
-            # Fallback: create empty personas or use finalna_konfiguracja_person
-            print("⚠️ NOWE_skompilowane_persony.txt nie istnieje - używam pustej listy person")
+        # Load personas from finalna_konfiguracja_person.txt
+        try:
+            # Import PERSONAS from gra_rpg (już ładuje finalna_konfiguracja_person.txt)
+            from gra_rpg import PERSONAS
+            
+            # Convert PERSONAS dict to list format expected by consultation system
             self.personas = []
-        else:
-            with open(persona_file, 'r', encoding='utf-8') as f:
-                content = f.read()
-                self.personas = self._parse_personas(content)
+            for name, config in PERSONAS.items():
+                self.personas.append({
+                    'name': name,
+                    'model_engine': config.get('model_engine', 'gemini'),
+                    'system_instruction': config.get('system_instruction', ''),
+                    'ukryty_cel': config.get('ukryty_cel', '')
+                })
+            
+            print(f"✓ Załadowano {len(self.personas)} person z finalna_konfiguracja_person.txt")
+            
+        except Exception as e:
+            print(f"⚠️ Nie udało się załadować person: {e}")
+            self.personas = []
     
     def _parse_personas(self, content: str) -> List[Dict]:
         """Parse personas from compiled file"""
