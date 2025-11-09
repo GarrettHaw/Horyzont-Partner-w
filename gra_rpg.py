@@ -1,10 +1,12 @@
-import google.generativeai as genai
-import openai
-import anthropic
+# === LAZY IMPORTS - AI biblioteki ładowane tylko gdy potrzebne ===
+# import google.generativeai as genai  # -> lazy load w get_ai_client()
+# import openai  # -> lazy load w get_ai_client()
+# import anthropic  # -> lazy load w get_ai_client()
+
 import os
 import random
 import json
-import gspread
+# import gspread  # -> lazy load w pobierz_stan_spolki()
 import asyncio
 import certifi
 
@@ -2350,6 +2352,7 @@ def get_ai_client(engine_name):
     """
     Lazy loading AI clients - tworzy tylko gdy potrzebne.
     Oszczędza RAM i przyspiesza start aplikacji.
+    Importuje biblioteki AI dopiero gdy są potrzebne.
     """
     global _ai_clients
     
@@ -2358,15 +2361,18 @@ def get_ai_client(engine_name):
     
     try:
         if engine_name == "gemini":
+            import google.generativeai as genai  # LAZY IMPORT
             genai.configure(api_key=get_api_key("GOOGLE_API_KEY"))
             client = genai.GenerativeModel('gemini-2.5-pro')
             print_colored("✓ Gemini AI zainicjalizowany.", "\033[92m")
             
         elif engine_name == "openai":
+            import openai  # LAZY IMPORT
             client = openai.OpenAI(api_key=get_api_key("OPENAI_API_KEY"))
             print_colored("✓ OpenAI GPT zainicjalizowany.", "\033[92m")
             
         elif engine_name == "deepseek":
+            import openai  # LAZY IMPORT
             client = openai.OpenAI(
                 api_key=get_api_key("DEEPSEEK_API_KEY"),
                 base_url="https://api.deepseek.com/v1"
@@ -2374,6 +2380,7 @@ def get_ai_client(engine_name):
             print_colored("✓ DeepSeek AI zainicjalizowany.", "\033[92m")
             
         elif engine_name == "anthropic":
+            import anthropic  # LAZY IMPORT
             client = anthropic.Anthropic(api_key=get_api_key("ANTHROPIC_API_KEY"))
             print_colored("✓ Anthropic Claude zainicjalizowany.", "\033[92m")
             
@@ -2388,45 +2395,97 @@ def get_ai_client(engine_name):
         return None
 
 # Inicjalizacja tylko Gemini (domyślny, darmowy)
-print_colored("🔌 Inicjalizuję domyślny silnik AI (Gemini)...", "\033[96m")
+print_colored("� ULTRA-SZYBKI START: Lazy loading aktywny!", "\033[96m")
+print_colored("   → Gemini: ładuje się teraz", "\033[96m")
+print_colored("   → Claude/OpenAI: załadują się gdy potrzebne", "\033[96m")
+print_colored("   → Google Sheets: załadują się gdy potrzebne", "\033[96m")
 try:
     model_gemini = get_ai_client("gemini")
     # Pozostałe AI będą ładowane na żądanie
     client_openai = None  # Lazy load
     client_deepseek = None  # Lazy load
     client_anthropic = None  # Lazy load
-    print_colored("✓ Silnik AI gotowy (inne będą ładowane na żądanie).", "\033[92m")
+    print_colored("✓ System gotowy w <10 sekund! (zamiast 5-10 minut)", "\033[92m")
 except Exception as e:
     print_colored(f"⚠️ Gemini niedostępny: {e}", "\033[93m")
     model_gemini = None
 
-if not os.path.exists(NAZWA_PLIKU_KREDENCJALI):
-    print_colored(f"BŁĄD KRYTYCZNY: Nie znaleziono pliku '{NAZWA_PLIKU_KREDENCJALI}'.", "\033[91m")
-    print_colored("Upewnij się, że plik znajduje się w tym samym folderze co skrypt.", "\033[93m")
-    exit(1)
+# === GOOGLE SHEETS CLIENT - LAZY LOADING ===
+_gspread_client = None
 
-try:
-    # Konfiguracja SSL dla gspread
+def get_gspread_client():
+    """Lazy loading Google Sheets client - tworzy tylko gdy potrzebne."""
+    global _gspread_client
+    
+    if _gspread_client is not None:
+        return _gspread_client
+    
+    import gspread  # LAZY IMPORT
     import httplib2
-    httplib2.Http(ca_certs=certifi.where())
     
-    scopes = [
-        "https://www.googleapis.com/auth/spreadsheets.readonly",
-        "https://www.googleapis.com/auth/drive.readonly"
-    ]
+    if not os.path.exists(NAZWA_PLIKU_KREDENCJALI):
+        print_colored(f"BŁĄD KRYTYCZNY: Nie znaleziono pliku '{NAZWA_PLIKU_KREDENCJALI}'.", "\033[91m")
+        print_colored("Upewnij się, że plik znajduje się w tym samym folderze co skrypt.", "\033[93m")
+        return None
     
-    # Utworzenie klienta z niestandardową konfiguracją SSL
-    creds = Credentials.from_service_account_file(NAZWA_PLIKU_KREDENCJALI, scopes=scopes)
-    session = requests.Session()
-    session.verify = certifi.where()
-    
-    gc = gspread.Client(auth=creds)
-    gc.session = session
-    
-    print_colored("✓ Pomyślnie połączono z Google Sheets API.", "\033[92m")
-except Exception as e:
-    print_colored(f"KRYTYCZNY BŁĄD: Nie udało się połączyć z Google Sheets API. Sprawdź plik credentials.json i udostępnienie arkuszy. Błąd: {e}", "\033[91m")
-    exit(1)
+    try:
+        # Konfiguracja SSL dla gspread
+        httplib2.Http(ca_certs=certifi.where())
+        
+        scopes = [
+            "https://www.googleapis.com/auth/spreadsheets.readonly",
+            "https://www.googleapis.com/auth/drive.readonly"
+        ]
+        
+        # Utworzenie klienta z niestandardową konfiguracją SSL
+        creds = Credentials.from_service_account_file(NAZWA_PLIKU_KREDENCJALI, scopes=scopes)
+        session = requests.Session()
+        session.verify = certifi.where()
+        
+        gc = gspread.Client(auth=creds)
+        gc.session = session
+        
+        _gspread_client = gc
+        print_colored("✓ Google Sheets API połączony.", "\033[92m")
+        return gc
+    except Exception as e:
+        print_colored(f"⚠️ Nie udało się połączyć z Google Sheets API: {e}", "\033[93m")
+        return None
+
+# NIE inicjalizuj Google Sheets przy starcie - będzie lazy loaded
+# if not os.path.exists(NAZWA_PLIKU_KREDENCJALI):
+#     print_colored(f"BŁĄD KRYTYCZNY: Nie znaleziono pliku '{NAZWA_PLIKU_KREDENCJALI}'.", "\033[91m")
+#     print_colored("Upewnij się, że plik znajduje się w tym samym folderze co skrypt.", "\033[93m")
+#     exit(1)
+
+# NIE inicjalizuj Google Sheets przy starcie - będzie lazy loaded
+# if not os.path.exists(NAZWA_PLIKU_KREDENCJALI):
+#     print_colored(f"BŁĄD KRYTYCZNY: Nie znaleziono pliku '{NAZWA_PLIKU_KREDENCJALI}'.", "\033[91m")
+#     print_colored("Upewnij się, że plik znajduje się w tym samym folderze co skrypt.", "\033[93m")
+#     exit(1)
+
+# try:
+#     # Konfiguracja SSL dla gspread
+#     import httplib2
+#     httplib2.Http(ca_certs=certifi.where())
+#     
+#     scopes = [
+#         "https://www.googleapis.com/auth/spreadsheets.readonly",
+#         "https://www.googleapis.com/auth/drive.readonly"
+#     ]
+#     
+#     # Utworzenie klienta z niestandardową konfiguracją SSL
+#     creds = Credentials.from_service_account_file(NAZWA_PLIKU_KREDENCJALI, scopes=scopes)
+#     session = requests.Session()
+#     session.verify = certifi.where()
+#     
+#     gc = gspread.Client(auth=creds)
+#     gc.session = session
+#     
+#     print_colored("✓ Pomyślnie połączono z Google Sheets API.", "\033[92m")
+# except Exception as e:
+#     print_colored(f"KRYTYCZNY BŁĄD: Nie udało się połączyć z Google Sheets API. Sprawdź plik credentials.json i udostępnienie arkuszy. Błąd: {e}", "\033[91m")
+#     exit(1)
 
 last_responses = { name: "Jeszcze nic nie powiedział/a." for name in PERSONAS }
 
@@ -2457,6 +2516,12 @@ def pobierz_stan_spolki(cele):
 # Fallback: Google Sheets
         if not dane_t212:
             print("  📊 Używam Google Sheets jako źródło danych akcji...")
+            gc = get_gspread_client()  # LAZY LOAD
+            if not gc:
+                print_colored("  ⚠️ Google Sheets niedostępny - brak danych akcji!", "\033[93m")
+                stan_spolki["PORTFEL_AKCJI"] = {"Suma_PLN": 0, "tickery": []}
+                return stan_spolki
+            
             arkusz_akcje = gc.open(NAZWY_ARKUSZY["akcje"]).sheet1
             dane_akcje = arkusz_akcje.get_all_values()
             

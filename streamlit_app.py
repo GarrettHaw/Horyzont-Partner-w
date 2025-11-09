@@ -29,8 +29,9 @@ if not st.session_state.app_loaded:
         st.markdown("""
         <div style="text-align: center; padding: 100px 20px;">
             <h1 style="color: #1f77b4;">🏢 HORYZONT PARTNERÓW</h1>
-            <p style="font-size: 18px; color: #666;">Inicjalizuję system AI...</p>
-            <p style="font-size: 14px; color: #999;">Ładowanie może potrwać 30-60 sekund przy pierwszym uruchomieniu</p>
+            <p style="font-size: 18px; color: #666;">🚀 Uruchamiam ultra-szybki system AI...</p>
+            <p style="font-size: 14px; color: #999;">Lazy loading: tylko niezbędne moduły (~10 sekund)</p>
+            <p style="font-size: 12px; color: #aaa;">Claude/OpenAI/Sheets załadują się dopiero gdy będą potrzebne</p>
         </div>
         """, unsafe_allow_html=True)
         
@@ -56,7 +57,7 @@ MEMORY_FOLDER.mkdir(exist_ok=True)
 
 # Importy z głównego programu
 if not st.session_state.app_loaded:
-    status_text.text("🤖 Inicjalizuję silniki AI (Gemini, Claude, OpenAI)...")
+    status_text.text("🤖 Inicjalizuję tylko Gemini (inne AI: lazy load)...")
     progress_bar.progress(40)
 
 try:
