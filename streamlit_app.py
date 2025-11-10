@@ -295,6 +295,22 @@ def pobierz_stan_spolki(cele):
         except:
             stan_spolki["ZOBOWIAZANIA"] = {"Suma_dlugu_PLN": 0, "Suma_rat_PLN": 0, "Liczba_kredytow": 0}
         
+        # WYPŁATY - Z LOKALNEGO PLIKU
+        try:
+            with open('wyplaty.json', 'r', encoding='utf-8') as f:
+                wyplaty_data = json.load(f)
+                wyplaty_lista = wyplaty_data.get('wyplaty', [])
+            
+            suma_wyplat = sum(w.get('kwota', 0) for w in wyplaty_lista)
+            
+            stan_spolki["PRZYCHODY_I_WYDATKI"] = {
+                "wyplata": round(suma_wyplat, 2),
+                "Liczba_wyplat": len(wyplaty_lista),
+                "wyplaty": wyplaty_lista
+            }
+        except:
+            stan_spolki["PRZYCHODY_I_WYDATKI"] = {"wyplata": 0, "Liczba_wyplat": 0, "wyplaty": []}
+        
         # AKCJE - Placeholder (brak Trading212/Sheets w uproszczonej wersji)
         stan_spolki["PORTFEL_AKCJI"] = {
             "Suma_PLN": 0,
