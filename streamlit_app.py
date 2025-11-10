@@ -3180,6 +3180,322 @@ def create_allocation_pie_chart(stan_spolki, cele=None):
     
     return fig
 
+
+# ============================================================================
+# TRANSACTIONS LOG - Strona dziennika transakcji
+# ============================================================================
+
+def show_transactions_page():
+    """Strona Transactions Log - centralny dziennik wszystkich transakcji"""
+    st.title("📝 Dziennik Transakcji")
+    st.markdown("*Centralna ewidencja wszystkich operacji finansowych spółki*")
+    
+    # Wczytaj transakcje
+    transactions = load_transactions()
+    
+    # === SEKCJA 1: KPI ===
+    st.markdown("### 📊 Podsumowanie")
+    
+    from datetime import datetime, timedelta
+    today = datetime.now()
+    month_start = today.replace(day=1)
+    
+    # Podsumowanie bieżącego miesiąca
+    summary = get_transactions_summary(transactions, start_date=month_start)
+    
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.metric("💰 Przychody", f"{summary['income']:,.0f} PLN")
+    with col2:
+        st.metric("💸 Wydatki", f"{summary['expenses']:,.0f} PLN")
+    with col3:
+        net_color = "normal" if summary['net_flow'] >= 0 else "inverse"
+        st.metric("📈 Cash Flow", f"{summary['net_flow']:,.0f} PLN", 
+                 delta=f"{summary['net_flow']:,.0f} PLN", delta_color=net_color)
+    with col4:
+        st.metric("📋 Transakcje", f"{summary['count']}")
+    
+    st.markdown("---")
+    
+    # === SEKCJA 2: DODAJ TRANSAKCJĘ ===
+    with st.expander("➕ Dodaj nową transakcję", expanded=False):
+        with st.form("add_transaction"):
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                typ = st.selectbox("Typ transakcji", 
+                                  ["income", "expense", "transfer"],
+                                  format_func=lambda x: {"income": "💰 Przychód", 
+                                                        "expense": "💸 Wydatek",
+                                                        "transfer": "🔄 Transfer"}[x])
+                
+                kategorie_income = ["salary", "dividend", "interest", "crypto_profit", "stock_profit", "other_income"]
+                kategorie_expense = ["investment", "loan_payment", "tax", "fee", "withdrawal", "other_expense"]
+                kategorie_transfer = ["rebalancing", "internal_transfer"]
+                
+                if typ == "income":
+                    kategoria_options = kategorie_income
+                elif typ == "expense":
+                    kategoria_options = kategorie_expense
+                else:
+                    kategoria_options = kategorie_transfer
+                
+                kategoria = st.selectbox("Kategoria", kategoria_options,
+                                        format_func=lambda x: {
+                                            "salary": "💵 Wypłata",
+                                            "dividend": "💎 Dywidenda",
+                                            "interest": "📈 Odsetki",
+                                            "crypto_profit": "₿ Zysk z krypto",
+                                            "stock_profit": "📊 Zysk z akcji",
+                                            "other_income": "💰 Inny przychód",
+                                            "investment": "🎯 Inwestycja",
+                                            "loan_payment": "🏦 Spłata kredytu",
+                                            "tax": "🧾 Podatek",
+                                            "fee": "💳 Opłata",
+                                            "withdrawal": "🏧 Wypłata gotówki",
+                                            "other_expense": "💸 Inny wydatek",
+                                            "rebalancing": "⚖️ Rebalansowanie",
+                                            "internal_transfer": "🔄 Transfer wewnętrzny"
+                                        }.get(x, x))
+            
+            with col2:
+                kwota = st.number_input("Kwota (PLN)", min_value=0.01, value=1000.0, step=100.0)
+                data_trans = st.date_input("Data transakcji", value=today)
+            
+            opis = st.text_area("Opis transakcji (opcjonalnie)", 
+                               placeholder="Np. Zakup BTC, Spłata kredytu hipotecznego, Dywidenda z akcji XYZ")
+            
+            if st.form_submit_button("💾 Zapisz transakcję", use_container_width=True):
+                # Dodaj transakcję z datą wybraną przez użytkownika
+                trans_datetime = datetime.combine(data_trans, datetime.min.time())
+                transaction = {
+                    'id': str(datetime.now().timestamp()),
+                    'data': trans_datetime.isoformat(),
+                    'typ': typ,
+                    'kategoria': kategoria,
+                    'kwota': abs(kwota),
+                    'opis': opis,
+                    'metadata': {}
+                }
+                
+                transactions.append(transaction)
+                transactions.sort(key=lambda x: x['data'], reverse=True)
+                
+                if save_transactions(transactions):
+                    st.success(f"✅ Transakcja zapisana: {kwota:,.0f} PLN ({kategoria})")
+                    st.rerun()
+                else:
+                    st.error("❌ Błąd zapisu")
+    
+    st.markdown("---")
+    
+    # === SEKCJA 3: FILTRY ===
+    st.markdown("### 🔍 Filtruj transakcje")
+    
+    col_f1, col_f2, col_f3, col_f4 = st.columns(4)
+    
+    with col_f1:
+        filtr_typ = st.selectbox("Typ", ["Wszystkie", "income", "expense", "transfer"],
+                                format_func=lambda x: {"Wszystkie": "Wszystkie", 
+                                                      "income": "💰 Przychody",
+                                                      "expense": "💸 Wydatki",
+                                                      "transfer": "🔄 Transfery"}[x])
+    
+    with col_f2:
+        wszystkie_kategorie = sorted(set(t['kategoria'] for t in transactions)) if transactions else []
+        filtr_kategoria = st.selectbox("Kategoria", ["Wszystkie"] + wszystkie_kategorie)
+    
+    with col_f3:
+        filtr_od = st.date_input("Od daty", value=today - timedelta(days=90))
+    
+    with col_f4:
+        filtr_do = st.date_input("Do daty", value=today)
+    
+    # Wyszukiwarka
+    search_query = st.text_input("🔎 Wyszukaj w opisie", placeholder="Szukaj...")
+    
+    # Filtrowanie
+    filtered = transactions
+    
+    if filtr_typ != "Wszystkie":
+        filtered = [t for t in filtered if t['typ'] == filtr_typ]
+    
+    if filtr_kategoria != "Wszystkie":
+        filtered = [t for t in filtered if t['kategoria'] == filtr_kategoria]
+    
+    if filtr_od:
+        filtered = [t for t in filtered if t['data'] >= filtr_od.isoformat()]
+    
+    if filtr_do:
+        end_date = datetime.combine(filtr_do, datetime.max.time())
+        filtered = [t for t in filtered if t['data'] <= end_date.isoformat()]
+    
+    if search_query:
+        filtered = [t for t in filtered if search_query.lower() in t.get('opis', '').lower()]
+    
+    st.caption(f"**Znaleziono {len(filtered)} transakcji** (z {len(transactions)} w sumie)")
+    
+    st.markdown("---")
+    
+    # === SEKCJA 4: WYKRESY ===
+    if filtered:
+        st.markdown("### 📈 Wykresy i Analiza")
+        
+        tab1, tab2, tab3 = st.tabs(["💹 Cash Flow", "🥧 Kategorie", "📊 Trendy"])
+        
+        with tab1:
+            # Wykres cash flow w czasie
+            import plotly.graph_objects as go
+            from collections import defaultdict
+            
+            # Grupuj po dniach
+            daily_flow = defaultdict(lambda: {'income': 0, 'expense': 0})
+            for t in filtered:
+                date = t['data'][:10]
+                if t['typ'] == 'income':
+                    daily_flow[date]['income'] += t['kwota']
+                elif t['typ'] == 'expense':
+                    daily_flow[date]['expense'] += t['kwota']
+            
+            dates = sorted(daily_flow.keys())
+            income_vals = [daily_flow[d]['income'] for d in dates]
+            expense_vals = [daily_flow[d]['expense'] for d in dates]
+            net_vals = [daily_flow[d]['income'] - daily_flow[d]['expense'] for d in dates]
+            
+            fig = go.Figure()
+            fig.add_trace(go.Bar(x=dates, y=income_vals, name='Przychody', marker_color='green'))
+            fig.add_trace(go.Bar(x=dates, y=[-e for e in expense_vals], name='Wydatki', marker_color='red'))
+            fig.add_trace(go.Scatter(x=dates, y=net_vals, name='Net Flow', 
+                                    line=dict(color='blue', width=3), mode='lines+markers'))
+            
+            fig.update_layout(title="Cash Flow w czasie", barmode='relative', 
+                            xaxis_title="Data", yaxis_title="PLN",
+                            hovermode='x unified', height=400)
+            st.plotly_chart(fig, use_container_width=True)
+        
+        with tab2:
+            # Pie chart kategorie
+            cat_summary = defaultdict(float)
+            for t in filtered:
+                sign = 1 if t['typ'] == 'income' else -1
+                cat_summary[t['kategoria']] += t['kwota'] * sign
+            
+            fig_pie = go.Figure(data=[go.Pie(
+                labels=list(cat_summary.keys()),
+                values=[abs(v) for v in cat_summary.values()],
+                hole=0.3
+            )])
+            fig_pie.update_layout(title="Podział po kategoriach", height=400)
+            st.plotly_chart(fig_pie, use_container_width=True)
+        
+        with tab3:
+            # Kumulatywny cash flow
+            cumulative = []
+            running_total = 0
+            for date in dates:
+                running_total += daily_flow[date]['income'] - daily_flow[date]['expense']
+                cumulative.append(running_total)
+            
+            fig_cum = go.Figure()
+            fig_cum.add_trace(go.Scatter(x=dates, y=cumulative, 
+                                        fill='tozeroy', name='Kumulatywny Cash Flow'))
+            fig_cum.update_layout(title="Kumulatywny Cash Flow", 
+                                xaxis_title="Data", yaxis_title="PLN",
+                                height=400)
+            st.plotly_chart(fig_cum, use_container_width=True)
+    
+    st.markdown("---")
+    
+    # === SEKCJA 5: TABELA TRANSAKCJI ===
+    st.markdown("### 📋 Lista transakcji")
+    
+    if filtered:
+        # Export button
+        col_export1, col_export2, col_export3 = st.columns([2, 1, 1])
+        with col_export2:
+            if st.button("📥 Export do CSV", use_container_width=True):
+                import pandas as pd
+                df = pd.DataFrame(filtered)
+                csv = df.to_csv(index=False, encoding='utf-8-sig')
+                st.download_button(
+                    label="⬇️ Pobierz CSV",
+                    data=csv,
+                    file_name=f"transactions_{today.strftime('%Y%m%d')}.csv",
+                    mime="text/csv"
+                )
+        
+        # Tabela
+        for trans in filtered:
+            typ_icon = {"income": "💰", "expense": "💸", "transfer": "🔄"}[trans['typ']]
+            date_str = trans['data'][:10]
+            
+            with st.expander(f"{typ_icon} {date_str} - **{trans['kwota']:,.0f} PLN** ({trans['kategoria']})"):
+                col_t1, col_t2, col_t3 = st.columns(3)
+                
+                with col_t1:
+                    st.metric("Kwota", f"{trans['kwota']:,.0f} PLN")
+                with col_t2:
+                    st.metric("Typ", trans['typ'])
+                with col_t3:
+                    st.metric("Kategoria", trans['kategoria'])
+                
+                if trans.get('opis'):
+                    st.caption(f"📝 **Opis:** {trans['opis']}")
+                
+                # Przycisk usuwania
+                if st.button(f"🗑️ Usuń tę transakcję", key=f"del_{trans['id']}"):
+                    transactions.remove(trans)
+                    if save_transactions(transactions):
+                        st.success("✅ Transakcja usunięta!")
+                        st.rerun()
+    else:
+        st.info("Brak transakcji spełniających kryteria filtrowania")
+
+
+# ============================================================================
+# FINANCIAL CALENDAR - Strona kalendarza wydarzeń
+# ============================================================================
+
+def show_calendar_page():
+    """Strona Financial Calendar - kalendarz wydarzeń finansowych"""
+    st.title("📅 Kalendarz Finansowy")
+    st.markdown("*Wszystkie ważne daty i wydarzenia finansowe w jednym miejscu*")
+    
+    st.info("🚧 **W budowie** - Ta funkcja zostanie dodana wkrótce!")
+    
+    st.markdown("""
+    ### 🎯 Planowane funkcje:
+    - 📌 Terminy płatności kredytów
+    - 💰 Oczekiwane dywidendy
+    - 🧾 Deadlines podatkowe
+    - 📊 Earning reports (jeśli posiadasz akcje)
+    - ⚖️ Harmonogram rebalansowania
+    - 🔔 Przypomnienia i alerty
+    """)
+
+
+# ============================================================================
+# TAX OPTIMIZER - Strona optymalizacji podatkowej
+# ============================================================================
+
+def show_tax_optimizer_page():
+    """Strona Tax Optimizer - kalkulator i optymalizacja podatków"""
+    st.title("🧮 Optymalizator Podatkowy")
+    st.markdown("*Kalkulator podatków i sugestie optymalizacji*")
+    
+    st.info("🚧 **W budowie** - Ta funkcja zostanie dodana wkrótce!")
+    
+    st.markdown("""
+    ### 🎯 Planowane funkcje:
+    - 📊 Kalkulator CIT (19%)
+    - 👤 Kalkulator PIT (17% / 32%)
+    - 💡 Sugestie tax-loss harvesting
+    - 📅 Optimal timing sprzedaży
+    - 📄 Generator dokumentów (PIT-38)
+    - 🧾 Tracking kosztów uzyskania przychodu
+    """)
+
+
 # =======================
 # MAIN APP
 # =======================
@@ -3362,6 +3678,28 @@ def main():
         
         st.markdown("")
         
+        # === SEKCJA FINANSE PRO ===
+        st.markdown("### 💼 Finanse PRO")
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            button_type_transactions = "primary" if current_page == "📝 Transakcje" else "secondary"
+            if st.button("📝 Transakcje", width="stretch", type=button_type_transactions, key="nav_transactions"):
+                st.session_state.page = "📝 Transakcje"
+                st.rerun()
+            
+            button_type_calendar = "primary" if current_page == "📅 Kalendarz" else "secondary"
+            if st.button("📅 Kalendarz", width="stretch", type=button_type_calendar, key="nav_calendar"):
+                st.session_state.page = "📅 Kalendarz"
+                st.rerun()
+        with col2:
+            button_type_tax = "primary" if current_page == "🧮 Podatki" else "secondary"
+            if st.button("🧮 Podatki", width="stretch", type=button_type_tax, key="nav_tax"):
+                st.session_state.page = "🧮 Podatki"
+                st.rerun()
+        
+        st.markdown("")
+        
         # === SEKCJA 5: NARZĘDZIA ===
         st.markdown("### 🛠️ Narzędzia")
         
@@ -3425,10 +3763,17 @@ def main():
         show_timeline_page(stan_spolki)
     elif page == "📸 Snapshots":
         show_snapshots_page()
+    elif page == "📝 Transakcje":
+        show_transactions_page()
+    elif page == "📅 Kalendarz":
+        show_calendar_page()
+    elif page == "🧮 Podatki":
+        show_tax_optimizer_page()
     elif page == "🎮 Symulacje":
         show_simulations_page(stan_spolki)
     elif page == "⚙️ Ustawienia":
         show_settings_page()
+
 
 def calculate_portfolio_health_score(stan_spolki, cele):
     """
@@ -6837,6 +7182,123 @@ def save_wyplaty(wyplaty):
         st.session_state['wyplaty_data'] = wyplaty
         st.warning(f"⚠️ Dane zapisane tymczasowo w sesji. Filesystem read-only: {e}")
         return True  # Zwróć True bo zapisaliśmy do session
+
+
+# ============================================================================
+# TRANSACTIONS LOG - Centralny dziennik transakcji
+# ============================================================================
+
+def load_transactions():
+    """Wczytaj transakcje z pliku JSON"""
+    if PERSISTENT_OK:
+        data = load_persistent_data('transactions.json')
+        if isinstance(data, dict):
+            transactions = data.get('transactions', [])
+        else:
+            transactions = [] if data is None else (data if isinstance(data, list) else [])
+    else:
+        # Fallback
+        if 'transactions_data' in st.session_state:
+            transactions = st.session_state['transactions_data']
+        else:
+            try:
+                with open('transactions.json', 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                    transactions = data.get('transactions', [])
+                    st.session_state['transactions_data'] = transactions
+            except FileNotFoundError:
+                transactions = []
+            except Exception as e:
+                st.error(f"Błąd wczytywania transakcji: {e}")
+                transactions = []
+    
+    return transactions
+
+
+def save_transactions(transactions):
+    """Zapisz transakcje do pliku JSON"""
+    if PERSISTENT_OK:
+        st.session_state.pop('transactions_data', None)
+        return save_persistent_data('transactions.json', {'transactions': transactions})
+    
+    # Fallback
+    try:
+        with open('transactions.json', 'w', encoding='utf-8') as f:
+            json.dump({'transactions': transactions}, f, indent=2, ensure_ascii=False)
+        st.session_state['transactions_data'] = transactions
+        return True
+    except Exception as e:
+        st.session_state['transactions_data'] = transactions
+        st.warning(f"⚠️ Transakcje zapisane w sesji. Filesystem read-only: {e}")
+        return True
+
+
+def add_transaction(typ, kategoria, kwota, opis="", metadata=None):
+    """
+    Dodaj nową transakcję do dziennika
+    
+    Args:
+        typ: 'income' lub 'expense' lub 'transfer'
+        kategoria: np. 'salary', 'investment', 'loan_payment', 'crypto_buy'
+        kwota: wartość transakcji (dodatnia)
+        opis: dodatkowy opis
+        metadata: dict z dodatkowymi danymi (np. {'asset': 'BTC', 'price': 95000})
+    """
+    from datetime import datetime
+    
+    transactions = load_transactions()
+    
+    transaction = {
+        'id': str(datetime.now().timestamp()),
+        'data': datetime.now().isoformat(),
+        'typ': typ,  # income/expense/transfer
+        'kategoria': kategoria,
+        'kwota': abs(kwota),
+        'opis': opis,
+        'metadata': metadata or {}
+    }
+    
+    transactions.append(transaction)
+    
+    # Sortuj od najnowszych
+    transactions.sort(key=lambda x: x['data'], reverse=True)
+    
+    save_transactions(transactions)
+    return transaction
+
+
+def get_transactions_summary(transactions, start_date=None, end_date=None):
+    """
+    Oblicz podsumowanie transakcji w danym okresie
+    
+    Returns:
+        dict z income, expenses, net_flow, by_category
+    """
+    from datetime import datetime
+    
+    filtered = transactions
+    
+    if start_date:
+        filtered = [t for t in filtered if t['data'] >= start_date.isoformat()]
+    if end_date:
+        filtered = [t for t in filtered if t['data'] <= end_date.isoformat()]
+    
+    income = sum(t['kwota'] for t in filtered if t['typ'] == 'income')
+    expenses = sum(t['kwota'] for t in filtered if t['typ'] == 'expense')
+    
+    # Grupuj po kategoriach
+    from collections import defaultdict
+    by_category = defaultdict(float)
+    for t in filtered:
+        by_category[t['kategoria']] += t['kwota'] if t['typ'] == 'income' else -t['kwota']
+    
+    return {
+        'income': income,
+        'expenses': expenses,
+        'net_flow': income - expenses,
+        'by_category': dict(by_category),
+        'count': len(filtered)
+    }
 
 def load_wydatki():
     """Wczytaj wydatki z pliku JSON"""
@@ -10945,7 +11407,5 @@ def show_settings_page():
     with col3:
         if st.button("❌ Anuluj zmiany", width="stretch"):
             st.rerun()
-
 if __name__ == "__main__":
     main()
-
