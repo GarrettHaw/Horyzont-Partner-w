@@ -42,6 +42,9 @@ crypto_metadata_cache.json
 crypto_prices_cache.json
 cache_migrated.flag
 
+# Archive & Old Files
+_archive_old_files/
+
 # Data Files - WŁĄCZONE dla Streamlit Cloud (potrzebne dane)
 # cele.json  # Ma auto-create więc opcjonalne
 # kredyty.json  # POTRZEBNE
