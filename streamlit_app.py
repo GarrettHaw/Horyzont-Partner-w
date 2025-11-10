@@ -1794,7 +1794,7 @@ def display_knowledge_sources(knowledge_items):
 def calculate_portfolio_dividends(stan_spolki):
     """
     Oblicza dokładne dywidendy dla całego portfela akcji.
-    Używa danych z dane_rynkowe dla każdego tickera.
+    Używa danych z dane_rynkowe (yfinance) + dywidendy z Trading212.
     
     Returns:
         dict: {
@@ -1812,6 +1812,7 @@ def calculate_portfolio_dividends(stan_spolki):
         suma_roczna_usd = 0
         spolki_z_dywidendami = []
         
+        # === CZĘŚĆ 1: Dywidendy z yfinance (dane_rynkowe) ===
         for ticker, dane_pozycji in pozycje.items():
             if not isinstance(dane_pozycji, dict):
                 continue
@@ -1853,6 +1854,38 @@ def calculate_portfolio_dividends(stan_spolki):
                     'roczna_kwota_pln': roczna_kwota_pln_netto  # NETTO po podatku
                 })
         
+        # === CZĘŚĆ 2: Dywidendy z Trading212 (historia z ostatnich 12 miesięcy) ===
+        dywidendy_t212 = stan_spolki.get('akcje', {}).get('dywidendy', [])
+        if dywidendy_t212:
+            from datetime import datetime, timedelta
+            
+            # Data sprzed 12 miesięcy
+            rok_temu = datetime.now() - timedelta(days=365)
+            
+            # Sumuj dywidendy z ostatniego roku
+            suma_dywidend_t212_usd = 0
+            for div in dywidendy_t212:
+                # Pole z datą to paidOn lub paid_on
+                data_str = div.get('paidOn') or div.get('paid_on', '')
+                if not data_str:
+                    continue
+                    
+                try:
+                    # Parsuj datę (format ISO: 2024-11-03T00:00:00.000+00:00)
+                    data_dywidendy = datetime.fromisoformat(data_str.replace('Z', '+00:00'))
+                    
+                    # Uwzględnij tylko dywidendy z ostatnich 12 miesięcy
+                    if data_dywidendy >= rok_temu:
+                        kwota_usd = div.get('amount', 0)
+                        suma_dywidend_t212_usd += kwota_usd
+                except (ValueError, TypeError):
+                    continue
+            
+            # Dodaj do sumy rocznej
+            if suma_dywidend_t212_usd > 0:
+                suma_roczna_usd += suma_dywidend_t212_usd
+        
+        # === SUMA KOŃCOWA ===
         # Przelicz na PLN i odejmij 19% podatku Belki
         suma_roczna_pln_brutto = suma_roczna_usd * kurs_usd
         podatek_19_pct = suma_roczna_pln_brutto * 0.19
