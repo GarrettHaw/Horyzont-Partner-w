@@ -73,6 +73,14 @@ jobs:
             echo "No changes to commit"
           else
             git commit -m "🔄 Auto-sync: $(date +'%Y-%m-%d %H:%M UTC')"
+            
+            # Pull z rebase aby uniknąć konfliktów
+            git pull --rebase origin master || {
+              echo "⚠️ Rebase conflict - trying merge strategy"
+              git rebase --abort
+              git pull --no-rebase origin master
+            }
+            
             git push
           fi
       

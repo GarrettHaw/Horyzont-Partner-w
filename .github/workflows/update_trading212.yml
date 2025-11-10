@@ -50,6 +50,14 @@ jobs:
           else
             TIMESTAMP=$(date +'%Y-%m-%d %H:%M UTC')
             git commit -m "📊 Auto-update Trading212: $TIMESTAMP"
+            
+            # Pull z rebase aby uniknąć konfliktów
+            git pull --rebase origin master || {
+              echo "⚠️ Rebase conflict - trying merge strategy"
+              git rebase --abort
+              git pull --no-rebase origin master
+            }
+            
             git push
             echo "✓ Changes committed and pushed"
           fi
