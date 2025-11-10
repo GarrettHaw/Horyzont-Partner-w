@@ -1,5 +1,5 @@
 {
-  "date": "2025-11-09",
+  "date": "2025-11-10",
   "usage": {
     "claude": {
       "user": 0,
@@ -8,8 +8,8 @@
     },
     "gemini": {
       "user": 0,
-      "autonomous": 7,
-      "total": 7
+      "autonomous": 0,
+      "total": 0
     },
     "openai": {
       "user": 0,
@@ -18,5 +18,5 @@
     }
   },
   "autonomous_conversations_today": 1,
-  "total_cost_usd": 0.155
+  "total_cost_usd": 0.12000000000000001
 }

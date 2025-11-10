@@ -585,5 +585,59 @@
       ],
       "sentiment": "neutral"
     }
+  },
+  {
+    "id": "conv_20251110_102523",
+    "date": "2025-11-10T10:25:23.714244",
+    "topic_id": "risk_assessment",
+    "topic_name": "Ocena Ryzyka",
+    "opening_prompt": "Przeanalizujmy poziom ryzyka w portfelu. Czy jesteśmy odpowiednio zdywersyfikowani? Jakie są największe zagrożenia?",
+    "participants": [
+      "Partner Strategiczny",
+      "Partner ds. Jakości Biznesowej",
+      "Partner ds. Aktywów Cyfrowych",
+      "Benjamin Graham"
+    ],
+    "messages": [
+      {
+        "partner": "Partner ds. Jakości Biznesowej",
+        "message": "Aktualnie nasz portfel jest zdywersyfikowany, ale ryzyko koncentracji w sektorze technologicznym jest wysokie. Największym zagrożeniem jest spadek na rynkach akcji, zwłaszcza w przypadku giełd amerykańskich. Powinniśmy rozważyć zwiększenie alokacji w obligacjach i aktywach alternatywnych, aby zrównoważyć ryzyko.",
+        "timestamp": "2025-11-10T10:25:26.587000",
+        "message_number": 2
+      },
+      {
+        "partner": "Benjamin Graham",
+        "message": "Zgodnie z zasadami inwestowania wartościowego, portfel powinien być zdywersyfikowany, aby zminimalizować ryzyko. Obecna koncentracja w sektorze technologicznym może być niebezpieczna, zwłaszcza w przypadku spadku rynków. Sugeruję zwiększenie udziału obligacji i aktywów alternatywnych, aby poprawić stabilność portfela.",
+        "timestamp": "2025-11-10T10:25:27.985338",
+        "message_number": 4
+      },
+      {
+        "partner": "Partner ds. Jakości Biznesowej",
+        "message": "Zgodnie z analizą, nasz portfel jest zdywersyfikowany, ale ryzyko koncentracji w sektorze technologicznym pozostaje wysokie. Największym zagrożeniem jest spadek na rynkach akcji, zwłaszcza w przypadku giełd amerykańskich. Powinniśmy rozważyć zwiększenie udziału obligacji i aktywów alternatywnych, aby zrównoważyć ryzyko i poprawić stabilność portfela.",
+        "timestamp": "2025-11-10T10:25:30.395374",
+        "message_number": 6
+      },
+      {
+        "partner": "Benjamin Graham",
+        "message": "Aktualny portfel ma wysokie ryzyko z powodu koncentracji w technologii. Rynek akcji, zwłaszcza amerykański, jest narażony na spadek. Powinniśmy zwiększyć udział obligacji i aktywów alternatywnych, aby poprawić stabilność i zdywersyfikować portfel. To zgodne z zasadami inwestowania wartościowego.",
+        "timestamp": "2025-11-10T10:25:32.078957",
+        "message_number": 8
+      },
+      {
+        "partner": "Partner ds. Jakości Biznesowej",
+        "message": "Analiza pokazuje, że portfel jest zdywersyfikowany, ale ryzyko koncentracji w sektorze technologicznym pozostaje wysokie. Największym zagrożeniem jest spadek na rynkach akcji, zwłaszcza w przypadku giełd amerykańskich. Powinniśmy rozważyć zwiększenie udziału obligacji i aktywów alternatywnych, aby zrównoważyć ryzyko i poprawić stabilność portfela.",
+        "timestamp": "2025-11-10T10:25:34.324048",
+        "message_number": 10
+      },
+      {
+        "partner": "Benjamin Graham",
+        "message": "Analiza potwierdza, że portfel jest zdywersyfikowany, ale ryzyko koncentracji w sektorze technologicznym pozostaje wysokie. Największym zagrożeniem jest spadek na rynkach akcji, zwłaszcza w przypadku giełd amerykańskich. Powinniśmy rozważyć zwiększenie udziału obligacji i aktywów alternatywnych, aby poprawić stabilność i zdywersyfikować portfel. To zgodne z zasadami inwestowania wartościowego.",
+        "timestamp": "2025-11-10T10:25:38.187669",
+        "message_number": 12
+      }
+    ],
+    "status": "completed",
+    "api_calls_used": 6,
+    "completed_at": "2025-11-10T10:25:38.187716"
   }
 ]
