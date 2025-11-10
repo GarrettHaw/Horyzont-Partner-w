@@ -40,16 +40,10 @@ ANTHROPIC_KEY = os.getenv("ANTHROPIC_API_KEY")
 GEMINI_KEY = os.getenv("GEMINI_API_KEY")
 OPENROUTER_KEY = os.getenv("OPENROUTER_API_KEY")
 
-# Jeśli PERSONAS nie załadowano z streamlit_app, spróbuj z gra_rpg
+# Jeśli PERSONAS nie załadowano z streamlit_app, nie próbuj gra_rpg (został usunięty)
 if not PERSONAS:
-    try:
-        import sys
-        sys.path.insert(0, os.path.dirname(__file__))
-        from gra_rpg import PERSONAS as PERSONAS_FROM_RPG
-        PERSONAS = PERSONAS_FROM_RPG
-        print("✅ Załadowano PERSONAS z gra_rpg.py")
-    except:
-        print("⚠️ Nie można załadować PERSONAS")
+    print("⚠️ Nie można załadować PERSONAS z streamlit_app - używam pustego słownika")
+    # PERSONAS już jest zdefiniowany jako {} powyżej
 
 # Pliki danych
 CONVERSATIONS_FILE = "autonomous_conversations.json"

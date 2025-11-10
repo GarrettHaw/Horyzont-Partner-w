@@ -29,10 +29,10 @@ class ConsultationManager:
         if self.gemini_key:
             genai.configure(api_key=self.gemini_key)
         
-        # Load personas from finalna_konfiguracja_person.txt
+        # Load personas from persona_memory.json via streamlit_app
         try:
-            # Import PERSONAS from gra_rpg (już ładuje finalna_konfiguracja_person.txt)
-            from gra_rpg import PERSONAS
+            # Import PERSONAS from streamlit_app (ładuje persona_memory.json)
+            from streamlit_app import PERSONAS
             
             # Convert PERSONAS dict to list format expected by consultation system
             self.personas = []
@@ -44,7 +44,7 @@ class ConsultationManager:
                     'ukryty_cel': config.get('ukryty_cel', '')
                 })
             
-            print(f"✓ Załadowano {len(self.personas)} person z finalna_konfiguracja_person.txt")
+            print(f"✓ Załadowano {len(self.personas)} person z persona_memory.json")
             
         except Exception as e:
             print(f"⚠️ Nie udało się załadować person: {e}")

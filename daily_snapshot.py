@@ -24,11 +24,11 @@ import requests
 
 # Import istniejących modułów
 try:
-    import gra_rpg as main_app
-    GRA_RPG_OK = True
+    import streamlit_app as main_app
+    STREAMLIT_APP_OK = True
 except ImportError:
-    GRA_RPG_OK = False
-    print("⚠️ Nie można zaimportować gra_rpg.py")
+    STREAMLIT_APP_OK = False
+    print("⚠️ Nie można zaimportować streamlit_app.py")
 
 try:
     from crypto_portfolio_manager import CryptoPortfolioManager
@@ -118,19 +118,19 @@ def migrate_monthly_to_daily_snapshots() -> int:
         return 0
 
 def get_portfolio_data_from_main() -> Optional[Dict]:
-    """Pobierz dane z głównego programu (gra_rpg.py)"""
-    if not GRA_RPG_OK:
+    """Pobierz dane z głównego programu (streamlit_app.py)"""
+    if not STREAMLIT_APP_OK:
         return None
     
     try:
         # Wczytaj cele (wymagane do pobierz_stan_spolki)
         cele = main_app.wczytaj_cele()
         
-        # Użyj funkcji z gra_rpg.py do pobrania pełnych danych
+        # Użyj funkcji z streamlit_app.py do pobrania pełnych danych
         stan_spolki = main_app.pobierz_stan_spolki(cele)
         return stan_spolki
     except Exception as e:
-        print(f"⚠️ Błąd pobierania danych z gra_rpg.py: {e}")
+        print(f"⚠️ Błąd pobierania danych z streamlit_app.py: {e}")
         return None
 
 def get_crypto_data() -> Optional[Dict]:

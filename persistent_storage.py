@@ -167,13 +167,14 @@ def trigger_github_sync():
     Wywołuje GitHub Actions workflow do synchronizacji plików
     (wymaga GitHub Personal Access Token w secrets)
     """
-    if 'sync_queue' not in st.session_state or not st.session_state.sync_queue:
-        return False, "Brak zmian do synchronizacji"
-    
-    # Synchronizacja przez GitHub API (wymaga GITHUB_TOKEN w secrets)
-    # Zobacz: show_sync_widget() dla implementacji UI
-    return True, "Synchronizacja uruchomiona"
+    try:
+        if 'sync_queue' not in st.session_state or not st.session_state.sync_queue:
+            return False, "Brak zmian do synchronizacji"
         
+        # Synchronizacja przez GitHub API (wymaga GITHUB_TOKEN w secrets)
+        # Zobacz: show_sync_widget() dla implementacji UI
+        return True, "Synchronizacja uruchomiona"
+            
     except Exception as e:
         return False, str(e)
 

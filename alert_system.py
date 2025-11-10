@@ -89,7 +89,7 @@ def detect_new_positions() -> List[Dict]:
     """
     try:
         import daily_snapshot as ds
-        import gra_rpg
+        import streamlit_app
         
         # Pobierz historię snapshots
         history = ds.load_snapshot_history()
@@ -102,7 +102,7 @@ def detect_new_positions() -> List[Dict]:
         
         # Pobierz aktualne dane
         cele = load_json_file("cele.json", {})
-        current_state = gra_rpg.pobierz_stan_spolki(cele)
+        current_state = streamlit_app.pobierz_stan_spolki(cele)
         
         new_positions = []
         
