@@ -71,15 +71,30 @@ def pobierz_dane_trading212():
             response.raise_for_status()
             dividends_response = response.json()
             
-            # API zwraca dict z 'items' zamiast bezpośrednio listę
+            # Debug: sprawdź strukturę odpowiedzi
+            print(f"  📝 Debug - typ odpowiedzi: {type(dividends_response)}")
             if isinstance(dividends_response, dict):
-                dane_t212["dividends"] = dividends_response.get("items", [])
-            else:
+                print(f"  📝 Debug - klucze w dict: {list(dividends_response.keys())}")
+            
+            # API może zwracać dict z 'items' lub bezpośrednio listę
+            if isinstance(dividends_response, dict):
+                dane_t212["dividends"] = dividends_response.get("items", dividends_response.get("data", []))
+            elif isinstance(dividends_response, list):
                 dane_t212["dividends"] = dividends_response
+            else:
+                dane_t212["dividends"] = []
             
             print(f"  ✓ Pobrano {len(dane_t212['dividends'])} dywidend")
+            
+            # Debug: pokaż przykład pierwszej dywidendy jeśli istnieje
+            if dane_t212["dividends"] and len(dane_t212["dividends"]) > 0:
+                first_div = dane_t212["dividends"][0]
+                print(f"  📝 Przykład: {first_div.get('ticker', 'N/A')} - {first_div.get('amount', 0)} USD")
+                
         except Exception as e:
             print(f"  ⚠️ Nie udało się pobrać dywidend: {e}")
+            import traceback
+            traceback.print_exc()
             dane_t212["dividends"] = []
         
         # 4. Pobierz metadata (opcjonalne)
