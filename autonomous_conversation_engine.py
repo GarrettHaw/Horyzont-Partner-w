@@ -212,15 +212,15 @@ class AutonomousConversationEngine:
         Autonomiczne rozmowy = tylko AI partners bez użytkownika
         """
         if not PERSONAS:
-            return ["Benjamin Graham", "Warren Buffett", "CZ", "George Soros"]
+            return ["Nexus", "Warren Buffett", "George Soros", "Changpeng Zhao (CZ)"]
         
         all_partners = list(PERSONAS.keys())
         
         # ❌ WYKLUCZAMY "Partner Zarządzający (JA)" z autonomicznych rozmów!
         ai_only_partners = [p for p in all_partners if p != "Partner Zarządzający (JA)"]
         
-        # Wybierz 4 AI partnerów (lub mniej jeśli nie ma tyle)
-        # Możesz dodać logikę: risk topics = Graham first, crypto = CZ first
+        # Wybierz 4 AI partnerów (Nexus, Warren, Soros, CZ)
+        # Możesz dodać logikę: risk topics = Soros first, value = Buffett first, crypto = CZ first
         participants = ai_only_partners[:4] if len(ai_only_partners) >= 4 else ai_only_partners
         
         return participants

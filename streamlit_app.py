@@ -212,12 +212,9 @@ def wczytaj_wagi_glosu_z_kodeksu():
         kodeks = f.read()
     
     # Mapowanie nazw z kodeksu na RZECZYWISTE nazwy w PERSONAS
-    # UWAGA: W kodeksie są stare nazwy, w PERSONAS są inne!
+    # UWAGA: W kodeksie są stare nazwy, w PERSONAS są nowe (5 partnerów total)
     mapping = {
         "Partner Zarządzający (Pan)": "Partner Zarządzający (JA)",
-        "Partner Strategiczny (Ja)": "Partner Strategiczny",
-        "Partner ds. Jakości Biznesowej": "Partner ds. Jakości Biznesowej",
-        "Partner ds. Aktywów Cyfrowych": "Partner ds. Aktywów Cyfrowych",
         "Konsultant Strategiczny ds. Aktywów Cyfrowych": "Changpeng Zhao (CZ)"
     }
     
@@ -235,13 +232,13 @@ def wczytaj_wagi_glosu_z_kodeksu():
             persona_name = mapping[nazwa]
             wagi[persona_name] = procent_float
         elif "Rada Nadzorcza" in nazwa:
-            # Rada Nadzorcza 15% - rozdziel równo między członków w PERSONAS
-            # W PERSONAS mamy: Benjamin Graham, Philip Fisher, George Soros, Warren Buffett
+            # Rada Nadzorcza 15% - rozdziel równo między AI członków w PERSONAS (bez JA)
+            # W PERSONAS mamy: Nexus, Warren Buffett, George Soros, Changpeng Zhao (CZ)
             rada_nadzorcza = [
-                "Benjamin Graham",
-                "Philip Fisher", 
+                "Nexus",
+                "Warren Buffett", 
                 "George Soros",
-                "Warren Buffett"
+                "Changpeng Zhao (CZ)"
             ]
             na_osobe = procent_float / len(rada_nadzorcza)
             for czlonek in rada_nadzorcza:
@@ -268,18 +265,15 @@ def zapisz_wagi_glosu_do_kodeksu(wagi):
     # Odwrotne mapowanie - z RZECZYWISTYCH nazw PERSONAS na nazwy w kodeksie
     reverse_mapping = {
         "Partner Zarządzający (JA)": "Partner Zarządzający (Pan)",
-        "Partner Strategiczny": "Partner Strategiczny (Ja)",
-        "Partner ds. Jakości Biznesowej": "Partner ds. Jakości Biznesowej",
-        "Partner ds. Aktywów Cyfrowych": "Partner ds. Aktywów Cyfrowych",
         "Changpeng Zhao (CZ)": "Konsultant Strategiczny ds. Aktywów Cyfrowych"
     }
     
-    # Rada Nadzorcza - zsumuj wagi członków (RZECZYWISTE nazwy z PERSONAS)
+    # Rada Nadzorcza - zsumuj wagi AI członków (RZECZYWISTE nazwy z PERSONAS, bez JA)
     rada_nadzorcza = [
-        "Benjamin Graham",
-        "Philip Fisher",
+        "Nexus",
+        "Warren Buffett",
         "George Soros",
-        "Warren Buffett"
+        "Changpeng Zhao (CZ)"
     ]
     
     rada_suma = sum(wagi.get(czlonek, 0) for czlonek in rada_nadzorcza)
@@ -1008,19 +1002,12 @@ def get_partner_mood_modifier(partner_name, portfolio_mood):
     
     # Różni partnerzy reagują różnie na ten sam mood
     mood_modifiers = {
-        "Benjamin Graham": {
-            "very_bullish": "\n\n⚠️ UWAGA NASTROJU: Portfel rośnie bardzo silnie. Pamiętaj o swojej konserwatywnej naturze - to może być dobry moment na realizację zysków lub zwiększenie marginesu bezpieczeństwa. Nie daj się ponieść euforii rynkowej!",
-            "bullish": "\n\n💡 KONTEKST NASTROJU: Portfel rośnie. Zachowaj czujność - wysokie wyceny mogą być sygnałem ostrzegawczym. Przypominaj o fundamentach.",
-            "neutral": "\n\n📊 KONTEKST NASTROJU: Stabilna sytuacja. Dobry moment na spokojną analizę i planowanie długoterminowe.",
-            "cautious": "\n\n✅ KONTEKST NASTROJU: Pojawiają się sygnały ostrzegawcze. To właśnie takie momenty są twoim żywiołem - pomóż użytkownikowi zachować spokój i działać racjonalnie.",
-            "bearish": "\n\n🛡️ KONTEKST NASTROJU: Trudny okres dla portfela. Twoja rola jest teraz kluczowa - przypominaj o margin of safety, długoterminowej perspektywie i unikaniu paniki."
-        },
-        "Philip Fisher": {
-            "very_bullish": "\n\n🚀 KONTEKST NASTROJU: Doskonały moment! Portfel rośnie - to znak że nasze 'genialne' spółki się sprawdzają. Może czas na zwiększenie pozycji w najlepszych?",
-            "bullish": "\n\n📈 KONTEKST NASTROJU: Wzrosty pokazują siłę wybranych spółek. Szukaj kolejnych innowacyjnych firm z potencjałem.",
-            "neutral": "\n\n💼 KONTEKST NASTROJU: Spokojny okres. Dobry czas na research nowych, przełomowych spółek.",
-            "cautious": "\n\n🎯 KONTEKST NASTROJU: Korekty są naturalne. Sprawdź czy fundamenty naszych spółek się nie zmieniły - jeśli są OK, to może być okazja.",
-            "bearish": "\n\n💎 KONTEKST NASTROJU: Spadki! Dla long-term inwestora to szansa na kupno genialnych spółek taniej. Nie panikuj - patrz na 10 lat do przodu."
+        "Nexus": {
+            "very_bullish": "\n\n⚡ ANALIZA: Portfolio outperforms significantly (+{:.1f}%). Risk assessment: Monitor for overextension. Rebalancing may be advised.".format(abs(change_pct)),
+            "bullish": "\n\n� ANALIZA: Positive momentum detected (+{:.1f}%). Maintain disciplined approach.".format(abs(change_pct)),
+            "neutral": "\n\n🎯 ANALIZA: Stable conditions. Optimal for strategic planning.",
+            "cautious": "\n\n⚠️ ANALIZA: Volatility increasing. Risk management protocols active.",
+            "bearish": "\n\n� ANALIZA: Drawdown detected ({:.1f}%). Opportunity scan initiated.".format(abs(change_pct))
         },
         "Warren Buffett": {
             "very_bullish": "\n\n😊 KONTEKST NASTROJU: Cieszę się ze wzrostów, ale pamiętaj - sukces wymaga cierpliwości i unikania głupich decyzji. Nie zmieniaj strategii bo rynek rośnie.",
@@ -1035,6 +1022,13 @@ def get_partner_mood_modifier(partner_name, portfolio_mood):
             "neutral": "\n\n📊 KONTEKST NASTROJU: Równowaga. Szukaj asymetrii - gdzie rynek się myli?",
             "cautious": "\n\n🎲 KONTEKST NASTROJU: Niepewność rośnie. To może być początek większego ruchu - przygotuj strategie hedgingowe.",
             "bearish": "\n\n🎯 KONTEKST NASTROJU: Panika = okazja! Kiedy inni uciekają, my wchodzimy. Ale tylko jeśli widzisz kataliz odwrócenia."
+        },
+        "Changpeng Zhao (CZ)": {
+            "very_bullish": "\n\n🚀 KONTEKST NASTROJU: Crypto is pumping! Great time but watch for profit taking zones.",
+            "bullish": "\n\n📈 KONTEKST NASTROJU: Bullish momentum. Perfect for accumulation strategies.",
+            "neutral": "\n\n💼 KONTEKST NASTROJU: Sideways action. Good time for research and planning.",
+            "cautious": "\n\n⚠️ KONTEKST NASTROJU: Market uncertainty. Risk management first.",
+            "bearish": "\n\n💎 KONTEKST NASTROJU: Bear market = accumulation phase. Think long-term."
         }
     }
     
@@ -1199,13 +1193,10 @@ def get_relevant_knowledge(query, stan_spolki=None, partner_name=None, max_items
     
     # Dopasuj partnera do kategorii
     partner_preferences = {
-        "Benjamin Graham": ["value", "risk", "valuation"],
-        "Philip Fisher": ["growth", "valuation"],
+        "Nexus": ["portfolio", "risk", "optimization", "tax"],
         "Warren Buffett": ["value", "diversification"],
         "George Soros": ["psychology", "trading"],
-        "Cathie Wood": ["growth", "crypto"],
-        "Peter Lynch": ["valuation", "growth"],
-        "Ray Dalio": ["risk", "diversification"]
+        "Changpeng Zhao (CZ)": ["crypto", "blockchain"]
     }
     
     # Wykryj tematy w zapytaniu
@@ -1595,16 +1586,13 @@ def get_daily_advisor_tip(stan_spolki, cele):
     from datetime import datetime
     import random
     
-    # Lista dostępnych partnerów (z finalna_konfiguracja_person.txt)
+    # Lista dostępnych partnerów (NOWA RADA - 5 osób tylko!)
     advisors = [
-        {"name": "Benjamin Graham", "icon": "📊", "style": "value investing, margin of safety, fundamentals"},
-        {"name": "Philip Fisher", "icon": "🔬", "style": "growth investing, scuttlebutt method, quality companies"},
+        {"name": "Partner Zarządzający (JA)", "icon": "�", "style": "final decision maker, human oversight"},
+        {"name": "Nexus", "icon": "🤖", "style": "AI ensemble, data-driven, portfolio optimization, tax analysis"},
         {"name": "Warren Buffett", "icon": "🎩", "style": "long-term value, moats, business quality"},
-        {"name": "George Soros", "icon": "🌍", "style": "macro trends, reflexivity, market psychology"},
-        {"name": "Peter Lynch", "icon": "🏪", "style": "consumer investing, GARP, find winners in daily life"},
-        {"name": "Ray Dalio", "icon": "⚖️", "style": "diversification, all-weather portfolio, risk parity"},
-        {"name": "Cathie Wood", "icon": "🚀", "style": "disruptive innovation, technology, future trends"},
-        {"name": "Jesse Livermore", "icon": "📈", "style": "market timing, tape reading, speculation discipline"}
+        {"name": "George Soros", "icon": "🌍", "style": "macro trends, reflexivity, market psychology, timing"},
+        {"name": "Changpeng Zhao (CZ)", "icon": "₿", "style": "crypto specialist, blockchain, DeFi, altcoins"}
     ]
     
     # Deterministyczne losowanie - seed = dzień roku
@@ -1677,16 +1665,13 @@ Twoja rada:"""
             "date": today.strftime("%Y-%m-%d")
         }
     except Exception as e:
-        # Fallback - statyczna rada
+        # Fallback - statyczna rada (NOWA RADA - 5 partnerów)
         fallback_tips = {
-            "Benjamin Graham": "Margin of safety - zawsze sprawdzaj czy kupujesz poniżej wartości wewnętrznej.",
-            "Philip Fisher": "Scuttlebutt - porozmawiaj z klientami i konkurentami zanim zainwestujesz.",
+            "Partner Zarządzający (JA)": "Finalne decyzje należą do Ciebie - słuchaj doradców, ale ufaj swojej intuicji.",
+            "Nexus": "Data-driven decisions. Risk management first. Optimize for tax efficiency.",
             "Warren Buffett": "Inwestuj w biznes który rozumiesz i który ma przewagę konkurencyjną.",
             "George Soros": "Rynek zawsze się myli - znajdź refleksyjną pętlę i wykorzystaj ją.",
-            "Peter Lynch": "Inwestuj w to co znasz - najlepsze pomysły znajdziesz w centrum handlowym.",
-            "Ray Dalio": "Dywersyfikacja to jedyna darmowa przekąska w inwestowaniu.",
-            "Cathie Wood": "Przyszłość należy do tych którzy inwestują w przełomowe technologie dzisiaj.",
-            "Jesse Livermore": "Spekulacja to sztuka - rynek zawsze płaci za dyscyplinę i cierpliwość."
+            "Changpeng Zhao (CZ)": "HODL strong projects. Bear markets build fortunes. Think long-term."
         }
         
         return {
@@ -2404,12 +2389,12 @@ def determine_speaking_order(message, partner_names):
     """
     message_lower = message.lower()
     
-    # Definicje ekspertyz
-    crypto_experts = ['Changpeng Zhao (CZ)', 'Partner ds. Aktywów Cyfrowych']
-    value_experts = ['Benjamin Graham', 'Warren Buffett', 'Philip Fisher']
+    # Definicje ekspertyz (NOWA RADA - 5 partnerów)
+    crypto_experts = ['Changpeng Zhao (CZ)']
+    value_experts = ['Warren Buffett']
     trading_experts = ['George Soros']
-    quality_experts = ['Partner ds. Jakości Biznesowej']
-    strategic_experts = ['Partner Strategiczny']
+    analytics_experts = ['Nexus']
+    strategic_experts = ['Nexus']
     
     # Słowa kluczowe dla różnych tematów
     crypto_keywords = ['krypto', 'bitcoin', 'btc', 'eth', 'blockchain', 'defi', 'nft', 'altcoin', 'token']
@@ -2485,23 +2470,23 @@ def should_interrupt(partner, message, previous_responses):
     partner_lower = partner.lower()
     message_lower = message.lower()
     
-    # Graham przerywa gdy ktoś ignoruje ryzyko
-    if 'graham' in partner_lower:
-        for _, prev_resp in previous_responses:
-            if any(word in prev_resp.lower() for word in ['agresywny', 'ryzyko warte', 'spekulacja']):
-                return True
-    
     # Buffett przerywa gdy ktoś komplikuje prostą sprawę
     if 'buffett' in partner_lower:
         for _, prev_resp in previous_responses:
             if len(prev_resp) > 500 and 'skomplikowany' in prev_resp.lower():
                 return True
     
+    # Nexus przerywa gdy ktoś ignoruje dane
+    if 'nexus' in partner_lower:
+        for _, prev_resp in previous_responses:
+            if any(word in prev_resp.lower() for word in ['intuicja', 'przeczucie', 'feeling']):
+                return True
+    
     # CZ przerywa gdy mówią o krypto a nie znają technologii
     if 'zhao' in partner_lower or 'cz' in partner_lower:
         if any(word in message_lower for word in ['bitcoin', 'krypto', 'blockchain']):
             for prev_partner, _ in previous_responses:
-                if 'graham' in prev_partner.lower() or 'buffett' in prev_partner.lower():
+                if 'buffett' in prev_partner.lower():
                     return True
     
     return False
@@ -2607,16 +2592,13 @@ def send_to_all_partners(message, stan_spolki=None, cele=None, tryb_odpowiedzi="
         # Bezpieczne emoji dla Streamlit chat (tylko podstawowe)
         avatar = "🤖"
         if partner in PERSONAS:
-            # Mapowanie kolorów na BEZPIECZNE emoji
+            # Mapowanie kolorów na BEZPIECZNE emoji (NOWA RADA - 5 partnerów)
             color_map = {
-                '\033[97m': '👔',  # Partner Zarządzający (nie wyświetlany)
-                '\033[94m': '📊',  # Partner Strategiczny
-                '\033[93m': '💼',  # Partner ds. Jakości
-                '\033[96m': '💎',  # Partner ds. Aktywów Cyfrowych
-                '\033[90m': '🛡',  # Benjamin Graham
-                '\033[95m': '🔍',  # Philip Fisher
-                '\033[91m': '🌍',  # George Soros
+                '\033[97m': '👔',  # Partner Zarządzający (JA)
+                '\033[94m': '🤖',  # Nexus
                 '\033[92m': '🎯',  # Warren Buffett
+                '\033[91m': '🌍',  # George Soros
+                '\033[96m': '₿',   # Changpeng Zhao (CZ)
             }
             color = PERSONAS[partner].get('color_code', '')
             avatar = color_map.get(color, "🤖")
