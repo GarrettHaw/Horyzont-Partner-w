@@ -8415,6 +8415,15 @@ def show_kredyty_page(stan_spolki, cele):
                         }
                         kredyty.append(nowy_kredyt)
                         if save_kredyty(kredyty):
+                            # 🔄 AUTO-LOG: Dodaj kredyt jako przychód (otrzymanie pieniędzy)
+                            add_transaction(
+                                typ='income',
+                                kategoria='other_income',
+                                kwota=kwota_poczatkowa,
+                                opis=f"Kredyt: {nazwa}",
+                                metadata={'source': 'kredyty', 'kredyt_id': nowy_kredyt['id'], 'action': 'zaciagniecie'}
+                            )
+                            
                             st.success("✅ Kredyt dodany!")
                             st.rerun()
         
@@ -8516,8 +8525,22 @@ def show_kredyty_page(stan_spolki, cele):
                 
                 with col_edit2:
                     if st.button("💾 Zapisz", key=f"save_table_{selected_idx}", type="primary", use_container_width=True):
+                        # Oblicz różnicę (ile dopłacono)
+                        stara_kwota = kredyty[selected_idx]['splacono']
+                        roznica = nowa_splacona_kwota - stara_kwota
+                        
                         kredyty[selected_idx]['splacono'] = nowa_splacona_kwota
                         if save_kredyty(kredyty):
+                            # 🔄 AUTO-LOG: Dodaj spłatę do Transactions (jeśli zwiększono)
+                            if roznica > 0:
+                                add_transaction(
+                                    typ='expense',
+                                    kategoria='loan_payment',
+                                    kwota=roznica,
+                                    opis=f"Spłata kredytu: {kredyt['nazwa']}",
+                                    metadata={'source': 'kredyty', 'kredyt_id': kredyt['id'], 'action': 'splata'}
+                                )
+                            
                             st.success("✅ Zaktualizowano!")
                             st.rerun()
                 
@@ -9109,6 +9132,15 @@ def show_kredyty_page(stan_spolki, cele):
                             wyplaty.sort(key=lambda x: x['data'], reverse=True)
                             
                             if save_wyplaty(wyplaty):
+                                # 🔄 AUTO-LOG: Dodaj do Transactions
+                                add_transaction(
+                                    typ='income',
+                                    kategoria='other_income',
+                                    kwota=kwota_total,
+                                    opis=f"Bonus {data_wyplaty.strftime('%m/%Y')}" + (f" - {notatki}" if notatki else ""),
+                                    metadata={'source': 'wyplaty', 'wyplata_id': nowy_bonus['id'], 'wyplata_typ': 'Bonus'}
+                                )
+                                
                                 st.success(f"✅ 🎉 Bonus zapisany: {kwota_total:,.0f} PLN")
                                 st.rerun()
                             else:
@@ -9157,6 +9189,25 @@ def show_kredyty_page(stan_spolki, cele):
                             wyplaty.sort(key=lambda x: x['data'], reverse=True)
                             
                             if save_wyplaty(wyplaty):
+                                # 🔄 AUTO-LOG: Dodaj wypłatę do Transactions
+                                add_transaction(
+                                    typ='income',
+                                    kategoria='salary',
+                                    kwota=wyplata_czesc,
+                                    opis=f"Wypłata {data_wyplaty.strftime('%m/%Y')}",
+                                    metadata={'source': 'wyplaty', 'wyplata_id': nowa_wyplata['id'], 'wyplata_typ': 'Wypłata'}
+                                )
+                                
+                                # 🔄 AUTO-LOG: Dodaj premię do Transactions (jeśli jest)
+                                if premia_czesc > 0:
+                                    add_transaction(
+                                        typ='income',
+                                        kategoria='other_income',
+                                        kwota=premia_czesc,
+                                        opis=f"Premia {data_wyplaty.strftime('%m/%Y')}",
+                                        metadata={'source': 'wyplaty', 'wyplata_id': nowa_premia['id'], 'wyplata_typ': 'Premia'}
+                                    )
+                                
                                 st.success(f"""
                                 ✅ **Zapisano wpływ:** {kwota_total:,.0f} PLN
                                 - 💰 Wypłata: {wyplata_czesc:,.0f} PLN
@@ -10022,6 +10073,24 @@ def show_kredyty_page(stan_spolki, cele):
                         krypto.sort(key=lambda x: x['symbol'])
                         
                         if save_krypto(krypto):
+                            # 🔄 AUTO-LOG: Dodaj zakup krypto do Transactions
+                            wartosc_pln = ilosc * cena_zakupu * 4.0  # Approx USD->PLN
+                            add_transaction(
+                                typ='expense',
+                                kategoria='investment',
+                                kwota=wartosc_pln,
+                                opis=f"Zakup krypto: {ilosc:.8f} {symbol} @ ${cena_zakupu:.2f}",
+                                metadata={
+                                    'source': 'krypto',
+                                    'krypto_id': nowe_krypto['id'],
+                                    'action': 'buy',
+                                    'symbol': symbol,
+                                    'quantity': ilosc,
+                                    'price_usd': cena_zakupu,
+                                    'platform': platforma
+                                }
+                            )
+                            
                             st.success("✅ Kryptowaluta zapisana!")
                             st.rerun()
                         else:
