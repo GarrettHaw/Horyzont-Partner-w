@@ -312,16 +312,21 @@ def parsuj_dane_t212_do_portfela(dane_t212, kurs_usd_pln, cele):
             
             pozycje_szczegoly[ticker] = {
                 "ticker": ticker,
+                "ilosc": quantity,  # Zmieniono z quantity na ilosc dla kompatybilności
                 "quantity": quantity,
                 "current_price": current_price,
                 "avg_price": avg_price,
                 "value_usd": round(wartosc_usd, 2),
                 "value_pln": round(wartosc_pln, 2),
-                "ppl": ppl
+                "ppl": ppl,
+                "frontend": pos.get("frontend", "")
             }
         
         # Saldo gotówkowe
         cash_free = account.get("free", 0)
+        
+        # Dywidendy z Trading212 (jeśli dostępne)
+        dividends = dane_t212.get("dividends", [])
         
         return {
             "Suma_PLN": round(suma_pln, 2),
@@ -330,9 +335,11 @@ def parsuj_dane_t212_do_portfela(dane_t212, kurs_usd_pln, cele):
             "Liczba_pozycji_rdzennych": liczba_pozycji_rdzennych,
             "Liczba_pozycji_w_pie": liczba_pozycji_w_pie,
             "Cash_free_USD": round(cash_free, 2),
-            "Zrodlo": "Trading212 API",
+            "Zrodlo": "Trading212 Cache",
             "Pozycje_szczegoly": pozycje_szczegoly,
-            "Dane_rynkowe": {}
+            "pozycje": pozycje_szczegoly,  # Alias dla kompatybilności
+            "Dane_rynkowe": {},  # Będzie wypełnione w normalize_stan_spolki
+            "dywidendy": dividends  # Historia dywidend z Trading212
         }
     except Exception as e:
         print(f"❌ Błąd parsowania danych T212: {e}")
@@ -3277,8 +3284,11 @@ def normalize_stan_spolki(stan_spolki):
             'wartosc_usd': raw_akcje.get('Suma_USD', 0),
             'liczba_pozycji': raw_akcje.get('Liczba_pozycji_calkowita', 
                                            raw_akcje.get('Liczba_pozycji', 0)),
-            'pozycje': raw_akcje.get('Pozycje_szczegoly', {}),
-            'dane_rynkowe': raw_akcje.get('Dane_rynkowe', {})
+            'pozycje': raw_akcje.get('pozycje', raw_akcje.get('Pozycje_szczegoly', {})),
+            'dane_rynkowe': raw_akcje.get('Dane_rynkowe', {}),
+            'dywidendy': raw_akcje.get('dywidendy', []),  # Historia dywidend
+            'cash_usd': raw_akcje.get('Cash_free_USD', 0),
+            'zrodlo': raw_akcje.get('Zrodlo', 'Unknown')
         }
     elif 'akcje' in stan_spolki:
         normalized['akcje'] = stan_spolki['akcje']
@@ -5561,6 +5571,113 @@ _{daily_tip['tip_text']}_
                 roczne=fi_wydatki * 12,
                 fi_num=fi_number
             ))
+    
+    st.markdown("---")
+    
+    # === PORTFEL AKCJI - Trading212 Details ===
+    st.subheader("📈 Portfel Akcji (Trading212)")
+    
+    try:
+        akcje_data = stan_spolki.get('akcje', {})
+        pozycje = akcje_data.get('pozycje', {})
+        dywidendy_trading = akcje_data.get('dywidendy', [])
+        cash_usd = akcje_data.get('cash_usd', 0)
+        zrodlo = akcje_data.get('zrodlo', 'Unknown')
+        kurs_usd = stan_spolki.get('kurs_usd_pln', 3.6)
+        
+        # Pokaż źródło danych i status
+        col_t1, col_t2, col_t3 = st.columns([2, 1, 1])
+        with col_t1:
+            st.caption(f"🔄 Źródło: **{zrodlo}**")
+        with col_t2:
+            st.caption(f"💵 Kurs USD/PLN: **{kurs_usd:.4f}**")
+        with col_t3:
+            if cash_usd > 0:
+                st.caption(f"💰 Cash: **${cash_usd:.2f}**")
+        
+        # Wyświetl pozycje jako tabelę
+        if pozycje:
+            st.markdown("#### 📊 Pozycje w portfelu")
+            
+            pozycje_list = []
+            for ticker, data in pozycje.items():
+                if isinstance(data, dict):
+                    # Czysty ticker bez sufiksów
+                    ticker_clean = ticker.replace('_US_EQ', '').replace('_EQ', '')
+                    
+                    ilosc = data.get('ilosc', data.get('quantity', 0))
+                    current_price = data.get('current_price', 0)
+                    avg_price = data.get('avg_price', 0)
+                    value_usd = data.get('value_usd', ilosc * current_price if current_price else 0)
+                    value_pln = data.get('value_pln', value_usd * kurs_usd)
+                    ppl = data.get('ppl', 0)
+                    frontend = data.get('frontend', '')
+                    
+                    # Oblicz % zysku/straty
+                    if avg_price > 0 and current_price > 0:
+                        pnl_pct = ((current_price - avg_price) / avg_price) * 100
+                    else:
+                        pnl_pct = 0
+                    
+                    pozycje_list.append({
+                        'Ticker': ticker_clean,
+                        'Ilość': f"{ilosc:.4f}" if ilosc < 1 else f"{ilosc:.2f}",
+                        'Cena śr.': f"${avg_price:.2f}",
+                        'Cena aktualna': f"${current_price:.2f}",
+                        'Wartość': f"{value_pln:.2f} PLN",
+                        'P&L': f"{pnl_pct:+.2f}%",
+                        'Typ': '🥧 Pie' if frontend == 'AUTOINVEST' else '📊 Rdzenne'
+                    })
+            
+            if pozycje_list:
+                # Sortuj po wartości malejąco
+                pozycje_list = sorted(pozycje_list, key=lambda x: float(x['Wartość'].replace(' PLN', '').replace(',', '')), reverse=True)
+                
+                df_pozycje = pd.DataFrame(pozycje_list)
+                st.dataframe(df_pozycje, use_container_width=True, hide_index=True)
+                
+                st.caption(f"📊 **Łącznie:** {len(pozycje_list)} pozycji | Wartość całkowita: {akcje_data.get('wartosc_pln', 0):.2f} PLN")
+            else:
+                st.info("ℹ️ Brak pozycji do wyświetlenia")
+        else:
+            st.warning("⚠️ Brak danych o pozycjach akcji")
+        
+        # Wyświetl historię dywidend
+        if dywidendy_trading and len(dywidendy_trading) > 0:
+            with st.expander(f"💵 Historia Dywidend ({len(dywidendy_trading)} transakcji)", expanded=False):
+                dywidendy_list = []
+                suma_dywidend = 0
+                
+                for div in dywidendy_trading[:20]:  # Pokaż ostatnie 20
+                    if isinstance(div, dict):
+                        ticker = div.get('ticker', 'N/A').replace('_US_EQ', '').replace('_EQ', '')
+                        amount = div.get('amount', 0)
+                        paid_on = div.get('paidOn', div.get('paid_on', 'N/A'))
+                        
+                        # Dywidendy z Trading212 są w USD
+                        amount_pln = amount * kurs_usd if amount else 0
+                        suma_dywidend += amount
+                        
+                        dywidendy_list.append({
+                            'Data': paid_on[:10] if len(paid_on) >= 10 else paid_on,
+                            'Ticker': ticker,
+                            'Kwota': f"${amount:.2f}",
+                            'Kwota PLN': f"{amount_pln:.2f} PLN"
+                        })
+                
+                if dywidendy_list:
+                    df_dywidendy = pd.DataFrame(dywidendy_list)
+                    st.dataframe(df_dywidendy, use_container_width=True, hide_index=True)
+                    
+                    suma_dywidend_pln = suma_dywidend * kurs_usd
+                    st.caption(f"💰 **Suma wyświetlonych dywidend:** ${suma_dywidend:.2f} (≈ {suma_dywidend_pln:.2f} PLN)")
+                else:
+                    st.info("ℹ️ Brak szczegółów dywidend do wyświetlenia")
+        
+    except Exception as e:
+        st.error(f"❌ Błąd wyświetlania danych Trading212: {e}")
+        import traceback
+        st.code(traceback.format_exc())
     
     st.markdown("---")
     
