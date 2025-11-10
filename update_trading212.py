@@ -55,16 +55,28 @@ def pobierz_dane_trading212():
         currency = dane_t212['account'].get('currencyCode', 'USD')
         print(f"  ✓ Saldo: {cash:.2f} {currency}")
         
-        # 3. Pobierz historię dywidend
+        # 3. Pobierz historię dywidend (ostatnie 2 lata)
         print("  ↪ Pobieram historię dywidend...")
         try:
+            from datetime import timedelta
+            
+            # Trading212 API wymaga parametrów cursor lub limit
+            # Pobierz maksymalnie 500 ostatnich dywidend (limit API)
             response = requests.get(
                 f"{TRADING212_BASE_URL}/history/dividends",
                 headers=headers,
+                params={"limit": 500},  # Maksymalny limit API
                 timeout=10
             )
             response.raise_for_status()
-            dane_t212["dividends"] = response.json()
+            dividends_response = response.json()
+            
+            # API zwraca dict z 'items' zamiast bezpośrednio listę
+            if isinstance(dividends_response, dict):
+                dane_t212["dividends"] = dividends_response.get("items", [])
+            else:
+                dane_t212["dividends"] = dividends_response
+            
             print(f"  ✓ Pobrano {len(dane_t212['dividends'])} dywidend")
         except Exception as e:
             print(f"  ⚠️ Nie udało się pobrać dywidend: {e}")
