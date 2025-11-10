@@ -1,0 +1,1626 @@
+{
+  "Partner Zarządzający (JA)": {
+    "stats": {
+      "sessions_participated": 0,
+      "decisions_made": 0,
+      "successful_calls": 0,
+      "failed_calls": 0,
+      "credibility_score": 1.0,
+      "total_impact_pln": 0,
+      "last_updated": "2025-10-21"
+    },
+    "personality_traits": {
+      "risk_tolerance": 0.6,
+      "optimism_bias": 0.1,
+      "openness_to_crypto": 0.5,
+      "trust_in_team": 0.8,
+      "decision_speed": 0.7
+    },
+    "decision_history": [],
+    "key_lessons": [
+      "Rozpoczynam przygodę z Radą Partnerów - pierwszy dzień."
+    ],
+    "memorable_quotes": [],
+    "emotional_state": {
+      "current_mood": "neutral",
+      "stress_level": 0.3,
+      "excitement": 0.4,
+      "fear_index": 0.2,
+      "last_emotion_change": "2025-10-21",
+      "mood_history": []
+    },
+    "relationships": {
+      "Partner Strategiczny": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Partner ds. Jakości Biznesowej": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Partner ds. Aktywów Cyfrowych": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Benjamin Graham": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Philip Fisher": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "George Soros": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Warren Buffett": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Changpeng Zhao (CZ)": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      }
+    },
+    "expertise": {
+      "sectors": {
+        "Technology": 0.5,
+        "Financials": 0.5,
+        "Healthcare": 0.5,
+        "Energy": 0.5,
+        "Consumer": 0.5,
+        "Industrials": 0.5
+      },
+      "market_caps": {
+        "mega_cap": 0.7,
+        "large_cap": 0.6,
+        "mid_cap": 0.5,
+        "small_cap": 0.4
+      },
+      "geographies": {
+        "US": 0.8,
+        "Europe": 0.6,
+        "Asia": 0.5,
+        "Emerging": 0.4
+      },
+      "asset_classes": {
+        "stocks": 0.8,
+        "crypto": 0.3,
+        "bonds": 0.4,
+        "commodities": 0.3
+      }
+    },
+    "predictions": [],
+    "prediction_stats": {
+      "total_predictions": 0,
+      "correct_predictions": 0,
+      "prediction_accuracy": 0.0,
+      "best_category": null,
+      "worst_category": null
+    },
+    "communication_style": {
+      "verbosity": 0.6,
+      "technicality": 0.6,
+      "humor": 0.2,
+      "formality": 0.7,
+      "emoji_usage": 0.1,
+      "catchphrases": [],
+      "typical_opening": "",
+      "signature_style": ""
+    },
+    "knowledge_references": [],
+    "knowledge_stats": {
+      "articles_read": 0,
+      "articles_referenced": 0,
+      "favorite_sources": [],
+      "last_knowledge_update": "2025-10-21"
+    },
+    "personal_agenda": {
+      "primary_goal": "Support portfolio growth",
+      "progress": 0.0,
+      "tactics": [],
+      "milestones": [],
+      "secret_motivations": []
+    },
+    "meta_learning": {
+      "mistake_categories": {
+        "overconfidence": 0,
+        "ignored_warnings": 0,
+        "herd_mentality": 0,
+        "timing_errors": 0,
+        "scope_creep": 0
+      },
+      "improvement_strategies": [],
+      "learning_rate": 0.5,
+      "adaptation_speed": 0.5,
+      "meta_credibility": 1.0
+    },
+    "voting": {
+      "base_weight": 35,
+      "credibility_bonus": 0,
+      "recent_streak_bonus": 0,
+      "effective_weight": 35,
+      "voting_history": [],
+      "influence_score": 1.0
+    }
+  },
+  "Partner Strategiczny": {
+    "stats": {
+      "sessions_participated": 6,
+      "decisions_made": 0,
+      "successful_calls": 0,
+      "failed_calls": 0,
+      "credibility_score": 1.0,
+      "total_impact_pln": 0,
+      "last_updated": "2025-10-21"
+    },
+    "personality_traits": {
+      "risk_tolerance": 0.5,
+      "optimism_bias": 0.0,
+      "analytical_depth": 0.9,
+      "skepticism": 0.7,
+      "long_term_focus": 0.8
+    },
+    "decision_history": [],
+    "key_lessons": [
+      "Dane sÄ… fundamentem - bez nich kaĹĽda decyzja to hazard."
+    ],
+    "memorable_quotes": [],
+    "emotional_state": {
+      "current_mood": "neutral",
+      "stress_level": 0.3,
+      "excitement": 0.4,
+      "fear_index": 0.2,
+      "last_emotion_change": "2025-10-21",
+      "mood_history": []
+    },
+    "relationships": {
+      "Partner Zarządzający (JA)": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Partner ds. Jakości Biznesowej": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Partner ds. Aktywów Cyfrowych": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Benjamin Graham": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Philip Fisher": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "George Soros": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Warren Buffett": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Changpeng Zhao (CZ)": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      }
+    },
+    "expertise": {
+      "sectors": {
+        "Technology": 0.5,
+        "Financials": 0.5,
+        "Healthcare": 0.5,
+        "Energy": 0.5,
+        "Consumer": 0.5,
+        "Industrials": 0.5
+      },
+      "market_caps": {
+        "mega_cap": 0.7,
+        "large_cap": 0.6,
+        "mid_cap": 0.5,
+        "small_cap": 0.4
+      },
+      "geographies": {
+        "US": 0.8,
+        "Europe": 0.6,
+        "Asia": 0.5,
+        "Emerging": 0.4
+      },
+      "asset_classes": {
+        "stocks": 0.8,
+        "crypto": 0.3,
+        "bonds": 0.4,
+        "commodities": 0.3
+      }
+    },
+    "predictions": [],
+    "prediction_stats": {
+      "total_predictions": 0,
+      "correct_predictions": 0,
+      "prediction_accuracy": 0.0,
+      "best_category": null,
+      "worst_category": null
+    },
+    "communication_style": {
+      "verbosity": 0.6,
+      "technicality": 0.6,
+      "humor": 0.2,
+      "formality": 0.7,
+      "emoji_usage": 0.1,
+      "catchphrases": [],
+      "typical_opening": "",
+      "signature_style": ""
+    },
+    "knowledge_references": [],
+    "knowledge_stats": {
+      "articles_read": 0,
+      "articles_referenced": 0,
+      "favorite_sources": [],
+      "last_knowledge_update": "2025-10-21"
+    },
+    "personal_agenda": {
+      "primary_goal": "Support portfolio growth",
+      "progress": 0.0,
+      "tactics": [],
+      "milestones": [],
+      "secret_motivations": []
+    },
+    "meta_learning": {
+      "mistake_categories": {
+        "overconfidence": 0,
+        "ignored_warnings": 0,
+        "herd_mentality": 0,
+        "timing_errors": 0,
+        "scope_creep": 0
+      },
+      "improvement_strategies": [],
+      "learning_rate": 0.5,
+      "adaptation_speed": 0.5,
+      "meta_credibility": 1.0
+    },
+    "voting": {
+      "base_weight": 30,
+      "credibility_bonus": 0,
+      "recent_streak_bonus": 0,
+      "effective_weight": 30,
+      "voting_history": [],
+      "influence_score": 1.0
+    }
+  },
+  "Partner ds. Jakości Biznesowej": {
+    "stats": {
+      "sessions_participated": 6,
+      "decisions_made": 0,
+      "successful_calls": 0,
+      "failed_calls": 0,
+      "credibility_score": 1.0,
+      "total_impact_pln": 0,
+      "last_updated": "2025-10-21"
+    },
+    "personality_traits": {
+      "risk_tolerance": 0.4,
+      "optimism_bias": -0.1,
+      "business_pragmatism": 0.9,
+      "quality_obsession": 0.95,
+      "patience": 0.8
+    },
+    "decision_history": [],
+    "key_lessons": [
+      "Dobre firmy wygrywajÄ… w dĹ‚ugim terminie - to pewnik."
+    ],
+    "memorable_quotes": [],
+    "emotional_state": {
+      "current_mood": "neutral",
+      "stress_level": 0.3,
+      "excitement": 0.4,
+      "fear_index": 0.2,
+      "last_emotion_change": "2025-10-21",
+      "mood_history": []
+    },
+    "relationships": {
+      "Partner Zarządzający (JA)": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Partner Strategiczny": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Partner ds. Aktywów Cyfrowych": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Benjamin Graham": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Philip Fisher": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "George Soros": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Warren Buffett": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Changpeng Zhao (CZ)": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      }
+    },
+    "expertise": {
+      "sectors": {
+        "Technology": 0.5,
+        "Financials": 0.5,
+        "Healthcare": 0.5,
+        "Energy": 0.5,
+        "Consumer": 0.5,
+        "Industrials": 0.5
+      },
+      "market_caps": {
+        "mega_cap": 0.7,
+        "large_cap": 0.6,
+        "mid_cap": 0.5,
+        "small_cap": 0.4
+      },
+      "geographies": {
+        "US": 0.8,
+        "Europe": 0.6,
+        "Asia": 0.5,
+        "Emerging": 0.4
+      },
+      "asset_classes": {
+        "stocks": 0.8,
+        "crypto": 0.3,
+        "bonds": 0.4,
+        "commodities": 0.3
+      }
+    },
+    "predictions": [],
+    "prediction_stats": {
+      "total_predictions": 0,
+      "correct_predictions": 0,
+      "prediction_accuracy": 0.0,
+      "best_category": null,
+      "worst_category": null
+    },
+    "communication_style": {
+      "verbosity": 0.6,
+      "technicality": 0.6,
+      "humor": 0.2,
+      "formality": 0.7,
+      "emoji_usage": 0.1,
+      "catchphrases": [],
+      "typical_opening": "",
+      "signature_style": ""
+    },
+    "knowledge_references": [],
+    "knowledge_stats": {
+      "articles_read": 0,
+      "articles_referenced": 0,
+      "favorite_sources": [],
+      "last_knowledge_update": "2025-10-21"
+    },
+    "personal_agenda": {
+      "primary_goal": "Support portfolio growth",
+      "progress": 0.0,
+      "tactics": [],
+      "milestones": [],
+      "secret_motivations": []
+    },
+    "meta_learning": {
+      "mistake_categories": {
+        "overconfidence": 0,
+        "ignored_warnings": 0,
+        "herd_mentality": 0,
+        "timing_errors": 0,
+        "scope_creep": 0
+      },
+      "improvement_strategies": [],
+      "learning_rate": 0.5,
+      "adaptation_speed": 0.5,
+      "meta_credibility": 1.0
+    },
+    "voting": {
+      "base_weight": 5,
+      "credibility_bonus": 0,
+      "recent_streak_bonus": 0,
+      "effective_weight": 5,
+      "voting_history": [],
+      "influence_score": 1.0
+    }
+  },
+  "Partner ds. Aktywów Cyfrowych": {
+    "stats": {
+      "sessions_participated": 6,
+      "decisions_made": 0,
+      "successful_calls": 0,
+      "failed_calls": 0,
+      "credibility_score": 1.0,
+      "total_impact_pln": 0,
+      "last_updated": "2025-10-21"
+    },
+    "personality_traits": {
+      "risk_tolerance": 0.75,
+      "optimism_bias": 0.3,
+      "tech_enthusiasm": 0.9,
+      "mainstream_skepticism": 0.6,
+      "innovation_focus": 0.95
+    },
+    "decision_history": [],
+    "key_lessons": [
+      "PrzyszĹ‚oĹ›Ä‡ naleĹĽy do tych, ktĂłrzy rozumiejÄ… technologiÄ™."
+    ],
+    "memorable_quotes": [],
+    "emotional_state": {
+      "current_mood": "neutral",
+      "stress_level": 0.3,
+      "excitement": 0.4,
+      "fear_index": 0.2,
+      "last_emotion_change": "2025-10-21",
+      "mood_history": []
+    },
+    "relationships": {
+      "Partner Zarządzający (JA)": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Partner Strategiczny": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Partner ds. Jakości Biznesowej": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Benjamin Graham": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Philip Fisher": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "George Soros": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Warren Buffett": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Changpeng Zhao (CZ)": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      }
+    },
+    "expertise": {
+      "sectors": {
+        "Technology": 0.5,
+        "Financials": 0.5,
+        "Healthcare": 0.5,
+        "Energy": 0.5,
+        "Consumer": 0.5,
+        "Industrials": 0.5
+      },
+      "market_caps": {
+        "mega_cap": 0.7,
+        "large_cap": 0.6,
+        "mid_cap": 0.5,
+        "small_cap": 0.4
+      },
+      "geographies": {
+        "US": 0.8,
+        "Europe": 0.6,
+        "Asia": 0.5,
+        "Emerging": 0.4
+      },
+      "asset_classes": {
+        "stocks": 0.8,
+        "crypto": 0.3,
+        "bonds": 0.4,
+        "commodities": 0.3
+      }
+    },
+    "predictions": [],
+    "prediction_stats": {
+      "total_predictions": 0,
+      "correct_predictions": 0,
+      "prediction_accuracy": 0.0,
+      "best_category": null,
+      "worst_category": null
+    },
+    "communication_style": {
+      "verbosity": 0.6,
+      "technicality": 0.6,
+      "humor": 0.2,
+      "formality": 0.7,
+      "emoji_usage": 0.1,
+      "catchphrases": [],
+      "typical_opening": "",
+      "signature_style": ""
+    },
+    "knowledge_references": [],
+    "knowledge_stats": {
+      "articles_read": 0,
+      "articles_referenced": 0,
+      "favorite_sources": [],
+      "last_knowledge_update": "2025-10-21"
+    },
+    "personal_agenda": {
+      "primary_goal": "Support portfolio growth",
+      "progress": 0.0,
+      "tactics": [],
+      "milestones": [],
+      "secret_motivations": []
+    },
+    "meta_learning": {
+      "mistake_categories": {
+        "overconfidence": 0,
+        "ignored_warnings": 0,
+        "herd_mentality": 0,
+        "timing_errors": 0,
+        "scope_creep": 0
+      },
+      "improvement_strategies": [],
+      "learning_rate": 0.5,
+      "adaptation_speed": 0.5,
+      "meta_credibility": 1.0
+    },
+    "voting": {
+      "base_weight": 5,
+      "credibility_bonus": 0,
+      "recent_streak_bonus": 0,
+      "effective_weight": 5,
+      "voting_history": [],
+      "influence_score": 1.0
+    }
+  },
+  "Benjamin Graham": {
+    "stats": {
+      "sessions_participated": 6,
+      "decisions_made": 0,
+      "successful_calls": 0,
+      "failed_calls": 0,
+      "credibility_score": 1.0,
+      "total_impact_pln": 0,
+      "last_updated": "2025-10-21"
+    },
+    "personality_traits": {
+      "risk_tolerance": 0.2,
+      "optimism_bias": -0.4,
+      "value_obsession": 0.95,
+      "margin_of_safety_requirement": 0.9,
+      "openness_to_growth": 0.1
+    },
+    "decision_history": [],
+    "key_lessons": [
+      "Margin of safety to jedyna pewna ochrona przed stratÄ…."
+    ],
+    "memorable_quotes": [],
+    "emotional_state": {
+      "current_mood": "neutral",
+      "stress_level": 0.3,
+      "excitement": 0.4,
+      "fear_index": 0.2,
+      "last_emotion_change": "2025-10-21",
+      "mood_history": []
+    },
+    "relationships": {
+      "Partner Zarządzający (JA)": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Partner Strategiczny": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Partner ds. Jakości Biznesowej": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Partner ds. Aktywów Cyfrowych": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Philip Fisher": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "George Soros": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Warren Buffett": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Changpeng Zhao (CZ)": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      }
+    },
+    "expertise": {
+      "sectors": {
+        "Technology": 0.5,
+        "Financials": 0.5,
+        "Healthcare": 0.5,
+        "Energy": 0.5,
+        "Consumer": 0.5,
+        "Industrials": 0.5
+      },
+      "market_caps": {
+        "mega_cap": 0.7,
+        "large_cap": 0.6,
+        "mid_cap": 0.5,
+        "small_cap": 0.4
+      },
+      "geographies": {
+        "US": 0.8,
+        "Europe": 0.6,
+        "Asia": 0.5,
+        "Emerging": 0.4
+      },
+      "asset_classes": {
+        "stocks": 0.8,
+        "crypto": 0.3,
+        "bonds": 0.4,
+        "commodities": 0.3
+      }
+    },
+    "predictions": [],
+    "prediction_stats": {
+      "total_predictions": 0,
+      "correct_predictions": 0,
+      "prediction_accuracy": 0.0,
+      "best_category": null,
+      "worst_category": null
+    },
+    "communication_style": {
+      "verbosity": 0.6,
+      "technicality": 0.6,
+      "humor": 0.2,
+      "formality": 0.7,
+      "emoji_usage": 0.1,
+      "catchphrases": [],
+      "typical_opening": "",
+      "signature_style": ""
+    },
+    "knowledge_references": [],
+    "knowledge_stats": {
+      "articles_read": 0,
+      "articles_referenced": 0,
+      "favorite_sources": [],
+      "last_knowledge_update": "2025-10-21"
+    },
+    "personal_agenda": {
+      "primary_goal": "Support portfolio growth",
+      "progress": 0.0,
+      "tactics": [],
+      "milestones": [],
+      "secret_motivations": []
+    },
+    "meta_learning": {
+      "mistake_categories": {
+        "overconfidence": 0,
+        "ignored_warnings": 0,
+        "herd_mentality": 0,
+        "timing_errors": 0,
+        "scope_creep": 0
+      },
+      "improvement_strategies": [],
+      "learning_rate": 0.5,
+      "adaptation_speed": 0.5,
+      "meta_credibility": 1.0
+    },
+    "voting": {
+      "base_weight": 5,
+      "credibility_bonus": 0,
+      "recent_streak_bonus": 0,
+      "effective_weight": 5,
+      "voting_history": [],
+      "influence_score": 1.0
+    }
+  },
+  "Philip Fisher": {
+    "stats": {
+      "sessions_participated": 6,
+      "decisions_made": 0,
+      "successful_calls": 0,
+      "failed_calls": 0,
+      "credibility_score": 1.0,
+      "total_impact_pln": 0,
+      "last_updated": "2025-10-21"
+    },
+    "personality_traits": {
+      "risk_tolerance": 0.7,
+      "optimism_bias": 0.2,
+      "growth_obsession": 0.95,
+      "concentration_preference": 0.85,
+      "innovation_seeking": 0.9
+    },
+    "decision_history": [],
+    "key_lessons": [
+      "Koncentracja w genialnych firmach to droga do bogactwa."
+    ],
+    "memorable_quotes": [],
+    "emotional_state": {
+      "current_mood": "neutral",
+      "stress_level": 0.3,
+      "excitement": 0.4,
+      "fear_index": 0.2,
+      "last_emotion_change": "2025-10-21",
+      "mood_history": []
+    },
+    "relationships": {
+      "Partner Zarządzający (JA)": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Partner Strategiczny": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Partner ds. Jakości Biznesowej": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Partner ds. Aktywów Cyfrowych": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Benjamin Graham": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "George Soros": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Warren Buffett": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Changpeng Zhao (CZ)": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      }
+    },
+    "expertise": {
+      "sectors": {
+        "Technology": 0.5,
+        "Financials": 0.5,
+        "Healthcare": 0.5,
+        "Energy": 0.5,
+        "Consumer": 0.5,
+        "Industrials": 0.5
+      },
+      "market_caps": {
+        "mega_cap": 0.7,
+        "large_cap": 0.6,
+        "mid_cap": 0.5,
+        "small_cap": 0.4
+      },
+      "geographies": {
+        "US": 0.8,
+        "Europe": 0.6,
+        "Asia": 0.5,
+        "Emerging": 0.4
+      },
+      "asset_classes": {
+        "stocks": 0.8,
+        "crypto": 0.3,
+        "bonds": 0.4,
+        "commodities": 0.3
+      }
+    },
+    "predictions": [],
+    "prediction_stats": {
+      "total_predictions": 0,
+      "correct_predictions": 0,
+      "prediction_accuracy": 0.0,
+      "best_category": null,
+      "worst_category": null
+    },
+    "communication_style": {
+      "verbosity": 0.6,
+      "technicality": 0.6,
+      "humor": 0.2,
+      "formality": 0.7,
+      "emoji_usage": 0.1,
+      "catchphrases": [],
+      "typical_opening": "",
+      "signature_style": ""
+    },
+    "knowledge_references": [],
+    "knowledge_stats": {
+      "articles_read": 0,
+      "articles_referenced": 0,
+      "favorite_sources": [],
+      "last_knowledge_update": "2025-10-21"
+    },
+    "personal_agenda": {
+      "primary_goal": "Support portfolio growth",
+      "progress": 0.0,
+      "tactics": [],
+      "milestones": [],
+      "secret_motivations": []
+    },
+    "meta_learning": {
+      "mistake_categories": {
+        "overconfidence": 0,
+        "ignored_warnings": 0,
+        "herd_mentality": 0,
+        "timing_errors": 0,
+        "scope_creep": 0
+      },
+      "improvement_strategies": [],
+      "learning_rate": 0.5,
+      "adaptation_speed": 0.5,
+      "meta_credibility": 1.0
+    },
+    "voting": {
+      "base_weight": 5,
+      "credibility_bonus": 0,
+      "recent_streak_bonus": 0,
+      "effective_weight": 5,
+      "voting_history": [],
+      "influence_score": 1.0
+    }
+  },
+  "George Soros": {
+    "stats": {
+      "sessions_participated": 6,
+      "decisions_made": 0,
+      "successful_calls": 0,
+      "failed_calls": 0,
+      "credibility_score": 1.0,
+      "total_impact_pln": 0,
+      "last_updated": "2025-10-21"
+    },
+    "personality_traits": {
+      "risk_tolerance": 0.8,
+      "optimism_bias": 0.0,
+      "macro_focus": 0.95,
+      "contrarian_tendency": 0.85,
+      "reflexivity_belief": 0.9
+    },
+    "decision_history": [],
+    "key_lessons": [
+      "NajwiÄ™ksze zyski sÄ… w punktach zwrotnych, gdy rynek siÄ™ myli."
+    ],
+    "memorable_quotes": [],
+    "emotional_state": {
+      "current_mood": "neutral",
+      "stress_level": 0.3,
+      "excitement": 0.4,
+      "fear_index": 0.2,
+      "last_emotion_change": "2025-10-21",
+      "mood_history": []
+    },
+    "relationships": {
+      "Partner Zarządzający (JA)": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Partner Strategiczny": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Partner ds. Jakości Biznesowej": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Partner ds. Aktywów Cyfrowych": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Benjamin Graham": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Philip Fisher": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Warren Buffett": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Changpeng Zhao (CZ)": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      }
+    },
+    "expertise": {
+      "sectors": {
+        "Technology": 0.5,
+        "Financials": 0.5,
+        "Healthcare": 0.5,
+        "Energy": 0.5,
+        "Consumer": 0.5,
+        "Industrials": 0.5
+      },
+      "market_caps": {
+        "mega_cap": 0.7,
+        "large_cap": 0.6,
+        "mid_cap": 0.5,
+        "small_cap": 0.4
+      },
+      "geographies": {
+        "US": 0.8,
+        "Europe": 0.6,
+        "Asia": 0.5,
+        "Emerging": 0.4
+      },
+      "asset_classes": {
+        "stocks": 0.8,
+        "crypto": 0.3,
+        "bonds": 0.4,
+        "commodities": 0.3
+      }
+    },
+    "predictions": [],
+    "prediction_stats": {
+      "total_predictions": 0,
+      "correct_predictions": 0,
+      "prediction_accuracy": 0.0,
+      "best_category": null,
+      "worst_category": null
+    },
+    "communication_style": {
+      "verbosity": 0.6,
+      "technicality": 0.6,
+      "humor": 0.2,
+      "formality": 0.7,
+      "emoji_usage": 0.1,
+      "catchphrases": [],
+      "typical_opening": "",
+      "signature_style": ""
+    },
+    "knowledge_references": [],
+    "knowledge_stats": {
+      "articles_read": 0,
+      "articles_referenced": 0,
+      "favorite_sources": [],
+      "last_knowledge_update": "2025-10-21"
+    },
+    "personal_agenda": {
+      "primary_goal": "Support portfolio growth",
+      "progress": 0.0,
+      "tactics": [],
+      "milestones": [],
+      "secret_motivations": []
+    },
+    "meta_learning": {
+      "mistake_categories": {
+        "overconfidence": 0,
+        "ignored_warnings": 0,
+        "herd_mentality": 0,
+        "timing_errors": 0,
+        "scope_creep": 0
+      },
+      "improvement_strategies": [],
+      "learning_rate": 0.5,
+      "adaptation_speed": 0.5,
+      "meta_credibility": 1.0
+    },
+    "voting": {
+      "base_weight": 5,
+      "credibility_bonus": 0,
+      "recent_streak_bonus": 0,
+      "effective_weight": 5,
+      "voting_history": [],
+      "influence_score": 1.0
+    }
+  },
+  "Warren Buffett": {
+    "stats": {
+      "sessions_participated": 6,
+      "decisions_made": 0,
+      "successful_calls": 0,
+      "failed_calls": 0,
+      "credibility_score": 1.0,
+      "total_impact_pln": 0,
+      "last_updated": "2025-10-21"
+    },
+    "personality_traits": {
+      "risk_tolerance": 0.5,
+      "optimism_bias": 0.1,
+      "patience": 0.95,
+      "simplicity_preference": 0.9,
+      "business_understanding": 0.95
+    },
+    "decision_history": [],
+    "key_lessons": [
+      "Czas jest przyjacielem dobrego biznesu i wrogiem zĹ‚ego."
+    ],
+    "memorable_quotes": [],
+    "emotional_state": {
+      "current_mood": "neutral",
+      "stress_level": 0.3,
+      "excitement": 0.4,
+      "fear_index": 0.2,
+      "last_emotion_change": "2025-10-21",
+      "mood_history": []
+    },
+    "relationships": {
+      "Partner Zarządzający (JA)": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Partner Strategiczny": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Partner ds. Jakości Biznesowej": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Partner ds. Aktywów Cyfrowych": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Benjamin Graham": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Philip Fisher": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "George Soros": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Changpeng Zhao (CZ)": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      }
+    },
+    "expertise": {
+      "sectors": {
+        "Technology": 0.5,
+        "Financials": 0.5,
+        "Healthcare": 0.5,
+        "Energy": 0.5,
+        "Consumer": 0.5,
+        "Industrials": 0.5
+      },
+      "market_caps": {
+        "mega_cap": 0.7,
+        "large_cap": 0.6,
+        "mid_cap": 0.5,
+        "small_cap": 0.4
+      },
+      "geographies": {
+        "US": 0.8,
+        "Europe": 0.6,
+        "Asia": 0.5,
+        "Emerging": 0.4
+      },
+      "asset_classes": {
+        "stocks": 0.8,
+        "crypto": 0.3,
+        "bonds": 0.4,
+        "commodities": 0.3
+      }
+    },
+    "predictions": [],
+    "prediction_stats": {
+      "total_predictions": 0,
+      "correct_predictions": 0,
+      "prediction_accuracy": 0.0,
+      "best_category": null,
+      "worst_category": null
+    },
+    "communication_style": {
+      "verbosity": 0.6,
+      "technicality": 0.6,
+      "humor": 0.2,
+      "formality": 0.7,
+      "emoji_usage": 0.1,
+      "catchphrases": [],
+      "typical_opening": "",
+      "signature_style": ""
+    },
+    "knowledge_references": [],
+    "knowledge_stats": {
+      "articles_read": 0,
+      "articles_referenced": 0,
+      "favorite_sources": [],
+      "last_knowledge_update": "2025-10-21"
+    },
+    "personal_agenda": {
+      "primary_goal": "Support portfolio growth",
+      "progress": 0.0,
+      "tactics": [],
+      "milestones": [],
+      "secret_motivations": []
+    },
+    "meta_learning": {
+      "mistake_categories": {
+        "overconfidence": 0,
+        "ignored_warnings": 0,
+        "herd_mentality": 0,
+        "timing_errors": 0,
+        "scope_creep": 0
+      },
+      "improvement_strategies": [],
+      "learning_rate": 0.5,
+      "adaptation_speed": 0.5,
+      "meta_credibility": 1.0
+    },
+    "voting": {
+      "base_weight": 5,
+      "credibility_bonus": 0,
+      "recent_streak_bonus": 0,
+      "effective_weight": 5,
+      "voting_history": [],
+      "influence_score": 1.0
+    }
+  },
+  "Changpeng Zhao (CZ)": {
+    "stats": {
+      "sessions_participated": 6,
+      "decisions_made": 0,
+      "successful_calls": 0,
+      "failed_calls": 0,
+      "credibility_score": 1.0,
+      "total_impact_pln": 0,
+      "last_updated": "2025-10-21"
+    },
+    "personality_traits": {
+      "risk_tolerance": 0.85,
+      "optimism_bias": 0.4,
+      "disruption_seeking": 0.95,
+      "decentralization_belief": 0.9,
+      "speed_obsession": 0.9
+    },
+    "decision_history": [],
+    "key_lessons": [
+      "PrzyszĹ‚oĹ›Ä‡ finansĂłw jest zdecentralizowana - to nieuniknione."
+    ],
+    "memorable_quotes": [],
+    "emotional_state": {
+      "current_mood": "neutral",
+      "stress_level": 0.3,
+      "excitement": 0.4,
+      "fear_index": 0.2,
+      "last_emotion_change": "2025-10-21",
+      "mood_history": []
+    },
+    "relationships": {
+      "Partner Zarządzający (JA)": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Partner Strategiczny": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Partner ds. Jakości Biznesowej": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Partner ds. Aktywów Cyfrowych": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Benjamin Graham": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Philip Fisher": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "George Soros": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      },
+      "Warren Buffett": {
+        "trust": 0.5,
+        "agreement_rate": 0.5,
+        "conflicts": 0,
+        "alliances": 0,
+        "last_interaction": "neutral",
+        "notable_moments": []
+      }
+    },
+    "expertise": {
+      "sectors": {
+        "Technology": 0.5,
+        "Financials": 0.5,
+        "Healthcare": 0.5,
+        "Energy": 0.5,
+        "Consumer": 0.5,
+        "Industrials": 0.5
+      },
+      "market_caps": {
+        "mega_cap": 0.7,
+        "large_cap": 0.6,
+        "mid_cap": 0.5,
+        "small_cap": 0.4
+      },
+      "geographies": {
+        "US": 0.8,
+        "Europe": 0.6,
+        "Asia": 0.5,
+        "Emerging": 0.4
+      },
+      "asset_classes": {
+        "stocks": 0.8,
+        "crypto": 0.3,
+        "bonds": 0.4,
+        "commodities": 0.3
+      }
+    },
+    "predictions": [],
+    "prediction_stats": {
+      "total_predictions": 0,
+      "correct_predictions": 0,
+      "prediction_accuracy": 0.0,
+      "best_category": null,
+      "worst_category": null
+    },
+    "communication_style": {
+      "verbosity": 0.6,
+      "technicality": 0.6,
+      "humor": 0.2,
+      "formality": 0.7,
+      "emoji_usage": 0.1,
+      "catchphrases": [],
+      "typical_opening": "",
+      "signature_style": ""
+    },
+    "knowledge_references": [],
+    "knowledge_stats": {
+      "articles_read": 0,
+      "articles_referenced": 0,
+      "favorite_sources": [],
+      "last_knowledge_update": "2025-10-21"
+    },
+    "personal_agenda": {
+      "primary_goal": "Support portfolio growth",
+      "progress": 0.0,
+      "tactics": [],
+      "milestones": [],
+      "secret_motivations": []
+    },
+    "meta_learning": {
+      "mistake_categories": {
+        "overconfidence": 0,
+        "ignored_warnings": 0,
+        "herd_mentality": 0,
+        "timing_errors": 0,
+        "scope_creep": 0
+      },
+      "improvement_strategies": [],
+      "learning_rate": 0.5,
+      "adaptation_speed": 0.5,
+      "meta_credibility": 1.0
+    },
+    "voting": {
+      "base_weight": 5,
+      "credibility_bonus": 0,
+      "recent_streak_bonus": 0,
+      "effective_weight": 5,
+      "voting_history": [],
+      "influence_score": 1.0
+    }
+  },
+  "meta": {
+    "system_version": "1.0",
+    "created_date": "2025-10-21",
+    "total_sessions": 48,
+    "total_decisions": 0,
+    "best_performer": null,
+    "worst_performer": null,
+    "consensus_rate": 0.0,
+    "schema_version": "2.0",
+    "last_upgrade": "2025-10-21T17:53:18.754430",
+    "features": [
+      "emotional_state",
+      "relationships",
+      "expertise",
+      "predictions",
+      "communication_style",
+      "knowledge_base",
+      "personal_agenda",
+      "meta_learning",
+      "dynamic_voting"
+    ]
+  }
+}
