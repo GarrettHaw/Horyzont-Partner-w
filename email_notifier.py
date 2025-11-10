@@ -268,26 +268,46 @@ class ConversationNotifier(EmailNotifier):
     
     def _load_notification_config(self) -> Dict:
         """Załaduj konfigurację powiadomień"""
-        config_file = "notification_config.json"
-        if os.path.exists(config_file):
-            with open(config_file, 'r', encoding='utf-8') as f:
-                return json.load(f)
-        else:
-            default_config = {
-                "enabled": False,
-                "email_to": os.getenv('NOTIFIER_EMAIL', 'your-email@gmail.com'),
-                "daily_digest": {
-                    "enabled": True,
-                    "time": "18:00"
-                },
-                "alerts": {
-                    "conversation_completed": True,
-                    "critical_issue": True
+        try:
+            # Próbuj załadować z persistent storage (jeśli dostępne)
+            try:
+                from persistent_storage import load_persistent_data, PERSISTENT_OK
+                if PERSISTENT_OK:
+                    config = load_persistent_data('notification_config.json')
+                    if config is not None:
+                        return config
+            except ImportError:
+                pass  # Brak persistent_storage, użyj fallback
+            
+            # Fallback - ładuj z pliku
+            config_file = "notification_config.json"
+            if os.path.exists(config_file):
+                with open(config_file, 'r', encoding='utf-8') as f:
+                    return json.load(f)
+            else:
+                default_config = {
+                    "enabled": False,
+                    "email_to": os.getenv('NOTIFIER_EMAIL', 'your-email@gmail.com'),
+                    "daily_digest": {
+                        "enabled": True,
+                        "time": "18:00"
+                    },
+                    "alerts": {
+                        "conversation_completed": True,
+                        "critical_issue": True
+                    }
                 }
+                with open(config_file, 'w', encoding='utf-8') as f:
+                    json.dump(default_config, f, indent=2, ensure_ascii=False)
+                return default_config
+        except Exception as e:
+            print(f"Błąd ładowania konfiguracji notyfikacji: {e}")
+            return {
+                "enabled": False,
+                "email_to": "",
+                "daily_digest": {"enabled": True, "time": "18:00"},
+                "alerts": {"conversation_completed": True, "critical_issue": True}
             }
-            with open(config_file, 'w', encoding='utf-8') as f:
-                json.dump(default_config, f, indent=2, ensure_ascii=False)
-            return default_config
     
     def _load_notification_history(self) -> List[Dict]:
         """Załaduj historię powiadomień"""

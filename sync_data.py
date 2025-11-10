@@ -13,14 +13,17 @@ from pathlib import Path
 DATA_FILES = [
     'persona_memory.json',
     'autonomous_conversations.json',
+    'partner_conversations.json',
+    'user_preferences.json',
     'wyplaty.json',
     'wydatki.json', 
+    'kredyty.json',
+    'cele.json',
+    'krypto.json',
+    'notification_config.json',
     'daily_snapshots.json',
     'portfolio_history.json',
-    'api_usage.json',
-    'cele.json',
-    'kredyty.json',
-    'krypto.json'
+    'api_usage.json'
 ]
 
 def ensure_file_exists(filepath):
@@ -31,10 +34,30 @@ def ensure_file_exists(filepath):
         # Określ domyślną strukturę na podstawie nazwy
         if 'persona_memory' in filepath:
             default_data = {}
+        elif 'partner_conversations' in filepath:
+            default_data = {}
+        elif 'user_preferences' in filepath:
+            default_data = {
+                "theme": "light",
+                "notifications_enabled": True,
+                "cache_ttl": 5,
+                "auto_refresh": False,
+                "refresh_interval": 60
+            }
+        elif 'notification_config' in filepath:
+            default_data = {
+                "enabled": False,
+                "email_to": "",
+                "daily_digest": {"enabled": True, "time": "18:00"},
+                "alerts": {"conversation_completed": True, "critical_issue": True}
+            }
         elif filepath in ['wyplaty.json', 'wydatki.json']:
             key = 'wyplaty' if 'wyplaty' in filepath else 'wydatki'
             default_data = {key: []}
-        elif filepath in ['cele.json', 'kredyty.json', 'krypto.json']:
+        elif filepath in ['kredyty.json', 'krypto.json']:
+            key = 'kredyty' if 'kredyty' in filepath else 'krypto'
+            default_data = {key: []}
+        elif filepath == 'cele.json':
             default_data = {}
         else:
             default_data = []

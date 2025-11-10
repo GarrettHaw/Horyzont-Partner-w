@@ -6,7 +6,7 @@ Interaktywny dashboard do zarządzania portfelem inwestycyjnym
 import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 import json
 import os
 from pathlib import Path
@@ -3458,20 +3458,246 @@ def show_transactions_page():
 
 def show_calendar_page():
     """Strona Financial Calendar - kalendarz wydarzeń finansowych"""
+    from datetime import date, timedelta
+    
     st.title("📅 Kalendarz Finansowy")
     st.markdown("*Wszystkie ważne daty i wydarzenia finansowe w jednym miejscu*")
     
-    st.info("🚧 **W budowie** - Ta funkcja zostanie dodana wkrótce!")
+    # Load events
+    events = load_calendar_events()
     
-    st.markdown("""
-    ### 🎯 Planowane funkcje:
-    - 📌 Terminy płatności kredytów
-    - 💰 Oczekiwane dywidendy
-    - 🧾 Deadlines podatkowe
-    - 📊 Earning reports (jeśli posiadasz akcje)
-    - ⚖️ Harmonogram rebalansowania
-    - 🔔 Przypomnienia i alerty
-    """)
+    # === UPCOMING EVENTS BANNER ===
+    upcoming = get_upcoming_events(days_ahead=7)
+    if upcoming:
+        st.warning(f"⚠️ **{len(upcoming)} nadchodzących wydarzeń w ciągu 7 dni!**")
+        for event in upcoming[:3]:  # Show max 3
+            event_date = date.fromisoformat(event['date'])
+            days_diff = (event_date - date.today()).days
+            emoji = {"payment": "💳", "dividend": "💰", "tax": "🧾", "rebalancing": "⚖️", "deadline": "⏰", "meeting": "👥", "other": "📌"}.get(event['type'], "📌")
+            st.caption(f"{emoji} **{event['title']}** - {event_date.strftime('%d.%m.%Y')} ({days_diff} dni)")
+    
+    # === ADD NEW EVENT ===
+    with st.expander("➕ Dodaj nowe wydarzenie", expanded=False):
+        with st.form("add_event_form"):
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                event_title = st.text_input("📌 Tytuł wydarzenia*", placeholder="np. Płatność kredytu...")
+                event_type = st.selectbox("📂 Typ wydarzenia", 
+                    options=["payment", "dividend", "tax", "rebalancing", "deadline", "meeting", "other"],
+                    format_func=lambda x: {
+                        "payment": "💳 Płatność",
+                        "dividend": "💰 Dywidenda",
+                        "tax": "🧾 Podatek",
+                        "rebalancing": "⚖️ Rebalansowanie",
+                        "deadline": "⏰ Termin",
+                        "meeting": "👥 Spotkanie",
+                        "other": "📌 Inne"
+                    }[x]
+                )
+                event_date = st.date_input("📅 Data*", value=date.today())
+            
+            with col2:
+                event_amount = st.number_input("💰 Kwota (opcjonalne)", min_value=0.0, value=0.0, step=100.0)
+                event_recurring = st.selectbox("🔄 Powtarzalność", 
+                    options=["none", "monthly", "yearly"],
+                    format_func=lambda x: {"none": "Jednorazowe", "monthly": "Co miesiąc", "yearly": "Co rok"}[x]
+                )
+                event_description = st.text_area("📝 Opis (opcjonalne)", placeholder="Dodatkowe informacje...")
+            
+            submitted = st.form_submit_button("➕ Dodaj wydarzenie", type="primary", use_container_width=True)
+            
+            if submitted and event_title:
+                recurring_data = None
+                if event_recurring != "none":
+                    recurring_data = {
+                        'frequency': event_recurring,
+                        'until': (date.today() + timedelta(days=365)).isoformat()  # Default: 1 year
+                    }
+                
+                add_calendar_event(
+                    title=event_title,
+                    date=event_date,
+                    event_type=event_type,
+                    amount=event_amount if event_amount > 0 else None,
+                    description=event_description,
+                    recurring=recurring_data
+                )
+                st.success(f"✅ Dodano: {event_title}")
+                st.rerun()
+    
+    # === FILTERS ===
+    st.markdown("---")
+    col1, col2, col3, col4 = st.columns(4)
+    
+    with col1:
+        filter_type = st.selectbox("📂 Typ", 
+            options=["Wszystkie"] + ["payment", "dividend", "tax", "rebalancing", "deadline", "meeting", "other"],
+            format_func=lambda x: "Wszystkie" if x == "Wszystkie" else {
+                "payment": "💳 Płatność",
+                "dividend": "💰 Dywidenda",
+                "tax": "🧾 Podatek",
+                "rebalancing": "⚖️ Rebalansowanie",
+                "deadline": "⏰ Termin",
+                "meeting": "👥 Spotkanie",
+                "other": "📌 Inne"
+            }[x]
+        )
+    
+    with col2:
+        filter_period = st.selectbox("📅 Okres", 
+            options=["upcoming_7", "upcoming_30", "past_30", "all"],
+            format_func=lambda x: {
+                "upcoming_7": "Najbliższe 7 dni",
+                "upcoming_30": "Najbliższe 30 dni",
+                "past_30": "Ostatnie 30 dni",
+                "all": "Wszystkie"
+            }[x]
+        )
+    
+    with col3:
+        current_month = date.today().month
+        current_year = date.today().year
+        filter_month = st.selectbox("🗓️ Miesiąc", 
+            options=list(range(1, 13)),
+            index=current_month - 1,
+            format_func=lambda x: ["Sty", "Lut", "Mar", "Kwi", "Maj", "Cze", "Lip", "Sie", "Wrz", "Paź", "Lis", "Gru"][x-1]
+        )
+    
+    with col4:
+        filter_year = st.selectbox("� Rok", options=[2024, 2025, 2026], index=1)
+    
+    # Apply filters
+    filtered_events = events.copy()
+    
+    # Type filter
+    if filter_type != "Wszystkie":
+        filtered_events = [e for e in filtered_events if e['type'] == filter_type]
+    
+    # Period filter
+    today = date.today()
+    if filter_period == "upcoming_7":
+        end_date = today + timedelta(days=7)
+        filtered_events = [e for e in filtered_events if today <= date.fromisoformat(e['date']) <= end_date]
+    elif filter_period == "upcoming_30":
+        end_date = today + timedelta(days=30)
+        filtered_events = [e for e in filtered_events if today <= date.fromisoformat(e['date']) <= end_date]
+    elif filter_period == "past_30":
+        start_date = today - timedelta(days=30)
+        filtered_events = [e for e in filtered_events if start_date <= date.fromisoformat(e['date']) < today]
+    # 'all' - no filter
+    
+    # === CALENDAR VIEW - Month Grid ===
+    st.markdown("---")
+    st.markdown(f"### �️ {['Styczeń', 'Luty', 'Marzec', 'Kwiecień', 'Maj', 'Czerwiec', 'Lipiec', 'Sierpień', 'Wrzesień', 'Październik', 'Listopad', 'Grudzień'][filter_month-1]} {filter_year}")
+    
+    # Get events for selected month
+    month_events = get_events_by_month(filter_year, filter_month)
+    
+    # Create calendar grid
+    import calendar
+    cal = calendar.monthcalendar(filter_year, filter_month)
+    
+    # Calendar header
+    days_header = ["Pon", "Wt", "Śr", "Czw", "Pt", "Sob", "Nie"]
+    cols = st.columns(7)
+    for idx, day_name in enumerate(days_header):
+        with cols[idx]:
+            st.markdown(f"**{day_name}**")
+    
+    # Calendar days
+    for week in cal:
+        cols = st.columns(7)
+        for idx, day in enumerate(week):
+            with cols[idx]:
+                if day == 0:
+                    st.markdown("")  # Empty cell
+                else:
+                    # Check if there are events on this day
+                    day_date = date(filter_year, filter_month, day)
+                    day_events = [e for e in month_events if e['date'] == day_date.isoformat()]
+                    
+                    # Highlight today
+                    is_today = day_date == date.today()
+                    day_color = "🔵" if is_today else ""
+                    
+                    if day_events:
+                        emoji_map = {"payment": "💳", "dividend": "💰", "tax": "🧾", "rebalancing": "⚖️", "deadline": "⏰", "meeting": "👥", "other": "📌"}
+                        event_emojis = "".join([emoji_map.get(e['type'], "📌") for e in day_events[:2]])
+                        st.markdown(f"{day_color}**{day}** {event_emojis}")
+                    else:
+                        st.markdown(f"{day_color}{day}")
+    
+    # === EVENTS LIST ===
+    st.markdown("---")
+    st.markdown(f"### � Wydarzenia ({len(filtered_events)})")
+    
+    if not filtered_events:
+        st.info("📭 Brak wydarzeń do wyświetlenia. Dodaj pierwsze wydarzenie!")
+    else:
+        # Group by date
+        from itertools import groupby
+        from operator import itemgetter
+        
+        grouped = groupby(sorted(filtered_events, key=itemgetter('date')), key=itemgetter('date'))
+        
+        for event_date, events_on_date in grouped:
+            event_date_obj = date.fromisoformat(event_date)
+            days_diff = (event_date_obj - today).days
+            
+            # Date header
+            date_str = event_date_obj.strftime("%A, %d %B %Y")
+            if days_diff == 0:
+                date_label = f"🔵 **Dzisiaj** - {date_str}"
+            elif days_diff == 1:
+                date_label = f"⏰ **Jutro** - {date_str}"
+            elif days_diff > 0:
+                date_label = f"📅 {date_str} (za {days_diff} dni)"
+            else:
+                date_label = f"📅 {date_str} ({abs(days_diff)} dni temu)"
+            
+            st.markdown(date_label)
+            
+            # Events on this date
+            for event in events_on_date:
+                emoji = {"payment": "💳", "dividend": "💰", "tax": "🧾", "rebalancing": "⚖️", "deadline": "⏰", "meeting": "👥", "other": "📌"}.get(event['type'], "📌")
+                
+                with st.expander(f"{emoji} {event['title']}" + (f" - {format_currency(event['amount'])}" if event.get('amount') else "")):
+                    col1, col2, col3 = st.columns(3)
+                    
+                    with col1:
+                        st.metric("📅 Data", event_date_obj.strftime("%d.%m.%Y"))
+                    with col2:
+                        type_names = {
+                            "payment": "💳 Płatność",
+                            "dividend": "💰 Dywidenda",
+                            "tax": "🧾 Podatek",
+                            "rebalancing": "⚖️ Rebalansowanie",
+                            "deadline": "⏰ Termin",
+                            "meeting": "👥 Spotkanie",
+                            "other": "� Inne"
+                        }
+                        st.metric("📂 Typ", type_names.get(event['type'], event['type']))
+                    with col3:
+                        if event.get('amount'):
+                            st.metric("💰 Kwota", format_currency(event['amount']))
+                        else:
+                            st.metric("💰 Kwota", "-")
+                    
+                    if event.get('description'):
+                        st.markdown(f"**📝 Opis:** {event['description']}")
+                    
+                    if event.get('recurring'):
+                        freq_map = {'monthly': '🔄 Co miesiąc', 'yearly': '🔄 Co rok'}
+                        st.caption(freq_map.get(event['recurring']['frequency'], '🔄 Powtarzalne'))
+                    
+                    # Delete button
+                    if st.button(f"🗑️ Usuń", key=f"del_event_{event['id']}"):
+                        events = load_calendar_events()
+                        events = [e for e in events if e['id'] != event['id']]
+                        save_calendar_events(events)
+                        st.success(f"✅ Usunięto: {event['title']}")
+                        st.rerun()
 
 
 # ============================================================================
@@ -3480,20 +3706,287 @@ def show_calendar_page():
 
 def show_tax_optimizer_page():
     """Strona Tax Optimizer - kalkulator i optymalizacja podatków"""
+    from datetime import date, timedelta
+    
     st.title("🧮 Optymalizator Podatkowy")
-    st.markdown("*Kalkulator podatków i sugestie optymalizacji*")
+    st.markdown("*Kalkulator podatków i sugestie optymalizacji dla spółki i osób fizycznych*")
     
-    st.info("🚧 **W budowie** - Ta funkcja zostanie dodana wkrótce!")
+    # Load transactions
+    transactions = load_transactions()
     
-    st.markdown("""
-    ### 🎯 Planowane funkcje:
-    - 📊 Kalkulator CIT (19%)
-    - 👤 Kalkulator PIT (17% / 32%)
-    - 💡 Sugestie tax-loss harvesting
-    - 📅 Optimal timing sprzedaży
-    - 📄 Generator dokumentów (PIT-38)
-    - 🧾 Tracking kosztów uzyskania przychodu
-    """)
+    # === TABS ===
+    tab1, tab2, tab3, tab4 = st.tabs([
+        "📊 CIT (Spółka 19%)", 
+        "👤 PIT (Osoby fizyczne)", 
+        "💡 Optymalizacja", 
+        "📄 Dokumenty"
+    ])
+    
+    # === TAB 1: CIT Calculator ===
+    with tab1:
+        st.markdown("### 📊 Kalkulator CIT - Podatek od osób prawnych")
+        st.info("� Stawka: **19%** - dla firm (sp. z o.o.)")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.markdown("#### 📅 Okres rozliczeniowy")
+            cit_year = st.selectbox("Rok", options=[2024, 2025, 2026], index=1, key="cit_year")
+            cit_period = st.selectbox("Okres", 
+                options=["year", "q1", "q2", "q3", "q4"],
+                format_func=lambda x: {
+                    "year": "Cały rok",
+                    "q1": "Q1 (Jan-Mar)",
+                    "q2": "Q2 (Kwi-Cze)",
+                    "q3": "Q3 (Lip-Wrz)",
+                    "q4": "Q4 (Paź-Gru)"
+                }[x]
+            )
+        
+        with col2:
+            st.markdown("#### ⚙️ Opcje")
+            include_transactions = st.checkbox("📝 Użyj danych z Transactions Log", value=True)
+            manual_override = st.checkbox("✏️ Ręczne wprowadzenie", value=False)
+        
+        # Calculate period dates
+        if cit_period == "year":
+            start_date = date(cit_year, 1, 1)
+            end_date = date(cit_year, 12, 31)
+        elif cit_period == "q1":
+            start_date = date(cit_year, 1, 1)
+            end_date = date(cit_year, 3, 31)
+        elif cit_period == "q2":
+            start_date = date(cit_year, 4, 1)
+            end_date = date(cit_year, 6, 30)
+        elif cit_period == "q3":
+            start_date = date(cit_year, 7, 1)
+            end_date = date(cit_year, 9, 30)
+        else:  # q4
+            start_date = date(cit_year, 10, 1)
+            end_date = date(cit_year, 12, 31)
+        
+        # Get data
+        if include_transactions and not manual_override:
+            summary = get_transactions_summary(transactions, start_date, end_date)
+            przychody_auto = summary['income']
+            koszty_auto = summary['expenses']
+        else:
+            przychody_auto = 0
+            koszty_auto = 0
+        
+        st.markdown("---")
+        
+        # Input fields
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            if manual_override:
+                przychody = st.number_input("💰 Przychody (PLN)", min_value=0.0, value=0.0, step=1000.0)
+            else:
+                przychody = st.number_input("💰 Przychody (PLN)", min_value=0.0, value=float(przychody_auto), step=1000.0)
+        
+        with col2:
+            if manual_override:
+                koszty = st.number_input("💸 Koszty (PLN)", min_value=0.0, value=0.0, step=1000.0)
+            else:
+                koszty = st.number_input("💸 Koszty (PLN)", min_value=0.0, value=float(koszty_auto), step=1000.0)
+        
+        with col3:
+            dodatkowe_odliczenia = st.number_input("📉 Dodatkowe odliczenia", min_value=0.0, value=0.0, step=100.0)
+        
+        # Calculate
+        dochod = max(0, przychody - koszty - dodatkowe_odliczenia)
+        cit_kwota = dochod * 0.19
+        effective_rate = (cit_kwota / przychody * 100) if przychody > 0 else 0
+        
+        st.markdown("---")
+        st.markdown("### 📈 Wynik CIT")
+        
+        col1, col2, col3, col4 = st.columns(4)
+        
+        with col1:
+            st.metric("💰 Przychody", format_currency(przychody))
+        with col2:
+            st.metric("💸 Koszty", format_currency(koszty))
+        with col3:
+            st.metric("📊 Dochód do opodatkowania", format_currency(dochod))
+        with col4:
+            st.metric("🧾 CIT do zapłaty (19%)", format_currency(cit_kwota))
+        
+        st.caption(f"📊 Efektywna stopa podatkowa: **{effective_rate:.2f}%**")
+        
+        # Deadline reminder
+        if cit_period != "year":
+            quarter_names = {"q1": "I", "q2": "II", "q3": "III", "q4": "IV"}
+            deadline_month = {
+                "q1": (cit_year, 4, 20),
+                "q2": (cit_year, 7, 20),
+                "q3": (cit_year, 10, 20),
+                "q4": (cit_year + 1, 1, 20)
+            }[cit_period]
+            
+            deadline = date(*deadline_month)
+            st.warning(f"⏰ **Termin płatności CIT-8 za {quarter_names[cit_period]} kwartał:** {deadline.strftime('%d.%m.%Y')}")
+    
+    # === TAB 2: PIT Calculator ===
+    with tab2:
+        st.markdown("### � Kalkulator PIT - Podatek od osób fizycznych")
+        st.info("📊 Skala podatkowa: **17%** do 120k PLN, powyżej **32%**")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            pit_przychody = st.number_input("💰 Roczny przychód (PLN)", min_value=0.0, value=0.0, step=1000.0, key="pit_income")
+        
+        with col2:
+            pit_koszty = st.number_input("� Koszty uzyskania przychodu", min_value=0.0, value=0.0, step=100.0, key="pit_costs")
+        
+        # Ulgi
+        st.markdown("#### 📉 Ulgi podatkowe")
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            ulga_na_dzieci = st.number_input("👶 Ulga na dzieci", min_value=0.0, value=0.0, step=100.0)
+        with col2:
+            ulga_internetowa = st.checkbox("💻 Ulga internetowa (760 PLN/rok)")
+        with col3:
+            ulga_rehabilitacyjna = st.number_input("♿ Ulga rehabilitacyjna", min_value=0.0, value=0.0, step=100.0)
+        
+        # Calculate
+        dochod_pit = max(0, pit_przychody - pit_koszty)
+        kwota_wolna = 30000  # Kwota wolna od podatku
+        
+        # Tax calculation
+        if dochod_pit <= kwota_wolna:
+            pit_kwota = 0
+        elif dochod_pit <= 120000:
+            # 17% - kwota zmniejszająca
+            pit_kwota = dochod_pit * 0.17 - 5100
+        else:
+            # 32% powyżej 120k
+            pit_kwota = (120000 * 0.17 - 5100) + ((dochod_pit - 120000) * 0.32)
+        
+        # Odlicz ulgi
+        ulgi_suma = ulga_na_dzieci + ulga_rehabilitacyjna
+        if ulga_internetowa:
+            ulgi_suma += 760
+        
+        pit_kwota_final = max(0, pit_kwota - ulgi_suma)
+        effective_rate_pit = (pit_kwota_final / pit_przychody * 100) if pit_przychody > 0 else 0
+        
+        st.markdown("---")
+        st.markdown("### 📈 Wynik PIT")
+        
+        col1, col2, col3, col4 = st.columns(4)
+        
+        with col1:
+            st.metric("💰 Przychody", format_currency(pit_przychody))
+        with col2:
+            st.metric("📊 Dochód", format_currency(dochod_pit))
+        with col3:
+            st.metric("📉 Ulgi", format_currency(ulgi_suma))
+        with col4:
+            st.metric("🧾 PIT do zapłaty", format_currency(pit_kwota_final))
+        
+        st.caption(f"📊 Efektywna stopa podatkowa: **{effective_rate_pit:.2f}%**")
+        st.caption(f"💡 Próg podatkowy 32%: {format_currency(120000)} (pozostało: {format_currency(max(0, 120000 - dochod_pit))})")
+    
+    # === TAB 3: Optimization Suggestions ===
+    with tab3:
+        st.markdown("### 💡 Sugestie Optymalizacji Podatkowej")
+        
+        # Analyze transactions for suggestions
+        year_summary = get_transactions_summary(transactions, date(2025, 1, 1), date(2025, 12, 31))
+        
+        suggestions = []
+        
+        # Suggestion 1: Tax-loss harvesting
+        if year_summary['income'] > 0:
+            suggestions.append({
+                'title': '📊 Tax-Loss Harvesting',
+                'description': 'Rozważ sprzedaż aktywów ze stratą przed końcem roku, aby zredukować podstawę opodatkowania.',
+                'potential_savings': year_summary['income'] * 0.19 * 0.1,  # Estimate 10% reduction
+                'priority': 'high'
+            })
+        
+        # Suggestion 2: Expense timing
+        if year_summary['net_flow'] > 50000:
+            suggestions.append({
+                'title': '� Optymalizacja kosztów',
+                'description': 'Przesunięcie planowanych wydatków na koniec roku może zwiększyć koszty uzyskania przychodu.',
+                'potential_savings': 5000 * 0.19,
+                'priority': 'medium'
+            })
+        
+        # Suggestion 3: Investment deductions
+        suggestions.append({
+            'title': '📈 Ulgi inwestycyjne',
+            'description': 'Sprawdź możliwość skorzystania z ulg na innowacje lub inwestycje B+R.',
+            'potential_savings': 10000,
+            'priority': 'low'
+        })
+        
+        # Suggestion 4: Retirement contributions
+        suggestions.append({
+            'title': '💼 IKE/IKZE',
+            'description': 'Wpłaty na IKE/IKZE można odliczyć od podstawy opodatkowania (limit: ~6500 PLN).',
+            'potential_savings': 6500 * 0.19,
+            'priority': 'high'
+        })
+        
+        # Display suggestions
+        for idx, sug in enumerate(suggestions, 1):
+            priority_color = {
+                'high': '🔴',
+                'medium': '🟡',
+                'low': '🟢'
+            }[sug['priority']]
+            
+            with st.expander(f"{priority_color} {sug['title']} - Potencjalna oszczędność: {format_currency(sug['potential_savings'])}"):
+                st.markdown(sug['description'])
+                
+                priority_label = {
+                    'high': 'Wysoki priorytet',
+                    'medium': 'Średni priorytet',
+                    'low': 'Niski priorytet'
+                }[sug['priority']]
+                
+                st.caption(f"⚡ Priorytet: **{priority_label}**")
+        
+        st.markdown("---")
+        st.info("� **Przypomnienie:** Zawsze skonsultuj się z doradcą podatkowym przed podjęciem decyzji.")
+    
+    # === TAB 4: Documents ===
+    with tab4:
+        st.markdown("### �📄 Generowanie Dokumentów")
+        st.info("🚧 **W budowie** - Generator dokumentów podatkowych")
+        
+        st.markdown("""
+        #### 📋 Planowane dokumenty:
+        - 📊 CIT-8 - Deklaracja za kwartał
+        - 📊 CIT/8 - Deklaracja roczna
+        - 👤 PIT-38 - Zeznanie roczne
+        - 📑 Ewidencja przychodów i kosztów
+        - 🧾 Zestawienie transakcji dla US
+        - 📄 Potwierdzenie zapłaty podatku
+        """)
+        
+        st.markdown("---")
+        st.markdown("**📥 Export danych dla księgowego**")
+        
+        if st.button("💾 Pobierz dane transakcji (CSV)", type="primary"):
+            if transactions:
+                df = pd.DataFrame(transactions)
+                csv = df.to_csv(index=False, encoding='utf-8-sig')
+                st.download_button(
+                    label="⬇️ Pobierz CSV",
+                    data=csv,
+                    file_name=f"transakcje_podatkowe_{date.today().isoformat()}.csv",
+                    mime="text/csv"
+                )
+                st.success("✅ Plik gotowy do pobrania!")
+            else:
+                st.warning("📭 Brak transakcji do eksportu")
 
 
 # =======================
@@ -7299,6 +7792,102 @@ def get_transactions_summary(transactions, start_date=None, end_date=None):
         'by_category': dict(by_category),
         'count': len(filtered)
     }
+
+# ===== FINANCIAL CALENDAR - DATABASE =====
+
+def load_calendar_events():
+    """Wczytaj wydarzenia z pliku"""
+    if PERSISTENT_OK:
+        try:
+            with open("calendar_events.json", "r", encoding="utf-8") as f:
+                return json.load(f)
+        except FileNotFoundError:
+            return []
+    else:
+        if 'calendar_events' not in st.session_state:
+            st.session_state.calendar_events = []
+        return st.session_state.calendar_events
+
+def save_calendar_events(events):
+    """Zapisz wydarzenia do pliku"""
+    if PERSISTENT_OK:
+        with open("calendar_events.json", "w", encoding="utf-8") as f:
+            json.dump(events, f, ensure_ascii=False, indent=2)
+    else:
+        st.session_state.calendar_events = events
+    return True
+
+def add_calendar_event(title, date, event_type, amount=None, description="", recurring=None, metadata=None):
+    """Dodaj nowe wydarzenie do kalendarza
+    
+    Args:
+        title: Tytuł wydarzenia
+        date: Data (datetime.date lub ISO string)
+        event_type: Typ: payment, dividend, tax, rebalancing, deadline, meeting, other
+        amount: Kwota (opcjonalne)
+        description: Opis
+        recurring: None lub dict {frequency: 'monthly'/'yearly', until: 'YYYY-MM-DD'}
+        metadata: Dodatkowe dane (dict)
+    """
+    events = load_calendar_events()
+    
+    # Convert date to ISO string
+    if isinstance(date, datetime):
+        date_str = date.date().isoformat()
+    elif hasattr(date, 'isoformat'):
+        date_str = date.isoformat()
+    else:
+        date_str = str(date)
+    
+    event = {
+        'id': f"event_{int(datetime.now().timestamp() * 1000)}",
+        'title': title,
+        'date': date_str,
+        'type': event_type,
+        'amount': amount,
+        'description': description,
+        'recurring': recurring,
+        'metadata': metadata or {},
+        'created_at': datetime.now().isoformat()
+    }
+    
+    events.append(event)
+    
+    # Sort by date
+    events.sort(key=lambda x: x['date'], reverse=False)
+    
+    save_calendar_events(events)
+    return event
+
+def get_upcoming_events(days_ahead=30):
+    """Pobierz nadchodzące wydarzenia"""
+    from datetime import date, timedelta
+    
+    events = load_calendar_events()
+    today = date.today()
+    end_date = today + timedelta(days=days_ahead)
+    
+    upcoming = []
+    for event in events:
+        event_date = date.fromisoformat(event['date'])
+        if today <= event_date <= end_date:
+            upcoming.append(event)
+    
+    return upcoming
+
+def get_events_by_month(year, month):
+    """Pobierz wydarzenia dla danego miesiąca"""
+    from datetime import date
+    
+    events = load_calendar_events()
+    filtered = []
+    
+    for event in events:
+        event_date = date.fromisoformat(event['date'])
+        if event_date.year == year and event_date.month == month:
+            filtered.append(event)
+    
+    return filtered
 
 def load_wydatki():
     """Wczytaj wydatki z pliku JSON"""

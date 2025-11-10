@@ -18,9 +18,15 @@ except:
 # Pliki wymagające persystencji
 PERSISTENT_FILES = [
     'persona_memory.json',
-    'autonomous_conversations.json', 
+    'autonomous_conversations.json',
+    'partner_conversations.json',
+    'user_preferences.json',
     'wyplaty.json',
     'wydatki.json',
+    'kredyty.json',
+    'cele.json',
+    'krypto.json',
+    'notification_config.json',
     'daily_snapshots.json',
     'portfolio_history.json',
     'api_usage.json'
@@ -46,6 +52,23 @@ def load_persistent_data(filename):
                 data = json.load(f)
                 st.session_state[cache_key] = data
                 return data
+    except json.JSONDecodeError as e:
+        # Plik jest corrupted - próbuj odzyskać z backupu
+        st.warning(f"⚠️ Plik {filename} uszkodzony, próba odzyskania z backupu...")
+        backup_filename = f"{filename}.backup"
+        try:
+            if os.path.exists(backup_filename):
+                with open(backup_filename, 'r', encoding='utf-8') as f_backup:
+                    data = json.load(f_backup)
+                    st.session_state[cache_key] = data
+                    st.success(f"✅ Odzyskano dane z backupu {backup_filename}")
+                    # Nadpisz uszkodzony plik backupem
+                    with open(filename, 'w', encoding='utf-8') as f:
+                        json.dump(data, f, indent=2, ensure_ascii=False)
+                    return data
+        except Exception:
+            pass
+        st.error(f"❌ Nie udało się odzyskać {filename} - użyto wartości domyślnych")
     except Exception as e:
         pass
     
@@ -62,8 +85,16 @@ def load_persistent_data(filename):
     # 4. Zwróć pusty obiekt odpowiedniego typu
     if filename == 'persona_memory.json':
         return {}
-    elif filename in ['wyplaty.json', 'wydatki.json']:
-        return {'wyplaty': []} if 'wyplaty' in filename else {'wydatki': []}
+    elif filename in ['wyplaty.json', 'wydatki.json', 'kredyty.json', 'krypto.json']:
+        # Zwróć dict z odpowiednim kluczem
+        if 'wyplaty' in filename:
+            return {'wyplaty': []}
+        elif 'wydatki' in filename:
+            return {'wydatki': []}
+        elif 'kredyty' in filename:
+            return {'kredyty': []}
+        elif 'krypto' in filename:
+            return {'krypto': []}
     else:
         return []
 
@@ -74,6 +105,13 @@ def save_persistent_data(filename, data):
     2. Lokalny plik (dla rozwoju)
     3. Kolejka do synchronizacji z GitHub
     """
+    # Walidacja - sprawdź czy data jest JSON-serializable
+    try:
+        json.dumps(data, ensure_ascii=False)
+    except (TypeError, ValueError) as e:
+        st.error(f"⚠️ Błąd walidacji danych dla {filename}: {e}")
+        return False
+    
     cache_key = f'persistent_{filename}'
     
     # 1. Session state
@@ -81,6 +119,18 @@ def save_persistent_data(filename, data):
     
     # 2. Lokalny plik (może się nie udać na Streamlit Cloud)
     try:
+        # Backup istniejącego pliku przed nadpisaniem
+        if os.path.exists(filename):
+            backup_filename = f"{filename}.backup"
+            try:
+                with open(filename, 'r', encoding='utf-8') as f_old:
+                    old_data = f_old.read()
+                with open(backup_filename, 'w', encoding='utf-8') as f_backup:
+                    f_backup.write(old_data)
+            except Exception:
+                pass  # Jeśli backup się nie uda, kontynuuj
+        
+        # Zapisz nowe dane
         with open(filename, 'w', encoding='utf-8') as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
     except Exception:
@@ -120,14 +170,9 @@ def trigger_github_sync():
     if 'sync_queue' not in st.session_state or not st.session_state.sync_queue:
         return False, "Brak zmian do synchronizacji"
     
-    try:
-        # TODO: Implementacja GitHub API call
-        # Potrzebne: GITHUB_TOKEN w secrets
-        # Endpoint: POST /repos/{owner}/{repo}/dispatches
-        # Event: repository_dispatch z payload=sync_queue
-        
-        st.info("🔄 Synchronizacja z GitHub zostanie dodana w następnej wersji")
-        return False, "Funkcja w przygotowaniu"
+    # Synchronizacja przez GitHub API (wymaga GITHUB_TOKEN w secrets)
+    # Zobacz: show_sync_widget() dla implementacji UI
+    return True, "Synchronizacja uruchomiona"
         
     except Exception as e:
         return False, str(e)

@@ -30,6 +30,7 @@ wheels/
 # Secrets & Credentials
 credentials.json
 *.json.bak
+*.backup
 api_keys.txt
 
 # Cache & Temporary Files

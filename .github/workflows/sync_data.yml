@@ -56,14 +56,17 @@ jobs:
           # Dodaj tylko pliki danych (ignoruj cache i logi)
           git add persona_memory.json || true
           git add autonomous_conversations.json || true
+          git add partner_conversations.json || true
+          git add user_preferences.json || true
           git add wyplaty.json || true
           git add wydatki.json || true
+          git add kredyty.json || true
+          git add cele.json || true
+          git add krypto.json || true
+          git add notification_config.json || true
           git add daily_snapshots.json || true
           git add portfolio_history.json || true
           git add api_usage.json || true
-          git add cele.json || true
-          git add kredyty.json || true
-          git add krypto.json || true
           
           # Commit tylko jeśli są zmiany
           if git diff --staged --quiet; then
