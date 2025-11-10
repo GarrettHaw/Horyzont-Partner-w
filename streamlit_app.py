@@ -30,17 +30,8 @@ st.set_page_config(
 # === CONFIGURATION CONSTANTS ===
 DEFAULT_USD_PLN_RATE = 3.65  # Default USD/PLN exchange rate
 NBP_API_URL = "https://api.nbp.pl/api/exchangerates/rates/a/usd/?format=json"
-TRADING212_BASE_URL = "https://live.trading212.com/api/v0"
 TRADING212_CACHE_FILE = "trading212_cache.json"
-TRADING212_CACHE_HOURS = 24  # Cache na 24 godziny
-
-# Pobierz klucz Trading212 z secrets
-try:
-    TRADING212_API_KEY = st.secrets.get("TRADING212_API_KEY", os.getenv("TRADING212_API_KEY"))
-    TRADING212_ENABLED = bool(TRADING212_API_KEY and TRADING212_API_KEY != "")
-except:
-    TRADING212_API_KEY = None
-    TRADING212_ENABLED = False
+TRADING212_CACHE_HOURS = 24  # Cache na 24 godziny (aktualizowany przez GitHub Actions co 6h)
 
 # === SYSTEM LOGOWANIA ===
 def check_password():
@@ -261,7 +252,7 @@ def pobierz_kurs_usd_pln():
     except Exception as e:
         return 4.00  # Kurs awaryjny
 
-# === TRADING212 API FUNCTIONS ===
+# === TRADING212 CACHE FUNCTIONS ===
 
 def wczytaj_t212_cache():
     """Wczytuje cache Trading212."""
@@ -280,74 +271,9 @@ def wczytaj_t212_cache():
             print(f"✓ Używam cache Trading212 (wiek: {age_hours:.1f}h)")
             return cache
         else:
-            print(f"⚠ Cache Trading212 wygasł ({age_hours:.1f}h) - pobieram świeże dane...")
+            print(f"⚠ Cache Trading212 wygasł ({age_hours:.1f}h)")
             return None
     except Exception as e:
-        return None
-
-def zapisz_t212_cache(data):
-    """Zapisuje dane Trading212 do cache."""
-    try:
-        cache = {
-            "timestamp": datetime.now().isoformat(),
-            "data": data
-        }
-        with open(TRADING212_CACHE_FILE, 'w', encoding='utf-8') as f:
-            json.dump(cache, f, indent=2)
-    except Exception as e:
-        print(f"⚠ Błąd zapisu cache T212: {e}")
-
-def pobierz_dane_trading212():
-    """Pobiera dane z Trading212 API (pozycje, saldo, historia)."""
-    if not TRADING212_ENABLED or not TRADING212_API_KEY:
-        return None
-    
-    # Sprawdź cache
-    cache = wczytaj_t212_cache()
-    if cache:
-        return cache["data"]
-    
-    print("📊 Pobieram dane z Trading212 API...")
-    
-    import requests
-    headers = {
-        "Authorization": TRADING212_API_KEY
-    }
-    
-    dane_t212 = {}
-    try:
-        # 1. Pobierz pozycje w portfelu
-        print("  ↪ Pobieram pozycje...")
-        response = requests.get(f"{TRADING212_BASE_URL}/equity/portfolio", headers=headers, timeout=10)
-        response.raise_for_status()
-        dane_t212["positions"] = response.json()
-        print(f"  ✓ Pobrano {len(dane_t212['positions'])} pozycji")
-        
-        # 2. Pobierz informacje o koncie (saldo gotówkowe)
-        print("  ↪ Pobieram info o koncie...")
-        response = requests.get(f"{TRADING212_BASE_URL}/equity/account/cash", headers=headers, timeout=10)
-        response.raise_for_status()
-        dane_t212["account"] = response.json()
-        print(f"  ✓ Saldo: {dane_t212['account'].get('free', 0):.2f} {dane_t212['account'].get('currencyCode', 'USD')}")
-        
-        # 3. Pobierz historię dywidend (ostatnie 6 miesięcy)
-        print("  ↪ Pobieram historię dywidend...")
-        try:
-            response = requests.get(f"{TRADING212_BASE_URL}/history/dividends", headers=headers, timeout=10)
-            response.raise_for_status()
-            dane_t212["dividends"] = response.json()
-            print(f"  ✓ Pobrano {len(dane_t212['dividends'])} dywidend")
-        except:
-            dane_t212["dividends"] = []
-        
-        # Zapisz do cache
-        zapisz_t212_cache(dane_t212)
-        
-        print("✓ Dane z Trading212 API pobrane pomyślnie!")
-        return dane_t212
-        
-    except Exception as e:
-        print(f"❌ Błąd pobierania z Trading212 API: {e}")
         return None
 
 def parsuj_dane_t212_do_portfela(dane_t212, kurs_usd_pln, cele):
@@ -473,30 +399,41 @@ def pobierz_stan_spolki(cele):
         except:
             stan_spolki["PRZYCHODY_I_WYDATKI"] = {"wyplata": 0, "Liczba_wyplat": 0, "wyplaty": []}
         
-        # AKCJE - Trading212 API
-        dane_t212 = pobierz_dane_trading212() if TRADING212_ENABLED else None
-        
-        if dane_t212:
-            portfel_akcji = parsuj_dane_t212_do_portfela(dane_t212, kurs_usd, cele)
-            if portfel_akcji:
-                stan_spolki["PORTFEL_AKCJI"] = portfel_akcji
-                print(f"✓ Dane akcji z Trading212 API: {portfel_akcji['Suma_PLN']:.2f} PLN")
+        # AKCJE - Z TRADING212 CACHE (aktualizowany przez GitHub Actions co 6h)
+        try:
+            cache = wczytaj_t212_cache()
+            if cache:
+                dane_t212 = cache.get("data")
+                portfel_akcji = parsuj_dane_t212_do_portfela(dane_t212, kurs_usd, cele)
+                if portfel_akcji:
+                    stan_spolki["PORTFEL_AKCJI"] = portfel_akcji
+                    print(f"✓ Dane akcji z Trading212 cache: {portfel_akcji['Suma_PLN']:.2f} PLN")
+                else:
+                    # Fallback jeśli parsowanie nie powiodło się
+                    stan_spolki["PORTFEL_AKCJI"] = {
+                        "Suma_PLN": 0,
+                        "Suma_USD": 0,
+                        "Liczba_pozycji": 0,
+                        "Zrodlo": "Trading212 Cache (parse error)",
+                        "Dane_rynkowe": {}
+                    }
             else:
-                print("⚠ Błąd parsowania T212 - brak danych akcji")
+                # Cache nie istnieje lub wygasł
+                print("⚠ Trading212 cache niedostępny - używam GitHub Actions dla aktualizacji")
                 stan_spolki["PORTFEL_AKCJI"] = {
                     "Suma_PLN": 0,
                     "Suma_USD": 0,
                     "Liczba_pozycji": 0,
-                    "Zrodlo": "Trading212 API - Error",
+                    "Zrodlo": "Trading212 Cache (outdated)",
                     "Dane_rynkowe": {}
                 }
-        else:
-            # Brak Trading212 lub błąd - placeholder
+        except Exception as e:
+            print(f"⚠️ Błąd ładowania Trading212 cache: {e}")
             stan_spolki["PORTFEL_AKCJI"] = {
                 "Suma_PLN": 0,
                 "Suma_USD": 0,
                 "Liczba_pozycji": 0,
-                "Zrodlo": "Trading212 not configured",
+                "Zrodlo": "Trading212 Cache (error)",
                 "Dane_rynkowe": {}
             }
         

@@ -1,0 +1,65 @@
+name: Update Trading212 Data
+
+on:
+  schedule:
+    # Co 6 godzin: 00:00, 06:00, 12:00, 18:00 UTC
+    - cron: '0 */6 * * *'
+  workflow_dispatch:  # Ręczne uruchomienie
+
+jobs:
+  update-trading212:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: true
+      
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: 📦 Install dependencies
+        run: |
+          pip install -q requests
+      
+      - name: 📊 Update Trading212 data
+        env:
+          TRADING212_API_KEY: ${{ secrets.TRADING212_API_KEY }}
+        run: |
+          python update_trading212.py
+          echo "✓ Trading212 data updated"
+      
+      - name: 💾 Commit changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "GitHub Actions Bot"
+          
+          # Dodaj tylko cache Trading212
+          git add trading212_cache.json || true
+          
+          # Commit tylko jeśli są zmiany
+          if git diff --staged --quiet; then
+            echo "No changes to commit - Trading212 data unchanged"
+          else
+            TIMESTAMP=$(date +'%Y-%m-%d %H:%M UTC')
+            git commit -m "📊 Auto-update Trading212: $TIMESTAMP"
+            git push
+            echo "✓ Changes committed and pushed"
+          fi
+      
+      - name: 📈 Summary
+        if: always()
+        run: |
+          if [ -f trading212_cache.json ]; then
+            echo "📊 Trading212 cache file size: $(du -h trading212_cache.json | cut -f1)"
+            echo "🕐 Last update: $(date)"
+          else
+            echo "⚠️ Trading212 cache file not found"
+          fi
