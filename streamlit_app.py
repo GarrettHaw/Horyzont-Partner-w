@@ -3193,18 +3193,34 @@ def normalize_stan_spolki(stan_spolki):
     # PRZYCHODY_I_WYDATKI → wyplata
     if 'PRZYCHODY_I_WYDATKI' in stan_spolki:
         raw_wyplata = stan_spolki['PRZYCHODY_I_WYDATKI']
-        normalized['wyplata'] = {
-            'dostepne_na_inwestycje': raw_wyplata.get('Dostepne_na_inwestycje_PLN', 0),
-            'dostepne_na_inwestycje_usd': raw_wyplata.get('Dostepne_na_inwestycje_USD', 0),
-            'suma_przychodow': raw_wyplata.get('Suma_przychodow_PLN', 0),
-            'wynagrodzenie': raw_wyplata.get('Wynagrodzenie_PLN', 0),
-            'premia': raw_wyplata.get('Premia_PLN', 0),
-            'suma_wydatkow': raw_wyplata.get('Suma_wydatkow_PLN', 0),
-            'raty_kredytow': raw_wyplata.get('Raty_kredytow_PLN', 0),
-            # Aliasy dla kompatybilności
-            'wydatki_stale': raw_wyplata.get('Suma_wydatkow_PLN', 0),
-            'raty_miesieczne': raw_wyplata.get('Raty_kredytow_PLN', 0)
-        }
+        # Obsługa uproszczonego formatu z wyplaty.json
+        if 'wyplata' in raw_wyplata:
+            # Format prosty - suma wypłat
+            normalized['wyplata'] = {
+                'suma_przychodow': raw_wyplata.get('wyplata', 0),
+                'wynagrodzenie': raw_wyplata.get('wyplata', 0),
+                'dostepne_na_inwestycje': raw_wyplata.get('wyplata', 0),
+                'dostepne_na_inwestycje_usd': 0,
+                'premia': 0,
+                'suma_wydatkow': 0,
+                'raty_kredytow': 0,
+                'wydatki_stale': 0,
+                'raty_miesieczne': 0
+            }
+        else:
+            # Format pełny
+            normalized['wyplata'] = {
+                'dostepne_na_inwestycje': raw_wyplata.get('Dostepne_na_inwestycje_PLN', 0),
+                'dostepne_na_inwestycje_usd': raw_wyplata.get('Dostepne_na_inwestycje_USD', 0),
+                'suma_przychodow': raw_wyplata.get('Suma_przychodow_PLN', 0),
+                'wynagrodzenie': raw_wyplata.get('Wynagrodzenie_PLN', 0),
+                'premia': raw_wyplata.get('Premia_PLN', 0),
+                'suma_wydatkow': raw_wyplata.get('Suma_wydatkow_PLN', 0),
+                'raty_kredytow': raw_wyplata.get('Raty_kredytow_PLN', 0),
+                # Aliasy dla kompatybilności
+                'wydatki_stale': raw_wyplata.get('Suma_wydatkow_PLN', 0),
+                'raty_miesieczne': raw_wyplata.get('Raty_kredytow_PLN', 0)
+            }
     elif 'wyplata' in stan_spolki:
         normalized['wyplata'] = stan_spolki['wyplata']
     
