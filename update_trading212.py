@@ -55,68 +55,13 @@ def pobierz_dane_trading212():
         currency = dane_t212['account'].get('currencyCode', 'USD')
         print(f"  ✓ Saldo: {cash:.2f} {currency}")
         
-        # 3. Pobierz historię transakcji (zawiera dywidendy)
-        print("  ↪ Pobieram historię transakcji (z dywidendami)...")
-        try:
-            from datetime import timedelta
-            
-            # Najpierw spróbuj endpoint /history/dividends
-            dividends_found = False
-            try:
-                response = requests.get(
-                    f"{TRADING212_BASE_URL}/history/dividends",
-                    headers=headers,
-                    params={"limit": 500},
-                    timeout=10
-                )
-                if response.status_code == 200:
-                    dividends_response = response.json()
-                    if isinstance(dividends_response, dict):
-                        dane_t212["dividends"] = dividends_response.get("items", dividends_response.get("data", []))
-                    elif isinstance(dividends_response, list):
-                        dane_t212["dividends"] = dividends_response
-                    else:
-                        dane_t212["dividends"] = []
-                    dividends_found = True
-                    print(f"  ✓ Endpoint /history/dividends - {len(dane_t212['dividends'])} dywidend")
-            except:
-                pass
-            
-            # Jeśli /history/dividends nie działa (403), użyj /history/transactions
-            if not dividends_found:
-                print(f"  ⚠️ Endpoint /history/dividends niedostępny (403 Forbidden)")
-                print(f"  ↪ Próbuję /history/transactions...")
-                
-                response = requests.get(
-                    f"{TRADING212_BASE_URL}/history/transactions",
-                    headers=headers,
-                    params={"limit": 500},
-                    timeout=10
-                )
-                response.raise_for_status()
-                transactions = response.json()
-                
-                # Wyfiltruj tylko transakcje typu DIVIDEND
-                all_transactions = transactions.get("items", transactions) if isinstance(transactions, dict) else transactions
-                
-                dividends_only = [
-                    tx for tx in all_transactions 
-                    if isinstance(tx, dict) and tx.get("type") == "DIVIDEND"
-                ]
-                
-                dane_t212["dividends"] = dividends_only
-                print(f"  ✓ Znaleziono {len(dividends_only)} dywidend w {len(all_transactions)} transakcjach")
-                
-                # Debug: pokaż przykład
-                if dividends_only:
-                    first_div = dividends_only[0]
-                    print(f"  📝 Przykład: {first_div.get('ticker', 'N/A')} - {first_div.get('amount', 0)} USD ({first_div.get('dateCreated', 'N/A')})")
-                
-        except Exception as e:
-            print(f"  ⚠️ Nie udało się pobrać dywidend/transakcji: {e}")
-            import traceback
-            traceback.print_exc()
-            dane_t212["dividends"] = []
+        # 3. Dywidendy - endpoint wymaga specjalnych uprawnień API key
+        # Większość kluczy API Trading212 nie ma dostępu do /history/*
+        # Dywidendy będą kalkulowane w aplikacji na podstawie pozycji + yfinance
+        print("  ℹ️ Pominięto dywidendy (wymaga rozszerzonych uprawnień API)")
+        dane_t212["dividends"] = []
+        print("  💡 Dywidendy będą kalkulowane w aplikacji na podstawie yfinance")
+        
         
         # 4. Pobierz metadata (opcjonalne)
         try:

@@ -3282,6 +3282,69 @@ def save_user_preferences(preferences):
         print(f"⚠️ Błąd zapisywania preferencji: {e}")
         return False
 
+def pobierz_dane_dywidendowe_yfinance(pozycje):
+    """
+    Pobiera dane dywidendowe z yfinance dla tickerów z Trading212.
+    Zwraca strukturę zgodną z dane_rynkowe.
+    """
+    dane_rynkowe = {}
+    
+    try:
+        import yfinance as yf
+        from datetime import datetime
+        
+        for ticker_full, dane_pozycji in pozycje.items():
+            # Wyczyść ticker z sufiksów Trading212 (_US_EQ, _EQ)
+            ticker_clean = ticker_full.replace('_US_EQ', '').replace('_EQ', '')
+            
+            try:
+                # Pobierz dane z yfinance (z cache jeśli dostępne)
+                stock = yf.Ticker(ticker_clean)
+                info = stock.info
+                
+                # Pobierz dividend rate i yield
+                dividend_rate = info.get('dividendRate', 0)  # Roczna dywidenda na akcję
+                dividend_yield = info.get('dividendYield', 0)  # Yield jako decimal (np. 0.035 = 3.5%)
+                
+                # Jeśli dividendRate nie jest dostępny, oblicz z trailingAnnualDividendRate
+                if not dividend_rate or dividend_rate == 0:
+                    dividend_rate = info.get('trailingAnnualDividendRate', 0)
+                
+                # Jeśli dividendYield nie jest dostępny, oblicz z dividend_rate / current_price
+                if not dividend_yield or dividend_yield == 0:
+                    current_price = info.get('currentPrice', info.get('regularMarketPrice', 0))
+                    if current_price and current_price > 0 and dividend_rate > 0:
+                        dividend_yield = dividend_rate / current_price
+                
+                # Zapisz dane w formacie zgodnym z calculate_portfolio_dividends
+                dane_rynkowe[ticker_full] = {
+                    'analiza_dywidend': {
+                        'annual_div': dividend_rate,  # Roczna dywidenda na akcję
+                        'div_yield': dividend_yield * 100 if dividend_yield else 0,  # Yield w % (np. 3.5)
+                    },
+                    'symbol': ticker_clean,
+                    'name': info.get('longName', ticker_clean),
+                    'last_updated': datetime.now().isoformat()
+                }
+                
+                if dividend_rate > 0:
+                    print(f"  ✓ {ticker_clean}: ${dividend_rate:.2f}/akcja ({dividend_yield*100:.2f}% yield)")
+                    
+            except Exception as e:
+                # Cicho ignoruj błędy dla pojedynczych tickerów
+                print(f"  ⚠️ Nie udało się pobrać danych dla {ticker_clean}: {e}")
+                continue
+        
+        print(f"✓ Wzbogacono {len(dane_rynkowe)} tickerów danymi dywidendowymi")
+        return dane_rynkowe
+        
+    except ImportError:
+        print("⚠️ yfinance nie jest zainstalowany - dywidendy nie będą dostępne")
+        return {}
+    except Exception as e:
+        print(f"⚠️ Błąd pobierania danych yfinance: {e}")
+        return {}
+
 def init_session_state():
     """Inicjalizuje session state z domyślnymi wartościami lub zapisanymi preferencjami"""
     # Wczytaj zapisane preferencje
@@ -3313,13 +3376,22 @@ def normalize_stan_spolki(stan_spolki):
     # PORTFEL_AKCJI → akcje
     if 'PORTFEL_AKCJI' in stan_spolki:
         raw_akcje = stan_spolki['PORTFEL_AKCJI']
+        
+        # Jeśli Dane_rynkowe jest puste (Trading212), wypełnij danymi z yfinance
+        dane_rynkowe = raw_akcje.get('Dane_rynkowe', {})
+        pozycje = raw_akcje.get('pozycje', raw_akcje.get('Pozycje_szczegoly', {}))
+        
+        if not dane_rynkowe and pozycje:
+            print("🔄 Wzbogacam dane Trading212 o informacje dywidendowe z yfinance...")
+            dane_rynkowe = pobierz_dane_dywidendowe_yfinance(pozycje)
+        
         normalized['akcje'] = {
             'wartosc_pln': raw_akcje.get('Suma_PLN', 0),
             'wartosc_usd': raw_akcje.get('Suma_USD', 0),
             'liczba_pozycji': raw_akcje.get('Liczba_pozycji_calkowita', 
                                            raw_akcje.get('Liczba_pozycji', 0)),
-            'pozycje': raw_akcje.get('pozycje', raw_akcje.get('Pozycje_szczegoly', {})),
-            'dane_rynkowe': raw_akcje.get('Dane_rynkowe', {}),
+            'pozycje': pozycje,
+            'dane_rynkowe': dane_rynkowe,
             'dywidendy': raw_akcje.get('dywidendy', []),  # Historia dywidend
             'cash_usd': raw_akcje.get('Cash_free_USD', 0),
             'zrodlo': raw_akcje.get('Zrodlo', 'Unknown')
