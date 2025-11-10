@@ -122,13 +122,8 @@ if not st.session_state.app_loaded:
     progress_bar.progress(40)
 
 try:
-    from gra_rpg import (
-        pobierz_stan_spolki,
-        wczytaj_cele,
-        print_colored,
-        generuj_odpowiedz_ai,
-        PERSONAS
-    )
+    # Importy zostały przeniesione do sekcji wyżej (linie 215-384)
+    # gra_rpg.py został zarchiwizowany - wszystkie funkcje są teraz w streamlit_app.py
     
     if not st.session_state.app_loaded:
         status_text.text("📊 Ładowanie modułów analitycznych...")
@@ -210,6 +205,198 @@ except Exception as e:
         st.rerun()
     import traceback
     st.code(traceback.format_exc())
+
+# ==================================================================================
+# === FUNKCJE Z gra_rpg.py (PRZENIESIONE DO ELIMINACJI gra_rpg.py) ===
+# ==================================================================================
+
+# Stałe konfiguracyjne
+NAZWA_PLIKU_CELOW = "cele.json"
+NBP_API_URL = "https://api.nbp.pl/api/exchangerates/rates/a/usd/?format=json"
+
+CELE_DOMYSLNE = {
+    "Rezerwa_gotowkowa_PLN": 70000,
+    "Dlugi_do_splaty_70_procent_PLN": 12082,
+    "PBR_akcje_liczba": 100,
+    "GAIN_akcje_limit": 200,
+    "ADD_wartosc_docelowa_PLN": 50000,
+    "wiek_uzytkownika": None,
+    "miesieczne_wydatki_fi": None
+}
+
+def wczytaj_cele():
+    """Wczytuje cele z pliku lub tworzy domyślny."""
+    if not os.path.exists(NAZWA_PLIKU_CELOW):
+        with open(NAZWA_PLIKU_CELOW, 'w', encoding='utf-8') as f:
+            json.dump(CELE_DOMYSLNE, f, indent=2, ensure_ascii=False)
+        return CELE_DOMYSLNE
+    
+    try:
+        with open(NAZWA_PLIKU_CELOW, 'r', encoding='utf-8') as f:
+            cele = json.load(f)
+        return cele
+    except Exception as e:
+        return CELE_DOMYSLNE
+
+def pobierz_kurs_usd_pln():
+    """Pobiera aktualny kurs USD/PLN z API NBP."""
+    try:
+        import requests
+        response = requests.get(NBP_API_URL, timeout=5)
+        response.raise_for_status()
+        data = response.json()
+        kurs = data['rates'][0]['mid']
+        return kurs
+    except Exception as e:
+        return 4.00  # Kurs awaryjny
+
+def pobierz_stan_spolki(cele):
+    """
+    Pobiera podstawowe dane portfela (uproszczona wersja - bez Trading212/Google Sheets).
+    Zwraca dane z lokalnych plików JSON.
+    """
+    stan_spolki = {}
+    
+    try:
+        kurs_usd = pobierz_kurs_usd_pln()
+        stan_spolki["Kurs_USD_PLN"] = kurs_usd
+        
+        # KRYPTO - Z LOKALNEGO PLIKU
+        try:
+            with open('krypto.json', 'r', encoding='utf-8') as f:
+                krypto_data = json.load(f)
+                krypto_lista = krypto_data.get('krypto', [])
+            
+            suma_krypto_usd = sum(k['ilosc'] * k['cena_zakupu_usd'] for k in krypto_lista)
+            
+            stan_spolki["PORTFEL_KRYPTO"] = {
+                "Suma_USD": round(suma_krypto_usd, 2),
+                "Suma_PLN": round(suma_krypto_usd * kurs_usd, 2),
+                "Liczba_pozycji": len(krypto_lista),
+                "pozycje": krypto_lista
+            }
+        except:
+            stan_spolki["PORTFEL_KRYPTO"] = {"Suma_USD": 0, "Suma_PLN": 0, "Liczba_pozycji": 0, "pozycje": []}
+        
+        # KREDYTY - Z LOKALNEGO PLIKU
+        try:
+            with open('kredyty.json', 'r', encoding='utf-8') as f:
+                kredyty_data = json.load(f)
+                kredyty_lista = kredyty_data.get('kredyty', [])
+            
+            suma_dlugu_pln = sum(k['kwota_poczatkowa'] - k.get('splacono', 0) for k in kredyty_lista)
+            suma_rat_pln = sum(k.get('rata_miesieczna', 0) for k in kredyty_lista)
+            
+            stan_spolki["ZOBOWIAZANIA"] = {
+                "Suma_dlugu_PLN": round(suma_dlugu_pln, 2),
+                "Suma_rat_PLN": round(suma_rat_pln, 2),
+                "Liczba_kredytow": len(kredyty_lista)
+            }
+        except:
+            stan_spolki["ZOBOWIAZANIA"] = {"Suma_dlugu_PLN": 0, "Suma_rat_PLN": 0, "Liczba_kredytow": 0}
+        
+        # AKCJE - Placeholder (brak Trading212/Sheets w uproszczonej wersji)
+        stan_spolki["PORTFEL_AKCJI"] = {
+            "Suma_PLN": 0,
+            "Suma_USD": 0,
+            "Liczba_pozycji": 0,
+            "Zrodlo": "Simplified version",
+            "Dane_rynkowe": {}
+        }
+        
+    except Exception as e:
+        st.error(f"Błąd pobierania stanu spółki: {e}")
+    
+    return stan_spolki
+
+def generuj_odpowiedz_ai(persona_name, prompt):
+    """
+    Uproszczona wersja - kieruje zapytanie do Gemini (główny model).
+    Pełna wersja z wieloma modelami jest w gra_rpg.py (zarchiwizowana).
+    """
+    try:
+        # Lazy load Google Gemini
+        import google.generativeai as genai
+        
+        # Pobierz klucz API
+        api_key = st.secrets.get("GOOGLE_API_KEY", os.getenv("GOOGLE_API_KEY"))
+        if not api_key:
+            return "[BŁĄD: Brak klucza GOOGLE_API_KEY]"
+        
+        genai.configure(api_key=api_key)
+        model = genai.GenerativeModel('gemini-pro')
+        
+        response = model.generate_content(prompt)
+        
+        # Track API call
+        tracker = get_tracker()
+        tracker.track_call("gemini", is_autonomous=False)
+        
+        if not response.parts:
+            return "[ODPOWIEDŹ ZABLOKOWANA PRZEZ FILTRY BEZPIECZEŃSTWA GEMINI]"
+        
+        return response.text
+        
+    except Exception as e:
+        return f"[BŁĄD API: {str(e)}]"
+
+def load_personas_from_memory_json(filename="persona_memory.json"):
+    """
+    Ładuje PERSONAS z persona_memory.json.
+    Konwertuje format persona_memory.json do formatu PERSONAS.
+    """
+    if not os.path.exists(filename):
+        return {}
+    
+    try:
+        with open(filename, 'r', encoding='utf-8') as f:
+            memory_data = json.load(f)
+        
+        personas = {}
+        
+        for partner_name, partner_data in memory_data.items():
+            # Pomiń Partnera Zarządzającego (JA) - to użytkownik, nie AI
+            if 'Partner Zarządzający' in partner_name and '(JA)' in partner_name:
+                continue
+            
+            # Sprawdź czy to partner AI
+            if 'communication_style' not in partner_data:
+                continue
+            
+            comm_style = partner_data.get('communication_style', {})
+            
+            # Buduj konfigurację PERSONAS
+            persona_config = {
+                'model_engine': 'gemini',
+                'system_instruction': comm_style.get('tone', 'Professional advisor'),
+                'ukryty_cel': f"Support partnership growth and provide {partner_name} perspective",
+                'color_code': '\033[94m'
+            }
+            
+            # Specjalne mapowanie dla znanych partnerów
+            if partner_name == "Nexus":
+                persona_config['color_code'] = '\033[96m'  # Cyan
+            elif "Warren Buffett" in partner_name:
+                persona_config['color_code'] = '\033[92m'  # Zielony
+            elif "George Soros" in partner_name:
+                persona_config['color_code'] = '\033[91m'  # Czerwony
+            elif "CZ" in partner_name or "Zhao" in partner_name:
+                persona_config['color_code'] = '\033[97m'  # Biały
+            
+            personas[partner_name] = persona_config
+        
+        return personas
+        
+    except Exception as e:
+        st.error(f"Błąd ładowania personas: {e}")
+        return {}
+
+# Załaduj PERSONAS globalnie
+PERSONAS = load_personas_from_memory_json("persona_memory.json")
+
+# ==================================================================================
+# === KONIEC FUNKCJI Z gra_rpg.py ===
+# ==================================================================================
 
 # === FUNKCJE DO ZARZĄDZANIA WAGAMI GŁOSU Z KODEKSU ===
 def wczytaj_wagi_glosu_z_kodeksu():
@@ -352,7 +539,7 @@ def send_to_ai_partner(partner_name, message, stan_spolki=None, cele=None, tryb_
         # ================================================================
         
         if not IMPORTS_OK:
-            return "[Import gra_rpg.py nie powiódł się]", []
+            return "[Błąd importu modułów]", []
         
         # Pobierz konfigurację partnera
         persona_config = PERSONAS.get(partner_name, {})
@@ -396,12 +583,12 @@ def send_to_ai_partner(partner_name, message, stan_spolki=None, cele=None, tryb_
         dane_rynkowe = {}
         if IMPORTS_OK:
             try:
-                from gra_rpg import pobierz_stan_spolki
+                # Użyj lokalnej funkcji pobierz_stan_spolki (przeniesionej z gra_rpg.py)
                 stan_pelny = pobierz_stan_spolki(cele or {})
                 if stan_pelny:
                     dane_rynkowe = stan_pelny.get('PORTFEL_AKCJI', {}).get('Dane_rynkowe', {})
             except Exception as e:
-                # Nie ma gra_rpg.py lub błąd ładowania - używaj stan_spolki z parametru
+                # Błąd ładowania - używaj stan_spolki z parametru
                 pass
         
         if dane_rynkowe:
@@ -1766,18 +1953,15 @@ WAŻNE:
 
 Twoja rada:"""
     
-    # Generuj odpowiedź przez AI (użyj funkcji z gra_rpg)
+    # Generuj odpowiedź przez AI
     try:
         if not IMPORTS_OK:
-            raise Exception("Import gra_rpg nie powiódł się")
+            raise Exception("Błąd importu modułów")
         
-        # Użyj funkcji generuj_odpowiedz_ai z gra_rpg.py
+        # Użyj funkcji generuj_odpowiedz_ai z gra_rpg.py (poprawione: tylko 2 parametry)
         response = generuj_odpowiedz_ai(
-            partner_name=selected_advisor['name'],
-            message=prompt,
-            kodeks="",  # Nie potrzebujemy pełnego kodeksu
-            persona_config={"model_engine": "gemini"},  # Użyj Gemini
-            mem_context=""
+            selected_advisor['name'],  # persona_name
+            prompt  # prompt
         )
         
         tip_text = response.strip()
@@ -4321,7 +4505,7 @@ def main():
     
     # Ładowanie danych
     if not IMPORTS_OK:
-        st.error("⚠️ Nie można załadować modułów. Sprawdź czy gra_rpg.py działa poprawnie.")
+        st.error("⚠️ Nie można załadować modułów. Sprawdź konfigurację.")
         return
     
     with st.spinner("⏳ Ładuję dane portfela..."):
