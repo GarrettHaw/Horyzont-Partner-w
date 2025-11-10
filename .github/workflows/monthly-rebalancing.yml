@@ -1,0 +1,93 @@
+name: Monthly Voting Weights Rebalancing
+
+on:
+  schedule:
+    # Uruchom 1. dzień każdego miesiąca o 9:00 UTC (10:00 CET)
+    - cron: '0 9 1 * *'
+  
+  # Możliwość manualnego uruchomienia
+  workflow_dispatch:
+
+jobs:
+  rebalance-weights:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: 📦 Install dependencies
+        run: |
+          pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      
+      - name: ⚖️ Run monthly rebalancing
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          echo "🗓️ Monthly Voting Weights Rebalancing - $(date '+%Y-%m-%d')"
+          python advisor_scoring_manager.py rebalance --auto
+      
+      - name: 📊 Generate rebalancing report
+        run: |
+          echo "📈 Generating leaderboard..."
+          python advisor_scoring_manager.py leaderboard > rebalancing_report.txt
+          cat rebalancing_report.txt
+      
+      - name: 💾 Commit changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          
+          # Dodaj zmienione pliki
+          git add advisor_scoring.json persona_memory.json
+          
+          # Commit tylko jeśli są zmiany
+          git diff --staged --quiet || git commit -m "🤖 Monthly rebalancing: $(date '+%Y-%m-%d')" \
+            -m "Automated voting weights rebalancing" \
+            -m "$(cat rebalancing_report.txt)"
+      
+      - name: 🚀 Push changes
+        uses: ad-m/github-push-action@v0.8.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
+      
+      - name: 📧 Create issue for notification
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const report = fs.readFileSync('rebalancing_report.txt', 'utf8');
+            
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `⚖️ Monthly Rebalancing: ${new Date().toISOString().split('T')[0]}`,
+              body: `## 🤖 Automated Monthly Voting Weights Rebalancing\n\n` +
+                    `**Date:** ${new Date().toLocaleString()}\n\n` +
+                    `### 📊 Leaderboard After Rebalancing:\n\n` +
+                    `\`\`\`\n${report}\n\`\`\`\n\n` +
+                    `### 📝 Details\n\n` +
+                    `- Weights updated based on accuracy rates\n` +
+                    `- Changes committed to repository\n` +
+                    `- Check \`advisor_scoring.json\` for full details\n\n` +
+                    `---\n` +
+                    `*This issue was automatically created by GitHub Actions*`,
+              labels: ['automation', 'rebalancing', 'monthly']
+            });
+      
+      - name: ✅ Rebalancing complete
+        run: |
+          echo "✅ Monthly rebalancing completed successfully!"
+          echo "📊 Check the issue created for details"

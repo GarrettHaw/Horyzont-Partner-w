@@ -1,0 +1,74 @@
+name: Daily Autonomous Conversation
+
+on:
+  schedule:
+    # Uruchom codziennie o 18:00 UTC (19:00 CET)
+    - cron: '0 18 * * *'
+  
+  # Możliwość manualnego uruchomienia
+  workflow_dispatch:
+
+jobs:
+  autonomous-conversation:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: 📦 Install dependencies
+        run: |
+          pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      
+      - name: 🤖 Run autonomous conversation
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          echo "🤖 Starting autonomous conversation - $(date '+%Y-%m-%d %H:%M')"
+          python autonomous_conversation_engine.py
+      
+      - name: 📊 Extract conversation summary
+        run: |
+          echo "Extracting last conversation summary..."
+          python -c 'import json; convs = json.load(open("autonomous_conversations.json", "r", encoding="utf-8")); last = convs[-1] if convs else None; print(f"ID: {last.get(\"id\")}\nTopic: {last.get(\"topic_name\")}\nMessages: {len(last.get(\"messages\", []))}" if last else "No conversations")' > conversation_summary.txt
+          cat conversation_summary.txt
+      
+      - name: 💾 Commit conversation
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          
+          # Dodaj pliki z rozmową
+          git add autonomous_conversations.json api_usage.json
+          
+          # Commit tylko jeśli są zmiany
+          git diff --staged --quiet || git commit -m "🤖 Daily autonomous conversation: $(date '+%Y-%m-%d')" \
+            -m "Automated conversation between AI partners" \
+            -m "$(cat conversation_summary.txt)"
+      
+      - name: 🚀 Push changes
+        uses: ad-m/github-push-action@v0.8.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
+      
+      - name: ✅ Conversation complete
+        run: |
+          echo "✅ Daily autonomous conversation completed!"
+          echo "📝 Check autonomous_conversations.json for details"
+
+# UWAGA: Ten workflow jest OPCJONALNY
+# Kosztuje API calls każdego dnia
+# Możesz go wyłączyć usuwając sekcję 'schedule'
+# i uruchamiać tylko manualnie (workflow_dispatch)

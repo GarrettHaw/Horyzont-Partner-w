@@ -228,15 +228,44 @@
       "effective_weight": 13.75
     },
     "ai_config": {
-      "models": [
-        "gpt-4",
-        "claude-3.5-sonnet",
-        "gemini-pro"
-      ],
-      "ensemble_weights": {
-        "gpt-4": 0.4,
-        "claude-3.5-sonnet": 0.4,
-        "gemini-pro": 0.2
+      "version": "1.0",
+      "mode": "single",
+      "current_model": "gemini-pro",
+      "models": {
+        "active": [
+          "gemini-pro"
+        ],
+        "planned_expansion": [
+          "claude-3.5-sonnet",
+          "gpt-4",
+          "deepseek-chat",
+          "groq-llama"
+        ]
+      },
+      "ensemble_config": {
+        "enabled": false,
+        "future_weights": {
+          "analytical_agent": {
+            "primary": "claude-3.5-sonnet",
+            "fallback": "gemini-pro",
+            "weight": 0.4
+          },
+          "creative_agent": {
+            "primary": "gemini-pro",
+            "fallback": "gpt-4",
+            "weight": 0.35
+          },
+          "critical_agent": {
+            "primary": "gpt-4",
+            "fallback": "claude-3.5-sonnet",
+            "weight": 0.25
+          }
+        },
+        "activation_conditions": {
+          "min_prediction_accuracy": 0.65,
+          "min_days_active": 30,
+          "user_approval_required": true
+        }
       },
       "tools_access": [
         "CoinGecko API",
@@ -265,6 +294,12 @@
         "tier_3_broker": [
           "Trading212"
         ]
+      },
+      "performance_tracking": {
+        "response_quality_score": 0.0,
+        "user_satisfaction_ratings": [],
+        "avg_response_time_ms": 0,
+        "total_queries_handled": 0
       }
     },
     "scoring": {

@@ -146,6 +146,13 @@ try:
     from persona_context_builder import build_enhanced_context, get_emotional_modifier, load_persona_memory
     from crypto_portfolio_manager import CryptoPortfolioManager
     
+    # Nexus AI Engine
+    try:
+        from nexus_ai_engine import get_nexus_engine
+        NEXUS_OK = True
+    except ImportError:
+        NEXUS_OK = False
+    
     IMPORTS_OK = True
     MEMORY_OK = True
     MEMORY_V2 = True
@@ -163,18 +170,28 @@ except ImportError as e:
         MEMORY_OK = False
         MEMORY_V2 = False
         CRYPTO_MANAGER_OK = "crypto_portfolio_manager" not in str(e)
+        NEXUS_OK = "nexus_ai_engine" not in str(e)
         st.warning("⚠️ System pamięci AI niedostępny")
     elif "crypto_portfolio_manager" in str(e):
         IMPORTS_OK = True
         MEMORY_OK = True
         MEMORY_V2 = True
         CRYPTO_MANAGER_OK = False
+        NEXUS_OK = "nexus_ai_engine" not in str(e)
         st.warning("⚠️ Crypto Portfolio Manager niedostępny - ceny na żywo wyłączone")
+    elif "nexus_ai_engine" in str(e):
+        IMPORTS_OK = True
+        MEMORY_OK = True
+        MEMORY_V2 = True
+        CRYPTO_MANAGER_OK = True
+        NEXUS_OK = False
+        st.warning("⚠️ Nexus AI Engine niedostępny")
     else:
         IMPORTS_OK = False
         MEMORY_OK = False
         MEMORY_V2 = False
         CRYPTO_MANAGER_OK = False
+        NEXUS_OK = False
         st.error(f"⚠️ Błąd importu: {e}")
     
     if not st.session_state.app_loaded:
@@ -304,8 +321,38 @@ def zapisz_wagi_glosu_do_kodeksu(wagi):
 def send_to_ai_partner(partner_name, message, stan_spolki=None, cele=None, tryb_odpowiedzi="normalny"):
     """Wysyła wiadomość do pojedynczego Partnera AI z pełnym kontekstem jak w gra_rpg.py"""
     try:
+        # ==================== NEXUS SPECIAL HANDLING ====================
+        if partner_name == "Nexus" and NEXUS_OK:
+            try:
+                nexus = get_nexus_engine()
+                
+                # Build context for Nexus
+                context = {
+                    'portfolio': {
+                        'total_value': (stan_spolki.get('akcje', {}).get('wartosc_pln', 0) +
+                                       stan_spolki.get('krypto', {}).get('wartosc_pln', 0) +
+                                       cele.get('Rezerwa_gotowkowa_obecna_PLN', 0) if cele else 0) if stan_spolki else 0,
+                        'stocks_value': stan_spolki.get('akcje', {}).get('wartosc_pln', 0) if stan_spolki else 0,
+                        'crypto_value': stan_spolki.get('krypto', {}).get('wartosc_pln', 0) if stan_spolki else 0,
+                        'positions_count': stan_spolki.get('akcje', {}).get('liczba_pozycji', 0) if stan_spolki else 0
+                    },
+                    'mode': tryb_odpowiedzi
+                }
+                
+                # Generate Nexus response
+                result = nexus.generate_response(message, context=context)
+                
+                if result.get('success'):
+                    return result.get('response', 'No response'), []
+                else:
+                    # Fallback to standard if Nexus fails
+                    st.warning("⚠️ Nexus response failed, using standard AI")
+            except Exception as e:
+                st.warning(f"⚠️ Nexus error: {e}, using standard AI")
+        # ================================================================
+        
         if not IMPORTS_OK:
-            return "[Import gra_rpg.py nie powiódł się]"
+            return "[Import gra_rpg.py nie powiódł się]", []
         
         # Pobierz konfigurację partnera
         persona_config = PERSONAS.get(partner_name, {})
@@ -562,6 +609,83 @@ TWOJE ZADANIE:
         import traceback
         error_detail = traceback.format_exc()
         return f"[Błąd AI: {str(e)}\n{error_detail}]", []
+
+# === ADVISOR SCORING INTEGRATION ===
+def get_current_voting_weights() -> dict:
+    """
+    Pobiera aktualne wagi głosów z systemu scoringu
+    
+    Returns:
+        dict: {advisor_name: weight_percentage}
+    """
+    try:
+        if os.path.exists('advisor_scoring.json'):
+            with open('advisor_scoring.json', 'r', encoding='utf-8') as f:
+                scoring_data = json.load(f)
+            
+            weights = {}
+            for advisor_name, advisor_data in scoring_data.get('advisors', {}).items():
+                if advisor_data.get('type') == 'human':
+                    weights[advisor_name] = advisor_data.get('fixed_weight', 25.0)
+                else:
+                    weights[advisor_name] = advisor_data.get('current_weight', 13.75)
+            
+            return weights
+        else:
+            # Fallback - bazowe wagi
+            return {
+                "Partner Zarządzający (JA)": 25.0,
+                "Nexus": 13.75,
+                "Warren Buffett": 13.75,
+                "George Soros": 13.75,
+                "Changpeng Zhao (CZ)": 13.75
+            }
+    except Exception as e:
+        st.warning(f"⚠️ Nie udało się załadować wag z advisor_scoring.json: {e}")
+        return {
+            "Partner Zarządzający (JA)": 25.0,
+            "Nexus": 13.75,
+            "Warren Buffett": 13.75,
+            "George Soros": 13.75,
+            "Changpeng Zhao (CZ)": 13.75
+        }
+
+def sync_weights_to_personas():
+    """
+    Synchronizuje wagi ze scoring system do persona_memory.json
+    """
+    try:
+        weights = get_current_voting_weights()
+        
+        if PERSISTENT_OK:
+            persona_data = load_persistent_data('persona_memory.json')
+        else:
+            with open('persona_memory.json', 'r', encoding='utf-8') as f:
+                persona_data = json.load(f)
+        
+        if not persona_data:
+            return False
+        
+        # Update voting weights
+        for advisor_name, weight in weights.items():
+            if advisor_name in persona_data:
+                if 'voting' not in persona_data[advisor_name]:
+                    persona_data[advisor_name]['voting'] = {}
+                
+                persona_data[advisor_name]['voting']['effective_weight'] = weight
+                persona_data[advisor_name]['voting']['current_weight'] = weight
+        
+        # Save back
+        if PERSISTENT_OK:
+            save_persistent_data('persona_memory.json', persona_data)
+        else:
+            with open('persona_memory.json', 'w', encoding='utf-8') as f:
+                json.dump(persona_data, f, indent=2, ensure_ascii=False)
+        
+        return True
+    except Exception as e:
+        st.error(f"❌ Błąd synchronizacji wag: {e}")
+        return False
 
 def save_conversation_to_memory(partner_name, user_message, ai_response, stan_spolki=None):
     """Zapisuje rozmowę do pamięci długoterminowej partnera"""
@@ -5859,6 +5983,70 @@ def show_autonomous_conversations_page():
         st.info("📭 Brak autonomicznych rozmów. Kliknij 'Uruchom nową rozmowę' aby rozpocząć!")
         return
     
+    # ✨ NEXUS KNOWLEDGE SYNTHESIS (przed listą rozmów)
+    st.markdown("---")
+    st.markdown("### 📚 Nexus Knowledge Synthesis")
+    st.caption("Zapytaj Nexusa o syntezę wiedzy z ostatnich rozmów")
+    
+    with st.expander("💡 Zapytaj Nexusa", expanded=False):
+        st.markdown("""
+        Nexus może przeanalizować ostatnie autonomiczne rozmowy i odpowiedzieć na Twoje pytania,
+        syntetyzując wiedzę z wielu dyskusji.
+        
+        **Przykładowe pytania:**
+        - Jakie są najważniejsze obawy Rady dotyczące portfela?
+        - Czy partnerzy osiągnęli consensus w jakichś kwestiach?
+        - Jakie trendy rynkowe były najczęściej dyskutowane?
+        - Czy ktoś sugerował konkretne zmiany w strategii?
+        """)
+        
+        synthesis_query = st.text_area(
+            "Twoje pytanie do Nexusa:",
+            value="Jakie są najważniejsze obawy Rady dotyczące naszego portfela w ostatnich dyskusjach?",
+            height=100,
+            key="nexus_synthesis_query"
+        )
+        
+        recent_limit = st.slider(
+            "Liczba ostatnich rozmów do analizy:",
+            min_value=1,
+            max_value=10,
+            value=5,
+            help="Nexus przeanalizuje N ostatnich rozmów"
+        )
+        
+        if st.button("🤖 Zapytaj Nexusa", type="primary"):
+            with st.spinner(f"🤖 Nexus analizuje ostatnie {recent_limit} rozmów..."):
+                try:
+                    recent_convs = engine.get_recent_conversations(limit=recent_limit)
+                    
+                    if not recent_convs:
+                        st.warning("⚠️ Brak rozmów do analizy")
+                    else:
+                        synthesis_answer = engine.nexus_knowledge_synthesis(recent_convs, synthesis_query)
+                        
+                        if synthesis_answer:
+                            st.markdown("---")
+                            st.markdown("#### 🤖 Odpowiedź Nexusa:")
+                            st.info(synthesis_answer)
+                            
+                            # Pokaż źródła (rozmowy)
+                            with st.expander(f"📋 Źródła ({len(recent_convs)} rozmów)"):
+                                for conv in recent_convs:
+                                    topic = conv.get('topic_name', 'Unknown')
+                                    date = conv.get('date', '')[:19] if conv.get('date') else 'Unknown'
+                                    msgs = len(conv.get('messages', []))
+                                    st.markdown(f"- **{topic}** ({date}) - {msgs} wiadomości")
+                        else:
+                            st.error("❌ Nexus nie mógł wygenerować odpowiedzi")
+                            
+                except Exception as e:
+                    st.error(f"❌ Błąd: {e}")
+                    import traceback
+                    st.code(traceback.format_exc())
+    
+    st.markdown("---")
+    
     # Filtry
     col1, col2, col3 = st.columns(3)
     
@@ -5940,6 +6128,186 @@ def show_autonomous_conversations_page():
                     st.markdown("**🎯 Kluczowe wnioski:**")
                     for point in key_points:
                         st.markdown(f"- {point}")
+            
+            # ✨ NEXUS META-ANALYSIS (NOWE!)
+            nexus_meta = conv.get('nexus_meta_analysis', None)
+            if nexus_meta:
+                st.markdown("---")
+                st.markdown("### 🤖 Nexus Meta-Analysis")
+                
+                col1, col2, col3 = st.columns(3)
+                
+                with col1:
+                    quality = nexus_meta.get('overall_quality', 0)
+                    st.metric(
+                        "Overall Quality",
+                        f"{quality:.0%}",
+                        help="Ogólna jakość rozmowy oceniona przez Nexus"
+                    )
+                
+                with col2:
+                    consensus = len(nexus_meta.get('consensus_points', []))
+                    st.metric(
+                        "Consensus Points",
+                        consensus,
+                        help="Liczba punktów, w których partnerzy się zgadzają"
+                    )
+                
+                with col3:
+                    disagreements = len(nexus_meta.get('disagreement_points', []))
+                    st.metric(
+                        "Disagreements",
+                        disagreements,
+                        help="Liczba punktów spornych"
+                    )
+                
+                # Main Themes
+                themes = nexus_meta.get('main_themes', [])
+                if themes:
+                    st.markdown("**📋 Główne tematy:**")
+                    for theme in themes:
+                        st.markdown(f"- {theme}")
+                
+                # Consensus & Disagreements w kolumnach
+                col_a, col_b = st.columns(2)
+                
+                with col_a:
+                    consensus_pts = nexus_meta.get('consensus_points', [])
+                    if consensus_pts:
+                        st.markdown("**✅ Punkty zgody:**")
+                        for pt in consensus_pts:
+                            st.success(pt, icon="✅")
+                
+                with col_b:
+                    disagree_pts = nexus_meta.get('disagreement_points', [])
+                    if disagree_pts:
+                        st.markdown("**⚠️ Punkty sporu:**")
+                        for pt in disagree_pts:
+                            st.warning(pt, icon="⚠️")
+                
+                # Partner Quality Scores
+                partner_scores = nexus_meta.get('partner_quality_scores', {})
+                if partner_scores:
+                    st.markdown("**📊 Ocena wypowiedzi partnerów:**")
+                    
+                    for partner, score_data in partner_scores.items():
+                        score = score_data.get('score', 0)
+                        reason = score_data.get('reason', '')
+                        
+                        # Progress bar z oceną
+                        st.markdown(f"**{partner}:** {score:.0%}")
+                        st.progress(score)
+                        if reason:
+                            st.caption(f"💡 {reason}")
+                
+                # Key Insights
+                insights = nexus_meta.get('key_insights', [])
+                if insights:
+                    st.markdown("**💡 Kluczowe wnioski (Nexus):**")
+                    for insight in insights:
+                        st.info(f"🔍 {insight}")
+                
+                # Recommendations
+                recommendations = nexus_meta.get('recommendations', [])
+                if recommendations:
+                    st.markdown("**🎯 Rekomendacje na przyszłość:**")
+                    for rec in recommendations:
+                        st.success(f"➡️ {rec}")
+            
+            # ✨ NEXUS VOTING SIMULATION (Interactive!)
+            st.markdown("---")
+            st.markdown("### 🗳️ Nexus Voting Simulation")
+            st.caption("Nexus może zasymulować jak partnerzy zagłosowaliby na podstawie tej rozmowy")
+            
+            decision_question = st.text_input(
+                "Pytanie decyzyjne:",
+                value="Czy zwiększyć alokację w krypto do 30% portfela?",
+                key=f"voting_q_{conv_id}"
+            )
+            
+            if st.button("🗳️ Symuluj głosowanie", key=f"vote_btn_{conv_id}"):
+                with st.spinner("🤖 Nexus analizuje wypowiedzi..."):
+                    try:
+                        voting_result = engine.nexus_voting_simulation(conv, decision_question)
+                        
+                        if voting_result:
+                            st.markdown("#### 📊 Wyniki symulacji:")
+                            
+                            # Tally
+                            tally = voting_result.get('vote_tally', {})
+                            outcome = voting_result.get('predicted_outcome', 'Unknown')
+                            confidence = voting_result.get('confidence_overall', 0)
+                            
+                            col1, col2, col3, col4 = st.columns(4)
+                            
+                            with col1:
+                                st.metric("ZA", tally.get('ZA', 0), delta_color="normal")
+                            with col2:
+                                st.metric("PRZECIW", tally.get('PRZECIW', 0), delta_color="inverse")
+                            with col3:
+                                st.metric("WSTRZYMUJĘ SIĘ", tally.get('WSTRZYMUJĘ SIĘ', 0), delta_color="off")
+                            with col4:
+                                st.metric("Confidence", f"{confidence:.0%}")
+                            
+                            # Outcome badge
+                            outcome_color = {
+                                'ZA': '#27ae60',
+                                'PRZECIW': '#e74c3c',
+                                'REMIS': '#95a5a6'
+                            }.get(outcome, '#95a5a6')
+                            
+                            st.markdown(f"""
+                            <div style="background: {outcome_color}; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0;">
+                                <h3 style="margin: 0;">Predicted Outcome: {outcome}</h3>
+                            </div>
+                            """, unsafe_allow_html=True)
+                            
+                            # Individual votes
+                            st.markdown("**🗳️ Szczegółowe głosy:**")
+                            
+                            votes = voting_result.get('votes', {})
+                            for partner, vote_data in votes.items():
+                                vote = vote_data.get('vote', 'Unknown')
+                                conf = vote_data.get('confidence', 0)
+                                reasoning = vote_data.get('reasoning', '')
+                                
+                                vote_emoji = {
+                                    'ZA': '✅',
+                                    'PRZECIW': '❌',
+                                    'WSTRZYMUJĘ SIĘ': '🤔'
+                                }.get(vote, '❓')
+                                
+                                with st.expander(f"{vote_emoji} {partner}: {vote} (confidence: {conf:.0%})"):
+                                    st.write(f"**Uzasadnienie:** {reasoning}")
+                            
+                            # Arguments
+                            col_for, col_against = st.columns(2)
+                            
+                            with col_for:
+                                args_for = voting_result.get('key_arguments_for', [])
+                                if args_for:
+                                    st.markdown("**✅ Argumenty ZA:**")
+                                    for arg in args_for:
+                                        st.success(arg, icon="✅")
+                            
+                            with col_against:
+                                args_against = voting_result.get('key_arguments_against', [])
+                                if args_against:
+                                    st.markdown("**❌ Argumenty PRZECIW:**")
+                                    for arg in args_against:
+                                        st.error(arg, icon="❌")
+                            
+                            # Nexus Recommendation
+                            nexus_rec = voting_result.get('nexus_recommendation', '')
+                            if nexus_rec:
+                                st.info(f"**🤖 Rekomendacja Nexus:** {nexus_rec}")
+                        else:
+                            st.error("❌ Nie udało się przeprowadzić symulacji")
+                            
+                    except Exception as e:
+                        st.error(f"❌ Błąd: {e}")
+                        import traceback
+                        st.code(traceback.format_exc())
             
             # Pokaż opening prompt jeśli istnieje
             if opening_prompt:
@@ -6445,13 +6813,122 @@ def show_partners_page():
             save_persistent_data('partner_conversations.json', st.session_state.partner_conversations)
     
     # === TABY ===
-    tab_chat, tab_profiles = st.tabs(["💬 Chat", "📋 Profile Partnerów"])
+    tab_chat, tab_profiles, tab_voting = st.tabs(["💬 Chat", "📋 Profile Partnerów", "⚖️ Voting Weights"])
     
     # === TAB 1: CHAT ===
     with tab_chat:
         # Sidebar z listą partnerów
         with st.sidebar:
             st.markdown("### 🎭 Rada Partnerów")
+            
+            # 🤖 NEXUS STATUS WIDGET
+            if NEXUS_OK and st.session_state.get('selected_partner') == "Nexus":
+                with st.expander("🤖 Nexus AI Status", expanded=True):
+                    try:
+                        nexus = get_nexus_engine()
+                        status = nexus.get_status()
+                        
+                        # Mode indicator
+                        mode_emoji = "🔵" if status['mode'] == 'single' else "🟣"
+                        st.markdown(f"**{mode_emoji} Mode:** `{status['mode'].upper()}`")
+                        
+                        # Current model
+                        st.caption(f"Model: {status['current_model']}")
+                        
+                        # Performance metrics
+                        col1, col2 = st.columns(2)
+                        with col1:
+                            st.metric(
+                                "Queries",
+                                status['performance']['total_queries']
+                            )
+                        with col2:
+                            st.metric(
+                                "Avg Time",
+                                f"{status['performance']['avg_response_time_ms']:.0f}ms"
+                            )
+                        
+                        # Ensemble eligibility
+                        if not status['ensemble_enabled']:
+                            eligible = status['ensemble_eligible']
+                            if eligible:
+                                st.success("✅ Ready for ensemble!")
+                                if st.button("🚀 Activate Ensemble", use_container_width=True):
+                                    success, msg = nexus.activate_ensemble(user_approved=True)
+                                    if success:
+                                        st.success(msg)
+                                        st.rerun()
+                                    else:
+                                        st.error(msg)
+                            else:
+                                st.info(f"📊 {status['eligibility_reason']}")
+                        else:
+                            st.success("🟣 Ensemble Active!")
+                            # Show sub-agents status
+                            st.caption("**Sub-agents:**")
+                            for model, available in status['available_models'].items():
+                                icon = "✅" if available else "❌"
+                                st.caption(f"{icon} {model.capitalize()}")
+                        
+                        # User rating (quality score)
+                        quality = status['performance']['quality_score']
+                        if quality > 0:
+                            st.metric("Quality Score", f"{quality:.1%}")
+                        
+                        # Quick rating buttons
+                        st.caption("**Rate last response:**")
+                        col1, col2, col3 = st.columns(3)
+                        with col1:
+                            if st.button("👍", use_container_width=True):
+                                nexus.add_user_satisfaction_rating(0.8, "Good")
+                                st.success("Thanks!")
+                                st.rerun()
+                        with col2:
+                            if st.button("😐", use_container_width=True):
+                                nexus.add_user_satisfaction_rating(0.5, "OK")
+                                st.info("Noted")
+                                st.rerun()
+                        with col3:
+                            if st.button("👎", use_container_width=True):
+                                nexus.add_user_satisfaction_rating(0.2, "Poor")
+                                st.warning("We'll improve")
+                                st.rerun()
+                                
+                    except Exception as e:
+                        st.error(f"Nexus error: {e}")
+            
+            # 🆕 VOTING WEIGHTS WIDGET
+            with st.expander("⚖️ Current Voting Weights", expanded=False):
+                weights = get_current_voting_weights()
+                
+                st.caption("Dynamic weights based on performance")
+                
+                for advisor_name, weight in sorted(weights.items(), key=lambda x: x[1], reverse=True):
+                    # Color based on weight
+                    if weight >= 20:
+                        color = "🟢"
+                    elif weight >= 15:
+                        color = "🟡"
+                    elif weight >= 10:
+                        color = "🟠"
+                    else:
+                        color = "🔴"
+                    
+                    # Display name (shortened)
+                    display = advisor_name.replace("Partner Zarządzający (JA)", "JA").replace("Changpeng Zhao (CZ)", "CZ")
+                    
+                    st.metric(
+                        label=f"{color} {display}",
+                        value=f"{weight:.2f}%",
+                        delta=None if advisor_name == "Partner Zarządzający (JA)" else f"±{weight - 13.75:.2f}%"
+                    )
+                
+                if st.button("🔄 Sync Weights to Personas", use_container_width=True):
+                    if sync_weights_to_personas():
+                        st.success("✅ Weights synchronized!")
+                        st.rerun()
+                    else:
+                        st.error("❌ Sync failed")
             
             partners = {}
             
@@ -7064,6 +7541,320 @@ def show_partners_page():
         st.caption("� Wagi głosów pochodzą z Kodeksu Spółki")
         st.caption("🎁 30% puli bonusowej - partnerzy mogą zdobywać dodatkowe % za trafne decyzje i wartościowe analizy")
         st.caption("📜 Zmiany wag są zapisywane bezpośrednio w pliku `kodeks_spolki.txt`")
+    
+    # ==================== TAB 3: VOTING WEIGHTS ====================
+    with tab_voting:
+        st.title("⚖️ System Wag Głosów i Scoring Partnerów")
+        
+        # Load current weights from scoring system
+        weights = get_current_voting_weights()
+        
+        # Load scoring data for detailed stats
+        scoring_file = "advisor_scoring.json"
+        scoring_data = {}
+        
+        if os.path.exists(scoring_file):
+            try:
+                with open(scoring_file, 'r', encoding='utf-8') as f:
+                    scoring_data = json.load(f)
+            except:
+                pass
+        
+        # Header with sync button
+        col1, col2 = st.columns([3, 1])
+        with col1:
+            st.markdown("### 📊 Aktualne Wagi Głosów")
+            st.caption("Dynamiczny system oparty na trafności przewidywań i jakości analiz")
+        with col2:
+            if st.button("🔄 Sync Weights to Personas", use_container_width=True):
+                if sync_weights_to_personas():
+                    st.success("✅ Wagi zsynchronizowane!")
+                    st.rerun()
+                else:
+                    st.error("❌ Błąd synchronizacji")
+        
+        # Display current leaderboard
+        st.markdown("---")
+        
+        # Sort by weight descending
+        sorted_weights = sorted(weights.items(), key=lambda x: x[1], reverse=True)
+        
+        # Medal emojis
+        medals = {0: "🥇", 1: "🥈", 2: "🥉"}
+        
+        for idx, (advisor_name, weight) in enumerate(sorted_weights):
+            medal = medals.get(idx, f"{idx+1}.")
+            
+            # Color coding based on weight
+            if weight >= 20:
+                color = "🟢"
+                delta_color = "normal"
+            elif weight >= 15:
+                color = "🟡"
+                delta_color = "normal"
+            elif weight >= 10:
+                color = "🟠"
+                delta_color = "off"
+            else:
+                color = "🔴"
+                delta_color = "inverse"
+            
+            # Get advisor data from scoring system
+            advisor_data = scoring_data.get('advisors', {}).get(advisor_name, {})
+            total_predictions = advisor_data.get('total_predictions', 0)
+            accuracy_rate = advisor_data.get('accuracy_rate', 0.0)
+            advisor_type = advisor_data.get('type', 'ai')
+            
+            # Display row
+            col1, col2, col3, col4 = st.columns([2, 1, 1, 1])
+            
+            with col1:
+                type_emoji = "👤" if advisor_type == "human" else "🤖"
+                st.markdown(f"**{medal} {color} {type_emoji} {advisor_name}**")
+            
+            with col2:
+                st.metric(
+                    label="Waga głosu",
+                    value=f"{weight:.2f}%",
+                    delta=None if advisor_type == "human" else f"Base: {scoring_data.get('metadata', {}).get('base_weight_per_advisor', 13.75):.2f}%"
+                )
+            
+            with col3:
+                if advisor_type == "human":
+                    st.metric(label="Przewidywania", value="N/A")
+                else:
+                    st.metric(label="Przewidywania", value=f"{total_predictions}")
+            
+            with col4:
+                if advisor_type == "human":
+                    st.metric(label="Trafność", value="N/A")
+                elif total_predictions == 0:
+                    st.metric(label="Trafność", value="N/A")
+                else:
+                    st.metric(
+                        label="Trafność",
+                        value=f"{accuracy_rate*100:.1f}%",
+                        delta=f"{(accuracy_rate-0.5)*100:+.1f}%" if accuracy_rate != 0 else None,
+                        delta_color=delta_color
+                    )
+        
+        # System info
+        st.markdown("---")
+        st.markdown("### ⚙️ Parametry Systemu")
+        
+        metadata = scoring_data.get('metadata', {})
+        
+        col1, col2, col3, col4 = st.columns(4)
+        
+        with col1:
+            st.metric(
+                label="Okres ewaluacji",
+                value=f"{metadata.get('evaluation_period_days', 30)} dni"
+            )
+        
+        with col2:
+            st.metric(
+                label="Pula dynamiczna",
+                value=f"{metadata.get('dynamic_pool', 20.0)}%"
+            )
+        
+        with col3:
+            st.metric(
+                label="Min. waga",
+                value=f"{metadata.get('weight_limits', {}).get('min', 5.0)}%"
+            )
+        
+        with col4:
+            st.metric(
+                label="Max. waga",
+                value=f"{metadata.get('weight_limits', {}).get('max', 25.0)}%"
+            )
+        
+        # Next rebalance date
+        next_rebalance = metadata.get('next_rebalance', 'Brak danych')
+        st.info(f"📅 **Następny rebalancing:** {next_rebalance}")
+        
+        # Prediction History
+        st.markdown("---")
+        st.markdown("### 🔮 Historia Przewidywań")
+        
+        # Collect all predictions from all advisors
+        all_predictions = []
+        
+        for advisor_name, advisor_data in scoring_data.get('advisors', {}).items():
+            if advisor_data.get('type') == 'ai':
+                for pred in advisor_data.get('predictions', []):
+                    pred_copy = pred.copy()
+                    pred_copy['advisor'] = advisor_name
+                    all_predictions.append(pred_copy)
+        
+        if not all_predictions:
+            st.info("📭 Brak przewidywań do wyświetlenia. Partnerzy AI mogą dodawać przewidywania przez CLI tool.")
+            
+            with st.expander("💡 Jak dodać przewidywanie?"):
+                st.code("""
+# Użyj CLI tool w terminalu:
+python advisor_scoring_manager.py add_prediction "Nazwa Partnera" "Opis przewidywania" "price_movement" "BTC" "up" 0.75
+
+# Parametry:
+# - Nazwa Partnera: dokładna nazwa z advisor_scoring.json
+# - Opis: tekstowy opis przewidywania
+# - Typ: price_movement | portfolio_action | market_timing | risk_warning
+# - Asset: nazwa aktywa (BTC, KGHM, S&P500, etc.)
+# - Kierunek: up/down dla price_movement, buy/sell/hold dla portfolio_action
+# - Confidence: 0.0-1.0 (np. 0.75 = 75% pewności)
+                """, language="bash")
+        
+        else:
+            # Sort by date (newest first)
+            all_predictions.sort(key=lambda x: x.get('created_at', ''), reverse=True)
+            
+            # Filter options
+            col1, col2, col3 = st.columns(3)
+            
+            with col1:
+                filter_advisor = st.selectbox(
+                    "Filtruj po partnerze",
+                    options=["Wszyscy"] + sorted(list(set(p['advisor'] for p in all_predictions)))
+                )
+            
+            with col2:
+                filter_status = st.selectbox(
+                    "Filtruj po statusie",
+                    options=["Wszystkie", "pending", "evaluated"]
+                )
+            
+            with col3:
+                filter_type = st.selectbox(
+                    "Filtruj po typie",
+                    options=["Wszystkie"] + sorted(list(set(p.get('type', 'unknown') for p in all_predictions)))
+                )
+            
+            # Apply filters
+            filtered_predictions = all_predictions
+            
+            if filter_advisor != "Wszyscy":
+                filtered_predictions = [p for p in filtered_predictions if p['advisor'] == filter_advisor]
+            
+            if filter_status != "Wszystkie":
+                filtered_predictions = [p for p in filtered_predictions if p.get('status') == filter_status]
+            
+            if filter_type != "Wszystkie":
+                filtered_predictions = [p for p in filtered_predictions if p.get('type') == filter_type]
+            
+            # Display predictions
+            st.caption(f"Pokazuję {len(filtered_predictions)} z {len(all_predictions)} przewidywań")
+            
+            for pred in filtered_predictions:
+                status = pred.get('status', 'pending')
+                
+                if status == 'pending':
+                    status_emoji = "⏳"
+                    status_color = "🟡"
+                elif pred.get('was_correct'):
+                    status_emoji = "✅"
+                    status_color = "🟢"
+                else:
+                    status_emoji = "❌"
+                    status_color = "🔴"
+                
+                with st.expander(f"{status_color} {status_emoji} [{pred['advisor']}] {pred.get('prediction', 'Brak opisu')[:80]}..."):
+                    col1, col2 = st.columns(2)
+                    
+                    with col1:
+                        st.markdown(f"**🤖 Partner:** {pred['advisor']}")
+                        st.markdown(f"**📝 Przewidywanie:** {pred.get('prediction', 'Brak opisu')}")
+                        st.markdown(f"**🏷️ Typ:** `{pred.get('type', 'unknown')}`")
+                        st.markdown(f"**💎 Asset:** {pred.get('asset', 'N/A')}")
+                        st.markdown(f"**📊 Kierunek:** {pred.get('direction', 'N/A')}")
+                    
+                    with col2:
+                        st.markdown(f"**📅 Utworzono:** {pred.get('created_at', 'N/A')}")
+                        st.markdown(f"**⏰ Ewaluacja:** {pred.get('evaluate_at', 'N/A')}")
+                        st.markdown(f"**🎯 Pewność:** {pred.get('confidence', 0.0)*100:.0f}%")
+                        st.markdown(f"**📊 Status:** {status}")
+                        
+                        if status == 'evaluated':
+                            st.markdown(f"**✓ Trafność:** {'✅ TAK' if pred.get('was_correct') else '❌ NIE'}")
+                            if pred.get('outcome_notes'):
+                                st.markdown(f"**📋 Notatki:** {pred.get('outcome_notes')}")
+                    
+                    st.caption(f"ID: `{pred.get('id', 'unknown')}`")
+        
+        # Rebalancing history
+        st.markdown("---")
+        st.markdown("### 📜 Historia Rebalancingu")
+        
+        rebalance_history = scoring_data.get('rebalance_history', [])
+        
+        if not rebalance_history:
+            st.info("📭 Brak historii rebalancingu. Pierwszy rebalancing odbędzie się automatycznie pierwszego dnia miesiąca.")
+        else:
+            # Show last 5 rebalances
+            recent_rebalances = rebalance_history[-5:][::-1]  # Last 5, newest first
+            
+            for rebalance in recent_rebalances:
+                with st.expander(f"📅 {rebalance.get('date', 'N/A')} - {rebalance.get('reason', 'Rebalancing')}"):
+                    weight_changes = rebalance.get('weight_changes', {})
+                    
+                    if weight_changes:
+                        for advisor, change_data in weight_changes.items():
+                            old_weight = change_data.get('old_weight', 0)
+                            new_weight = change_data.get('new_weight', 0)
+                            delta = new_weight - old_weight
+                            
+                            delta_str = f"{delta:+.2f}%"
+                            delta_emoji = "📈" if delta > 0 else "📉" if delta < 0 else "➡️"
+                            
+                            st.markdown(f"**{advisor}:** {old_weight:.2f}% → {new_weight:.2f}% {delta_emoji} {delta_str}")
+                    else:
+                        st.caption("Brak zmian wag")
+        
+        # Footer info
+        st.markdown("---")
+        st.markdown("### ℹ️ Jak działa system scoring?")
+        
+        with st.expander("📖 Dokumentacja systemu"):
+            st.markdown("""
+            **Zasady działania:**
+            
+            1. **Przewidywania** - Partnerzy AI dodają przewidywania przez CLI tool
+            2. **Okres ewaluacji** - Każde przewidywanie oceniane po 30 dniach
+            3. **Scoring** - Trafność wpływa na wagę głosu partnera
+            4. **Rebalancing** - Co miesiąc (1. dzień) automatyczna aktualizacja wag
+            5. **Limity** - Waga może być od 5% do 25%
+            6. **Pula dynamiczna** - 20% jest redystrybuowane na podstawie wyników
+            
+            **Formuła:**
+            ```
+            delta_weight = (accuracy_rate - 0.5) * dynamic_pool * 0.5
+            new_weight = base_weight + delta_weight
+            ```
+            
+            **Typy przewidywań:**
+            - `price_movement` - Przewidywanie kierunku ceny aktywa
+            - `portfolio_action` - Rekomendacja buy/sell/hold
+            - `market_timing` - Szersze przewidywanie rynkowe
+            - `risk_warning` - Ostrzeżenie przed ryzykiem
+            
+            **CLI Komendy:**
+            ```bash
+            # Pokaż leaderboard
+            python advisor_scoring_manager.py leaderboard
+            
+            # Dodaj przewidywanie
+            python advisor_scoring_manager.py add_prediction "Nexus" "BTC spadnie" "price_movement" "BTC" "down" 0.8
+            
+            # Oceń przewidywanie
+            python advisor_scoring_manager.py evaluate pred_Nexus_20251110_163239 True "Cena spadła jak przewidziano"
+            
+            # Pokaż oczekujące ewaluacje
+            python advisor_scoring_manager.py pending
+            
+            # Wykonaj rebalancing
+            python advisor_scoring_manager.py rebalance
+            ```
+            """)
 
 def show_analytics_page(stan_spolki):
     """Strona z analityką"""

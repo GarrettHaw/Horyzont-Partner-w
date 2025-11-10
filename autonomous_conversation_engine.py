@@ -13,6 +13,14 @@ import anthropic
 import google.generativeai as genai
 from openai import OpenAI
 
+# Import Nexus AI Engine
+try:
+    from nexus_ai_engine import get_nexus_engine
+    NEXUS_AVAILABLE = True
+except Exception as e:
+    print(f"⚠️ Nexus AI Engine niedostępny: {e}")
+    NEXUS_AVAILABLE = False
+
 # Import konfiguracji z głównego pliku
 try:
     from streamlit_app import (
@@ -83,6 +91,27 @@ DEFAULT_TOPICS = {
         "priority": "HIGH",
         "frequency": "weekly",
         "prompt_template": "Porozmawiajmy o naszej długoterminowej strategii inwestycyjnej. Czy powinna się zmienić? Co dostosować?"
+    },
+    "nexus_meta_discussion": {
+        "name": "Meta-Dyskusja o Radzie",
+        "description": "Nexus moderuje dyskusję o efektywności współpracy Rady",
+        "priority": "MEDIUM",
+        "frequency": "monthly",
+        "prompt_template": "Nexus zaprasza do refleksji: Jak oceniacie naszą współpracę jako Rada? Co działa dobrze? Co moglibyśmy poprawić w naszych dyskusjach?"
+    },
+    "ai_voting_weights": {
+        "name": "Przegląd Wag Głosów",
+        "description": "Dyskusja o systemie scoring i wagach głosów partnerów",
+        "priority": "LOW",
+        "frequency": "monthly",
+        "prompt_template": "Porozmawiajmy o systemie dynamicznych wag głosów. Czy obecny system scoring dobrze odzwierciedla wartość waszych porad? Jak go ulepszyć?"
+    },
+    "knowledge_gaps": {
+        "name": "Luki Wiedzy",
+        "description": "Identyfikacja obszarów gdzie Rada potrzebuje więcej expertise",
+        "priority": "MEDIUM",
+        "frequency": "monthly",
+        "prompt_template": "Jakie są nasze największe luki wiedzy? W jakich obszarach potrzebujemy lepszych analiz lub dodatkowych źródeł informacji?"
     }
 }
 
@@ -242,6 +271,59 @@ class AutonomousConversationEngine:
         
         persona = PERSONAS[partner_name]
         model_engine = persona.get("model_engine", "gemini")
+        
+        # ✨ NEXUS HANDLING - używa nexus_ai_engine.py
+        if model_engine == "nexus" and NEXUS_AVAILABLE:
+            try:
+                nexus = get_nexus_engine()
+                
+                # Przygotuj kontekst dla Nexusa
+                nexus_context = {
+                    'conversation_type': 'autonomous',
+                    'topic': prompt,
+                    'previous_messages': context[-3:] if context else [],
+                    'participant_count': len(set([msg.get('partner') for msg in context])) if context else 0
+                }
+                
+                # Nexus prompt - jest moderatorem rozmowy
+                nexus_prompt = f"""Jesteś Nexus - meta-advisor koordynujący Radę Partnerów.
+
+To jest AUTONOMICZNA rozmowa (Zarządzającego nie ma). 
+Rozmawiasz z {', '.join([msg.get('partner', '?') for msg in context[-3:]])} o temacie: {prompt}
+
+Twoja rola:
+- Syntetyzuj różne perspektywy
+- Wskazuj consensus lub główne różnice
+- Zadawaj pytania prowokujące głębszą dyskusję
+- Bądź zwięzły (3-4 zdania max)
+
+POPRZEDNIE WYPOWIEDZI:
+{chr(10).join([f"{msg['partner']}: {msg['message']}" for msg in context[-3:]]) if context else "Brak poprzednich wypowiedzi"}
+
+Twoja odpowiedź (jako moderator, zwięźle):"""
+                
+                result = nexus.generate_response(nexus_prompt, context=nexus_context)
+                
+                if result.get('success'):
+                    answer = result.get('response', '')
+                    
+                    # Oczyść odpowiedź
+                    answer = answer.strip()
+                    for token in ['<s>', '</s>', '<|endoftext|>', '<|im_end|>', '�']:
+                        answer = answer.replace(token, '')
+                    answer = answer.strip()
+                    
+                    # Track API call (Nexus używa Gemini w single mode)
+                    self.tracker.track_call('gemini', is_autonomous=True)
+                    
+                    return answer
+                else:
+                    print(f"⚠️ Nexus zwrócił błąd: {result.get('error')}")
+                    return None
+                    
+            except Exception as e:
+                print(f"❌ Błąd wywołania Nexus: {e}")
+                return None
         
         # Mapuj model_engine na api_type dla trackera
         if model_engine.startswith("openrouter"):
@@ -419,8 +501,19 @@ Rozmawiasz z kolegami z Rady. Bądź zwięzły (max 3-4 zdania).
             summary = self._generate_summary(conversation)
             if summary:
                 conversation['summary'] = summary
-                self._save_conversation(conversation)  # Zapisz ze summary
                 print(f"✅ Summary wygenerowane")
+        
+        # 8b. ✨ NEXUS META-ANALYSIS (jeśli dostępny)
+        if NEXUS_AVAILABLE and len(conversation['messages']) >= 3:
+            print(f"🤖 Nexus przeprowadza meta-analizę...")
+            meta_analysis = self.nexus_meta_analysis(conversation)
+            if meta_analysis:
+                conversation['nexus_meta_analysis'] = meta_analysis
+                print(f"✅ Nexus meta-analysis ukończona")
+                print(f"   Jakość rozmowy: {meta_analysis.get('overall_quality', 0):.0%}")
+        
+        # Zapisz ze wszystkimi analizami
+        self._save_conversation(conversation)
         
         # 9. Wyślij email notification (jeśli włączone)
         try:
@@ -507,10 +600,273 @@ Odpowiedź TYLKO w formacie JSON, bez dodatkowego tekstu:
             if conv.get("id") == conv_id:
                 return conv
         return None
+    
+    # ============================================================================
+    # NEXUS ENHANCED FEATURES - Meta-analysis, Voting Simulation, Knowledge Synthesis
+    # ============================================================================
+    
+    def nexus_meta_analysis(self, conversation: Dict) -> Optional[Dict]:
+        """
+        🤖 Nexus przeprowadza meta-analizę rozmowy
+        
+        Analizuje:
+        - Główne trendy w dyskusji
+        - Punkty zgody i sporu
+        - Quality score wypowiedzi każdego partnera
+        - Rekomendacje dla przyszłych dyskusji
+        
+        Args:
+            conversation: Dict z zakończoną rozmową
+        
+        Returns:
+            Dict z meta-analizą lub None
+        """
+        if not NEXUS_AVAILABLE:
+            print("⚠️ Nexus niedostępny - meta-analysis pomięta")
+            return None
+        
+        messages = conversation.get("messages", [])
+        if len(messages) < 3:
+            print("⚠️ Za mało wiadomości do meta-analizy (min 3)")
+            return None
+        
+        try:
+            nexus = get_nexus_engine()
+            
+            # Zbuduj transkrypt
+            transcript = "\n".join([
+                f"[{msg.get('message_number', '?')}] {msg.get('partner', 'Unknown')}: {msg.get('message', '')}"
+                for msg in messages
+            ])
+            
+            topic_name = conversation.get("topic_name", "Unknown")
+            opening_prompt = conversation.get("opening_prompt", "")
+            
+            analysis_prompt = f"""Przeprowadź META-ANALIZĘ tej autonomicznej rozmowy Rady Partnerów.
+
+TEMAT: {topic_name}
+OPENING: {opening_prompt}
+LICZBA WYPOWIEDZI: {len(messages)}
+UCZESTNICY: {', '.join(conversation.get('participants', []))}
+
+TRANSKRYPT ROZMOWY:
+{transcript}
+
+Przeanalizuj i zwróć TYLKO JSON z następującymi polami:
+{{
+    "main_themes": ["temat1", "temat2", "temat3"],
+    "consensus_points": ["punkt zgody 1", "punkt zgody 2"],
+    "disagreement_points": ["punkt sporu 1", "punkt sporu 2"],
+    "partner_quality_scores": {{
+        "Partner1": {{"score": 0.8, "reason": "dlaczego"}},
+        "Partner2": {{"score": 0.6, "reason": "dlaczego"}}
+    }},
+    "key_insights": ["insight 1", "insight 2", "insight 3"],
+    "recommendations": ["rekomendacja 1", "rekomendacja 2"],
+    "overall_quality": 0.75
+}}
+
+JSON (bez dodatkowego tekstu):"""
+            
+            context = {'conversation_analysis': True}
+            result = nexus.generate_response(analysis_prompt, context=context)
+            
+            if result.get('success'):
+                # Parse JSON z odpowiedzi
+                response_text = result.get('response', '').strip()
+                
+                # Usuń markdown blocks
+                if response_text.startswith('```'):
+                    response_text = response_text.split('```')[1]
+                    if response_text.startswith('json'):
+                        response_text = response_text[4:]
+                    response_text = response_text.strip()
+                
+                meta_analysis = json.loads(response_text)
+                
+                print(f"✅ Nexus Meta-Analysis completed")
+                print(f"   Main themes: {len(meta_analysis.get('main_themes', []))}")
+                print(f"   Overall quality: {meta_analysis.get('overall_quality', 0)}")
+                
+                return meta_analysis
+            else:
+                print(f"❌ Nexus meta-analysis failed: {result.get('error')}")
+                return None
+                
+        except Exception as e:
+            print(f"❌ Błąd meta-analysis: {e}")
+            return None
+    
+    def nexus_voting_simulation(self, conversation: Dict, decision_question: str) -> Optional[Dict]:
+        """
+        🗳️ Nexus symuluje głosowanie na podstawie rozmowy
+        
+        Na podstawie analizy wypowiedzi partnerów w rozmowie,
+        Nexus przewiduje jak zagłosowaliby na konkretną decyzję.
+        
+        Args:
+            conversation: Dict z zakończoną rozmową
+            decision_question: Pytanie decyzyjne (np. "Czy zwiększyć alokację w krypto do 30%?")
+        
+        Returns:
+            Dict z symulacją głosowania lub None
+        """
+        if not NEXUS_AVAILABLE:
+            print("⚠️ Nexus niedostępny - voting simulation pomięta")
+            return None
+        
+        messages = conversation.get("messages", [])
+        if len(messages) < 3:
+            print("⚠️ Za mało wiadomości do voting simulation")
+            return None
+        
+        try:
+            nexus = get_nexus_engine()
+            
+            # Grupuj wiadomości po partnerach
+            partner_statements = {}
+            for msg in messages:
+                partner = msg.get('partner', 'Unknown')
+                if partner not in partner_statements:
+                    partner_statements[partner] = []
+                partner_statements[partner].append(msg.get('message', ''))
+            
+            # Zbuduj summary wypowiedzi każdego partnera
+            partner_summaries = "\n".join([
+                f"{partner}: {'; '.join(statements[:3])}"  # Pierwsze 3 wypowiedzi
+                for partner, statements in partner_statements.items()
+            ])
+            
+            voting_prompt = f"""Na podstawie autonomicznej rozmowy, zasymuluj jak partnerzy zagłosowaliby na poniższą decyzję.
+
+PYTANIE DECYZYJNE: {decision_question}
+
+WYPOWIEDZI PARTNERÓW W ROZMOWIE:
+{partner_summaries}
+
+Przeanalizuj stanowiska i zwróć TYLKO JSON:
+{{
+    "votes": {{
+        "Partner1": {{"vote": "ZA", "confidence": 0.8, "reasoning": "dlaczego"}},
+        "Partner2": {{"vote": "PRZECIW", "confidence": 0.6, "reasoning": "dlaczego"}},
+        "Partner3": {{"vote": "WSTRZYMUJĘ SIĘ", "confidence": 0.5, "reasoning": "dlaczego"}}
+    }},
+    "predicted_outcome": "ZA" lub "PRZECIW" lub "REMIS",
+    "vote_tally": {{"ZA": 2, "PRZECIW": 1, "WSTRZYMUJĘ SIĘ": 1}},
+    "confidence_overall": 0.7,
+    "key_arguments_for": ["argument 1", "argument 2"],
+    "key_arguments_against": ["argument 1", "argument 2"],
+    "nexus_recommendation": "Twoja rekomendacja jako meta-advisor"
+}}
+
+Możliwe głosy: "ZA", "PRZECIW", "WSTRZYMUJĘ SIĘ"
+JSON (bez dodatkowego tekstu):"""
+            
+            context = {'voting_simulation': True}
+            result = nexus.generate_response(voting_prompt, context=context)
+            
+            if result.get('success'):
+                response_text = result.get('response', '').strip()
+                
+                # Usuń markdown blocks
+                if response_text.startswith('```'):
+                    response_text = response_text.split('```')[1]
+                    if response_text.startswith('json'):
+                        response_text = response_text[4:]
+                    response_text = response_text.strip()
+                
+                voting_result = json.loads(response_text)
+                
+                print(f"✅ Nexus Voting Simulation completed")
+                print(f"   Predicted outcome: {voting_result.get('predicted_outcome')}")
+                print(f"   Confidence: {voting_result.get('confidence_overall', 0)}")
+                
+                return voting_result
+            else:
+                print(f"❌ Nexus voting simulation failed: {result.get('error')}")
+                return None
+                
+        except Exception as e:
+            print(f"❌ Błąd voting simulation: {e}")
+            return None
+    
+    def nexus_knowledge_synthesis(self, recent_conversations: List[Dict], query: str) -> Optional[str]:
+        """
+        📚 Nexus syntetyzuje wiedzę z wielu rozmów
+        
+        Analizuje wiele ostatnich rozmów i odpowiada na pytanie
+        bazując na zgromadzonej wiedzy.
+        
+        Args:
+            recent_conversations: Lista ostatnich rozmów (max 5)
+            query: Pytanie do Nexusa
+        
+        Returns:
+            Odpowiedź Nexusa lub None
+        """
+        if not NEXUS_AVAILABLE:
+            print("⚠️ Nexus niedostępny - knowledge synthesis pomięta")
+            return None
+        
+        if not recent_conversations:
+            return "Brak rozmów do analizy."
+        
+        try:
+            nexus = get_nexus_engine()
+            
+            # Zbuduj knowledge base z rozmów
+            knowledge_base = []
+            
+            for conv in recent_conversations[:5]:  # Max 5 ostatnich
+                topic = conv.get('topic_name', 'Unknown')
+                date = conv.get('date', 'Unknown')
+                
+                # Dodaj summary jeśli istnieje
+                if 'summary' in conv:
+                    summary_text = conv['summary'].get('summary', '')
+                    key_points = conv['summary'].get('key_points', [])
+                    knowledge_base.append(f"[{date}] {topic}: {summary_text} | Kluczowe wnioski: {', '.join(key_points)}")
+                else:
+                    # Fallback - pierwsze 3 wiadomości
+                    messages = conv.get('messages', [])[:3]
+                    msgs_text = '; '.join([f"{m.get('partner')}: {m.get('message', '')[:100]}" for m in messages])
+                    knowledge_base.append(f"[{date}] {topic}: {msgs_text}")
+            
+            knowledge_text = "\n".join(knowledge_base)
+            
+            synthesis_prompt = f"""Jesteś Nexus - meta-advisor z dostępem do historii autonomicznych rozmów Rady Partnerów.
+
+PYTANIE: {query}
+
+BAZA WIEDZY Z OSTATNICH ROZMÓW:
+{knowledge_text}
+
+Na podstawie powyższej wiedzy, udziel zwięzłej odpowiedzi (max 5-6 zdań):
+- Syntetyzuj insights z różnych rozmów
+- Wskaż trendy i wzorce
+- Podaj konkretne rekomendacje
+- Cytuj konkretne rozmowy jeśli relevantne
+
+Odpowiedź:"""
+            
+            context = {'knowledge_synthesis': True, 'conversations_count': len(recent_conversations)}
+            result = nexus.generate_response(synthesis_prompt, context=context)
+            
+            if result.get('success'):
+                answer = result.get('response', '').strip()
+                print(f"✅ Nexus Knowledge Synthesis completed ({len(recent_conversations)} rozmów)")
+                return answer
+            else:
+                print(f"❌ Nexus knowledge synthesis failed: {result.get('error')}")
+                return None
+                
+        except Exception as e:
+            print(f"❌ Błąd knowledge synthesis: {e}")
+            return None
 
 
 def main():
-    """Główna funkcja - uruchom autonomiczną rozmowę"""
+    """Główna funkcja - uruchom autonomiczną rozmowę z Nexus enhancements"""
     engine = AutonomousConversationEngine()
     
     # Wyświetl status API przed rozmową
@@ -524,6 +880,45 @@ def main():
         print(f"\n✅ Sukces! ID rozmowy: {conversation['id']}")
         print(f"📝 Liczba wiadomości: {len(conversation['messages'])}")
         print(f"🔢 Użyto API calls: {conversation['api_calls_used']}")
+        
+        # ✨ NEXUS ENHANCED FEATURES DEMO
+        if NEXUS_AVAILABLE:
+            print("\n" + "="*60)
+            print("🤖 NEXUS ENHANCED FEATURES - DEMO")
+            print("="*60)
+            
+            # 1. Meta-analysis już została wykonana w run_conversation()
+            if 'nexus_meta_analysis' in conversation:
+                meta = conversation['nexus_meta_analysis']
+                print(f"\n📊 Meta-Analysis Results:")
+                print(f"   Overall Quality: {meta.get('overall_quality', 0):.0%}")
+                print(f"   Main Themes: {', '.join(meta.get('main_themes', []))}")
+                print(f"   Consensus: {len(meta.get('consensus_points', []))} punktów")
+                print(f"   Disagreements: {len(meta.get('disagreement_points', []))} punktów")
+            
+            # 2. Voting Simulation - przykładowe pytanie
+            print(f"\n🗳️ Voting Simulation Example:")
+            decision_q = "Czy zwiększyć alokację w krypto do 30% portfela?"
+            voting_result = engine.nexus_voting_simulation(conversation, decision_q)
+            
+            if voting_result:
+                print(f"   Pytanie: {decision_q}")
+                print(f"   Predicted Outcome: {voting_result.get('predicted_outcome')}")
+                print(f"   Vote Tally: {voting_result.get('vote_tally')}")
+                print(f"   Confidence: {voting_result.get('confidence_overall', 0):.0%}")
+                print(f"   Nexus Recommendation: {voting_result.get('nexus_recommendation', 'N/A')[:100]}...")
+            
+            # 3. Knowledge Synthesis - pytanie bazujące na historii
+            recent = engine.get_recent_conversations(limit=5)
+            if len(recent) > 0:
+                print(f"\n📚 Knowledge Synthesis Example:")
+                query = "Jakie są najważniejsze obawy Rady dotyczące naszego portfela w ostatnich dyskusjach?"
+                synthesis = engine.nexus_knowledge_synthesis(recent, query)
+                
+                if synthesis:
+                    print(f"   Pytanie: {query}")
+                    print(f"   Nexus Answer:\n   {synthesis[:300]}...")
+        
     else:
         print("\n❌ Nie udało się przeprowadzić rozmowy (brak budżetu API?)")
     

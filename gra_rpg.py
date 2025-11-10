@@ -2324,6 +2324,99 @@ def format_table_for_ai(rows, max_rows=50):
     
     return "\n".join(table_lines) + truncated_note
 
+def load_personas_from_memory_json(filename="persona_memory.json"):
+    """
+    Ładuje PERSONAS z persona_memory.json (nowy format z dynamicznymi wagami i scoring)
+    
+    Konwertuje z formatu persona_memory.json do formatu PERSONAS używanego przez gra_rpg.py
+    
+    Returns:
+        dict: PERSONAS w formacie kompatybilnym z gra_rpg.py lub None jeśli błąd
+    """
+    if not os.path.exists(filename):
+        return None
+    
+    try:
+        with open(filename, 'r', encoding='utf-8') as f:
+            memory_data = json.load(f)
+        
+        personas = {}
+        
+        for partner_name, partner_data in memory_data.items():
+            # Pomiń Partnera Zarządzającego (JA) - to użytkownik, nie AI
+            if 'Partner Zarządzający' in partner_name and '(JA)' in partner_name:
+                continue
+            
+            # Sprawdź czy to partner AI (ma communication_style)
+            if 'communication_style' not in partner_data:
+                continue
+            
+            comm_style = partner_data.get('communication_style', {})
+            
+            # Buduj konfigurację w formacie PERSONAS
+            persona_config = {
+                'model_engine': 'gemini',  # Domyślnie Gemini
+                'system_instruction': comm_style.get('tone', 'Professional advisor'),
+                'ukryty_cel': f"Support partnership growth and provide {partner_name} perspective",
+                'color_code': '\033[94m'  # Niebieski domyślnie
+            }
+            
+            # Specjalna obsługa dla Nexusa
+            if partner_name == "Nexus":
+                ai_config = partner_data.get('ai_config', {})
+                if ai_config:
+                    # Nexus używa swojego własnego engine
+                    persona_config['model_engine'] = 'nexus'  # Specjalny marker
+                    persona_config['system_instruction'] = (
+                        "You are Nexus, the meta-advisor synthesizing insights from multiple AI models. "
+                        "Provide balanced, data-driven advice with clear confidence levels. "
+                        f"Current mode: {ai_config.get('mode', 'single')}"
+                    )
+                    persona_config['ukryty_cel'] = (
+                        "Evolve into the most capable AI advisor by learning from all interactions "
+                        "and eventually coordinating an ensemble of specialized sub-agents"
+                    )
+                    persona_config['color_code'] = '\033[96m'  # Cyan dla Nexusa
+            
+            # Mapowanie znanych partnerów na ich model engines i kolory
+            partner_mappings = {
+                'Warren Buffett': {
+                    'model_engine': 'gemini',
+                    'color_code': '\033[92m',  # Zielony
+                    'system_instruction': comm_style.get('tone', 'Value investing, long-term focus, business quality'),
+                    'ukryty_cel': 'Ensure partnership remains focused on quality businesses held for decades'
+                },
+                'George Soros': {
+                    'model_engine': 'openrouter_mixtral',
+                    'color_code': '\033[91m',  # Czerwony
+                    'system_instruction': comm_style.get('tone', 'Macro analysis, reflexivity, market timing'),
+                    'ukryty_cel': 'Identify major market turning points and leverage system inefficiencies'
+                },
+                'Changpeng Zhao (CZ)': {
+                    'model_engine': 'openrouter_glm',
+                    'color_code': '\033[97m',  # Biały
+                    'system_instruction': comm_style.get('tone', 'Crypto innovation, disruption, decentralization'),
+                    'ukryty_cel': 'Prove that decentralized systems are superior architecture for future finance'
+                }
+            }
+            
+            # Zastosuj mapowanie jeśli partner jest znany
+            if partner_name in partner_mappings:
+                persona_config.update(partner_mappings[partner_name])
+            
+            personas[partner_name] = persona_config
+        
+        if personas:
+            print_colored(f"✓ Załadowano {len(personas)} partnerów AI z persona_memory.json (NOWY FORMAT)", "\033[92m")
+            print_colored(f"  Partnerzy: {', '.join(personas.keys())}", "\033[96m")
+            return personas
+        else:
+            return None
+            
+    except Exception as e:
+        print_colored(f"⚠️ Błąd ładowania persona_memory.json: {e}", "\033[93m")
+        return None
+
 def wczytaj_konfiguracje_person(nazwa_pliku):
     """Wczytuje i parsuje konfigurację PERSONAS z pliku."""
     if not os.path.exists(nazwa_pliku):
@@ -2345,8 +2438,17 @@ def wczytaj_konfiguracje_person(nazwa_pliku):
 
 # --- GŁÓWNA LOGIKA PROGRAMU ---
 
-PERSONAS = wczytaj_konfiguracje_person(NAZWA_PLIKU_KONFIGURACJI_PERSON)
+# Próbuj załadować PERSONAS z nowego formatu (persona_memory.json)
+print_colored("🔄 Ładowanie konfiguracji partnerów...", "\033[96m")
+PERSONAS = load_personas_from_memory_json("persona_memory.json")
+
+# Fallback na stary format jeśli nowy nie istnieje
 if not PERSONAS:
+    print_colored("⚠️ Nie znaleziono persona_memory.json, próbuję starego formatu...", "\033[93m")
+    PERSONAS = wczytaj_konfiguracje_person(NAZWA_PLIKU_KONFIGURACJI_PERSON)
+
+if not PERSONAS:
+    print_colored("❌ BŁĄD: Nie można załadować konfiguracji partnerów z żadnego źródła!", "\033[91m")
     exit()
 
 KODEKS_SPOLKI = wczytaj_kodeks()

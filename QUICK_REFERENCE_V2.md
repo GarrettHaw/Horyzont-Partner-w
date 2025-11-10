@@ -1,4 +1,4 @@
-# 🚀 QUICK REFERENCE - AI Personality System v2.0
+# 🚀 QUICK REFERENCE - AI Personality System v2.0 + Nexus
 
 ## 📋 Podstawowe Komendy
 
@@ -6,6 +6,9 @@
 ```powershell
 # Test systemu v2.0
 python -c "from persona_context_builder import build_enhanced_context; print('✅ OK')"
+
+# Test Nexus AI Engine
+python nexus_ai_engine.py
 
 # Zobacz kontekst AI
 python persona_context_builder.py
@@ -15,6 +18,12 @@ python knowledge_base_updater.py
 
 # Audyt miesięczny
 python monthly_audit.py
+
+# Autonomous Conversation (test)
+python autonomous_conversation_engine.py
+
+# Advisor Scoring
+python advisor_scoring_manager.py leaderboard
 ```
 
 ### Backup i Maintenance
@@ -28,37 +37,73 @@ Copy-Item persona_memory.json "persona_memory_backup_$(Get-Date -Format 'yyyyMMd
 
 ---
 
-## 🎭 Profile Partnerów (Quick Ref)
+## 🎭 Profile Partnerów (Quick Ref) - UPDATED 5 Partners
 
-| Persona | Mood Default | Risk | Voting | Goal |
-|---------|--------------|------|--------|------|
-| **Benjamin Graham** 🛡️ | neutral | 0.3 | 5% | Zero strat |
-| **Warren Buffett** 🏡 | optimistic | 0.5 | 5% | Quality compounders |
-| **Philip Fisher** 🔬 | excited | 0.7 | 5% | Growth 25%+ ROE |
-| **George Soros** 🌍 | cautious | 0.6 | 5% | Reflexivity detection |
-| **CZ** ⚡ | excited | 0.8 | 5% | 30% crypto allocation |
-| **Partner Zarządzający** 👔 | neutral | 0.6 | 35% | Sustainable growth |
-| **Partner Strategiczny** 🎯 | confident | 0.7 | 30% | Market leadership |
+| Persona | API | Risk | Voting | Goal |
+|---------|-----|------|--------|------|
+| **Nexus AI** 🤖 | Gemini/Ensemble | 0.5 | 13.75% | Best meta-advisor |
+| **Warren Buffett** 🏡 | Gemini | 0.5 | 13.75% | Quality compounders |
+| **George Soros** 🌍 | OpenRouter Mixtral | 0.6 | 13.75% | System inefficiencies |
+| **CZ** ⚡ | OpenRouter GLM | 0.8 | 13.75% | Decentralized finance |
+| **JA (Human)** 👔 | - | 0.6 | 25% | Sustainable growth |
+
+**IMPORTANT:** Reorganizacja z 10 → 5 partnerów (November 2025)
 
 ---
 
-## 📊 Voting Weight Bonuses
+## 🤖 Nexus AI - Quick Commands
+
+### Status Check
+```python
+from nexus_ai_engine import get_nexus_engine
+nexus = get_nexus_engine()
+status = nexus.get_status()
+print(f"Mode: {status['mode']}")  # 'single' or 'ensemble'
+print(f"Queries: {status['performance']['total_queries_handled']}")
+```
+
+### Activate Ensemble (when eligible)
+```python
+eligible, reason = nexus.check_ensemble_eligibility()
+if eligible:
+    success, msg = nexus.activate_ensemble(user_approved=True)
+```
+
+### Add User Rating
+```python
+# After getting response from Nexus
+nexus.add_user_satisfaction_rating(rating=0.8, feedback="Great analysis!")
+# rating: 0.2 (👎), 0.5 (😐), 0.8 (👍)
+```
+
+---
+
+## 📊 Voting Weight System - DYNAMIC
 
 ```
-Base Weight (Kodeks): 
-- JA: 35%
-- Partner Strategiczny: 30%
-- Others: 5% each
+Base Weight (persona_memory.json): 
+- JA (Human): 25%
+- Nexus: 13.75%
+- Warren Buffett: 13.75%
+- George Soros: 13.75%
+- CZ: 13.75%
 
-Credibility Bonus Range: -2% to +3%
+Dynamic Adjustment (advisor_scoring.json):
+- Accuracy >70% → Weight increases (max 25%)
+- Accuracy <50% → Weight decreases (min 5%)
+- Monthly rebalancing: 1st day of month
 
 Formula:
-effective_weight = base_weight + ((credibility_score - 1.0) * 3)
+new_weight = base_weight * (accuracy_rate / 0.65)
+# 0.65 is the baseline threshold
+```
 
-Examples:
-- credibility 1.0 (100%) → bonus 0% → effective = base
-- credibility 0.8 (80%) → bonus -0.6% → effective = base - 0.6%
-- credibility 1.2 (120% impossible but...) → bonus +0.6% → effective = base + 0.6%
+### Check Current Weights
+```python
+from streamlit_app import get_current_voting_weights
+weights = get_current_voting_weights()
+for partner, weight in weights.items():
+    print(f"{partner}: {weight}%")
 ```
 
 ---

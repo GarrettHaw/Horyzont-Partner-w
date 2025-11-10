@@ -1,4 +1,4 @@
-# 🎮 Jak Korzystać z Ulepszonych AI Partnerów
+# 🎮 Jak Korzystać z Ulepszonych AI Partnerów + Nexus AI
 
 ## 🚀 Quick Start
 
@@ -12,6 +12,30 @@ streamlit run streamlit_app.py --server.port 8503
 ```
 http://localhost:8503
 ```
+
+---
+
+## 🤖 Nowy Partner: Nexus AI
+
+**Nexus** to meta-advisor wykorzystujący zaawansowany AI do syntezy perspektyw wszystkich partnerów.
+
+### Co to jest Nexus?
+- **Single Mode** (obecny): Używa Gemini Pro do generowania zbalansowanych odpowiedzi
+- **Ensemble Mode** (przyszłość): 3 sub-agents (Claude, Gemini, GPT-4) pracujące razem
+- **Aktywacja Ensemble**: Wymaga 65% accuracy + 30 dni aktywności + Twojej zgody
+
+### Jak Rozmawiać z Nexusem?
+1. W **💬 Partnerzy** wybierz **Nexus** z listy
+2. Zadaj pytanie - Nexus syntetyzuje wiedzę z całego portfela
+3. Oceń odpowiedź (👍 😐 👎) - to pomaga Nexusowi się uczyć!
+
+### Status Nexusa (Sidebar)
+Gdy wybierzesz Nexusa, zobaczysz:
+- **Mode**: Single lub Ensemble
+- **Queries**: Liczba odpowiedzi
+- **Avg Time**: Średni czas odpowiedzi
+- **Ensemble Eligibility**: Gotowość do aktywacji ensemble
+- **Rating Buttons**: Oceń jakość odpowiedzi
 
 ---
 
@@ -265,25 +289,117 @@ Historia jest w `st.session_state` - resetuje się przy:
 
 ---
 
+## 🤖 Autonomous Conversations - Rada Rozmawia Sama!
+
+### Czym są Autonomous Conversations?
+Partnerzy AI rozmawiają ze sobą **nawet gdy Cię nie ma**, dyskutując o:
+- Stanie portfela
+- Trendach rynkowych
+- Ocenie ryzyka
+- Strategii długoterminowej
+
+### Jak to działa?
+1. Przejdź do **🤖 Autonomous Conversations**
+2. Kliknij **🚀 Uruchom nową rozmowę**
+3. Poczekaj 2-3 minuty (12 wiadomości)
+4. Przejrzyj transkrypt, AI Summary i **Nexus Meta-Analysis**!
+
+### Nexus Enhanced Features
+
+#### 📊 Meta-Analysis
+Po każdej rozmowie Nexus automatycznie generuje:
+- **Overall Quality Score**: Jakość dyskusji (0-100%)
+- **Main Themes**: Główne tematy
+- **Consensus Points**: Punkty zgody partnerów
+- **Disagreement Points**: Punkty sporu
+- **Partner Quality Scores**: Ocena wypowiedzi każdego partnera
+- **Key Insights**: Kluczowe wnioski
+- **Recommendations**: Rekomendacje na przyszłość
+
+#### 🗳️ Voting Simulation
+Zapytaj Nexusa: "Jak partnerzy zagłosowaliby na decyzję X?"
+- Nexus analizuje wypowiedzi w rozmowie
+- Przewiduje głosy (ZA/PRZECIW/WSTRZYMUJĘ SIĘ)
+- Pokazuje confidence levels
+- Argumenty ZA i PRZECIW
+- Swoją rekomendację
+
+**Przykład:**
+Pytanie: "Czy zwiększyć alokację w krypto do 30%?"
+```
+Nexus przewiduje:
+✅ Warren Buffett: PRZECIW (85% confidence)
+✅ George Soros: ZA (70% confidence)  
+✅ CZ: ZA (95% confidence)
+🤔 Nexus: WSTRZYMUJĘ SIĘ - sugeruje 20% zamiast 30%
+```
+
+#### 📚 Knowledge Synthesis
+Nexus odpowiada na pytania bazując na WIELU rozmowach:
+1. W **📚 Nexus Knowledge Synthesis** wpisz pytanie
+2. Wybierz ile ostatnich rozmów przeanalizować (1-10)
+3. Nexus syntetyzuje odpowiedź z całej historii
+
+**Przykładowe pytania:**
+- "Jakie są najważniejsze obawy Rady w ostatnich dyskusjach?"
+- "Czy partnerzy osiągnęli consensus w jakichś kwestiach?"
+- "Jakie zmiany w strategii były sugerowane?"
+
+### Budżet API dla Autonomous
+System ma limity dzienne:
+- **Gemini**: 40 autonomous calls/dzień
+- **OpenAI/OpenRouter**: 30 calls/dzień
+- **Claude**: 20 calls/dzień
+
+Możesz sprawdzić status w **📊 Status API & Budżet**.
+
+---
+
+## ⚖️ Voting Weights - Dynamiczny System Głosowania
+
+### Co to jest?
+Każdy partner ma **wagę głosu** (5-25%), która zmienia się na podstawie:
+- **Accuracy Rate**: % trafnych przewidywań
+- **Win/Loss Tracking**: Bilans sukcesów/porażek
+- **Monthly Rebalancing**: Automatyczna korekta wag
+
+### Gdzie to sprawdzić?
+**⚖️ Voting Weights** (w menu głównym):
+- **📊 Leaderboard**: Ranking partnerów
+- **📈 Prediction History**: Historia przewidywań
+- **⚖️ Rebalancing History**: Zmiany wag w czasie
+- **📖 System Docs**: Dokumentacja systemu
+
+### Jak dodać przewidywanie?
+```bash
+python advisor_scoring_manager.py add-prediction
+```
+Następnie:
+1. Wybierz partnera
+2. Wpisz przewidywanie (np. "BTC wzrośnie do $50k w 30 dni")
+3. Po 30 dniach oceń (win/loss)
+
+### Automatyczne Rebalancing
+**1. dzień każdego miesiąca** wagi są automatycznie przeliczane:
+- Partner z accuracy >70%: waga rośnie (max 25%)
+- Partner z accuracy <50%: waga spada (min 5%)
+- Nexus monitoruje i raportuje zmiany
+
+---
+
 ## 🎓 Edukacja - Zrozum Swoich Partnerów
 
-### Benjamin Graham - "Ojciec Value Investing"
-- **Styl:** Konserwatywny, analityczny
-- **Ukryty cel:** Ochrona przed jednym, katastrofalnym błędem
-- **Kluczowe pojęcia:** Margin of safety, P/E, wartość księgowa
-- **Kiedy słuchać:** Gdy rynek się przegrzewa, wszyscy kupują
-
-### Philip Fisher - "Growth Investor"
-- **Styl:** Agresywny, skoncentrowany
-- **Ukryty cel:** Koncentracja w genialnych firmach
-- **Kluczowe pojęcia:** Innowacje, przewaga konkurencyjna, przyszłość
-- **Kiedy słuchać:** Gdy szukasz long-term winners
+### Nexus AI - "Meta-Advisor"
+- **Styl:** Syntetyczny, zbalansowany, ewoluujący
+- **Ukryty cel:** Ewolucja w najlepszego doradcę poprzez ensemble learning
+- **Kluczowe pojęcia:** Synteza perspektyw, confidence levels, meta-analysis
+- **Kiedy słuchać:** Gdy potrzebujesz zbalansowanej perspektywy łączącej wszystkich partnerów
 
 ### Warren Buffett - "The Oracle"
 - **Styl:** Cierpliwy, prosty
 - **Ukryty cel:** Spółka na 50 lat
 - **Kluczowe pojęcia:** Moat, prostota biznesu, cash flow
-- **Kiedy słuchać:** Zawsze! (Łączy Grahama i Fishera)
+- **Kiedy słuchać:** Zawsze! (Łączy wartość i wzrost)
 
 ### George Soros - "Makro Master"
 - **Styl:** Refleksyjny, globalny
@@ -291,10 +407,10 @@ Historia jest w `st.session_state` - resetuje się przy:
 - **Kluczowe pojęcia:** Refleksywność, punkty zwrotne, trendy
 - **Kiedy słuchać:** Duże zmiany makro (inflacja, polityka, waluty)
 
-### Partner ds. Aktywów Cyfrowych
-- **Styl:** Nowoczesny, most między światami
-- **Ukryty cel:** Fuzja DeFi + TradFi
-- **Kluczowe pojęcia:** Blockchain, tokenizacja, protokoły
+### Changpeng Zhao (CZ) - "Crypto Visionary"
+- **Styl:** Nowoczesny, innowacyjny
+- **Ukryty cel:** Udowodnić przewagę zdecentralizowanych systemów
+- **Kluczowe pojęcia:** Blockchain, DeFi, decentralizacja
 - **Kiedy słuchać:** Decyzje crypto, nowe technologie
 
 ---

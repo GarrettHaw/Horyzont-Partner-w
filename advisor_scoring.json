@@ -1,0 +1,269 @@
+{
+  "metadata": {
+    "version": "1.0",
+    "last_updated": "2025-11-10",
+    "evaluation_period_days": 30,
+    "rebalance_schedule": "monthly",
+    "next_rebalance": "2025-12-01",
+    "base_weight_per_advisor": 13.75,
+    "dynamic_pool": 20.0,
+    "weight_limits": {
+      "min": 5.0,
+      "max": 25.0
+    }
+  },
+  "advisors": {
+    "Partner Zarządzający (JA)": {
+      "type": "human",
+      "fixed_weight": 25.0,
+      "participates_in_scoring": false,
+      "note": "Human decision maker - fixed 25% voting power"
+    },
+    "Nexus": {
+      "type": "ai",
+      "base_weight": 13.75,
+      "current_weight": 13.75,
+      "total_predictions": 0,
+      "correct_predictions": 0,
+      "incorrect_predictions": 0,
+      "pending_predictions": 1,
+      "accuracy_rate": 0.0,
+      "confidence_avg": 0.0,
+      "weight_history": [
+        {
+          "date": "2025-11-10",
+          "weight": 13.75,
+          "reason": "Initial setup",
+          "accuracy": 0.0,
+          "predictions_evaluated": 0
+        }
+      ],
+      "predictions": [
+        {
+          "prediction_id": "pred_Nexus_20251110_163239",
+          "advisor": "Nexus",
+          "date_created": "2025-11-10",
+          "date_evaluate": "2025-12-10",
+          "prediction_type": "price_movement",
+          "asset": "BTC",
+          "prediction_text": "BTC will correct to -90k range within 30 days",
+          "prediction_direction": "down",
+          "confidence": 0.82,
+          "status": "pending",
+          "outcome": null,
+          "was_correct": null,
+          "metadata": {},
+          "current_price_at_prediction": null,
+          "actual_price_at_evaluation": null
+        }
+      ]
+    },
+    "Warren Buffett": {
+      "type": "ai",
+      "base_weight": 13.75,
+      "current_weight": 13.75,
+      "total_predictions": 0,
+      "correct_predictions": 0,
+      "incorrect_predictions": 0,
+      "pending_predictions": 1,
+      "accuracy_rate": 0.0,
+      "confidence_avg": 0.0,
+      "weight_history": [
+        {
+          "date": "2025-11-10",
+          "weight": 13.75,
+          "reason": "Initial setup",
+          "accuracy": 0.0,
+          "predictions_evaluated": 0
+        }
+      ],
+      "predictions": [
+        {
+          "prediction_id": "pred_Warren_Buffett_20251110_163323",
+          "advisor": "Warren Buffett",
+          "date_created": "2025-11-10",
+          "date_evaluate": "2025-12-10",
+          "prediction_type": "portfolio_action",
+          "asset": "KGHM",
+          "prediction_text": "KGHM undervalued - buy opportunity",
+          "prediction_direction": "buy",
+          "confidence": 0.68,
+          "status": "pending",
+          "outcome": null,
+          "was_correct": null,
+          "metadata": {}
+        }
+      ]
+    },
+    "George Soros": {
+      "type": "ai",
+      "base_weight": 13.75,
+      "current_weight": 13.75,
+      "total_predictions": 0,
+      "correct_predictions": 0,
+      "incorrect_predictions": 0,
+      "pending_predictions": 1,
+      "accuracy_rate": 0.0,
+      "confidence_avg": 0.0,
+      "weight_history": [
+        {
+          "date": "2025-11-10",
+          "weight": 13.75,
+          "reason": "Initial setup",
+          "accuracy": 0.0,
+          "predictions_evaluated": 0
+        }
+      ],
+      "predictions": [
+        {
+          "prediction_id": "pred_George_Soros_20251110_163339",
+          "advisor": "George Soros",
+          "date_created": "2025-11-10",
+          "date_evaluate": "2025-12-10",
+          "prediction_type": "market_timing",
+          "asset": "S&P500",
+          "prediction_text": "Market top forming - reduce risk exposure",
+          "prediction_direction": "sell",
+          "confidence": 0.75,
+          "status": "pending",
+          "outcome": null,
+          "was_correct": null,
+          "metadata": {}
+        }
+      ]
+    },
+    "Changpeng Zhao (CZ)": {
+      "type": "ai",
+      "base_weight": 13.75,
+      "current_weight": 13.75,
+      "total_predictions": 0,
+      "correct_predictions": 0,
+      "incorrect_predictions": 0,
+      "pending_predictions": 0,
+      "accuracy_rate": 0.0,
+      "confidence_avg": 0.0,
+      "weight_history": [
+        {
+          "date": "2025-11-10",
+          "weight": 13.75,
+          "reason": "Initial setup",
+          "accuracy": 0.0,
+          "predictions_evaluated": 0
+        }
+      ],
+      "predictions": []
+    }
+  },
+  "monthly_reports": [],
+  "prediction_examples": [
+    {
+      "prediction_id": "example_001",
+      "advisor": "Nexus",
+      "date_created": "2025-11-10",
+      "date_evaluate": "2025-12-10",
+      "prediction_type": "price_movement",
+      "asset": "BTC",
+      "prediction_text": "BTC will drop below $90k within 30 days",
+      "prediction_direction": "down",
+      "target_price": 90000,
+      "current_price_at_prediction": 95000,
+      "confidence": 0.78,
+      "status": "pending",
+      "outcome": null,
+      "actual_price_at_evaluation": null,
+      "was_correct": null,
+      "metadata": {
+        "reasoning": "RSI overbought, technical resistance, profit-taking likely",
+        "source": "autonomous_conversation",
+        "context": "Weekly portfolio review"
+      }
+    },
+    {
+      "prediction_id": "example_002",
+      "advisor": "Warren Buffett",
+      "date_created": "2025-11-10",
+      "date_evaluate": "2025-12-10",
+      "prediction_type": "portfolio_action",
+      "asset": "KGHM",
+      "prediction_text": "KGHM is undervalued - consider buying at current levels",
+      "prediction_direction": "buy",
+      "target_action": "accumulate",
+      "confidence": 0.65,
+      "status": "pending",
+      "outcome": null,
+      "was_correct": null,
+      "metadata": {
+        "reasoning": "Strong fundamentals, copper demand increasing, P/E attractive",
+        "source": "daily_tip",
+        "context": "Polish market analysis"
+      }
+    },
+    {
+      "prediction_id": "example_003",
+      "advisor": "George Soros",
+      "date_created": "2025-11-10",
+      "date_evaluate": "2025-12-10",
+      "prediction_type": "market_timing",
+      "asset": "S&P500",
+      "prediction_text": "Market correction coming - reduce exposure",
+      "prediction_direction": "sell",
+      "target_action": "reduce_exposure",
+      "confidence": 0.72,
+      "status": "pending",
+      "outcome": null,
+      "was_correct": null,
+      "metadata": {
+        "reasoning": "Macro indicators turning negative, reflexivity loop reversing",
+        "source": "portfolio_copilot",
+        "context": "Risk assessment"
+      }
+    }
+  ],
+  "evaluation_rules": {
+    "price_movement": {
+      "description": "Prediction about asset price going up/down",
+      "win_condition": "Actual price movement matches predicted direction",
+      "evaluation_method": "Compare price at prediction vs price after 30 days"
+    },
+    "portfolio_action": {
+      "description": "Recommendation to buy/sell/hold specific asset",
+      "win_condition": "Asset performance validates the recommendation",
+      "evaluation_method": "If BUY: price increased = WIN. If SELL: price decreased = WIN"
+    },
+    "market_timing": {
+      "description": "Timing call on broader market or sector",
+      "win_condition": "Market movement validates the timing call",
+      "evaluation_method": "Check if market moved as predicted within timeframe"
+    },
+    "risk_warning": {
+      "description": "Warning about potential risks or corrections",
+      "win_condition": "Risk materialized as warned",
+      "evaluation_method": "Did the warned event occur? Partial credit for near-misses"
+    }
+  },
+  "scoring_formula": {
+    "description": "How to calculate weight changes based on performance",
+    "steps": [
+      "1. Calculate accuracy_rate = correct_predictions / total_predictions",
+      "2. Compare to baseline (50% = neutral)",
+      "3. Above 50%: earn bonus from dynamic pool",
+      "4. Below 50%: contribute to dynamic pool",
+      "5. Weight change = (accuracy_rate - 0.5) * dynamic_pool * 0.5",
+      "6. Apply limits: min 5%, max 25%"
+    ],
+    "example": {
+      "advisor": "Nexus",
+      "accuracy": 0.75,
+      "calculation": "(0.75 - 0.5) * 20 * 0.5 = 2.5%",
+      "new_weight": "13.75 + 2.5 = 16.25%"
+    }
+  },
+  "notes": [
+    "First month (Nov 2025) is baseline - no penalties, only establishing track record",
+    "Rebalancing happens on 1st day of each month",
+    "Dynamic pool (20%) is redistributed based on relative performance",
+    "Transparency: All advisors see their scores and leaderboard",
+    "No advisors are removed - only voting weights change",
+    "JA (human) has fixed 25% and does not participate in scoring"
+  ]
+}
