@@ -1865,8 +1865,8 @@ def calculate_portfolio_dividends(stan_spolki):
             # Sumuj dywidendy z ostatniego roku
             suma_dywidend_t212_usd = 0
             for div in dywidendy_t212:
-                # Pole z datą to paidOn lub paid_on
-                data_str = div.get('paidOn') or div.get('paid_on', '')
+                # Pole z datą - różne warianty w zależności od endpointu API
+                data_str = div.get('paidOn') or div.get('paid_on') or div.get('dateCreated') or div.get('date', '')
                 if not data_str:
                     continue
                     
@@ -1876,8 +1876,9 @@ def calculate_portfolio_dividends(stan_spolki):
                     
                     # Uwzględnij tylko dywidendy z ostatnich 12 miesięcy
                     if data_dywidendy >= rok_temu:
-                        kwota_usd = div.get('amount', 0)
-                        suma_dywidend_t212_usd += kwota_usd
+                        # Kwota może być w 'amount' lub 'grossAmountInEuro' przeliczona na USD
+                        kwota_usd = div.get('amount', div.get('total', 0))
+                        suma_dywidend_t212_usd += abs(kwota_usd)  # abs() bo może być ujemna w transakcjach
                 except (ValueError, TypeError):
                     continue
             
@@ -5684,17 +5685,21 @@ _{daily_tip['tip_text']}_
                 for div in dywidendy_trading[:20]:  # Pokaż ostatnie 20
                     if isinstance(div, dict):
                         ticker = div.get('ticker', 'N/A').replace('_US_EQ', '').replace('_EQ', '')
-                        amount = div.get('amount', 0)
-                        paid_on = div.get('paidOn', div.get('paid_on', 'N/A'))
+                        
+                        # Kwota może być w różnych polach w zależności od endpointu
+                        amount = div.get('amount', div.get('total', 0))
+                        
+                        # Data może być w różnych polach
+                        paid_on = div.get('paidOn') or div.get('paid_on') or div.get('dateCreated') or div.get('date', 'N/A')
                         
                         # Dywidendy z Trading212 są w USD
-                        amount_pln = amount * kurs_usd if amount else 0
-                        suma_dywidend += amount
+                        amount_pln = abs(amount) * kurs_usd if amount else 0
+                        suma_dywidend += abs(amount)
                         
                         dywidendy_list.append({
-                            'Data': paid_on[:10] if len(paid_on) >= 10 else paid_on,
+                            'Data': paid_on[:10] if isinstance(paid_on, str) and len(paid_on) >= 10 else paid_on,
                             'Ticker': ticker,
-                            'Kwota': f"${amount:.2f}",
+                            'Kwota': f"${abs(amount):.2f}",
                             'Kwota PLN': f"{amount_pln:.2f} PLN"
                         })
                 
@@ -5706,6 +5711,8 @@ _{daily_tip['tip_text']}_
                     st.caption(f"💰 **Suma wyświetlonych dywidend:** ${suma_dywidend:.2f} (≈ {suma_dywidend_pln:.2f} PLN)")
                 else:
                     st.info("ℹ️ Brak szczegółów dywidend do wyświetlenia")
+        else:
+            st.info("ℹ️ Brak danych o dywidendach (API endpoint może być niedostępny)")
         
     except Exception as e:
         st.error(f"❌ Błąd wyświetlania danych Trading212: {e}")
