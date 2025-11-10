@@ -29,6 +29,18 @@ st.set_page_config(
 
 # === CONFIGURATION CONSTANTS ===
 DEFAULT_USD_PLN_RATE = 3.65  # Default USD/PLN exchange rate
+NBP_API_URL = "https://api.nbp.pl/api/exchangerates/rates/a/usd/?format=json"
+TRADING212_BASE_URL = "https://live.trading212.com/api/v0"
+TRADING212_CACHE_FILE = "trading212_cache.json"
+TRADING212_CACHE_HOURS = 24  # Cache na 24 godziny
+
+# Pobierz klucz Trading212 z secrets
+try:
+    TRADING212_API_KEY = st.secrets.get("TRADING212_API_KEY", os.getenv("TRADING212_API_KEY"))
+    TRADING212_ENABLED = bool(TRADING212_API_KEY and TRADING212_API_KEY != "")
+except:
+    TRADING212_API_KEY = None
+    TRADING212_ENABLED = False
 
 # === SYSTEM LOGOWANIA ===
 def check_password():
@@ -212,7 +224,6 @@ except Exception as e:
 
 # Stałe konfiguracyjne
 NAZWA_PLIKU_CELOW = "cele.json"
-NBP_API_URL = "https://api.nbp.pl/api/exchangerates/rates/a/usd/?format=json"
 
 CELE_DOMYSLNE = {
     "Rezerwa_gotowkowa_PLN": 70000,
@@ -249,6 +260,157 @@ def pobierz_kurs_usd_pln():
         return kurs
     except Exception as e:
         return 4.00  # Kurs awaryjny
+
+# === TRADING212 API FUNCTIONS ===
+
+def wczytaj_t212_cache():
+    """Wczytuje cache Trading212."""
+    if not os.path.exists(TRADING212_CACHE_FILE):
+        return None
+    
+    try:
+        with open(TRADING212_CACHE_FILE, 'r', encoding='utf-8') as f:
+            cache = json.load(f)
+        
+        cache_time = datetime.fromisoformat(cache["timestamp"])
+        now = datetime.now()
+        age_hours = (now - cache_time).total_seconds() / 3600
+        
+        if age_hours < TRADING212_CACHE_HOURS:
+            print(f"✓ Używam cache Trading212 (wiek: {age_hours:.1f}h)")
+            return cache
+        else:
+            print(f"⚠ Cache Trading212 wygasł ({age_hours:.1f}h) - pobieram świeże dane...")
+            return None
+    except Exception as e:
+        return None
+
+def zapisz_t212_cache(data):
+    """Zapisuje dane Trading212 do cache."""
+    try:
+        cache = {
+            "timestamp": datetime.now().isoformat(),
+            "data": data
+        }
+        with open(TRADING212_CACHE_FILE, 'w', encoding='utf-8') as f:
+            json.dump(cache, f, indent=2)
+    except Exception as e:
+        print(f"⚠ Błąd zapisu cache T212: {e}")
+
+def pobierz_dane_trading212():
+    """Pobiera dane z Trading212 API (pozycje, saldo, historia)."""
+    if not TRADING212_ENABLED or not TRADING212_API_KEY:
+        return None
+    
+    # Sprawdź cache
+    cache = wczytaj_t212_cache()
+    if cache:
+        return cache["data"]
+    
+    print("📊 Pobieram dane z Trading212 API...")
+    
+    import requests
+    headers = {
+        "Authorization": TRADING212_API_KEY
+    }
+    
+    dane_t212 = {}
+    try:
+        # 1. Pobierz pozycje w portfelu
+        print("  ↪ Pobieram pozycje...")
+        response = requests.get(f"{TRADING212_BASE_URL}/equity/portfolio", headers=headers, timeout=10)
+        response.raise_for_status()
+        dane_t212["positions"] = response.json()
+        print(f"  ✓ Pobrano {len(dane_t212['positions'])} pozycji")
+        
+        # 2. Pobierz informacje o koncie (saldo gotówkowe)
+        print("  ↪ Pobieram info o koncie...")
+        response = requests.get(f"{TRADING212_BASE_URL}/equity/account/cash", headers=headers, timeout=10)
+        response.raise_for_status()
+        dane_t212["account"] = response.json()
+        print(f"  ✓ Saldo: {dane_t212['account'].get('free', 0):.2f} {dane_t212['account'].get('currencyCode', 'USD')}")
+        
+        # 3. Pobierz historię dywidend (ostatnie 6 miesięcy)
+        print("  ↪ Pobieram historię dywidend...")
+        try:
+            response = requests.get(f"{TRADING212_BASE_URL}/history/dividends", headers=headers, timeout=10)
+            response.raise_for_status()
+            dane_t212["dividends"] = response.json()
+            print(f"  ✓ Pobrano {len(dane_t212['dividends'])} dywidend")
+        except:
+            dane_t212["dividends"] = []
+        
+        # Zapisz do cache
+        zapisz_t212_cache(dane_t212)
+        
+        print("✓ Dane z Trading212 API pobrane pomyślnie!")
+        return dane_t212
+        
+    except Exception as e:
+        print(f"❌ Błąd pobierania z Trading212 API: {e}")
+        return None
+
+def parsuj_dane_t212_do_portfela(dane_t212, kurs_usd_pln, cele):
+    """Parsuje dane z Trading212 API do formatu PORTFEL_AKCJI."""
+    if not dane_t212:
+        return None
+    
+    try:
+        positions = dane_t212.get("positions", [])
+        account = dane_t212.get("account", {})
+        
+        suma_pln = 0
+        suma_usd = 0
+        pozycje_szczegoly = {}
+        liczba_pozycji_rdzennych = 0
+        liczba_pozycji_w_pie = 0
+        
+        for pos in positions:
+            ticker = pos.get("ticker", "")
+            quantity = pos.get("quantity", 0)
+            current_price = pos.get("currentPrice", 0)
+            avg_price = pos.get("averagePrice", 0)
+            ppl = pos.get("ppl", 0)  # Profit/Loss w walucie
+            
+            wartosc_usd = quantity * current_price
+            wartosc_pln = wartosc_usd * kurs_usd_pln
+            
+            suma_usd += wartosc_usd
+            suma_pln += wartosc_pln
+            
+            # Rozróżnienie Pie vs Rdzenne
+            if pos.get("frontend") == "AUTOINVEST":
+                liczba_pozycji_w_pie += 1
+            else:
+                liczba_pozycji_rdzennych += 1
+            
+            pozycje_szczegoly[ticker] = {
+                "ticker": ticker,
+                "quantity": quantity,
+                "current_price": current_price,
+                "avg_price": avg_price,
+                "value_usd": round(wartosc_usd, 2),
+                "value_pln": round(wartosc_pln, 2),
+                "ppl": ppl
+            }
+        
+        # Saldo gotówkowe
+        cash_free = account.get("free", 0)
+        
+        return {
+            "Suma_PLN": round(suma_pln, 2),
+            "Suma_USD": round(suma_usd, 2),
+            "Liczba_pozycji_calkowita": len(positions),
+            "Liczba_pozycji_rdzennych": liczba_pozycji_rdzennych,
+            "Liczba_pozycji_w_pie": liczba_pozycji_w_pie,
+            "Cash_free_USD": round(cash_free, 2),
+            "Zrodlo": "Trading212 API",
+            "Pozycje_szczegoly": pozycje_szczegoly,
+            "Dane_rynkowe": {}
+        }
+    except Exception as e:
+        print(f"❌ Błąd parsowania danych T212: {e}")
+        return None
 
 def pobierz_stan_spolki(cele):
     """
@@ -311,14 +473,32 @@ def pobierz_stan_spolki(cele):
         except:
             stan_spolki["PRZYCHODY_I_WYDATKI"] = {"wyplata": 0, "Liczba_wyplat": 0, "wyplaty": []}
         
-        # AKCJE - Placeholder (brak Trading212/Sheets w uproszczonej wersji)
-        stan_spolki["PORTFEL_AKCJI"] = {
-            "Suma_PLN": 0,
-            "Suma_USD": 0,
-            "Liczba_pozycji": 0,
-            "Zrodlo": "Simplified version",
-            "Dane_rynkowe": {}
-        }
+        # AKCJE - Trading212 API
+        dane_t212 = pobierz_dane_trading212() if TRADING212_ENABLED else None
+        
+        if dane_t212:
+            portfel_akcji = parsuj_dane_t212_do_portfela(dane_t212, kurs_usd, cele)
+            if portfel_akcji:
+                stan_spolki["PORTFEL_AKCJI"] = portfel_akcji
+                print(f"✓ Dane akcji z Trading212 API: {portfel_akcji['Suma_PLN']:.2f} PLN")
+            else:
+                print("⚠ Błąd parsowania T212 - brak danych akcji")
+                stan_spolki["PORTFEL_AKCJI"] = {
+                    "Suma_PLN": 0,
+                    "Suma_USD": 0,
+                    "Liczba_pozycji": 0,
+                    "Zrodlo": "Trading212 API - Error",
+                    "Dane_rynkowe": {}
+                }
+        else:
+            # Brak Trading212 lub błąd - placeholder
+            stan_spolki["PORTFEL_AKCJI"] = {
+                "Suma_PLN": 0,
+                "Suma_USD": 0,
+                "Liczba_pozycji": 0,
+                "Zrodlo": "Trading212 not configured",
+                "Dane_rynkowe": {}
+            }
         
     except Exception as e:
         st.error(f"Błąd pobierania stanu spółki: {e}")
