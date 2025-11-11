@@ -153,9 +153,10 @@ def analyze_goals() -> Dict[str, Any]:
     """Analiza celów finansowych"""
     cele = load_json_file('cele.json', {})
     
-    rezerwa_target = float(cele.get('rezerwa_bezpieczenstwa_cel', 10000))
-    rezerwa_current = float(cele.get('rezerwa_bezpieczenstwa_aktualna', 0))
-    add_target = float(cele.get('add_target_value', 50000))
+    # Poprawne nazwy pól z cele.json
+    rezerwa_target = float(cele.get('Rezerwa_gotowkowa_PLN', 10000))
+    rezerwa_current = float(cele.get('Rezerwa_gotowkowa_obecna_PLN', 0))
+    add_target = float(cele.get('ADD_wartosc_docelowa_PLN', 50000))
     
     return {
         'emergency_fund_target': rezerwa_target,

@@ -1,6 +1,6 @@
 [
   {
-    "timestamp": "2025-11-11T20:23:34.020971",
+    "timestamp": "2025-11-11T20:25:51.675281",
     "month": "2025-11",
     "exchange_rate_usd_pln": 3.661,
     "portfolio": {
@@ -24,8 +24,8 @@
     "net_worth_pln": 36324.99,
     "goals": {
       "emergency_fund_target": 10000.0,
-      "emergency_fund_current": 0.0,
-      "emergency_fund_progress": 0.0,
+      "emergency_fund_current": 4437.0,
+      "emergency_fund_progress": 44.4,
       "add_target": 50000.0
     },
     "compliance": {
