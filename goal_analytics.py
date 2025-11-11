@@ -321,6 +321,10 @@ def get_all_savings_recommendations(deadline_months: int = 12) -> Dict[str, Dict
         required_monthly = gap / deadline_months
         required_daily = gap / (deadline_months * 30)
         
+        # Oblicz datę deadline
+        deadline_date = datetime.now() + timedelta(days=deadline_months * 30)
+        deadline_date_str = deadline_date.strftime('%Y-%m-%d')
+        
         # Poziom trudności
         if required_monthly < 500:
             difficulty = 'easy'
@@ -332,6 +336,9 @@ def get_all_savings_recommendations(deadline_months: int = 12) -> Dict[str, Dict
             difficulty = 'hard'
             difficulty_emoji = '🔴'
         
+        # Rekomendacja
+        recommendation = f"{difficulty_emoji} Oszczędzaj {required_monthly:.0f} PLN miesięcznie przez {deadline_months} miesięcy aby osiągnąć cel do {deadline_date_str}"
+        
         recommendations[goal_key] = {
             'status': 'active',
             'goal_name': goal_key,
@@ -339,10 +346,12 @@ def get_all_savings_recommendations(deadline_months: int = 12) -> Dict[str, Dict
             'current_value': current_value,
             'gap': gap,
             'deadline_months': deadline_months,
+            'deadline_date': deadline_date_str,
             'required_monthly': required_monthly,
             'required_daily': required_daily,
             'difficulty': difficulty,
             'difficulty_emoji': difficulty_emoji,
+            'recommendation': recommendation,
             'message': f'Oszczędzaj {required_monthly:.0f} PLN miesięcznie przez {deadline_months} miesięcy'
         }
     

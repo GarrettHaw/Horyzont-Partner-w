@@ -6374,23 +6374,28 @@ def show_alerts_page():
                         continue  # Pomijamy już osiągnięte
                     
                     with st.container():
-                        st.markdown(f"**💎 {rec['goal_name']}**")
+                        st.markdown(f"**💎 {rec.get('goal_name', goal_id)}**")
                         
                         col1, col2, col3, col4 = st.columns(4)
                         
                         with col1:
-                            st.metric("Brakuje", f"{rec['gap']:.0f} PLN")
+                            gap = rec.get('gap', 0)
+                            st.metric("Brakuje", f"{gap:.0f} PLN")
                         
                         with col2:
-                            st.metric("Miesięcznie", f"{rec['required_monthly']:.0f} PLN")
+                            required_monthly = rec.get('required_monthly', 0)
+                            st.metric("Miesięcznie", f"{required_monthly:.0f} PLN")
                         
                         with col3:
-                            st.metric("Dziennie", f"{rec['required_daily']:.0f} PLN")
+                            required_daily = rec.get('required_daily', 0)
+                            st.metric("Dziennie", f"{required_daily:.0f} PLN")
                         
                         with col4:
-                            st.metric("Termin", rec['deadline_date'])
+                            deadline_date = rec.get('deadline_date', 'N/A')
+                            st.metric("Termin", deadline_date)
                         
-                        st.caption(rec['recommendation'])
+                        recommendation = rec.get('recommendation', rec.get('message', ''))
+                        st.caption(recommendation)
                         st.markdown("---")
     
     except ImportError as e:
