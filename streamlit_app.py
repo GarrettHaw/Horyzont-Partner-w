@@ -891,8 +891,16 @@ TRYB ODPOWIEDZI: NORMALNY
                     persona_memory_section = pmm.get_persona_context(partner_name)
                 
                 pmm.increment_session(partner_name)
+            except KeyError as e:
+                # Konkretny błąd KeyError - pokazujemy jakie pole brakuje
+                st.warning(f"⚠️ Błąd wczytywania pamięci persony (brak pola): {e}")
+                persona_memory_section = ""
+                emotional_hint = ""
             except Exception as e:
-                st.warning(f"⚠️ Błąd wczytywania pamięci persony: {e}")
+                # Ogólny błąd
+                st.warning(f"⚠️ Błąd wczytywania pamięci persony: {type(e).__name__}: {e}")
+                persona_memory_section = ""
+                emotional_hint = ""
         
         # === MOOD SYSTEM ===
         portfolio_mood = analyze_portfolio_mood(stan_spolki, cele)
