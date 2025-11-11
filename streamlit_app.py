@@ -2679,7 +2679,8 @@ def analyze_market_composition(stan_spolki):
         # Analizuj akcje
         for ticker, data in pozycje.items():
             market = classify_market(ticker)
-            value = data.get('wartosc_total_pln', 0)
+            # Obsługa różnych formatów: value_pln (Trading212) lub wartosc_total_pln (legacy)
+            value = data.get('value_pln', data.get('wartosc_total_pln', 0))
             
             markets[market]["value_pln"] += value
             markets[market]["count"] += 1
