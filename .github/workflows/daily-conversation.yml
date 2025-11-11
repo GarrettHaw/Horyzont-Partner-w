@@ -41,7 +41,7 @@ jobs:
       - name: 📊 Extract conversation summary
         run: |
           echo "Extracting last conversation summary..."
-          python -c 'import json; convs = json.load(open("autonomous_conversations.json", "r", encoding="utf-8")); last = convs[-1] if convs else None; print(f"ID: {last.get(\"id\")}\nTopic: {last.get(\"topic_name\")}\nMessages: {len(last.get(\"messages\", []))}" if last else "No conversations")' > conversation_summary.txt
+          python -c "import json; convs = json.load(open('autonomous_conversations.json', 'r', encoding='utf-8')); last = convs[-1] if convs else None; print('ID: ' + str(last.get('id', 'N/A')) + '\nTopic: ' + str(last.get('topic_name', 'N/A')) + '\nMessages: ' + str(len(last.get('messages', []))) if last else 'No conversations')" > conversation_summary.txt
           cat conversation_summary.txt
       
       - name: 💾 Commit conversation
