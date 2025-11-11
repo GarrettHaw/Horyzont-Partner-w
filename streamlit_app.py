@@ -7780,16 +7780,12 @@ def show_partners_page():
                                         add_message({
                                             "role": "assistant",
                                             "content": content,
-                                            "avatar": resp.get('avatar', '🤖'),
+                                            "avatar": "🤖",  # Simplified - safe emoji
                                             "knowledge": resp.get('knowledge', [])
                                         })
                                         
-                                        # Wyświetl natychmiast z avatarem - SAFE VALIDATION
-                                        avatar_val = resp.get('avatar', '🤖')
-                                        if not isinstance(avatar_val, str) or not avatar_val or len(avatar_val) > 10:
-                                            avatar_val = '🤖'
-                                        
-                                        with st.chat_message("assistant", avatar=avatar_val):
+                                        # Wyświetl natychmiast BEZ custom avatara (TEMPORARY FIX)
+                                        with st.chat_message("assistant"):
                                             st.markdown(content)
                                 else:
                                     response, knowledge = send_to_ai_partner(
@@ -7823,12 +7819,12 @@ def show_partners_page():
         chat_container = st.container()
         with chat_container:
             for msg in get_messages():
-                # SAFE: Walidacja avatara z historii
-                msg_avatar = msg.get("avatar", "🤖")
-                if not isinstance(msg_avatar, str) or not msg_avatar or len(msg_avatar) > 10:
-                    msg_avatar = "🤖" if msg["role"] == "assistant" else "👤"
+                # TEMPORARY FIX: Wyłączamy custom avatary - używamy domyślnych Streamlit
+                # msg_avatar = msg.get("avatar", "🤖")
+                # if not isinstance(msg_avatar, str) or not msg_avatar or len(msg_avatar) > 10:
+                #     msg_avatar = "🤖" if msg["role"] == "assistant" else "👤"
                 
-                with st.chat_message(msg["role"], avatar=msg_avatar):
+                with st.chat_message(msg["role"]):  # Bez custom avatara
                     st.markdown(msg["content"])
                     
                     # Wyświetl źródła wiedzy jeśli są
@@ -7898,13 +7894,12 @@ def show_partners_page():
                                 "knowledge": resp.get('knowledge', [])
                             })
                             
-                            # Wyświetl natychmiast z avatarem
-                            avatar_to_use = resp.get('avatar', '🤖')
-                            # Sprawdź czy avatar jest prawidłowy (string)
-                            if not isinstance(avatar_to_use, str) or not avatar_to_use:
-                                avatar_to_use = '🤖'
+                            # Wyświetl natychmiast BEZ avatara (TEMPORARY FIX - avatar causing crashes)
+                            # avatar_to_use = resp.get('avatar', '🤖')
+                            # if not isinstance(avatar_to_use, str) or not avatar_to_use:
+                            #     avatar_to_use = '🤖'
                             
-                            with st.chat_message("assistant", avatar=avatar_to_use):
+                            with st.chat_message("assistant"):  # Bez avatara - Streamlit użyje domyślnego
                                 st.markdown(content)
                 
                 else:
