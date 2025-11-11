@@ -12357,11 +12357,19 @@ def show_markets_page(stan_spolki, cele):
             
             with st.spinner("Pobieranie danych indeksów..."):
                 fig = go.Figure()
+                success_count = 0
                 
                 for name, ticker in indices.items():
                     try:
                         import yfinance as yf
-                        data = yf.download(ticker, period="1mo", progress=False, auto_adjust=True)
+                        # Dodaj timeout i lepsze parametry
+                        data = yf.download(
+                            ticker, 
+                            period="1mo", 
+                            progress=False, 
+                            auto_adjust=True,
+                            timeout=10  # 10 sekund timeout
+                        )
                         
                         if not data.empty and 'Close' in data.columns:
                             # Normalizuj do 100
@@ -12374,25 +12382,31 @@ def show_markets_page(stan_spolki, cele):
                                 name=name,
                                 hovertemplate=f'<b>{name}</b><br>Data: %{{x}}<br>Wartość: %{{y:.2f}}<extra></extra>'
                             ))
+                            success_count += 1
                     except Exception as e:
-                        st.caption(f"⚠️ Nie udało się pobrać {name}: {str(e)[:50]}")
+                        # Loguj błąd ale kontynuuj
+                        print(f"⚠️ Błąd pobierania {name}: {e}")
+                        continue
                 
-                fig.update_layout(
-                    title="Wydajność Indeksów (ostatnie 30 dni)",
-                    xaxis_title="Data",
-                    yaxis_title="Wartość znormalizowana (start = 100)",
-                    height=500,
-                    hovermode='x unified',
-                    legend=dict(
-                        orientation="v",
-                        yanchor="top",
-                        y=1,
-                        xanchor="left",
-                        x=1.02
+                if success_count > 0:
+                    fig.update_layout(
+                        title="Wydajność Indeksów (ostatnie 30 dni)",
+                        xaxis_title="Data",
+                        yaxis_title="Wartość znormalizowana (start = 100)",
+                        height=500,
+                        hovermode='x unified',
+                        legend=dict(
+                            orientation="v",
+                            yanchor="top",
+                            y=1,
+                            xanchor="left",
+                            x=1.02
+                        )
                     )
-                )
-                
-                st.plotly_chart(fig, width="stretch")
+                    
+                    st.plotly_chart(fig, use_container_width=True)
+                else:
+                    st.warning("⚠️ Nie udało się pobrać danych indeksów. Spróbuj odświeżyć stronę.")
         
         with col2:
             st.markdown("**📊 Zmiana 1M:**")
@@ -12403,9 +12417,15 @@ def show_markets_page(stan_spolki, cele):
             for name, ticker in indices.items():
                 try:
                     import yfinance as yf
-                    data = yf.download(ticker, period="1mo", progress=False, auto_adjust=True)
+                    data = yf.download(
+                        ticker, 
+                        period="1mo", 
+                        progress=False, 
+                        auto_adjust=True,
+                        timeout=10
+                    )
                     
-                    if not data.empty and 'Close' in data.columns:
+                    if not data.empty and 'Close' in data.columns and len(data) > 0:
                         start_price = data['Close'].iloc[0]
                         end_price = data['Close'].iloc[-1]
                         change_pct = ((end_price - start_price) / start_price) * 100
@@ -12420,6 +12440,7 @@ def show_markets_page(stan_spolki, cele):
                         })
                 except Exception as e:
                     # Błąd przy pobieraniu danych indeksu - pomiń
+                    print(f"⚠️ Błąd tabeli {name}: {e}")
                     continue
             
             if changes_data:
@@ -12430,9 +12451,11 @@ def show_markets_page(stan_spolki, cele):
                 st.dataframe(
                     changes_df,
                     hide_index=True,
-                    width="stretch",
+                    use_container_width=True,
                     height=500
                 )
+            else:
+                st.warning("⚠️ Brak danych do wyświetlenia")
         
         st.markdown("---")
         st.caption("💡 Dane pobierane z Yahoo Finance w czasie rzeczywistym")
