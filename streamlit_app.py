@@ -6639,8 +6639,9 @@ def show_autonomous_conversations_page():
     st.info(f"📊 Znaleziono: {len(filtered_conversations)} rozmów")
     
     # Wyświetl rozmowy
-    for conv in filtered_conversations:
+    for idx, conv in enumerate(filtered_conversations):
         conv_id = conv.get('id', 'unknown')
+        unique_key = f"{conv_id}_{idx}"  # Ensure unique key even if id is duplicated
         topic_name = conv.get('topic_name', 'Unknown Topic')
         date_str = conv.get('date', '')[:19] if conv.get('date') else 'Unknown date'
         participants = conv.get('participants', [])
@@ -6784,10 +6785,10 @@ def show_autonomous_conversations_page():
             decision_question = st.text_input(
                 "Pytanie decyzyjne:",
                 value="Czy zwiększyć alokację w krypto do 30% portfela?",
-                key=f"voting_q_{conv_id}"
+                key=f"voting_q_{unique_key}"
             )
             
-            if st.button("🗳️ Symuluj głosowanie", key=f"vote_btn_{conv_id}"):
+            if st.button("🗳️ Symuluj głosowanie", key=f"vote_btn_{unique_key}"):
                 with st.spinner("🤖 Nexus analizuje wypowiedzi..."):
                     try:
                         voting_result = engine.nexus_voting_simulation(conv, decision_question)
