@@ -2750,16 +2750,28 @@ def calculate_market_correlations(stan_spolki):
         
         for ticker, data in pozycje.items():
             market = classify_market(ticker)
-            change = data.get('zmiana_proc', 0)
             
-            if market in market_changes and change is not None:
+            # Oblicz zmianę procentową z danych Trading212
+            # ppl = profit/loss, value_usd = current value
+            ppl = data.get('ppl', 0)
+            value_usd = data.get('value_usd', 0)
+            
+            # Jeśli mamy wartość i ppl, oblicz % zmianę
+            if value_usd > 0:
+                # ppl to zysk/strata, więc początkowa wartość = value_usd - ppl
+                initial_value = value_usd - ppl
+                if initial_value > 0:
+                    change = (ppl / initial_value) * 100
+                else:
+                    change = 0
+            else:
+                change = 0
+            
+            if market in market_changes and change != 0:
                 market_changes[market].append(change)
         
-        # Dodaj krypto
-        krypto_data = stan_spolki.get('krypto', {})
-        krypto_change = krypto_data.get('zmiana_proc_total', 0)
-        if krypto_change is not None:
-            market_changes["Crypto"].append(krypto_change)
+        # Krypto - pomijamy, brak danych o zmianach w obecnym formacie
+        # (można rozszerzyć w przyszłości o API CoinGecko/CMC)
         
         # Oblicz średnie zmiany dla każdego rynku
         market_avg_changes = {}
