@@ -3,19 +3,28 @@
     "daily_limit": 50,
     "autonomous_percentage": 60,
     "cost_per_call": 0.01,
-    "assigned_partner": "Warren Buffett"
+    "assigned_partner": "Warren Buffett (TEMP: brak kredytów, używa gemini)",
+    "status": "inactive"
   },
   "gemini": {
     "daily_limit": 50,
     "autonomous_percentage": 60,
     "cost_per_call": 0.005,
-    "assigned_partner": "George Soros"
+    "assigned_partner": "Warren Buffett + George Soros",
+    "account": "Konto główne (GOOGLE_API_KEY)"
+  },
+  "gemini_nexus": {
+    "daily_limit": 50,
+    "autonomous_percentage": 60,
+    "cost_per_call": 0.005,
+    "assigned_partner": "Nexus",
+    "account": "Konto Nexus (GOOGLE_API_KEY_NEXUS)"
   },
   "openai": {
     "daily_limit": 50,
     "autonomous_percentage": 60,
     "cost_per_call": 0.02,
-    "assigned_partner": "OpenRouter (CZ)",
+    "assigned_partner": "Changpeng Zhao (CZ)",
     "note": "OpenRouter działa przez OpenAI API interface, trackowne jako 'openai'"
   }
 }

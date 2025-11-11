@@ -525,8 +525,15 @@ def generuj_odpowiedz_ai(persona_name, prompt):
         else:
             import google.generativeai as genai
             
-            # Pobierz klucz API
-            api_key = st.secrets.get("GOOGLE_API_KEY", os.getenv("GOOGLE_API_KEY"))
+            # Wybierz klucz API - Nexus ma osobne konto, inni partnerzy wspólne
+            if partner_name == "Nexus":
+                api_key = st.secrets.get("GOOGLE_API_KEY_NEXUS", os.getenv("GOOGLE_API_KEY_NEXUS"))
+                if not api_key:
+                    # Fallback na główny klucz jeśli Nexus nie ma osobnego
+                    api_key = st.secrets.get("GOOGLE_API_KEY", os.getenv("GOOGLE_API_KEY"))
+            else:
+                api_key = st.secrets.get("GOOGLE_API_KEY", os.getenv("GOOGLE_API_KEY"))
+            
             if not api_key:
                 return "[BŁĄD: Brak klucza GOOGLE_API_KEY]"
             
@@ -536,8 +543,11 @@ def generuj_odpowiedz_ai(persona_name, prompt):
             
             response = model.generate_content(prompt)
             
-            # Track API call
-            tracker.track_call("gemini", is_autonomous=False)
+            # Track API call - różne countery dla Nexus vs inne
+            if partner_name == "Nexus":
+                tracker.track_call("gemini_nexus", is_autonomous=False)
+            else:
+                tracker.track_call("gemini", is_autonomous=False)
             
             if not response.parts:
                 return "[ODPOWIEDŹ ZABLOKOWANA PRZEZ FILTRY BEZPIECZEŃSTWA GEMINI]"
