@@ -1,7 +1,7 @@
 {
   "metadata": {
     "version": "1.0",
-    "last_updated": "2025-11-10",
+    "last_updated": "2025-11-11",
     "evaluation_period_days": 30,
     "rebalance_schedule": "monthly",
     "next_rebalance": "2025-12-01",
@@ -34,6 +34,13 @@
           "date": "2025-11-10",
           "weight": 13.75,
           "reason": "Initial setup",
+          "accuracy": 0.0,
+          "predictions_evaluated": 0
+        },
+        {
+          "date": "2025-11-11",
+          "weight": 13.75,
+          "reason": "Monthly rebalancing",
           "accuracy": 0.0,
           "predictions_evaluated": 0
         }
@@ -75,6 +82,13 @@
           "reason": "Initial setup",
           "accuracy": 0.0,
           "predictions_evaluated": 0
+        },
+        {
+          "date": "2025-11-11",
+          "weight": 13.75,
+          "reason": "Monthly rebalancing",
+          "accuracy": 0.0,
+          "predictions_evaluated": 0
         }
       ],
       "predictions": [
@@ -110,6 +124,13 @@
           "date": "2025-11-10",
           "weight": 13.75,
           "reason": "Initial setup",
+          "accuracy": 0.0,
+          "predictions_evaluated": 0
+        },
+        {
+          "date": "2025-11-11",
+          "weight": 13.75,
+          "reason": "Monthly rebalancing",
           "accuracy": 0.0,
           "predictions_evaluated": 0
         }
@@ -149,12 +170,59 @@
           "reason": "Initial setup",
           "accuracy": 0.0,
           "predictions_evaluated": 0
+        },
+        {
+          "date": "2025-11-11",
+          "weight": 13.75,
+          "reason": "Monthly rebalancing",
+          "accuracy": 0.0,
+          "predictions_evaluated": 0
         }
       ],
       "predictions": []
     }
   },
-  "monthly_reports": [],
+  "monthly_reports": [
+    {
+      "date": "2025-11-11",
+      "reason": "Monthly rebalancing",
+      "changes": [
+        {
+          "advisor": "Nexus",
+          "old_weight": 13.75,
+          "new_weight": 13.75,
+          "change": 0.0,
+          "accuracy": 0.0,
+          "total_predictions": 0
+        },
+        {
+          "advisor": "Warren Buffett",
+          "old_weight": 13.75,
+          "new_weight": 13.75,
+          "change": 0.0,
+          "accuracy": 0.0,
+          "total_predictions": 0
+        },
+        {
+          "advisor": "George Soros",
+          "old_weight": 13.75,
+          "new_weight": 13.75,
+          "change": 0.0,
+          "accuracy": 0.0,
+          "total_predictions": 0
+        },
+        {
+          "advisor": "Changpeng Zhao (CZ)",
+          "old_weight": 13.75,
+          "new_weight": 13.75,
+          "change": 0.0,
+          "accuracy": 0.0,
+          "total_predictions": 0
+        }
+      ],
+      "total_predictions_evaluated": 0
+    }
+  ],
   "prediction_examples": [
     {
       "prediction_id": "example_001",
