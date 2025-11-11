@@ -8871,6 +8871,130 @@ def show_timeline_page(stan_spolki):
     with tab_monthly:
         st.markdown("### 📅 Historia Miesięcznych Auditów")
         
+        # === FORMULARZ DODAWANIA RĘCZNEGO ===
+        with st.expander("➕ Dodaj Audit Ręcznie (Dane Historyczne)", expanded=False):
+            st.markdown("**Wprowadź dane historyczne z poprzednich miesięcy/lat:**")
+            
+            col_form1, col_form2 = st.columns(2)
+            
+            with col_form1:
+                manual_year = st.number_input("Rok", min_value=2020, max_value=2030, value=2023, step=1)
+                manual_month = st.selectbox("Miesiąc", options=list(range(1, 13)), 
+                                           format_func=lambda x: f"{x:02d} - {['Styczeń','Luty','Marzec','Kwiecień','Maj','Czerwiec','Lipiec','Sierpień','Wrzesień','Październik','Listopad','Grudzień'][x-1]}")
+                
+                st.markdown("**📊 Portfolio:**")
+                stocks_value = st.number_input("Akcje (USD)", min_value=0.0, value=0.0, step=100.0)
+                stocks_positions = st.number_input("Liczba pozycji akcji", min_value=0, value=0, step=1)
+                stocks_cash = st.number_input("Cash Trading212 (USD)", min_value=0.0, value=0.0, step=10.0)
+                
+                crypto_value = st.number_input("Crypto (USD)", min_value=0.0, value=0.0, step=100.0)
+                crypto_positions = st.number_input("Liczba pozycji crypto", min_value=0, value=0, step=1)
+                
+                usd_pln_manual = st.number_input("Kurs USD/PLN", min_value=3.0, max_value=5.0, value=3.65, step=0.01)
+            
+            with col_form2:
+                st.markdown("**💳 Zobowiązania:**")
+                debt_pln = st.number_input("Dług (PLN)", min_value=0.0, value=0.0, step=100.0)
+                debt_count = st.number_input("Liczba kredytów", min_value=0, value=0, step=1)
+                
+                st.markdown("**🎯 Cele:**")
+                emergency_base = st.number_input("Rezerwa gotówkowa (PLN, bez T212)", min_value=0.0, value=0.0, step=100.0)
+                emergency_target = st.number_input("Cel rezerwy (PLN)", min_value=0.0, value=10000.0, step=1000.0)
+                add_target = st.number_input("Cel ADD (PLN)", min_value=0.0, value=50000.0, step=1000.0)
+                
+                st.markdown("**✅ Compliance:**")
+                compliance_status = st.selectbox("Status", options=["pass", "warnings", "fail"])
+                compliance_issues = st.number_input("Liczba issues", min_value=0, value=0, step=1)
+            
+            if st.button("💾 Zapisz Audit Historyczny", type="primary"):
+                # Oblicz totale
+                total_assets_usd = stocks_value + stocks_cash + crypto_value
+                total_assets_pln = total_assets_usd * usd_pln_manual
+                
+                # Cash w PLN
+                cash_pln = stocks_cash * usd_pln_manual
+                
+                # Rezerwa całkowita
+                emergency_current = emergency_base + cash_pln
+                emergency_progress = (emergency_current / emergency_target * 100) if emergency_target > 0 else 0
+                
+                # Net Worth
+                net_worth_pln = total_assets_pln - debt_pln
+                
+                # Utwórz snapshot
+                manual_snapshot = {
+                    "timestamp": f"{manual_year}-{manual_month:02d}-01T12:00:00",
+                    "month": f"{manual_year}-{manual_month:02d}",
+                    "exchange_rate_usd_pln": usd_pln_manual,
+                    "portfolio": {
+                        "stocks": {
+                            "total_value_usd": round(stocks_value, 2),
+                            "positions": stocks_positions,
+                            "cash_usd": round(stocks_cash, 2),
+                            "total_with_cash_usd": round(stocks_value + stocks_cash, 2)
+                        },
+                        "crypto": {
+                            "total_value_usd": round(crypto_value, 2),
+                            "positions": crypto_positions
+                        },
+                        "total_assets_usd": round(total_assets_usd, 2),
+                        "total_assets_pln": round(total_assets_pln, 2)
+                    },
+                    "debt": {
+                        "total_debt_pln": round(debt_pln, 2),
+                        "active_loans": debt_count
+                    },
+                    "net_worth_pln": round(net_worth_pln, 2),
+                    "goals": {
+                        "emergency_fund_target": emergency_target,
+                        "emergency_fund_current": round(emergency_current, 2),
+                        "emergency_fund_base_pln": emergency_base,
+                        "emergency_fund_cash_usd": stocks_cash,
+                        "emergency_fund_cash_pln": round(cash_pln, 2),
+                        "emergency_fund_progress": round(emergency_progress, 1),
+                        "add_target": add_target
+                    },
+                    "compliance": {
+                        "issues_count": compliance_issues,
+                        "status": compliance_status
+                    },
+                    "_manual_entry": True
+                }
+                
+                # Załaduj istniejącą historię
+                try:
+                    with open('monthly_snapshots_history.json', 'r', encoding='utf-8') as f:
+                        existing_history = json.load(f)
+                except:
+                    existing_history = []
+                
+                # Dodaj nowy snapshot
+                existing_history.append(manual_snapshot)
+                
+                # Deduplikacja po miesiącu
+                unique_history = {}
+                for snap in existing_history:
+                    month_key = snap.get('month', '')
+                    if month_key:
+                        unique_history[month_key] = snap
+                
+                # Sortuj
+                final_history = sorted(unique_history.values(), key=lambda x: x.get('month', ''))
+                
+                # Zapisz
+                try:
+                    with open('monthly_snapshots_history.json', 'w', encoding='utf-8') as f:
+                        json.dump(final_history, f, indent=2, ensure_ascii=False)
+                    
+                    st.success(f"✅ Dodano audit dla {manual_year}-{manual_month:02d}")
+                    st.info(f"💎 Net Worth: {net_worth_pln:,.2f} PLN | 💰 Aktywa: {total_assets_pln:,.2f} PLN | 💳 Dług: {debt_pln:,.2f} PLN")
+                    st.info(f"🏦 Rezerwa: {emergency_current:,.2f} PLN ({emergency_progress:.1f}% celu)")
+                    st.rerun()
+                except Exception as e:
+                    st.error(f"❌ Błąd zapisu: {e}")
+        
+        st.markdown("---")
+        
         # Załaduj historię monthly snapshots
         try:
             with open('monthly_snapshots_history.json', 'r', encoding='utf-8') as f:
