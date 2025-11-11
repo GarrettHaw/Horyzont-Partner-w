@@ -8813,23 +8813,6 @@ def show_timeline_page(stan_spolki):
             st.metric("💰 Wartość aktualna", format_currency(current_value), delta=f"{growth:+.2f}%")
         with col3:
             st.metric("📈 Liczba snapshots", len(history))
-    
-    # TAB 2 - Benchmark Comparison - DISABLED (wymaga implementacji prepare_comparison_data)
-    # Można włączyć po dodaniu brakujących metod do benchmark_comparison.py
-    """
-    with tab2:
-        st.subheader("🏆 Twój Portfel vs Rynek")
-        st.info("💡 Porównanie znormalizowane do 100 punktów na start okresu")
-        
-        with st.spinner("⏳ Pobieranie danych benchmarków..."):
-            comparison_data = bench.prepare_comparison_data(history)
-        
-        if "error" in comparison_data:
-            st.error(f"❌ {comparison_data['error']}")
-        else:
-            # ... reszta kodu benchmark comparison
-            pass
-    """
 
 def show_simulations_page(stan_spolki):
     """Strona z symulacjami"""
