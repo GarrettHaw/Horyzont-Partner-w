@@ -118,13 +118,38 @@ def generate_daily_insight():
     cele = load_json_file('cele.json')
     krypto_data = load_json_file('krypto.json')
     
-    # Update crypto value
+    # Update crypto value (struktura: {"krypto": [...]})
     if krypto_data and isinstance(krypto_data, dict):
-        crypto_positions = krypto_data.get('pozycje', {})
-        crypto_value = sum(p.get('wartosc_pln', 0) for p in crypto_positions.values() if isinstance(p, dict))
-        stan_spolki['krypto']['wartosc_pln'] = crypto_value
-        stan_spolki['krypto']['pozycje'] = crypto_positions
-        print(f"   Krypto: {crypto_value:.2f} PLN")
+        crypto_list = krypto_data.get('krypto', [])
+        
+        if isinstance(crypto_list, list):
+            # Oblicz wartość krypto (potrzebujemy API do cen - dla teraz użyj cache)
+            crypto_value = 0
+            crypto_positions = {}
+            
+            for coin in crypto_list:
+                if isinstance(coin, dict):
+                    symbol = coin.get('symbol', 'UNKNOWN')
+                    ilosc = coin.get('ilosc', 0)
+                    # Spróbuj użyć cached price lub cena_zakupu
+                    cena = coin.get('cena_aktualna_usd', coin.get('cena_zakupu_usd', 0))
+                    wartosc_usd = ilosc * cena
+                    wartosc_pln = wartosc_usd * 4.0  # Approx USD->PLN (można улучшyć)
+                    
+                    crypto_positions[symbol] = {
+                        'ilosc': ilosc,
+                        'cena_usd': cena,
+                        'wartosc_pln': wartosc_pln
+                    }
+                    crypto_value += wartosc_pln
+            
+            stan_spolki['krypto']['wartosc_pln'] = crypto_value
+            stan_spolki['krypto']['pozycje'] = crypto_positions
+            print(f"   Krypto: {crypto_value:.2f} PLN ({len(crypto_positions)} monet)")
+        else:
+            print(f"   ⚠️ Nieprawidłowa struktura krypto.json")
+    else:
+        print(f"   ⚠️ Brak danych krypto")
     
     # 3. Oblicz wartości
     akcje_val = stan_spolki.get('akcje', {}).get('wartosc_pln', 0)
