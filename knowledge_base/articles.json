@@ -1,7 +1,427 @@
 {
-  "last_updated": "2025-10-21T18:19:16.173568",
-  "total_articles": 9,
+  "last_updated": "2025-11-11T18:34:15.218404",
+  "total_articles": 50,
   "articles": [
+    {
+      "id": "ea67461a554238dd",
+      "date": "2025-11-11T18:23:00",
+      "title": "Dow rallies while S&P and Nasdaq are mixed as government shutdown resolution appears close - Seeking Alpha",
+      "source": "Seeking Alpha",
+      "url": "https://news.google.com/rss/articles/CBMidEFVX3lxTFBWZ3l2Z3ZLSGhCd2lCbEFMLWR0T09aRG9lWFNDNzd2U2loOGFnYlZPZnlDS1ZJREppT0M2ZHBpMDUzeG5uQVFlTzBVeFN5ZGZxVE1WUXg4R0ZSTW5Gd1JrbnZFQmdsTm5kSVQ5QUp2QjdHRHdr?oc=5",
+      "summary": "<a href=\"https://news.google.com/rss/articles/CBMidEFVX3lxTFBWZ3l2Z3ZLSGhCd2lCbEFMLWR0T09aRG9lWFNDNzd2U2loOGFnYlZPZnlDS1ZJREppT0M2ZHBpMDUzeG5uQVFlTzBVeFN5ZGZxVE1WUXg4R0ZSTW5Gd1JrbnZFQmdsTm5kSVQ5QUp2QjdHRHdr?oc=5\" target=\"_blank\">Dow rallies while S&amp;P and Nasdaq are mixed as government shutdown resolution appears close</a>&nbsp;&nbsp;<font color=\"#6f6f6f\">Seeking Alpha</font>",
+      "ticker": null,
+      "type": "market_trends",
+      "relevance": 7,
+      "added_at": "2025-11-11T18:34:11.196989"
+    },
+    {
+      "id": "65c19320441ce26c",
+      "date": "2025-11-11T18:22:00",
+      "title": "Industrial Stocks Enjoyed Earnings Season. Which Ones to Buy. - Barron's",
+      "source": "Barron's",
+      "url": "https://news.google.com/rss/articles/CBMimgNBVV95cUxQa21SWXJtamFSUmtMbXJWbXhYRzFWTEg2ajBQRDVLalVBZWpLR0FYODNMYU1NcVJRb3RBX0dEX1NXNWxyMnNPanhfTWxkMzd4VTcyMlZ6Q0t6UWoxZlZqZlBhQ1YzUk5fcy1GTHdlb2RaMnliVmpodlJqR2d5dlptMDdlZlhvTWIxVzRzaVgwUWx3WFVhRWNtQmZFWnRzb25tQW8yMjlPTFJSZnJTUWlJWkRxODFQVXduOFZ4ZktvNFowYnVfMmRRZUZjVFhBY2owaWhxNWF4ZlN1VWJzd0wxUnFqaGxXdC14dnEtVC1tSl9uaXVEMkwycWM0MzM2OGdzdm0wc0RlRnBJMUJaem5JUDFhd1ViWndZWWhwZ2N4NG5NTFFzcm9xNWhGdUFKUks1cVNJaEJsMDZkYUJFS2hEV0tkcjgtNE1SS09VeVlpcmdOTmNYRERmQUthZ056OXE4SUcwOXUteEYxM2dqX3FyRTgwaklWU0pXSE9oS3ZpalBNWERyakt0aFd0NF9vbFJESkNheUFxaTNUdw?oc=5",
+      "summary": "<a href=\"https://news.google.com/rss/articles/CBMimgNBVV95cUxQa21SWXJtamFSUmtMbXJWbXhYRzFWTEg2ajBQRDVLalVBZWpLR0FYODNMYU1NcVJRb3RBX0dEX1NXNWxyMnNPanhfTWxkMzd4VTcyMlZ6Q0t6UWoxZlZqZlBhQ1YzUk5fcy1GTHdlb2RaMnliVmpodlJqR2d5dlptMDdlZlhvTWIxVzRzaVgwUWx3WFVhRWNtQmZFWnRzb25tQW8yMjlPTFJSZnJTUWlJWkRxODFQVXduOFZ4ZktvNFowYnVfMmRRZUZjVFhBY2owaWhxNWF4ZlN1VWJzd0wxUnFqaGxXdC14dnEtVC1tSl9uaXVEMkwycWM0MzM2OGdzdm0wc0RlRnBJMUJaem5JUDFhd1ViWndZWWhwZ2N4NG5NTFFzcm9xNWhGdUFKUks1cVNJaEJsMDZkYUJFS2hEV0tkcjgtNE1SS09VeVlpcmdOTmNYRERmQUthZ056OXE4SUcwOXUteEYxM2dqX3FyRTgwaklWU0pXSE9oS3ZpalBNWERyakt0aFd0NF9vbFJESkNheUFxaTNUdw?oc=5\" target=\"_blank\">Industrial Stocks Enjoyed Earnings Season. Which Ones to Buy.</a>&nbsp;&nbsp;<font color=\"#6f6f6f\">Barron's</font>",
+      "ticker": null,
+      "type": "market_trends",
+      "relevance": 7,
+      "added_at": "2025-11-11T18:34:11.197020"
+    },
+    {
+      "id": "50dc61a8753a22d0",
+      "date": "2025-11-11T18:20:00",
+      "title": "Stock Market Today: Dow Jumps 500 Points As Shutdown End Nears; Gold Stock Vaults (Live Coverage) - Investor's Business Daily",
+      "source": "Investor's Business Daily",
+      "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxPc2tfdUE5VHFPZk85OTR0UWkyaWljWjA2c2wxVm5wdW45QWd6OFhEZFhXNkp5VmZQTUw5aUlnb1lYUlNMVFRlVlZxMHRrZnRDa01aaXVldkVNalJud0duYXJmaW54VldJVzNXRWhBQmpVV1NCa2c0ZVBkUVE1cjNpUlAxY2hBU0tTa25wZ2NxcWtIaEh2WmVOQ1I2U0FOZlBqcVhYUFA5aFJuc0JmMVZ1R2FJS1hfaFhhdTZ4MUV4QQ?oc=5",
+      "summary": "<a href=\"https://news.google.com/rss/articles/CBMivwFBVV95cUxPc2tfdUE5VHFPZk85OTR0UWkyaWljWjA2c2wxVm5wdW45QWd6OFhEZFhXNkp5VmZQTUw5aUlnb1lYUlNMVFRlVlZxMHRrZnRDa01aaXVldkVNalJud0duYXJmaW54VldJVzNXRWhBQmpVV1NCa2c0ZVBkUVE1cjNpUlAxY2hBU0tTa25wZ2NxcWtIaEh2WmVOQ1I2U0FOZlBqcVhYUFA5aFJuc0JmMVZ1R2FJS1hfaFhhdTZ4MUV4QQ?oc=5\" target=\"_blank\">Stock Market Today: Dow Jumps 500 Points As Shutdown End Nears; Gold Stock Vaults (Live Coverage)</a>&nbsp;&nbsp;<font color=\"#6f6f6f\">Investor's Business Daily</font>",
+      "ticker": null,
+      "type": "market_trends",
+      "relevance": 7,
+      "added_at": "2025-11-11T18:34:10.533285"
+    },
+    {
+      "id": "a68916c9134f3703",
+      "date": "2025-11-11T18:11:00",
+      "title": "Paramount Is the Best Performer in the S&P 500 After Earnings - Barron's",
+      "source": "Barron's",
+      "url": "https://news.google.com/rss/articles/CBMihgNBVV95cUxQVEw5dUtEQUdSMmNkbkhoZVdPYmpySWJPODNGd05nUGkweGhfVG9VbkRreHN0cGNmZjVIQzFhcTVVel9PYUxDTy1lOTUzVExhMGh1U2JOZ2RDYmtCZkRGTlJpVXM2ZmRMVlBVbjB3UzVJTVBrZGZ5SkpHZTdzVDJGQU5Zdl84MTZlTmJ5eGFYMDFCbVg3UXZjclp4LU9lU1FfTGZZWW5rd1BDWUNoMldXalduZ1NOWEdwQklEWXVUcnVHSkF3Q09RaDRJQnYyd1otYmtIekIyV25QaHIxSVlGTUtIRzZkeWdrbU9kdkRtRVdfY29FSFFkblBhc0liMV9XYks0MjBGeTVOT0Z0Q2ZuakU1b3VaSGtvYjFMU1RSWEJTRmwtQnZyUHZFcV9Gc29LWWRiT0REbHNUNWlFQUYwcS1lWlZodVpkM2RZblREeUcyWDRIdnJNdXdVY2NoOWxGeDJhM2YxM0VteUhqT0hCVDk0ZS15bDVHbFFSVXBZRWM3YXlFZkE?oc=5",
+      "summary": "<a href=\"https://news.google.com/rss/articles/CBMihgNBVV95cUxQVEw5dUtEQUdSMmNkbkhoZVdPYmpySWJPODNGd05nUGkweGhfVG9VbkRreHN0cGNmZjVIQzFhcTVVel9PYUxDTy1lOTUzVExhMGh1U2JOZ2RDYmtCZkRGTlJpVXM2ZmRMVlBVbjB3UzVJTVBrZGZ5SkpHZTdzVDJGQU5Zdl84MTZlTmJ5eGFYMDFCbVg3UXZjclp4LU9lU1FfTGZZWW5rd1BDWUNoMldXalduZ1NOWEdwQklEWXVUcnVHSkF3Q09RaDRJQnYyd1otYmtIekIyV25QaHIxSVlGTUtIRzZkeWdrbU9kdkRtRVdfY29FSFFkblBhc0liMV9XYks0MjBGeTVOT0Z0Q2ZuakU1b3VaSGtvYjFMU1RSWEJTRmwtQnZyUHZFcV9Gc29LWWRiT0REbHNUNWlFQUYwcS1lWlZodVpkM2RZblREeUcyWDRIdnJNdXdVY2NoOWxGeDJhM2YxM0VteUhqT0hCVDk0ZS15bDVHbFFSVXBZRWM3YXlFZkE?oc=5\" target=\"_blank\">Paramount Is the Best Performer in the S&amp;P 500 After Earnings</a>&nbsp;&nbsp;<font color=\"#6f6f6f\">Barron's</font>",
+      "ticker": null,
+      "type": "market_trends",
+      "relevance": 7,
+      "added_at": "2025-11-11T18:34:11.197005"
+    },
+    {
+      "id": "44ff3eda4634946c",
+      "date": "2025-11-11T17:43:00",
+      "title": "Stock Market Today: Dow Rises, S&P 500, Nasdaq Fall; Nvidia, Tesla, CoreWeave, AMD, More Movers - Barron's",
+      "source": "Barron's",
+      "url": "https://news.google.com/rss/articles/CBMi-wJBVV95cUxONHJoNHlYYWVOZWlZUURrQkhsVEJ2SzdDbHA4eWZxVWdpUlAweEVTdWlEYkNtZUlneXNJS2hMTFJRWTQtaF9EN0NSWEUtdWZHWHhXWE5yQzU4U0ZqektCSjRsb2JSVVUxMFF4LW5sd3JKLTB3V2RvaEw1b0MtYUo4eXJULWZRcXlxYjRiMEZ1eXVnMWxYekRIWUp1aEV1Y3ZFNjM5MVRSMktJMy1Gel9nb2UyVVAtWGp5Zjg3Qkt2LXd3eG9QQU1oaDZfekJJVnY1Z3p6cHNUT204X2l6clpnR282LUJkZ1FWNld4T2diUVV6c3d6dGkxWDFyZ0N6bWZFMXNvV3RpdXpXTFJDVVM1YmlXVkloS0FwbEt4WHRBVFBWT2lXNnRBdTJYY1dCSC1OR1VFNDZURTZsNmlnV214cURFcTFUNFR1V3o5NjltQWZzR2x5dEYxTVNpVjRaaVRBN3F4cDlQcjZDV3hsaGVqX1A2Tk4wa3lYdkVn?oc=5",
+      "summary": "<a href=\"https://news.google.com/rss/articles/CBMi-wJBVV95cUxONHJoNHlYYWVOZWlZUURrQkhsVEJ2SzdDbHA4eWZxVWdpUlAweEVTdWlEYkNtZUlneXNJS2hMTFJRWTQtaF9EN0NSWEUtdWZHWHhXWE5yQzU4U0ZqektCSjRsb2JSVVUxMFF4LW5sd3JKLTB3V2RvaEw1b0MtYUo4eXJULWZRcXlxYjRiMEZ1eXVnMWxYekRIWUp1aEV1Y3ZFNjM5MVRSMktJMy1Gel9nb2UyVVAtWGp5Zjg3Qkt2LXd3eG9QQU1oaDZfekJJVnY1Z3p6cHNUT204X2l6clpnR282LUJkZ1FWNld4T2diUVV6c3d6dGkxWDFyZ0N6bWZFMXNvV3RpdXpXTFJDVVM1YmlXVkloS0FwbEt4WHRBVFBWT2lXNnRBdTJYY1dCSC1OR1VFNDZURTZsNmlnV214cURFcTFUNFR1V3o5NjltQWZzR2x5dEYxTVNpVjRaaVRBN3F4cDlQcjZDV3hsaGVqX1A2Tk4wa3lYdkVn?oc=5\" target=\"_blank\">Stock Market Today: Dow Rises, S&amp;P 500, Nasdaq Fall; Nvidia, Tesla, CoreWeave, AMD, More Movers</a>&nbsp;&nbsp;<font color=\"#6f6f6f\">Barron's</font>",
+      "ticker": null,
+      "type": "market_trends",
+      "relevance": 7,
+      "added_at": "2025-11-11T18:34:11.196945"
+    },
+    {
+      "id": "e65c90e5d83fc6cf",
+      "date": "2025-11-11T17:15:59",
+      "title": "3 High-Powered Dividend Stocks To Buy Before 2026 - Yahoo Finance",
+      "source": "Yahoo Finance",
+      "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxQWHlVelZydnNkeXZVWXlyZkh5bk9naWk4OS01TEF3WHluT0dsOUZfWnpseThoa21kSWh3V1UxQjFaazdfbXBWNGxaSV9TVVJrRWlpcGhEVnExeF9XSUJ2RTZ1SUpFQXRhRUxFN1diSEtXSUNNZjEzSVpuR3hhOHEwc0V3?oc=5",
+      "summary": "<a href=\"https://news.google.com/rss/articles/CBMiggFBVV95cUxQWHlVelZydnNkeXZVWXlyZkh5bk9naWk4OS01TEF3WHluT0dsOUZfWnpseThoa21kSWh3V1UxQjFaazdfbXBWNGxaSV9TVVJrRWlpcGhEVnExeF9XSUJ2RTZ1SUpFQXRhRUxFN1diSEtXSUNNZjEzSVpuR3hhOHEwc0V3?oc=5\" target=\"_blank\">3 High-Powered Dividend Stocks To Buy Before 2026</a>&nbsp;&nbsp;<font color=\"#6f6f6f\">Yahoo Finance</font>",
+      "ticker": null,
+      "type": "market_trends",
+      "relevance": 7,
+      "added_at": "2025-11-11T18:34:11.904195"
+    },
+    {
+      "id": "89a3e24b46ca44f6",
+      "date": "2025-11-11T16:07:08",
+      "title": "3 Buy-And-Forget Dividend Stocks With Snowballing Payouts - Yahoo Finance",
+      "source": "Yahoo Finance",
+      "url": "https://news.google.com/rss/articles/CBMif0FVX3lxTE1nQVNGRVdHOWVMT2h6YWxtWHNlVEZTclUtZlZocFdFdUJzOW1LVDB0YnRHdXpLZ0NMT21pVVBLV1RNb0dqYzJrbDZnbVdjYWtJWmtGbkx1ME5qbEl0cjhieEpVbmxsR21FUWNoVXcyNG1uVk1OTS1MM0RtLUVKYnc?oc=5",
+      "summary": "<a href=\"https://news.google.com/rss/articles/CBMif0FVX3lxTE1nQVNGRVdHOWVMT2h6YWxtWHNlVEZTclUtZlZocFdFdUJzOW1LVDB0YnRHdXpLZ0NMT21pVVBLV1RNb0dqYzJrbDZnbVdjYWtJWmtGbkx1ME5qbEl0cjhieEpVbmxsR21FUWNoVXcyNG1uVk1OTS1MM0RtLUVKYnc?oc=5\" target=\"_blank\">3 Buy-And-Forget Dividend Stocks With Snowballing Payouts</a>&nbsp;&nbsp;<font color=\"#6f6f6f\">Yahoo Finance</font>",
+      "ticker": null,
+      "type": "market_trends",
+      "relevance": 7,
+      "added_at": "2025-11-11T18:34:11.904141"
+    },
+    {
+      "id": "f2a581802c1b25ca",
+      "date": "2025-11-11T15:24:00",
+      "title": "STT Acquires PriceStats to Strengthen Inflation Tracking & Data Tools - Yahoo Finance",
+      "source": "Yahoo Finance",
+      "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxNR2I4cWZhMEJTSDM2ZU9WbGtwallGem1HSXBudm5PNjQwX2xFbmhyZks5Ym1fTEd0emxhYVNuSkdHazRIeVlZaDJEZ2hjbUxRVVluUkFFZmtaZGR2c0NpYkhxSE80UzlrVjBQLXBfLVgwNEd5XzVDdTBZRkJxNmtlU1hLNXdUT2VkQ0NpaTVRTFFYZG8y?oc=5",
+      "summary": "<a href=\"https://news.google.com/rss/articles/CBMilAFBVV95cUxNR2I4cWZhMEJTSDM2ZU9WbGtwallGem1HSXBudm5PNjQwX2xFbmhyZks5Ym1fTEd0emxhYVNuSkdHazRIeVlZaDJEZ2hjbUxRVVluUkFFZmtaZGR2c0NpYkhxSE80UzlrVjBQLXBfLVgwNEd5XzVDdTBZRkJxNmtlU1hLNXdUT2VkQ0NpaTVRTFFYZG8y?oc=5\" target=\"_blank\">STT Acquires PriceStats to Strengthen Inflation Tracking & Data Tools</a>&nbsp;&nbsp;<font color=\"#6f6f6f\">Yahoo Finance</font>",
+      "ticker": null,
+      "type": "economy",
+      "relevance": 7,
+      "added_at": "2025-11-11T18:34:15.218238"
+    },
+    {
+      "id": "976c1eed16e51ac5",
+      "date": "2025-11-11T15:06:00",
+      "title": "Reminder - Expand Energy (EXE) Goes Ex-Dividend Soon - Nasdaq",
+      "source": "Nasdaq",
+      "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxQa1dmQzBWTnBwWGYtQVlEQjVfSXpoNjBoZnNEUXVzRW5DNUlDaEtEMDZqaDRqTzBUaGRQRy1YdmlFeTMwSjBVd2YwOUFxSlpMOXFZdUNSdTVWenJScUpZY3lNTGpBeE1aeUdrRkJfSU9pbU8wajJXeFBWbGhMblkyZ1J1amt2NG8?oc=5",
+      "summary": "<a href=\"https://news.google.com/rss/articles/CBMihwFBVV95cUxQa1dmQzBWTnBwWGYtQVlEQjVfSXpoNjBoZnNEUXVzRW5DNUlDaEtEMDZqaDRqTzBUaGRQRy1YdmlFeTMwSjBVd2YwOUFxSlpMOXFZdUNSdTVWenJScUpZY3lNTGpBeE1aeUdrRkJfSU9pbU8wajJXeFBWbGhMblkyZ1J1amt2NG8?oc=5\" target=\"_blank\">Reminder - Expand Energy (EXE) Goes Ex-Dividend Soon</a>&nbsp;&nbsp;<font color=\"#6f6f6f\">Nasdaq</font>",
+      "ticker": null,
+      "type": "market_trends",
+      "relevance": 7,
+      "added_at": "2025-11-11T18:34:11.904180"
+    },
+    {
+      "id": "056a5171857bdf42",
+      "date": "2025-11-11T14:40:18",
+      "title": "Bitcoin Traders Are Still Rattled After $340 Billion Wipeout - Yahoo Finance",
+      "source": "Yahoo Finance",
+      "url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxPRXZkZGFiLU1EdFg3aE1vT2x3Z1RBUFItRTR6cUtiQlJjcXhER0dmSzZrTFBBOHBEeXphNGhtVUd4b2pSNEpfSkZERWRUS3dxY2ZoNkd3ZzRrT0FCMlR3SkFUMjBfNXE1cTRBc0hWWWptUVJDNnB5ME9zZXlSWTU2ZUs4ZjBmM184UUlxeg?oc=5",
+      "summary": "<a href=\"https://news.google.com/rss/articles/CBMijAFBVV95cUxPRXZkZGFiLU1EdFg3aE1vT2x3Z1RBUFItRTR6cUtiQlJjcXhER0dmSzZrTFBBOHBEeXphNGhtVUd4b2pSNEpfSkZERWRUS3dxY2ZoNkd3ZzRrT0FCMlR3SkFUMjBfNXE1cTRBc0hWWWptUVJDNnB5ME9zZXlSWTU2ZUs4ZjBmM184UUlxeg?oc=5\" target=\"_blank\">Bitcoin Traders Are Still Rattled After $340 Billion Wipeout</a>&nbsp;&nbsp;<font color=\"#6f6f6f\">Yahoo Finance</font>",
+      "ticker": null,
+      "type": "crypto",
+      "relevance": 7,
+      "added_at": "2025-11-11T18:34:12.718775"
+    },
+    {
+      "id": "458936b517ba1e7d",
+      "date": "2025-11-11T14:23:00",
+      "title": "2 Dividend Stocks to Double Up on Right Now - Yahoo Finance",
+      "source": "Yahoo Finance",
+      "url": "https://news.google.com/rss/articles/CBMif0FVX3lxTE1lTzF4NGFudXVtM2pBT3ItY3hNWktxYno2dGZQSEM4ZkRwOXJNdGU0Ukt5TG95ZHFrRUtLdVUzY0VwRkEwbGJIXzBLeFcyRjQtRmJwWEdJUGVZYzBpZXZCRTFnaUI2MHNyc3JrbUx5TV9fT0NhZDlsTkxtc09scEE?oc=5",
+      "summary": "<ol><li><a href=\"https://news.google.com/rss/articles/CBMif0FVX3lxTE1lTzF4NGFudXVtM2pBT3ItY3hNWktxYno2dGZQSEM4ZkRwOXJNdGU0Ukt5TG95ZHFrRUtLdVUzY0VwRkEwbGJIXzBLeFcyRjQtRmJwWEdJUGVZYzBpZXZCRTFnaUI2MHNyc3JrbUx5TV9fT0NhZDlsTkxtc09scEE?oc=5\" target=\"_blank\">2 Dividend Stocks to Double Up on Right Now</a>&nbsp;&nbsp;<font color=\"#6f6f6f\">Yahoo Finance</font></li><li><a href=\"https://news.google.com/rss/articles/CBMilgFBVV95cUxOa0hpdmNsZURjSXliSjRTYW1jT2Q1WE1pREJDeWJNcXNmM1Z0Y3lFS2poNkl6Ti1lVXRYR0IwY1UyZlhYZVN0VFBBdU1GY3Yta29iU2Y2TnNkX0I0TTdNcmluSVVvN2hCMC1XVC1xZU03V2hpM296UUx4UzhpTTVjVXNXQ0xzcUFkcmtCVUUwMWh6dzExNVE?oc=5\" target=\"_blank\">The Best Dividend Stocks to Buy and Hold Forever</a>&nbsp;&nbsp;<font color=\"#6f6f6f\">The Motley Fool</font></li><li><a href=\"https://news.google.com/rss/articles/CBMihwFBVV95cUxNVUwyTHpwLXJUSkNOUDZRa0dKejRSbVZKS0ZheXVIZUJXTGg0NUlZY1hHbWF2Z3FwemVoNWNpQVppWlUtR09lOUYycmx3NEUwRnJ0TnlIdlJsQXJBdHk0UW15OVVIZlg1eU9hZnhSMkplUWhjTDFmYUtJUllZbE9Ra3pPcE1xZ0E?oc=5\" target=\"_blank\">Got $1,000? Here Are the Smartest Dividend Stocks to Start With.</a>&nbsp;&nbsp;<font color=\"#6f6f6f\">Nasdaq</font></li></ol>",
+      "ticker": null,
+      "type": "market_trends",
+      "relevance": 7,
+      "added_at": "2025-11-11T18:34:11.904161"
+    },
+    {
+      "id": "e98c5a4500731d72",
+      "date": "2025-11-11T14:00:36",
+      "title": "Stock market today: S&P 500, Nasdaq slip as AI angst overshadows hopes for end to US shutdown - Yahoo Finance",
+      "source": "Yahoo Finance",
+      "url": "https://news.google.com/rss/articles/CBMi1wFBVV95cUxOT3VPNVdvRTlxZktYOUM0d05TUW9xS0lkQlVweVpreGUzenFVYlV6WTFQNXpOeHFIUFczb1l2WHdKQTRMaGl1S0NldFFuRXZXTGdJX2RBNm0zZVFDWXBmTTdUVFNGVFBNVFdUUC1pMG0zOFZVOEQ1NG95Szc2QVNPUlpZeXd6bmt1OEc1amF6YmkzX1pBNzhVREpBVWZDWGZTOURTNE1TamF3aXlqeHBQaExhazE3WEZEWEdRdjZFeGVJNFM4Rlplc0ktRWdYN093MHhZVUptMA?oc=5",
+      "summary": "<a href=\"https://news.google.com/rss/articles/CBMi1wFBVV95cUxOT3VPNVdvRTlxZktYOUM0d05TUW9xS0lkQlVweVpreGUzenFVYlV6WTFQNXpOeHFIUFczb1l2WHdKQTRMaGl1S0NldFFuRXZXTGdJX2RBNm0zZVFDWXBmTTdUVFNGVFBNVFdUUC1pMG0zOFZVOEQ1NG95Szc2QVNPUlpZeXd6bmt1OEc1amF6YmkzX1pBNzhVREpBVWZDWGZTOURTNE1TamF3aXlqeHBQaExhazE3WEZEWEdRdjZFeGVJNFM4Rlplc0ktRWdYN093MHhZVUptMA?oc=5\" target=\"_blank\">Stock market today: S&amp;P 500, Nasdaq slip as AI angst overshadows hopes for end to US shutdown</a>&nbsp;&nbsp;<font color=\"#6f6f6f\">Yahoo Finance</font>",
+      "ticker": null,
+      "type": "market_trends",
+      "relevance": 7,
+      "added_at": "2025-11-11T18:34:11.196971"
+    },
+    {
+      "id": "2538bb7f0f81f85f",
+      "date": "2025-11-11T13:18:00",
+      "title": "Nebius Reports Bigger Q3 Net Income Loss, Announces Meta AI Deal - Investor's Business Daily",
+      "source": "Investor's Business Daily",
+      "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxNLWQ5WVNLeEZKemhqU1g2cHdhQjFFeTM2cmpBVXhSLTBNWWtuNUZHazdqSE9MZjkzaTVCZE50MzRMNm9FekFvMnVVZkp3RkEtUWxSeGw2TWZ4U2syRWVuOFA4Tl9FazJGZ2FWM2lvSzBIUkhrclZoNlF0UXNScERRcEhBWU5qTEMxeEhz?oc=5",
+      "summary": "<a href=\"https://news.google.com/rss/articles/CBMiiwFBVV95cUxNLWQ5WVNLeEZKemhqU1g2cHdhQjFFeTM2cmpBVXhSLTBNWWtuNUZHazdqSE9MZjkzaTVCZE50MzRMNm9FekFvMnVVZkp3RkEtUWxSeGw2TWZ4U2syRWVuOFA4Tl9FazJGZ2FWM2lvSzBIUkhrclZoNlF0UXNScERRcEhBWU5qTEMxeEhz?oc=5\" target=\"_blank\">Nebius Reports Bigger Q3 Net Income Loss, Announces Meta AI Deal</a>&nbsp;&nbsp;<font color=\"#6f6f6f\">Investor's Business Daily</font>",
+      "ticker": null,
+      "type": "market_trends",
+      "relevance": 7,
+      "added_at": "2025-11-11T18:34:10.533338"
+    },
+    {
+      "id": "cd71ef2fee540764",
+      "date": "2025-11-11T13:02:00",
+      "title": "CoreWeave Falls As Data Center Issue Hits Capital Spending, 2025 Revenue Outlook - Investor's Business Daily",
+      "source": "Investor's Business Daily",
+      "url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxNc1E4alJQeVlIMUVrWEo4RUk4RE9HYWtOak5wSlYyYzlwWFRRYlItYW91cmZlMDFwclVyRGNuQThxdUhBNHg5TnFDSzZaUWZXNHB6VEJXTEtkRElsbGRmZWdMU2Z2NW1Lb2xVazVHUXRZZkc1ODVVX3dyRnZJSWVUOEJqcnJCU3RobEVzRXFIUlBLQWs?oc=5",
+      "summary": "<a href=\"https://news.google.com/rss/articles/CBMikwFBVV95cUxNc1E4alJQeVlIMUVrWEo4RUk4RE9HYWtOak5wSlYyYzlwWFRRYlItYW91cmZlMDFwclVyRGNuQThxdUhBNHg5TnFDSzZaUWZXNHB6VEJXTEtkRElsbGRmZWdMU2Z2NW1Lb2xVazVHUXRZZkc1ODVVX3dyRnZJSWVUOEJqcnJCU3RobEVzRXFIUlBLQWs?oc=5\" target=\"_blank\">CoreWeave Falls As Data Center Issue Hits Capital Spending, 2025 Revenue Outlook</a>&nbsp;&nbsp;<font color=\"#6f6f6f\">Investor's Business Daily</font>",
+      "ticker": null,
+      "type": "market_trends",
+      "relevance": 7,
+      "added_at": "2025-11-11T18:34:10.533323"
+    },
+    {
+      "id": "21a40d13e3f7ded3",
+      "date": "2025-11-11T12:30:00",
+      "title": "Better Crypto Buy: Bitcoin vs. Ethereum - The Motley Fool",
+      "source": "The Motley Fool",
+      "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxQZG10LUlFX1l1ZFFGVnFkQWJVNjEwNzI5cTdjN0tRMmU2WlZGT3RYZWg2bW8yOEJlenE2NWtYcE9kLTFCcHlBSzk1b2VXOHVxLTBlazBWWE5GdDQ0d2p5ZWFNZjhzbzdfS0pFZGJjZlRKV3FPY01QV09KbnRWc2J2emdBS2RyMUk?oc=5",
+      "summary": "<a href=\"https://news.google.com/rss/articles/CBMihwFBVV95cUxQZG10LUlFX1l1ZFFGVnFkQWJVNjEwNzI5cTdjN0tRMmU2WlZGT3RYZWg2bW8yOEJlenE2NWtYcE9kLTFCcHlBSzk1b2VXOHVxLTBlazBWWE5GdDQ0d2p5ZWFNZjhzbzdfS0pFZGJjZlRKV3FPY01QV09KbnRWc2J2emdBS2RyMUk?oc=5\" target=\"_blank\">Better Crypto Buy: Bitcoin vs. Ethereum</a>&nbsp;&nbsp;<font color=\"#6f6f6f\">The Motley Fool</font>",
+      "ticker": null,
+      "type": "crypto",
+      "relevance": 7,
+      "added_at": "2025-11-11T18:34:13.560356"
+    },
+    {
+      "id": "beae48cf65e3433c",
+      "date": "2025-11-11T07:44:00",
+      "title": "Bitcoin Price To Bounce Against 1,300% Selling Spike — But How? - BeInCrypto",
+      "source": "BeInCrypto",
+      "url": "https://news.google.com/rss/articles/CBMicEFVX3lxTE96eGtmXzd1aXZMUWhOMklubXZWZHVSbFZ1WFIybEhuYmJucjVQMnFYQTZXdHpuTjM0aUhWbHNrT01WUkpzTlpWekhtaG5XbktmSlV3MnBrZGVlZGcwWXZfYnNfSGNWR3QyUmlGeFNJZ00?oc=5",
+      "summary": "<a href=\"https://news.google.com/rss/articles/CBMicEFVX3lxTE96eGtmXzd1aXZMUWhOMklubXZWZHVSbFZ1WFIybEhuYmJucjVQMnFYQTZXdHpuTjM0aUhWbHNrT01WUkpzTlpWekhtaG5XbktmSlV3MnBrZGVlZGcwWXZfYnNfSGNWR3QyUmlGeFNJZ00?oc=5\" target=\"_blank\">Bitcoin Price To Bounce Against 1,300% Selling Spike — But How?</a>&nbsp;&nbsp;<font color=\"#6f6f6f\">BeInCrypto</font>",
+      "ticker": null,
+      "type": "crypto",
+      "relevance": 7,
+      "added_at": "2025-11-11T18:34:12.718813"
+    },
+    {
+      "id": "f970bb1e97eaab39",
+      "date": "2025-11-11T06:28:55",
+      "title": "Bitcoin Price (BTC) Today: 'Death Cross' Looms - CoinDesk",
+      "source": "CoinDesk",
+      "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxNYkFDU1Q3OVh6ZG1aVlBNZjhzRXhUeExBMnd6eENjN1IxZ1ZvblozQ2ZacGxwYVhFOU5mRUcxekZ2VkVrQzFTNUVkYmVWeFVRU0pZcGtiaUF6ak5oc2tSeE8wVGp4a3RuOTZPMW43QzJNRDM0TldWOGlncl9paEJVcW5sT2I4VmtfTEdldWF5VUtPdllPbTZqVlBqMUZqODN1RnlzS2Z3SGlMdjhNNmhYV042Q3ROSjZl?oc=5",
+      "summary": "<a href=\"https://news.google.com/rss/articles/CBMiuAFBVV95cUxNYkFDU1Q3OVh6ZG1aVlBNZjhzRXhUeExBMnd6eENjN1IxZ1ZvblozQ2ZacGxwYVhFOU5mRUcxekZ2VkVrQzFTNUVkYmVWeFVRU0pZcGtiaUF6ak5oc2tSeE8wVGp4a3RuOTZPMW43QzJNRDM0TldWOGlncl9paEJVcW5sT2I4VmtfTEdldWF5VUtPdllPbTZqVlBqMUZqODN1RnlzS2Z3SGlMdjhNNmhYV042Q3ROSjZl?oc=5\" target=\"_blank\">Bitcoin Price (BTC) Today: 'Death Cross' Looms</a>&nbsp;&nbsp;<font color=\"#6f6f6f\">CoinDesk</font>",
+      "ticker": null,
+      "type": "crypto",
+      "relevance": 7,
+      "added_at": "2025-11-11T18:34:12.718796"
+    },
+    {
+      "id": "5771ddbef52aff36",
+      "date": "2025-11-10T23:21:00",
+      "title": "State Street buys private-sector inflation data provider - American Banker",
+      "source": "American Banker",
+      "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxQR0hVeUJxdlVqRDhzbDVvbmxoakRvWWFLNUFjcDVEV3lTeGd3bWRnUEpfMExaQUZobklqbDdLNmNRR01sb1pwblFSZ1FhMlFMaGF5V0xxa1d4akpuWlYxWmtpN0RZM0taYU5EeW4taW5iT0xLdXpVbS14R243SFR1eXljSGI1czBoblowczU0S0VJSE8zVElr?oc=5",
+      "summary": "<a href=\"https://news.google.com/rss/articles/CBMilwFBVV95cUxQR0hVeUJxdlVqRDhzbDVvbmxoakRvWWFLNUFjcDVEV3lTeGd3bWRnUEpfMExaQUZobklqbDdLNmNRR01sb1pwblFSZ1FhMlFMaGF5V0xxa1d4akpuWlYxWmtpN0RZM0taYU5EeW4taW5iT0xLdXpVbS14R243SFR1eXljSGI1czBoblowczU0S0VJSE8zVElr?oc=5\" target=\"_blank\">State Street buys private-sector inflation data provider</a>&nbsp;&nbsp;<font color=\"#6f6f6f\">American Banker</font>",
+      "ticker": null,
+      "type": "economy",
+      "relevance": 7,
+      "added_at": "2025-11-11T18:34:15.218222"
+    },
+    {
+      "id": "3048560bd5440916",
+      "date": "2025-11-10T22:14:39",
+      "title": "Senate Committee Drafts Crypto Bill to Define CFTC Role in Overseeing Markets - CoinDesk",
+      "source": "CoinDesk",
+      "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxObnBYRFUxYVZ4bGFhOU9wbUVJZTdYNmY2NjJvaDNDVHgwTE9HMG51ek5VM3dfNkFmN2lZYVZ5cG1YLTExNkZCdHNra0NlRlplaG5DSWt4NzlNZUU1YUZOZmZocmNOTWc4dUQ2ZE5paUVLczViQm1vbm8xWkhEa3pEa3g1M3p1cFFKMzdQQTRZVnVldUhPZTk3MlQxS2M0Unh3SmxsQ1pNUHotdU9DU0NIQXhSb0dHd2RnRVpjS0VB?oc=5",
+      "summary": "<a href=\"https://news.google.com/rss/articles/CBMivgFBVV95cUxObnBYRFUxYVZ4bGFhOU9wbUVJZTdYNmY2NjJvaDNDVHgwTE9HMG51ek5VM3dfNkFmN2lZYVZ5cG1YLTExNkZCdHNra0NlRlplaG5DSWt4NzlNZUU1YUZOZmZocmNOTWc4dUQ2ZE5paUVLczViQm1vbm8xWkhEa3pEa3g1M3p1cFFKMzdQQTRZVnVldUhPZTk3MlQxS2M0Unh3SmxsQ1pNUHotdU9DU0NIQXhSb0dHd2RnRVpjS0VB?oc=5\" target=\"_blank\">Senate Committee Drafts Crypto Bill to Define CFTC Role in Overseeing Markets</a>&nbsp;&nbsp;<font color=\"#6f6f6f\">CoinDesk</font>",
+      "ticker": null,
+      "type": "crypto",
+      "relevance": 7,
+      "added_at": "2025-11-11T18:34:12.718756"
+    },
+    {
+      "id": "565ef712a6832032",
+      "date": "2025-11-10T21:12:00",
+      "title": "Stock Market Today: Dow Up On Shutdown Deal; Cathie Wood Loads Up On This (Live Coverage) - Investor's Business Daily",
+      "source": "Investor's Business Daily",
+      "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxNazN5TnpCVWxjT0Ixa2k1QkVqamJIOTY4UmV3OEpHeHNuWktHbFlmclQ4U0pEQXpxaDhhWktiOHBYSGI3ZTBVRGlhcTl6TEt5d1htNUdWd3JGRjFmZUF6bE9STE1pbU11MW5tWEVSaEg4bC1jbnIzTkxpcmh0cWZWa21jYXBiZkpXOFdBVEhGaHpsNXhvSG1XdWcxZWZJVjFwRnNiU0M4aHp0QQ?oc=5",
+      "summary": "<a href=\"https://news.google.com/rss/articles/CBMiqgFBVV95cUxNazN5TnpCVWxjT0Ixa2k1QkVqamJIOTY4UmV3OEpHeHNuWktHbFlmclQ4U0pEQXpxaDhhWktiOHBYSGI3ZTBVRGlhcTl6TEt5d1htNUdWd3JGRjFmZUF6bE9STE1pbU11MW5tWEVSaEg4bC1jbnIzTkxpcmh0cWZWa21jYXBiZkpXOFdBVEhGaHpsNXhvSG1XdWcxZWZJVjFwRnNiU0M4aHp0QQ?oc=5\" target=\"_blank\">Stock Market Today: Dow Up On Shutdown Deal; Cathie Wood Loads Up On This (Live Coverage)</a>&nbsp;&nbsp;<font color=\"#6f6f6f\">Investor's Business Daily</font>",
+      "ticker": null,
+      "type": "market_trends",
+      "relevance": 7,
+      "added_at": "2025-11-11T18:34:10.533354"
+    },
+    {
+      "id": "6b24b650f9bd4601",
+      "date": "2025-11-10T20:18:53",
+      "title": "5 U.S. Macro Data Points Driving Crypto Markets — How Inflation, Housing, and Equities Move Bitcoin - FinanceFeeds",
+      "source": "FinanceFeeds",
+      "url": "https://news.google.com/rss/articles/CBMib0FVX3lxTE1vZ21MM2lsY0owTng0UWZmUkQyNjE3TXZyUnk4WkV4U0YzRkV1UUhJSFc3UWh1REI1QWFjMEZFQ2x2b1VvRzM0LUhsNEhHRzhuT3FWZ0tubHFQanlpRldvTHQzbTdKYTNfLXJpLXJFbw?oc=5",
+      "summary": "<a href=\"https://news.google.com/rss/articles/CBMib0FVX3lxTE1vZ21MM2lsY0owTng0UWZmUkQyNjE3TXZyUnk4WkV4U0YzRkV1UUhJSFc3UWh1REI1QWFjMEZFQ2x2b1VvRzM0LUhsNEhHRzhuT3FWZ0tubHFQanlpRldvTHQzbTdKYTNfLXJpLXJFbw?oc=5\" target=\"_blank\">5 U.S. Macro Data Points Driving Crypto Markets — How Inflation, Housing, and Equities Move Bitcoin</a>&nbsp;&nbsp;<font color=\"#6f6f6f\">FinanceFeeds</font>",
+      "ticker": null,
+      "type": "economy",
+      "relevance": 7,
+      "added_at": "2025-11-11T18:34:15.218254"
+    },
+    {
+      "id": "d548a99a65dad56d",
+      "date": "2025-11-10T20:07:32",
+      "title": "Solana, Ethereum Gain Growth Appeal as Bitcoin Holds Lead - ETF Database",
+      "source": "ETF Database",
+      "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxQWEphQlZmTDdoeTBaM21WWnl0S3ZYR1JrNEtycHJ1dWJPRVBwSEhFZmh5UldzLXFUWnI3ZlRpT3NpMUlPNUs1RTJMT3MwVnRvMUVxRkhaaktpM0NBN0JOY3AwM1FSajZVVFB3UUZSRlBhR01IcWNkM3FNV1dsZVlVRHpYaTlXSWltYXNyNWdiQXRKZE1CVHNseDJ4N2kza1E?oc=5",
+      "summary": "<a href=\"https://news.google.com/rss/articles/CBMinwFBVV95cUxQWEphQlZmTDdoeTBaM21WWnl0S3ZYR1JrNEtycHJ1dWJPRVBwSEhFZmh5UldzLXFUWnI3ZlRpT3NpMUlPNUs1RTJMT3MwVnRvMUVxRkhaaktpM0NBN0JOY3AwM1FSajZVVFB3UUZSRlBhR01IcWNkM3FNV1dsZVlVRHpYaTlXSWltYXNyNWdiQXRKZE1CVHNseDJ4N2kza1E?oc=5\" target=\"_blank\">Solana, Ethereum Gain Growth Appeal as Bitcoin Holds Lead</a>&nbsp;&nbsp;<font color=\"#6f6f6f\">ETF Database</font>",
+      "ticker": null,
+      "type": "crypto",
+      "relevance": 7,
+      "added_at": "2025-11-11T18:34:13.560392"
+    },
+    {
+      "id": "cdfc51e37e3024df",
+      "date": "2025-11-10T18:46:48",
+      "title": "‘Rich Dad Poor Dad’ author sets new Bitcoin, Ethereum, gold price targets - TheStreet",
+      "source": "TheStreet",
+      "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxQVnVWS01lTVgxTnNFZGh0X0ZveGdOYnphVXZnREJhTzg4SmZOR1BkQkh6ZDIwdVJENDdFV21KVHltbnVLdm9FREVtYjdHa3dldzQzYk4wdW1pa3RiUkRPVDJuSmZsaGlhQnhkQ1pKTzk5OU5MUzJjcngyY2VvdGVzTFB4WloyTlI0MGxNMnRfT3JtZHpVYlNyTDJUWTY0X1RmVk9MeVUtYTZqbkluY2pyQkphOGYwZ09MVUhv?oc=5",
+      "summary": "<a href=\"https://news.google.com/rss/articles/CBMiuwFBVV95cUxQVnVWS01lTVgxTnNFZGh0X0ZveGdOYnphVXZnREJhTzg4SmZOR1BkQkh6ZDIwdVJENDdFV21KVHltbnVLdm9FREVtYjdHa3dldzQzYk4wdW1pa3RiUkRPVDJuSmZsaGlhQnhkQ1pKTzk5OU5MUzJjcngyY2VvdGVzTFB4WloyTlI0MGxNMnRfT3JtZHpVYlNyTDJUWTY0X1RmVk9MeVUtYTZqbkluY2pyQkphOGYwZ09MVUhv?oc=5\" target=\"_blank\">‘Rich Dad Poor Dad’ author sets new Bitcoin, Ethereum, gold price targets</a>&nbsp;&nbsp;<font color=\"#6f6f6f\">TheStreet</font>",
+      "ticker": null,
+      "type": "crypto",
+      "relevance": 7,
+      "added_at": "2025-11-11T18:34:13.560377"
+    },
+    {
+      "id": "944e1fff58ffe881",
+      "date": "2025-11-10T17:17:11",
+      "title": "14 charts from unofficial data show a cooling labor market - Yahoo Finance",
+      "source": "Yahoo Finance",
+      "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxQX1BDUXlUZGkyZjhWX2F3RmFHTGpRUmltN3o5ejh5ZkVCY2V2MjFQWFFfa3ZZR0ZKR0VMbDd0RTJXclljVmVGcE1tMi1zdmNoMGdXQ2dkTzhENUxVNkI4NVYzUDFFRlpudmZyVURKRlRBdmZRMExySWdsX2tOTVR4cHRPWnpacm1NRjF6dXhKNzJXMklwdXZUSUpDNmpmTXo2Zi1GbFpUZw?oc=5",
+      "summary": "<a href=\"https://news.google.com/rss/articles/CBMipwFBVV95cUxQX1BDUXlUZGkyZjhWX2F3RmFHTGpRUmltN3o5ejh5ZkVCY2V2MjFQWFFfa3ZZR0ZKR0VMbDd0RTJXclljVmVGcE1tMi1zdmNoMGdXQ2dkTzhENUxVNkI4NVYzUDFFRlpudmZyVURKRlRBdmZRMExySWdsX2tOTVR4cHRPWnpacm1NRjF6dXhKNzJXMklwdXZUSUpDNmpmTXo2Zi1GbFpUZw?oc=5\" target=\"_blank\">14 charts from unofficial data show a cooling labor market</a>&nbsp;&nbsp;<font color=\"#6f6f6f\">Yahoo Finance</font>",
+      "ticker": null,
+      "type": "market_trends",
+      "relevance": 7,
+      "added_at": "2025-11-11T18:34:10.533307"
+    },
+    {
+      "id": "214c9e182fd347a7",
+      "date": "2025-11-10T17:05:00",
+      "title": "Wall Street’s biggest bull reveals what investors got wrong this year — and what’s ahead for stocks and crypto - MarketWatch",
+      "source": "MarketWatch",
+      "url": "https://news.google.com/rss/articles/CBMi6ANBVV95cUxOYUlzdnZHYkxoMVZKcVBzc3pzSmRIQVhOaGhfMUM2aThvS09kMjRaRVJBRGtTbzZqZndpUVRFQ243ekZCVDZONmJBUHdKcTB2N0g0THRjNEJqTGlmUEFCa29nelIwd0NQWERkT1lQbkdkMW9qR1JacWlDRG5KTEpBTlgwT2MtMWlYZmF2NVVxeG4ycFRnSjQwaGI2aG5EN0VQRTFtY1RldjFkelFUWkdFS2taeGxRQW5oM2Q2ME42bUtXbVdXb1I0T0MwNHEySzdLVDVhTV8wVUhPT2FwQ0d1dVhFVVJlaTVOeUktSkVjQU1OMFZtSHZhbmxsb2VRakpwdWNGWl9WM29qeFBrc1dMWHBNX0FZVy03SkpaUDZIZTVtbmpNQmpVTU9mRENHenNGQ1NtS0Y0OVBvMlp5U0ZiQUc0OEotVE1MeEZITXMxaTR3WEFLbEptNzlSWWtJaVBvSTFNU0J1NnE5RFEzNTloWDd6Ym95NFVXN3BReGdiZU9RZzZhRVN1SDRCMFVSMEdnOWZXMHpYLVREOVFpYVF0QkI4T1FIU1ZOczlhd3AxWHhBai1UT1BJZzR1OXVnVnE0X3B2TEI1ZklraV9rQTVPdzZ6Y2x1MzVfdFdwRWMzdm5tSGVQX1duZA?oc=5",
+      "summary": "<a href=\"https://news.google.com/rss/articles/CBMi6ANBVV95cUxOYUlzdnZHYkxoMVZKcVBzc3pzSmRIQVhOaGhfMUM2aThvS09kMjRaRVJBRGtTbzZqZndpUVRFQ243ekZCVDZONmJBUHdKcTB2N0g0THRjNEJqTGlmUEFCa29nelIwd0NQWERkT1lQbkdkMW9qR1JacWlDRG5KTEpBTlgwT2MtMWlYZmF2NVVxeG4ycFRnSjQwaGI2aG5EN0VQRTFtY1RldjFkelFUWkdFS2taeGxRQW5oM2Q2ME42bUtXbVdXb1I0T0MwNHEySzdLVDVhTV8wVUhPT2FwQ0d1dVhFVVJlaTVOeUktSkVjQU1OMFZtSHZhbmxsb2VRakpwdWNGWl9WM29qeFBrc1dMWHBNX0FZVy03SkpaUDZIZTVtbmpNQmpVTU9mRENHenNGQ1NtS0Y0OVBvMlp5U0ZiQUc0OEotVE1MeEZITXMxaTR3WEFLbEptNzlSWWtJaVBvSTFNU0J1NnE5RFEzNTloWDd6Ym95NFVXN3BReGdiZU9RZzZhRVN1SDRCMFVSMEdnOWZXMHpYLVREOVFpYVF0QkI4T1FIU1ZOczlhd3AxWHhBai1UT1BJZzR1OXVnVnE0X3B2TEI1ZklraV9rQTVPdzZ6Y2x1MzVfdFdwRWMzdm5tSGVQX1duZA?oc=5\" target=\"_blank\">Wall Street’s biggest bull reveals what investors got wrong this year — and what’s ahead for stocks and crypto</a>&nbsp;&nbsp;<font color=\"#6f6f6f\">MarketWatch</font>",
+      "ticker": null,
+      "type": "crypto",
+      "relevance": 7,
+      "added_at": "2025-11-11T18:34:12.718832"
+    },
+    {
+      "id": "efc6c032a4267298",
+      "date": "2025-11-10T16:45:58",
+      "title": "Next Fed Meeting: When It Is In December And What To Expect - Investopedia",
+      "source": "Investopedia",
+      "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxQcjN3YkQzWUZXM2lWWVFsTXdQbGZsNlJvbUNndDVwRHVBcHBTZUI3bXQxa2pGdUxxSk5mb0VXZXVPZ3hCZW1KM04tZ0YxUEx0QTFyMFRnX2dXU3gxeV91MWtPVGEwODI1cmFLSEZsam5Ub1UtSHhmZlRwZFZfY283QWVBdGJFZzJGTThfcldQblVtYXpubHFSYllkS1k?oc=5",
+      "summary": "<a href=\"https://news.google.com/rss/articles/CBMinAFBVV95cUxQcjN3YkQzWUZXM2lWWVFsTXdQbGZsNlJvbUNndDVwRHVBcHBTZUI3bXQxa2pGdUxxSk5mb0VXZXVPZ3hCZW1KM04tZ0YxUEx0QTFyMFRnX2dXU3gxeV91MWtPVGEwODI1cmFLSEZsam5Ub1UtSHhmZlRwZFZfY283QWVBdGJFZzJGTThfcldQblVtYXpubHFSYllkS1k?oc=5\" target=\"_blank\">Next Fed Meeting: When It Is In December And What To Expect</a>&nbsp;&nbsp;<font color=\"#6f6f6f\">Investopedia</font>",
+      "ticker": null,
+      "type": "economy",
+      "relevance": 7,
+      "added_at": "2025-11-11T18:34:14.439801"
+    },
+    {
+      "id": "37b690e8e17efd27",
+      "date": "2025-11-10T14:54:48",
+      "title": "US October Consumer Goods Inflation Slows in OpenBrand CPI Data - Bloomberg.com",
+      "source": "Bloomberg.com",
+      "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxNbldzTnlDaDR4MEVvaG51cnFwMklJQjU5Wk5NN3pCWXNQX3NWUGJvN0RSS2dLblhDaHRDSW1tanJTMzBuTnpfdUFmTTFWNXlxRTRCUTd6VWM3WTVUTU5xWWx1aHpXZVBJQjhDa2J0aGM1em5xUU5HaUxHcWVvQVJpeXd6MFZHMzNGdkdSVmtucXY0dWtDWDJxTFdrQmNqQUdFTUQ4YjBsSFB6UndseVpLU044bXo?oc=5",
+      "summary": "<a href=\"https://news.google.com/rss/articles/CBMitAFBVV95cUxNbldzTnlDaDR4MEVvaG51cnFwMklJQjU5Wk5NN3pCWXNQX3NWUGJvN0RSS2dLblhDaHRDSW1tanJTMzBuTnpfdUFmTTFWNXlxRTRCUTd6VWM3WTVUTU5xWWx1aHpXZVBJQjhDa2J0aGM1em5xUU5HaUxHcWVvQVJpeXd6MFZHMzNGdkdSVmtucXY0dWtDWDJxTFdrQmNqQUdFTUQ4YjBsSFB6UndseVpLU044bXo?oc=5\" target=\"_blank\">US October Consumer Goods Inflation Slows in OpenBrand CPI Data</a>&nbsp;&nbsp;<font color=\"#6f6f6f\">Bloomberg.com</font>",
+      "ticker": null,
+      "type": "economy",
+      "relevance": 7,
+      "added_at": "2025-11-11T18:34:15.218268"
+    },
+    {
+      "id": "610993322ff4c6d8",
+      "date": "2025-11-10T04:42:00",
+      "title": "Bitcoin, Ethereum surge as US Senate advances bill to end government shutdown - TradingView",
+      "source": "TradingView",
+      "url": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxQUjR6VzN3NU5wX2xGQVY4VkliZHJOMkNwWjBYY3hFZy1Rb3lZcGNLbTV2UkdheDhuYTUwcWsxUkQ4QmFMVnNSM2hIZV9BNFdFYTZhejV6ajR5SkF2M3lWMTF6azdialExbXBscHljeEFoQUtiZkJjNlkyNnlqdmxVQjg1aHc2TmFmVnBJTEdzOUpLb3VaajJfRDQ4U2hJQWV3NlYyZThkVG5uWDQwMkJWNVQzRElXRk91MFJrZm9lS1JaSXlLR1BKYXlMYTh2eHJucFE?oc=5",
+      "summary": "<a href=\"https://news.google.com/rss/articles/CBMi0gFBVV95cUxQUjR6VzN3NU5wX2xGQVY4VkliZHJOMkNwWjBYY3hFZy1Rb3lZcGNLbTV2UkdheDhuYTUwcWsxUkQ4QmFMVnNSM2hIZV9BNFdFYTZhejV6ajR5SkF2M3lWMTF6azdialExbXBscHljeEFoQUtiZkJjNlkyNnlqdmxVQjg1aHc2TmFmVnBJTEdzOUpLb3VaajJfRDQ4U2hJQWV3NlYyZThkVG5uWDQwMkJWNVQzRElXRk91MFJrZm9lS1JaSXlLR1BKYXlMYTh2eHJucFE?oc=5\" target=\"_blank\">Bitcoin, Ethereum surge as US Senate advances bill to end government shutdown</a>&nbsp;&nbsp;<font color=\"#6f6f6f\">TradingView</font>",
+      "ticker": null,
+      "type": "crypto",
+      "relevance": 7,
+      "added_at": "2025-11-11T18:34:13.560442"
+    },
+    {
+      "id": "26f791b28f5f1939",
+      "date": "2025-11-10T02:24:00",
+      "title": "Bitcoin, Ethereum and XRP Jump as End to US Government Shutdown Appears Imminent - Yahoo Finance",
+      "source": "Yahoo Finance",
+      "url": "https://news.google.com/rss/articles/CBMigAFBVV95cUxPNVdzQmVRZUJRRFY0Tmk3WWl3bFBQazZtaVZRZUdyN01iWkwzVDNhMTYtY3hGVUlnWVRUOVVRY3RjNS1xZG1KeVZKemNraDY5VjlENko4U3ZhWEhWR3kzMG8xeTdyVVF0VDFFOWRQNGRCZDBlSFF6eEFHUEN3TjNnNA?oc=5",
+      "summary": "<a href=\"https://news.google.com/rss/articles/CBMigAFBVV95cUxPNVdzQmVRZUJRRFY0Tmk3WWl3bFBQazZtaVZRZUdyN01iWkwzVDNhMTYtY3hGVUlnWVRUOVVRY3RjNS1xZG1KeVZKemNraDY5VjlENko4U3ZhWEhWR3kzMG8xeTdyVVF0VDFFOWRQNGRCZDBlSFF6eEFHUEN3TjNnNA?oc=5\" target=\"_blank\">Bitcoin, Ethereum and XRP Jump as End to US Government Shutdown Appears Imminent</a>&nbsp;&nbsp;<font color=\"#6f6f6f\">Yahoo Finance</font>",
+      "ticker": null,
+      "type": "crypto",
+      "relevance": 7,
+      "added_at": "2025-11-11T18:34:13.560425"
+    },
+    {
+      "id": "ccc303ec29d39a7c",
+      "date": "2025-11-09T22:52:30",
+      "title": "10 Best Defensive Dividend Stocks For 2025 - Insider Monkey",
+      "source": "Insider Monkey",
+      "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxQbUM4MHM2R2ZHSWJkdEpTZmZSX2xlclFtd1h1eFZoSnIyRGJaMEx1R2dqaUNkSmxrRnU3UWlwdTFNS1Z5LUViV1JNZWJRbWt0Wno2N0xueWp1djM5NEo1aENjTVN3Uk44OGZLYnZZS2VQazE1QmVmTW9raU1HNnRoTnRDV2p2Zkh6TzRnWHJnc9IBlwFBVV95cUxOTEpRWFNWOVJpVDc4eElGRGpBQi0zc0RyMDFOZFU1aDZZT1hYR1VTdjUwa21CSkFvUVVzckdtVno3azlKdUZadUVvVlRRcVNfb1ZhQ2MzQUxZckp0SkFCNjU1Wm5MR3lmcWtwYndJWnAtOUxITmpBdkJQYWdQaFZMNVp3b05qcHZhVjhiSkZjVG9UemQ5cHhr?oc=5",
+      "summary": "<a href=\"https://news.google.com/rss/articles/CBMijwFBVV95cUxQbUM4MHM2R2ZHSWJkdEpTZmZSX2xlclFtd1h1eFZoSnIyRGJaMEx1R2dqaUNkSmxrRnU3UWlwdTFNS1Z5LUViV1JNZWJRbWt0Wno2N0xueWp1djM5NEo1aENjTVN3Uk44OGZLYnZZS2VQazE1QmVmTW9raU1HNnRoTnRDV2p2Zkh6TzRnWHJnc9IBlwFBVV95cUxOTEpRWFNWOVJpVDc4eElGRGpBQi0zc0RyMDFOZFU1aDZZT1hYR1VTdjUwa21CSkFvUVVzckdtVno3azlKdUZadUVvVlRRcVNfb1ZhQ2MzQUxZckp0SkFCNjU1Wm5MR3lmcWtwYndJWnAtOUxITmpBdkJQYWdQaFZMNVp3b05qcHZhVjhiSkZjVG9UemQ5cHhr?oc=5\" target=\"_blank\">10 Best Defensive Dividend Stocks For 2025</a>&nbsp;&nbsp;<font color=\"#6f6f6f\">Insider Monkey</font>",
+      "ticker": null,
+      "type": "market_trends",
+      "relevance": 7,
+      "added_at": "2025-11-11T18:34:11.904210"
+    },
+    {
+      "id": "293a767f21aa0dcf",
+      "date": "2025-11-08T21:00:00",
+      "title": "Data Fog Intensifying for Fed as Shutdown Delays US Inflation Numbers - Bloomberg.com",
+      "source": "Bloomberg.com",
+      "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxPaFdObElYdUN1VVprdG1ILUpNb3lYdGQwbXVJNEh0U3E1enNpZXh3UEtFeGN4Sjc3bkpmSmdZYlFhVWlWSmJyaXB4SXJocGV6c2pZaUJQb2hLWGxfbnVQX0I4MkJwWFZQNjlvZ3RiTTZnYlUzVEtCX2FHdEdCemo2aEd0bWtLUmtITlVLSlM0cXZvVnQzdEd2dEVKNFZVMkRsWWhZZllwemMycDF5c0E3cVJZQjdOcGdJVW9Taw?oc=5",
+      "summary": "<a href=\"https://news.google.com/rss/articles/CBMivAFBVV95cUxPaFdObElYdUN1VVprdG1ILUpNb3lYdGQwbXVJNEh0U3E1enNpZXh3UEtFeGN4Sjc3bkpmSmdZYlFhVWlWSmJyaXB4SXJocGV6c2pZaUJQb2hLWGxfbnVQX0I4MkJwWFZQNjlvZ3RiTTZnYlUzVEtCX2FHdEdCemo2aEd0bWtLUmtITlVLSlM0cXZvVnQzdEd2dEVKNFZVMkRsWWhZZllwemMycDF5c0E3cVJZQjdOcGdJVW9Taw?oc=5\" target=\"_blank\">Data Fog Intensifying for Fed as Shutdown Delays US Inflation Numbers</a>&nbsp;&nbsp;<font color=\"#6f6f6f\">Bloomberg.com</font>",
+      "ticker": null,
+      "type": "economy",
+      "relevance": 7,
+      "added_at": "2025-11-11T18:34:15.218203"
+    },
+    {
+      "id": "5802dd63056b936e",
+      "date": "2025-10-29T20:39:00",
+      "title": "Federal Reserve cuts rates to lowest level in three years - CNN",
+      "source": "CNN",
+      "url": "https://news.google.com/rss/articles/CBMigwFBVV95cUxNTkE3ekhidU9UUUFtQnhDSUFoY1g4T3NsNjNKTzNnR0xaUy1wRDBYb2pGejgwWldSM2QtSU4yV0QyT0JXYmpEclZWcjBTUnhfR0lFbEZPbmVZUUh3R21zVXRaQURTamNWNDdwVzNHZDBCcTItell1UEhDX184OVhYVjVfOA?oc=5",
+      "summary": "<a href=\"https://news.google.com/rss/articles/CBMigwFBVV95cUxNTkE3ekhidU9UUUFtQnhDSUFoY1g4T3NsNjNKTzNnR0xaUy1wRDBYb2pGejgwWldSM2QtSU4yV0QyT0JXYmpEclZWcjBTUnhfR0lFbEZPbmVZUUh3R21zVXRaQURTamNWNDdwVzNHZDBCcTItell1UEhDX184OVhYVjVfOA?oc=5\" target=\"_blank\">Federal Reserve cuts rates to lowest level in three years</a>&nbsp;&nbsp;<font color=\"#6f6f6f\">CNN</font>",
+      "ticker": null,
+      "type": "economy",
+      "relevance": 7,
+      "added_at": "2025-11-11T18:34:14.439821"
+    },
+    {
+      "id": "8c553ba378dbefe0",
+      "date": "2025-10-29T07:00:00",
+      "title": "US Federal Reserve cuts interest rates as labour market weakens - Al Jazeera",
+      "source": "Al Jazeera",
+      "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxQd2FLSWU3U1pnYWdsV2YzU19lRWlZekR2UnIwZWxuaVhBeGctVHc3cWQybDVBR1d5Qk1HNFVrZ2N3YnI1dWdscnVmRm1vLTYzRmJqSVhhWmxuUk9SZ2J4WVFuLS1hNngwbzM4bkEzWG14TWVzY3lCV19CTE8wV0xCY09UaHoyVHh2YTJhQWdETTV6dlNmTlh3WmNnZXVDeS1HY2xaTUZhWVhEX2xz0gGyAUFVX3lxTE9SZDlXbHV6V1NkN0x0Mm40R1J2cVlLb3lvbXk4NFhyY0RTMm5OcnBHNDhIN0xYanBJT004SHdPVzYwLTFfbXotTHlCQk9nWmtBT2VWYmJqNndjSjVfaUdFME5RREN2NzF5VnRLckk0MUEzWmR3Z1pWTjhXd1p4ajgteXBlWWpnc19scFB4aklweUloaFpyLUFzc29vLXJKWHdodm1ZTkRaYjdueTl2UUlnQXc?oc=5",
+      "summary": "<a href=\"https://news.google.com/rss/articles/CBMirAFBVV95cUxQd2FLSWU3U1pnYWdsV2YzU19lRWlZekR2UnIwZWxuaVhBeGctVHc3cWQybDVBR1d5Qk1HNFVrZ2N3YnI1dWdscnVmRm1vLTYzRmJqSVhhWmxuUk9SZ2J4WVFuLS1hNngwbzM4bkEzWG14TWVzY3lCV19CTE8wV0xCY09UaHoyVHh2YTJhQWdETTV6dlNmTlh3WmNnZXVDeS1HY2xaTUZhWVhEX2xz0gGyAUFVX3lxTE9SZDlXbHV6V1NkN0x0Mm40R1J2cVlLb3lvbXk4NFhyY0RTMm5OcnBHNDhIN0xYanBJT004SHdPVzYwLTFfbXotTHlCQk9nWmtBT2VWYmJqNndjSjVfaUdFME5RREN2NzF5VnRLckk0MUEzWmR3Z1pWTjhXd1p4ajgteXBlWWpnc19scFB4aklweUloaFpyLUFzc29vLXJKWHdodm1ZTkRaYjdueTl2UUlnQXc?oc=5\" target=\"_blank\">US Federal Reserve cuts interest rates as labour market weakens</a>&nbsp;&nbsp;<font color=\"#6f6f6f\">Al Jazeera</font>",
+      "ticker": null,
+      "type": "economy",
+      "relevance": 7,
+      "added_at": "2025-11-11T18:34:14.439838"
+    },
+    {
+      "id": "2b890d5094eca0de",
+      "date": "2025-10-29T07:00:00",
+      "title": "Fed cuts rates again, but Powell raises doubts about easing at next meeting - CNBC",
+      "source": "CNBC",
+      "url": "https://news.google.com/rss/articles/CBMidkFVX3lxTE1sNkc0cjk5dno0Z01SSVpfQjhUM0wzdWdfbGE2eWlyRWlIdFpwSmJzcXRWbTJvTFd3bVlGMkNYWFFrUUpEUjVVWEJ6a2FVMGZiZEpFM2xhRWRQYV9NVzJnM2F6Tkdpa1E1Q1d3b3huU0h6MDhOZFHSAXtBVV95cUxPVFNpZzBmRDl2SHljSGlVU0JZRTgwTUxNTVUtYWpyQVdfUGhrVk5zRGpwX2lLN1ZETDZxaVVGdkRtTEctZi1FZlUxbTRYOWJsS2JobmNkQmhEOTV5M1hrWTREODMxeDQyVkVSSnl0MTlmbDI1Wkw4a3RvVHc?oc=5",
+      "summary": "<a href=\"https://news.google.com/rss/articles/CBMidkFVX3lxTE1sNkc0cjk5dno0Z01SSVpfQjhUM0wzdWdfbGE2eWlyRWlIdFpwSmJzcXRWbTJvTFd3bVlGMkNYWFFrUUpEUjVVWEJ6a2FVMGZiZEpFM2xhRWRQYV9NVzJnM2F6Tkdpa1E1Q1d3b3huU0h6MDhOZFHSAXtBVV95cUxPVFNpZzBmRDl2SHljSGlVU0JZRTgwTUxNTVUtYWpyQVdfUGhrVk5zRGpwX2lLN1ZETDZxaVVGdkRtTEctZi1FZlUxbTRYOWJsS2JobmNkQmhEOTV5M1hrWTREODMxeDQyVkVSSnl0MTlmbDI1Wkw4a3RvVHc?oc=5\" target=\"_blank\">Fed cuts rates again, but Powell raises doubts about easing at next meeting</a>&nbsp;&nbsp;<font color=\"#6f6f6f\">CNBC</font>",
+      "ticker": null,
+      "type": "economy",
+      "relevance": 7,
+      "added_at": "2025-11-11T18:34:14.439853"
+    },
+    {
+      "id": "36e481fa2ffe34bf",
+      "date": "2025-10-29T07:00:00",
+      "title": "Federal Reserve cuts interest rates by 0.25 percentage points amid weaker labor market - CBS News",
+      "source": "CBS News",
+      "url": "https://news.google.com/rss/articles/CBMikAFBVV95cUxQTVI4V3NsaGhkU0JBVy0xamVNNHlBbFRDNUZKbzNXWkVlaGNNb0FsV2JReEtNaHE2TEVtaThKU01la1FZMlh3eWxGdkNOdWk5OFVzWk5ibFhhakZCZFg2cGU4TVN1S2VJY21JMnJXRGhTMkRxaVdBa0FxcDNGWWxVSU5wdEtoaG5lY3JsajVaLXnSAZYBQVVfeXFMTWdGZDVzc2tndUE4bjE4M0pmR2NyMTJIZENSVDFNN0k5X0o2bkRfOHk4S255OUxsZlBYRkVyS1NzaEp4bU1KWHk4Sk1fVmZGQmpheXQ5Q2p2RzBWNmh0Vlh6QXBaUzVlSF83X1VmZDQtaUZicHpnRHFXUDRkQXllWF9WQTdOUWRsNVI2Y1p1NVRNWThJOE5B?oc=5",
+      "summary": "<a href=\"https://news.google.com/rss/articles/CBMikAFBVV95cUxQTVI4V3NsaGhkU0JBVy0xamVNNHlBbFRDNUZKbzNXWkVlaGNNb0FsV2JReEtNaHE2TEVtaThKU01la1FZMlh3eWxGdkNOdWk5OFVzWk5ibFhhakZCZFg2cGU4TVN1S2VJY21JMnJXRGhTMkRxaVdBa0FxcDNGWWxVSU5wdEtoaG5lY3JsajVaLXnSAZYBQVVfeXFMTWdGZDVzc2tndUE4bjE4M0pmR2NyMTJIZENSVDFNN0k5X0o2bkRfOHk4S255OUxsZlBYRkVyS1NzaEp4bU1KWHk4Sk1fVmZGQmpheXQ5Q2p2RzBWNmh0Vlh6QXBaUzVlSF83X1VmZDQtaUZicHpnRHFXUDRkQXllWF9WQTdOUWRsNVI2Y1p1NVRNWThJOE5B?oc=5\" target=\"_blank\">Federal Reserve cuts interest rates by 0.25 percentage points amid weaker labor market</a>&nbsp;&nbsp;<font color=\"#6f6f6f\">CBS News</font>",
+      "ticker": null,
+      "type": "economy",
+      "relevance": 7,
+      "added_at": "2025-11-11T18:34:14.439868"
+    },
     {
       "id": "gnews_CBMirwFBVV95cUxNN1hmdDVna1l6Y1paQmNzaE1aMzRBOWNoaEVZelB3X0VoR2dycGJPZXltR1JfUC1kS2ZYdXFVdEhJdXlOYXFid3Y2anRrZGZRNUxUUW1RTl9FQ3gxUWdsYVlEY1pqUlAyTkFka3U2RFB2a2l0aVVFM2hUVF8yQ2U1d3hwTjV0Qy1hbno0bzQ5cDVxLUZuSk5BV2pxdmVoV29NbDZSOWRScVNXTTJwLUc0",
       "date": "2025-10-24T13:33:13",
@@ -159,30 +579,6 @@
       "added_at": "2025-10-24T16:09:00.438774"
     },
     {
-      "id": "gnews_CBMinwFBVV95cUxPclV3al8yczJhUWh2QlFOSVZiendOQXRUdFZTckphTUVzeHhnVjJJVmNLaUxEWWRZMEVNbTJCcDU0ZWY0anhpakZ1TVFNanNTSXQ0WUhxRjcwVkttMUppcWxGdnppaTkyTngtNnpxY1NqWFFDVGlFZk55UUNwNGxPUkxHOWJxOUNxalpqbWFCcm13ZTcxclNDYjItT09sOTg",
-      "date": "2025-10-20T14:37:22",
-      "title": "Will Olympia Financial Group Inc. (H1B) stock announce special dividend - nchmf.gov.vn",
-      "source": "nchmf.gov.vn",
-      "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxPclV3al8yczJhUWh2QlFOSVZiendOQXRUdFZTckphTUVzeHhnVjJJVmNLaUxEWWRZMEVNbTJCcDU0ZWY0anhpakZ1TVFNanNTSXQ0WUhxRjcwVkttMUppcWxGdnppaTkyTngtNnpxY1NqWFFDVGlFZk55UUNwNGxPUkxHOWJxOUNxalpqbWFCcm13ZTcxclNDYjItT09sOTg?oc=5",
-      "summary": "<a href=\"https://news.google.com/rss/articles/CBMinwFBVV95cUxPclV3al8yczJhUWh2QlFOSVZiendOQXRUdFZTckphTUVzeHhnVjJJVmNLaUxEWWRZMEVNbTJCcDU0ZWY0anhpakZ1TVFNanNTSXQ0WUhxRjcwVkttMUppcWxGdnppaTkyTngtNnpxY1NqWFFDVGlFZk55UUNwNGxPUkxHOWJxOUNxalpqbWFCcm13ZTcxclNDYjItT09sOTg?oc=5\" target=\"_blank\">Will Olympia Financial Group Inc. (H1B) stock announce special dividend</a>&nbsp;&nbsp;<font color=\"#6f6f6f\">nchmf.gov.vn</font>",
-      "ticker": null,
-      "type": "market_trend",
-      "relevance": 7,
-      "added_at": "2025-10-24T16:09:00.438775"
-    },
-    {
-      "id": "gnews_CBMi4AFBVV95cUxPX2NDUEtfT3haZkl5X0loYjF4ZlRSRzhWV3ZQVHVtalViM09oRm1tM2ZMZm1CUjg5YThVN3ZRMUFpQWtKeU1nWWh3djlfRkZUNkFSV3JqMGI2YUplTHV1RTRqWDhBNUhmcXlqWHViNk5LRndObmpLcUVUZnpSM25BbWhuc3FvX21sSWYzX0xqMGYtLS1FaGpNa3RZVGZ3T0I3dlhnMi1yblgzR015NnRpOWQwS1J1dTJYak1KaVdGWVBqLWIyZElLZDBzd3labDVGSzFtVU94RTJCSFk0WjFpdQ",
-      "date": "2025-09-14T07:00:00",
-      "title": "'Worst kind of setup for the Fed': What Wall Street is saying about the central bank's next rate decision - Yahoo Finance",
-      "source": "Yahoo Finance",
-      "url": "https://news.google.com/rss/articles/CBMi4AFBVV95cUxPX2NDUEtfT3haZkl5X0loYjF4ZlRSRzhWV3ZQVHVtalViM09oRm1tM2ZMZm1CUjg5YThVN3ZRMUFpQWtKeU1nWWh3djlfRkZUNkFSV3JqMGI2YUplTHV1RTRqWDhBNUhmcXlqWHViNk5LRndObmpLcUVUZnpSM25BbWhuc3FvX21sSWYzX0xqMGYtLS1FaGpNa3RZVGZ3T0I3dlhnMi1yblgzR015NnRpOWQwS1J1dTJYak1KaVdGWVBqLWIyZElLZDBzd3labDVGSzFtVU94RTJCSFk0WjFpdQ?oc=5",
-      "summary": "<a href=\"https://news.google.com/rss/articles/CBMi4AFBVV95cUxPX2NDUEtfT3haZkl5X0loYjF4ZlRSRzhWV3ZQVHVtalViM09oRm1tM2ZMZm1CUjg5YThVN3ZRMUFpQWtKeU1nWWh3djlfRkZUNkFSV3JqMGI2YUplTHV1RTRqWDhBNUhmcXlqWHViNk5LRndObmpLcUVUZnpSM25BbWhuc3FvX21sSWYzX0xqMGYtLS1FaGpNa3RZVGZ3T0I3dlhnMi1yblgzR015NnRpOWQwS1J1dTJYak1KaVdGWVBqLWIyZElLZDBzd3labDVGSzFtVU94RTJCSFk0WjFpdQ?oc=5\" target=\"_blank\">'Worst kind of setup for the Fed': What Wall Street is saying about the central bank's next rate decision</a>&nbsp;&nbsp;<font color=\"#6f6f6f\">Yahoo Finance</font>",
-      "ticker": null,
-      "type": "market_trend",
-      "relevance": 7,
-      "added_at": "2025-10-24T16:09:00.438776"
-    },
-    {
       "id": "yahoo_earnings-live-general-motors-and-ge-raise-guidance-coca-cola-stock-rises-on-earnings-beat-121339934.html",
       "date": "2025-10-21",
       "source": "Yahoo Finance",
@@ -207,99 +603,6 @@
       ],
       "relevance_score": 0.5,
       "fetched_at": "2025-10-21T18:19:15.134849"
-    },
-    {
-      "id": "yahoo_gold-tumbles-in-biggest-daily-drop-in-years-as-stunning-rally-comes-to-a-halt-155953811.html",
-      "date": "2025-10-21",
-      "source": "Yahoo Finance",
-      "title": "Gold tumbles in biggest daily drop in years as stunning rally comes to a halt",
-      "link": "https://finance.yahoo.com/news/gold-tumbles-in-biggest-daily-drop-in-years-as-stunning-rally-comes-to-a-halt-155953811.html",
-      "summary": "",
-      "tags": [
-        "general"
-      ],
-      "relevance_score": 0.5,
-      "fetched_at": "2025-10-21T18:19:15.134860"
-    },
-    {
-      "id": "yahoo_analyst-says-she-rooting-housing-155939291.html",
-      "date": "2025-10-21",
-      "source": "Yahoo Finance",
-      "title": "Analyst Says She’s ‘Rooting For’ Housing Cycle, Bullish on DR Horton (DHI)",
-      "link": "https://finance.yahoo.com/news/analyst-says-she-rooting-housing-155939291.html",
-      "summary": "",
-      "tags": [
-        "general"
-      ],
-      "relevance_score": 0.5,
-      "fetched_at": "2025-10-21T18:19:15.134874"
-    },
-    {
-      "id": "yahoo_ARGUS_45071_TechnicalAnalysis_1761044789000?yptr=yahoo&ncid=yahooproperties_plusresear_nm5q6ze1cei",
-      "date": "2025-10-21",
-      "source": "Yahoo Finance",
-      "title": "Technical Assessment: Bullish in the Intermediate-Term",
-      "link": "https://finance.yahoo.com/research/reports/ARGUS_45071_TechnicalAnalysis_1761044789000?yptr=yahoo&ncid=yahooproperties_plusresear_nm5q6ze1cei",
-      "summary": "",
-      "tags": [
-        "general"
-      ],
-      "relevance_score": 0.5,
-      "fetched_at": "2025-10-21T18:19:15.134885"
-    },
-    {
-      "id": "yahoo_?src=A00220&yptr=yahoo",
-      "date": "2025-10-21",
-      "source": "Yahoo Finance",
-      "title": "Why It's All About The Backlog When S&P 500 Stock GE Vernova Reports Earnings",
-      "link": "https://www.investors.com/news/sp-500-ge-vernova-third-quarter-earnings-stock-market/?src=A00220&yptr=yahoo",
-      "summary": "",
-      "tags": [
-        "earnings"
-      ],
-      "relevance_score": 0.5,
-      "fetched_at": "2025-10-21T18:19:15.134896"
-    },
-    {
-      "id": "yahoo_blanket-mortgage-155257070.html",
-      "date": "2025-10-21",
-      "source": "Yahoo Finance",
-      "title": "What is a blanket mortgage, and who should get one?",
-      "link": "https://finance.yahoo.com/personal-finance/mortgages/article/blanket-mortgage-155257070.html",
-      "summary": "",
-      "tags": [
-        "finance"
-      ],
-      "relevance_score": 0.5,
-      "fetched_at": "2025-10-21T18:19:15.134906"
-    },
-    {
-      "id": "yahoo_live-fed-hosts-first-ever-160011466.html",
-      "date": "2025-10-21",
-      "source": "Yahoo Finance",
-      "title": "LIVE: Fed Reserve hosts first-ever crypto conference",
-      "link": "https://finance.yahoo.com/news/live-fed-hosts-first-ever-160011466.html",
-      "summary": "",
-      "tags": [
-        "macro",
-        "crypto"
-      ],
-      "relevance_score": 0.5,
-      "fetched_at": "2025-10-21T18:19:15.134916"
-    },
-    {
-      "id": "yahoo_hologic-private-18-3-billion-155228503.html",
-      "date": "2025-10-21",
-      "source": "Yahoo Finance",
-      "title": "Hologic to go private in up to $18.3 billion deal backed by Blackstone, TPG",
-      "link": "https://finance.yahoo.com/news/hologic-private-18-3-billion-155228503.html",
-      "summary": "",
-      "tags": [
-        "m&a"
-      ],
-      "relevance_score": 0.5,
-      "fetched_at": "2025-10-21T18:19:15.134926"
     }
-  ],
-  "last_update": "2025-10-24T16:09:00.438785"
+  ]
 }
