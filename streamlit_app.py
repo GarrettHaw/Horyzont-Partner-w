@@ -7780,12 +7780,16 @@ def show_partners_page():
                                         add_message({
                                             "role": "assistant",
                                             "content": content,
-                                            "avatar": resp['avatar'],
+                                            "avatar": resp.get('avatar', '🤖'),
                                             "knowledge": resp.get('knowledge', [])
                                         })
                                         
-                                        # Wyświetl natychmiast z avatarem
-                                        with st.chat_message("assistant", avatar=resp['avatar']):
+                                        # Wyświetl natychmiast z avatarem - SAFE VALIDATION
+                                        avatar_val = resp.get('avatar', '🤖')
+                                        if not isinstance(avatar_val, str) or not avatar_val or len(avatar_val) > 10:
+                                            avatar_val = '🤖'
+                                        
+                                        with st.chat_message("assistant", avatar=avatar_val):
                                             st.markdown(content)
                                 else:
                                     response, knowledge = send_to_ai_partner(
@@ -7819,7 +7823,12 @@ def show_partners_page():
         chat_container = st.container()
         with chat_container:
             for msg in get_messages():
-                with st.chat_message(msg["role"], avatar=msg.get("avatar", "🤖")):
+                # SAFE: Walidacja avatara z historii
+                msg_avatar = msg.get("avatar", "🤖")
+                if not isinstance(msg_avatar, str) or not msg_avatar or len(msg_avatar) > 10:
+                    msg_avatar = "🤖" if msg["role"] == "assistant" else "👤"
+                
+                with st.chat_message(msg["role"], avatar=msg_avatar):
                     st.markdown(msg["content"])
                     
                     # Wyświetl źródła wiedzy jeśli są
