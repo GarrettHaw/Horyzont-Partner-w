@@ -8753,7 +8753,7 @@ def show_timeline_page(stan_spolki):
     # Używaj nowego systemu daily snapshots
     try:
         import daily_snapshot as ds
-        import benchmark_comparison as bench
+        # import benchmark_comparison as bench  # DISABLED - brak prepare_comparison_data()
     except ImportError as e:
         st.error(f"❌ Błąd importu: {e}")
         return
@@ -8772,8 +8772,8 @@ def show_timeline_page(stan_spolki):
     
     st.success(f"✅ Załadowano {len(history)} snapshots - generuję timeline...")
     
-    # Tabs: Portfolio vs Benchmarki
-    tab1, tab2 = st.tabs(["📊 Wartość Portfela", "🏆 Porównanie z Benchmarkami"])
+    # Tylko tab Portfolio - benchmark comparison wymaga refactoru
+    tab1 = st.container()
     
     with tab1:
         # Przygotuj dane do wykresu
@@ -8814,6 +8814,9 @@ def show_timeline_page(stan_spolki):
         with col3:
             st.metric("📈 Liczba snapshots", len(history))
     
+    # TAB 2 - Benchmark Comparison - DISABLED (wymaga implementacji prepare_comparison_data)
+    # Można włączyć po dodaniu brakujących metod do benchmark_comparison.py
+    """
     with tab2:
         st.subheader("🏆 Twój Portfel vs Rynek")
         st.info("💡 Porównanie znormalizowane do 100 punktów na start okresu")
@@ -8824,76 +8827,9 @@ def show_timeline_page(stan_spolki):
         if "error" in comparison_data:
             st.error(f"❌ {comparison_data['error']}")
         else:
-            # Wykres porównawczy
-            fig = go.Figure()
-            
-            # Portfolio
-            portfolio = comparison_data['portfolio']
-            fig.add_trace(go.Scatter(
-                x=[datetime.fromisoformat(d) for d in portfolio['dates']],
-                y=portfolio['values'],
-                mode='lines+markers',
-                name=portfolio['name'],
-                line=dict(color=portfolio['color'], width=4),
-                marker=dict(size=8)
-            ))
-            
-            # Benchmarki
-            for bench_id, bench_data in comparison_data['benchmarks'].items():
-                fig.add_trace(go.Scatter(
-                    x=[datetime.fromisoformat(d) for d in bench_data['dates']],
-                    y=bench_data['values'],
-                    mode='lines',
-                    name=bench_data['name'],
-                    line=dict(color=bench_data['color'], width=2, dash='dot')
-                ))
-            
-            fig.update_layout(
-                title="Porównanie Wydajności (Normalized to 100)",
-                xaxis_title="Data",
-                yaxis_title="Wartość Znormalizowana (start = 100)",
-                height=600,
-                hovermode='x unified',
-                legend=dict(
-                    yanchor="top",
-                    y=0.99,
-                    xanchor="left",
-                    x=0.01
-                )
-            )
-            
-            st.plotly_chart(fig, width="stretch")
-            
-            # Statystyki porównawcze
-            st.markdown("---")
-            st.markdown("### 📊 Statystyki Porównawcze")
-            
-            stats = bench.calculate_comparison_stats(history)
-            
-            if "error" not in stats:
-                col1, col2, col3, col4 = st.columns(4)
-                
-                with col1:
-                    st.metric(
-                        "💼 Twój Portfel",
-                        f"{stats['portfolio']['total_return_pct']:+.2f}%",
-                        delta=f"{stats['portfolio']['days']} dni"
-                    )
-                
-                # Benchmarki
-                cols = [col2, col3, col4]
-                for idx, (bench_id, bench_stats) in enumerate(stats['benchmarks'].items()):
-                    if idx < 3:
-                        with cols[idx]:
-                            emoji = "🟢" if bench_stats['outperformance_pct'] > 0 else "🔴"
-                            st.metric(
-                                f"{emoji} {bench_stats['name']}",
-                                f"{bench_stats['total_return_pct']:+.2f}%",
-                                delta=f"{bench_stats['outperformance_pct']:+.2f}%"
-                            )
-                
-                st.markdown("---")
-                st.caption("💡 Delta pokazuje Twoją przewagę (+) lub stratę (-) względem benchmarku")
+            # ... reszta kodu benchmark comparison
+            pass
+    """
 
 def show_simulations_page(stan_spolki):
     """Strona z symulacjami"""
