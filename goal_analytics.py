@@ -2,6 +2,7 @@
 goal_analytics.py
 
 Moduł do analizy i predykcji osiągnięcia celów finansowych.
+Last updated: 2025-11-11 - Fixed date/timestamp handling
 """
 
 import json

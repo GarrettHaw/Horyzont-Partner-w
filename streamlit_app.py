@@ -6322,8 +6322,10 @@ def show_alerts_page():
             else:
                 for goal_id, pred in predictions.items():
                     status = pred.get('status', 'unknown')
+                    goal_name = pred.get('goal_name', goal_id)
+                    progress_pct = pred.get('progress_pct', 0)
                     
-                    with st.expander(f"📌 {pred['goal_name']} - {pred['progress_pct']:.0f}%"):
+                    with st.expander(f"📌 {goal_name} - {progress_pct:.0f}%"):
                         if status == 'achieved':
                             st.success(pred.get('message', 'Cel osiągnięty!'))
                             st.progress(1.0)
@@ -6332,19 +6334,24 @@ def show_alerts_page():
                             col1, col2, col3 = st.columns(3)
                             
                             with col1:
-                                st.metric("Postęp", f"{pred['progress_pct']:.1f}%")
-                                st.progress(pred['progress_pct'] / 100)
+                                st.metric("Postęp", f"{progress_pct:.1f}%")
+                                st.progress(progress_pct / 100)
                             
                             with col2:
-                                st.metric("Za ile dni", f"{pred['predicted_days']} dni")
-                                st.caption(f"Data: {pred['predicted_date']}")
+                                predicted_days = pred.get('predicted_days', 0)
+                                predicted_date = pred.get('predicted_date', 'N/A')
+                                st.metric("Za ile dni", f"{predicted_days} dni")
+                                st.caption(f"Data: {predicted_date}")
                             
                             with col3:
                                 confidence_emoji = {"high": "🟢", "medium": "🟡", "low": "🔴"}
-                                st.metric("Pewność", pred['confidence'].upper())
-                                st.caption(f"{confidence_emoji.get(pred['confidence'], '⚪')} R² = {pred.get('r_squared', 0):.2f}")
+                                confidence = pred.get('confidence', 'unknown')
+                                r_squared = pred.get('r_squared', 0)
+                                st.metric("Pewność", confidence.upper())
+                                st.caption(f"{confidence_emoji.get(confidence, '⚪')} R² = {r_squared:.2f}")
                             
-                            st.info(f"📈 Tempo: {pred['daily_rate']:.2f} PLN/dzień")
+                            daily_rate = pred.get('daily_rate', 0)
+                            st.info(f"📈 Tempo: {daily_rate:.2f} PLN/dzień")
                         
                         else:
                             st.warning(pred.get('message', 'Brak danych do predykcji'))
