@@ -127,8 +127,26 @@ def build_enhanced_context(persona_name, limit=5):
     recent_decisions = decisions[-limit:] if len(decisions) > limit else decisions
     if recent_decisions:
         for dec in recent_decisions:
-            outcome = "✅" if dec.get('outcome') == 'success' else "❌" if dec.get('outcome') == 'failure' else "⏳"
-            context += f"   {outcome} {dec.get('date', 'N/A')} - {dec.get('ticker', 'N/A')}: {dec.get('reasoning', 'N/A')[:50]}...\n"
+            # SAFE: decision może mieć różne struktury
+            try:
+                # Spróbuj pobrać outcome
+                outcome_val = dec.get('outcome', 'pending')
+                outcome = "✅" if outcome_val == 'success' else "❌" if outcome_val == 'failure' else "⏳"
+                
+                # Data może być w 'date', 'timestamp' lub 'meta'
+                date_str = dec.get('date', dec.get('timestamp', 'N/A'))
+                if isinstance(date_str, str) and len(date_str) > 10:
+                    date_str = date_str[:10]  # Skróć do YYYY-MM-DD
+                
+                ticker = dec.get('ticker', dec.get('symbol', 'N/A'))
+                reasoning = dec.get('reasoning', dec.get('decision', 'N/A'))
+                if isinstance(reasoning, str) and len(reasoning) > 50:
+                    reasoning = reasoning[:50] + "..."
+                
+                context += f"   {outcome} {date_str} - {ticker}: {reasoning}\n"
+            except Exception:
+                # Jeśli cokolwiek się nie uda, pomiń tę decyzję
+                continue
     else:
         context += "   Brak wcześniejszych decyzji - świeży start.\n"
     

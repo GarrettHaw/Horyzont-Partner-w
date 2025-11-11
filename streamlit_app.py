@@ -3155,6 +3155,10 @@ def send_to_all_partners(message, stan_spolki=None, cele=None, tryb_odpowiedzi="
                 }
                 color = PERSONAS[partner].get('color_code', '')
                 avatar = color_map.get(color, "🤖")
+                
+                # EXTRA SAFETY: Upewnij się że avatar to string emoji
+                if not isinstance(avatar, str) or len(avatar) > 10:
+                    avatar = "🤖"
         except Exception as e:
             # Fallback na domyślny avatar
             avatar = "🤖"
@@ -3163,7 +3167,7 @@ def send_to_all_partners(message, stan_spolki=None, cele=None, tryb_odpowiedzi="
         yield {
             "partner": partner,
             "response": response,
-            "avatar": avatar,
+            "avatar": str(avatar),  # FORCE STRING
             "knowledge": knowledge,
             "sentiment_emoji": sentiment_emoji,
             "sentiment_type": sentiment_type,
