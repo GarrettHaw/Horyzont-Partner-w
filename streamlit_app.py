@@ -1521,14 +1521,17 @@ def get_partner_mood_modifier(partner_name, portfolio_mood):
     """Zwraca modyfikator promptu w zależności od nastroju portfela i osobowości partnera"""
     mood = portfolio_mood.get("mood", "neutral")
     
+    # Pobierz change_pct z portfolio_mood jeśli istnieje, inaczej 0
+    change_pct = portfolio_mood.get("change_pct", 0)
+    
     # Różni partnerzy reagują różnie na ten sam mood
     mood_modifiers = {
         "Nexus": {
-            "very_bullish": "\n\n⚡ ANALIZA: Portfolio outperforms significantly (+{:.1f}%). Risk assessment: Monitor for overextension. Rebalancing may be advised.".format(abs(change_pct)),
-            "bullish": "\n\n� ANALIZA: Positive momentum detected (+{:.1f}%). Maintain disciplined approach.".format(abs(change_pct)),
+            "very_bullish": f"\n\n⚡ ANALIZA: Portfolio outperforms significantly. Risk assessment: Monitor for overextension. Rebalancing may be advised.",
+            "bullish": f"\n\n📈 ANALIZA: Positive momentum detected. Maintain disciplined approach.",
             "neutral": "\n\n🎯 ANALIZA: Stable conditions. Optimal for strategic planning.",
             "cautious": "\n\n⚠️ ANALIZA: Volatility increasing. Risk management protocols active.",
-            "bearish": "\n\n� ANALIZA: Drawdown detected ({:.1f}%). Opportunity scan initiated.".format(abs(change_pct))
+            "bearish": f"\n\n📉 ANALIZA: Drawdown detected. Opportunity scan initiated."
         },
         "Warren Buffett": {
             "very_bullish": "\n\n😊 KONTEKST NASTROJU: Cieszę się ze wzrostów, ale pamiętaj - sukces wymaga cierpliwości i unikania głupich decyzji. Nie zmieniaj strategii bo rynek rośnie.",
