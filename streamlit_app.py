@@ -3073,17 +3073,21 @@ def send_to_all_partners(message, stan_spolki=None, cele=None, tryb_odpowiedzi="
         
         # Bezpieczne emoji dla Streamlit chat (tylko podstawowe)
         avatar = "🤖"
-        if partner in PERSONAS:
-            # Mapowanie kolorów na BEZPIECZNE emoji (NOWA RADA - 5 partnerów)
-            color_map = {
-                '\033[97m': '👔',  # Partner Zarządzający (JA)
-                '\033[94m': '🤖',  # Nexus
-                '\033[92m': '🎯',  # Warren Buffett
-                '\033[91m': '🌍',  # George Soros
-                '\033[96m': '₿',   # Changpeng Zhao (CZ)
-            }
-            color = PERSONAS[partner].get('color_code', '')
-            avatar = color_map.get(color, "🤖")
+        try:
+            if partner in PERSONAS:
+                # Mapowanie kolorów na BEZPIECZNE emoji (NOWA RADA - 5 partnerów)
+                color_map = {
+                    '\033[97m': '👔',  # Partner Zarządzający (JA)
+                    '\033[94m': '🤖',  # Nexus
+                    '\033[92m': '🎯',  # Warren Buffett
+                    '\033[91m': '🌍',  # George Soros
+                    '\033[96m': '₿',   # Changpeng Zhao (CZ)
+                }
+                color = PERSONAS[partner].get('color_code', '')
+                avatar = color_map.get(color, "🤖")
+        except Exception as e:
+            # Fallback na domyślny avatar
+            avatar = "🤖"
         
         # Yield odpowiedź od razu (generator pattern)
         yield {
@@ -7807,12 +7811,17 @@ def show_partners_page():
                             add_message({
                                 "role": "assistant",
                                 "content": content,
-                                "avatar": resp['avatar'],
+                                "avatar": resp.get('avatar', '🤖'),
                                 "knowledge": resp.get('knowledge', [])
                             })
                             
                             # Wyświetl natychmiast z avatarem
-                            with st.chat_message("assistant", avatar=resp['avatar']):
+                            avatar_to_use = resp.get('avatar', '🤖')
+                            # Sprawdź czy avatar jest prawidłowy (string)
+                            if not isinstance(avatar_to_use, str) or not avatar_to_use:
+                                avatar_to_use = '🤖'
+                            
+                            with st.chat_message("assistant", avatar=avatar_to_use):
                                 st.markdown(content)
                 
                 else:
