@@ -83,7 +83,22 @@ class GoalAnalytics:
             }
         
         # Sortuj snapshots po dacie (obsługa 'date' lub 'timestamp')
-        sorted_snapshots = sorted(snapshots, key=lambda x: x.get('date') or x.get('timestamp', ''))
+        try:
+            sorted_snapshots = sorted(snapshots, key=lambda x: x.get('date') or x.get('timestamp', ''))
+        except:
+            return {
+                'status': 'invalid_data',
+                'message': 'Błąd sortowania snapshots',
+                'goal_name': goal_key
+            }
+        
+        # Sprawdź czy pierwsze snapshoty mają datę
+        if not sorted_snapshots or not (sorted_snapshots[0].get('date') or sorted_snapshots[0].get('timestamp')):
+            return {
+                'status': 'invalid_data',
+                'message': 'Snapshoty nie zawierają daty',
+                'goal_name': goal_key
+            }
         
         # Wybierz odpowiednią metrykę z snapshots
         # Snapshoty mają strukturę: totals.net_worth_pln lub totals.assets_pln
