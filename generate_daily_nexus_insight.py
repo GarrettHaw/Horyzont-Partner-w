@@ -40,11 +40,26 @@ def load_json_file(filename, default=None):
 
 
 def get_suma_kredytow():
-    """Oblicza sumę aktualnych kredytów"""
-    kredyty = load_json_file('kredyty.json', default=[])
-    if not isinstance(kredyty, list):
+    """Oblicza sumę aktualnych kredytów (kwota_poczatkowa - splacono)"""
+    kredyty_data = load_json_file('kredyty.json', default={})
+    
+    if not isinstance(kredyty_data, dict):
         return 0
-    return sum(k.get('aktualna_kwota', 0) for k in kredyty if isinstance(k, dict))
+    
+    kredyty_list = kredyty_data.get('kredyty', [])
+    
+    if not isinstance(kredyty_list, list):
+        return 0
+    
+    suma = 0
+    for k in kredyty_list:
+        if isinstance(k, dict):
+            kwota_poczatkowa = k.get('kwota_poczatkowa', 0)
+            splacono = k.get('splacono', 0)
+            aktualna_kwota = kwota_poczatkowa - splacono
+            suma += max(0, aktualna_kwota)  # Nie może być ujemna
+    
+    return suma
 
 
 def pobierz_dane_portfela():
@@ -240,10 +255,9 @@ Twoja ocena:"""
         # Get Nexus engine
         nexus = NexusAIEngine()
         
-        # Generate response
-        insight_text = nexus.generate_response(
-            user_prompt=prompt,
-            portfolio_context={
+        # Build context dict (Nexus oczekuje 'context' dict, nie oddzielnych parametrów)
+        context = {
+            'portfolio': {
                 'total_value': net_worth,
                 'stocks_value': akcje_val,
                 'crypto_value': krypto_val,
@@ -252,27 +266,65 @@ Twoja ocena:"""
                 'net_worth': net_worth,
                 'positions_count': len(stan_spolki.get('akcje', {}).get('pozycje', {}))
             },
-            partner_responses=[],  # Brak odpowiedzi partnerów (daily insight)
-            goals=cele,
-            mood={}
+            'goals': cele,
+            'mood': {},
+            'partner_responses': []
+        }
+        
+        # Generate response (używamy NOWEJ sygnatury z nexus_ai_engine.py)
+        response = nexus.generate_response(
+            prompt=prompt,
+            context=context,
+            use_ensemble=False
         )
         
-        if not insight_text:
-            raise Exception("Nexus zwrócił None - błąd generowania")
-        
-        print(f"✅ Otrzymano analizę ({len(insight_text)} znaków)")
+        # Nexus zwraca dict {'response': str, 'confidence': float, ...} lub None
+        if response and isinstance(response, dict):
+            insight_text = response.get('response', '')
+            if not insight_text:
+                raise Exception("Nexus zwrócił pustą odpowiedź")
+            print(f"✅ Otrzymano analizę ({len(insight_text)} znaków)")
+        else:
+            raise Exception("Nexus zwrócił None lub nieprawidłowy format")
         
     except Exception as e:
         print(f"❌ Błąd generowania przez Nexusa: {e}")
         print("📝 Użyję fallback insight")
         
-        insight_text = f"""Portfolio w stabilnej kondycji. Wartość netto: {net_worth:,.0f} PLN.
-
-Dźwignia na poziomie {dlugi_val/(akcje_val+krypto_val+rezerwa_val)*100 if (akcje_val+krypto_val+rezerwa_val) > 0 else 0:.1f}% - monitoruj ryzyko zadłużenia.
-
-Rezerwa gotówkowa: {rezerwa_val:,.0f} PLN ({cele.get('Rezerwa_gotowkowa_obecna_PLN', 0)/cele.get('Rezerwa_gotowkowa_PLN', 1)*100:.0f}% celu).
-
-Utrzymuj dywersyfikację i spłacaj długi systematycznie."""
+        # Lepszy fallback z analizą długu
+        leverage_pct = (dlugi_val/(akcje_val+krypto_val+rezerwa_val)*100) if (akcje_val+krypto_val+rezerwa_val) > 0 else 0
+        reserve_progress = (cele.get('Rezerwa_gotowkowa_obecna_PLN', 0)/cele.get('Rezerwa_gotowkowa_PLN', 1)*100) if cele else 0
+        
+        insight_parts = []
+        
+        # Ocena stanu
+        if net_worth > 50000:
+            insight_parts.append(f"💪 Silna pozycja finansowa. Net worth: {net_worth:,.0f} PLN.")
+        elif net_worth > 0:
+            insight_parts.append(f"📊 Portfolio w rozwoju. Net worth: {net_worth:,.0f} PLN.")
+        else:
+            insight_parts.append(f"⚠️ UWAGA: Ujemna wartość netto ({net_worth:,.0f} PLN) - priorytet: redukcja długu!")
+        
+        # Dług
+        if dlugi_val > 0:
+            insight_parts.append(f"Dług: {dlugi_val:,.0f} PLN (dźwignia {leverage_pct:.1f}%) - systematyczna spłata to klucz.")
+        else:
+            insight_parts.append("✅ Brak zadłużenia - dobra pozycja startowa.")
+        
+        # Rezerwa
+        if reserve_progress >= 100:
+            insight_parts.append(f"🎯 Cel rezerwy gotówkowej osiągnięty ({rezerwa_val:,.0f} PLN)!")
+        elif reserve_progress >= 50:
+            insight_parts.append(f"📈 Rezerwa: {rezerwa_val:,.0f} PLN ({reserve_progress:.0f}% celu) - dobry postęp.")
+        else:
+            insight_parts.append(f"💰 Rezerwa: {rezerwa_val:,.0f} PLN ({reserve_progress:.0f}% celu) - zwiększ bezpieczeństwo finansowe.")
+        
+        # Alokacja
+        crypto_allocation = (krypto_val/(akcje_val+krypto_val)*100) if (akcje_val+krypto_val) > 0 else 0
+        if crypto_allocation > 60:
+            insight_parts.append(f"⚠️ Krypto {crypto_allocation:.0f}% - rozważ większą dywersyfikację w akcje.")
+        
+        insight_text = " ".join(insight_parts)
     
     # 7. Zapisz do pliku JSON
     output_data = {
