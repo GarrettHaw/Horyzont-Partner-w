@@ -452,7 +452,7 @@ def pobierz_stan_spolki(cele):
 def generuj_odpowiedz_ai(persona_name, prompt):
     """
     Kieruje zapytanie do odpowiedniego modelu AI na podstawie konfiguracji partnera.
-    Obsługuje: Gemini Pro, OpenRouter (Mixtral/Llama/inne)
+    Obsługuje: Gemini Pro, OpenRouter (Mixtral/Llama/inne), Claude (Anthropic)
     """
     try:
         # Pobierz konfigurację partnera
@@ -462,8 +462,31 @@ def generuj_odpowiedz_ai(persona_name, prompt):
         # Track API call
         tracker = get_tracker()
         
+        # === CLAUDE (ANTHROPIC) ===
+        if model_engine == 'claude':
+            import anthropic
+            
+            # Pobierz klucz Anthropic
+            anthropic_key = st.secrets.get("ANTHROPIC_API_KEY", os.getenv("ANTHROPIC_API_KEY"))
+            if not anthropic_key:
+                return "[BŁĄD: Brak klucza ANTHROPIC_API_KEY - fallback do Gemini]"
+            
+            # Inicjalizuj Claude client
+            client = anthropic.Anthropic(api_key=anthropic_key)
+            
+            response = client.messages.create(
+                model="claude-3-5-sonnet-20241022",  # Najnowszy Claude
+                max_tokens=2048,
+                messages=[{"role": "user", "content": prompt}]
+            )
+            
+            # Track API call
+            tracker.track_call("claude", is_autonomous=False)
+            
+            return response.content[0].text
+        
         # === OPENROUTER MODELS (darmowe) ===
-        if model_engine.startswith('openrouter'):
+        elif model_engine.startswith('openrouter'):
             from openai import OpenAI
             
             # Pobierz klucz OpenRouter
@@ -556,17 +579,18 @@ def load_personas_from_memory_json(filename="persona_memory.json"):
                 'color_code': '\033[94m'
             }
             
-            # Specjalne mapowanie dla znanych partnerów
+            # Specjalne mapowanie dla znanych partnerów - KAŻDY MA SWOJE API!
             if partner_name == "Nexus":
                 persona_config['color_code'] = '\033[96m'  # Cyan
+                # Nexus ma własny silnik (nexus_ai_engine.py)
             elif "Warren Buffett" in partner_name:
+                persona_config['model_engine'] = 'claude'  # Claude (Anthropic) - 50 req/day
                 persona_config['color_code'] = '\033[92m'  # Zielony
-                # Warren pozostaje na Gemini
             elif "George Soros" in partner_name:
+                persona_config['model_engine'] = 'gemini'  # Gemini Pro - 50 req/day
                 persona_config['color_code'] = '\033[91m'  # Czerwony
-                # Soros pozostaje na Gemini (na razie)
             elif "CZ" in partner_name or "Zhao" in partner_name:
-                persona_config['model_engine'] = 'openrouter_mixtral'  # OpenRouter Llama-4-scout
+                persona_config['model_engine'] = 'openrouter_mixtral'  # OpenRouter - 50 req/day
                 persona_config['color_code'] = '\033[97m'  # Biały
             
             personas[partner_name] = persona_config

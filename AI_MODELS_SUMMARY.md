@@ -1,139 +1,113 @@
-# 🤖 Modele AI używane przez Partnerów
+# 🤖 AI Models Summary - Horyzont Partnerów
 
-## Przegląd Systemu
+## Current AI Model Usage (Updated: 2025-01-19)
 
-### **Główny Model: Google Gemini Pro**
-Wszyscy partnerzy AI (z wyjątkiem Nexus) używają **Google Gemini Pro** jako podstawowego silnika AI.
-
----
-
-## Podział według Partnerów
-
-### 1. **Nexus** 🤖
-- **Model**: Niestandardowy (Nexus AI Engine)
-- **Ścieżka**: `nexus_ai_engine.py` → dedykowany silnik
-- **Fallback**: Gemini Pro (gdy Nexus zawiedzie)
-- **Specjalizacja**: Meta-analiza, koordynacja Rady, głosowania
-- **Kod koloru**: Cyan (`\033[96m`)
-
-### 2. **Warren Buffett** 🎯
-- **Model**: Google Gemini Pro
-- **System Instruction**: Ton value investing, long-term perspective
-- **Specjalizacja**: Value investing, fundamentals, long-term strategy
-- **Kod koloru**: Zielony (`\033[92m`)
-
-### 3. **George Soros** 🌍
-- **Model**: Google Gemini Pro
-- **System Instruction**: Ton macro trading, reflexivity theory
-- **Specjalizacja**: Makroekonomia, geopolityka, timing rynkowy
-- **Kod koloru**: Czerwony (`\033[91m`)
-
-### 4. **Changpeng Zhao (CZ)** ₿
-- **Model**: OpenRouter - Llama-4-scout (Mixtral) :free
-- **Provider**: OpenRouter.ai
-- **System Instruction**: Ton crypto innovation, risk management
-- **Specjalizacja**: Kryptowaluty, blockchain, tech innovation
-- **Kod koloru**: Biały (`\033[97m`)
-- **Koszt**: DARMOWY (free tier OpenRouter)
-
-### 5. **Inni Partnerzy** (jeśli dodani)
-- **Model**: Google Gemini Pro (domyślnie)
-- **Konfiguracja**: Z `persona_memory.json`
-- **Kod koloru**: Niebieski (`\033[94m`)
+### 🎯 **Strategy: Separate API per Partner = Maximum Capacity**
+- **Total Daily Capacity**: **150 requests/day** (3 partners × 50 each)
+- **Old Setup**: 50 requests shared → **New Setup**: 150 requests distributed
 
 ---
 
-## Architektura Wywołań
+## Active AI Partners Configuration
 
+| Partner | AI Model | API Provider | Daily Limit | Purpose |
+|---------|----------|--------------|-------------|---------|
+| **Warren Buffett** | Claude 3.5 Sonnet | Anthropic | **50 req/day** | Value investing, długie analizy |
+| **George Soros** | Gemini Pro | Google | **50 req/day** | Macro trading, refleksywność rynku |
+| **CZ (Changpeng Zhao)** | Llama-4-Scout | OpenRouter | **50 req/day** | Crypto/blockchain strategie |
+| **Nexus AI** | Custom Engine | Internal | Unlimited* | Agregacja perspektyw, meta-analiza |
+
+*Nexus używa własnego silnika `nexus_ai_engine.py` z możliwym fallback do Gemini
+
+---
+
+## Technical Implementation
+
+### 1. **Warren Buffett** → Claude (Anthropic)
+```python
+'model_engine': 'claude'
+# Model: claude-3-5-sonnet-20241022
+# API Key: ANTHROPIC_API_KEY (st.secrets)
+# Routing: generuj_odpowiedz_ai() → anthropic.messages.create()
 ```
-User Input
-    ↓
-send_to_ai_partner(partner_name, message)
-    ↓
-    ├─→ [Nexus?] → nexus_ai_engine.py → Nexus AI → Response
-    │       ↓ (jeśli błąd)
-    │       └─→ Fallback do Gemini Pro
-    │
-    └─→ [Inni] → generuj_odpowiedz_ai()
-            ↓
-        Google Gemini Pro API
-            ↓
-        persona_name + prompt → Response
+**Why Claude?**: Najlepszy do długich, przemyślanych analiz fundamentalnych. Warren potrzebuje kontekstu do value investing.
+
+### 2. **George Soros** → Gemini Pro
+```python
+'model_engine': 'gemini'
+# Model: gemini-pro
+# API Key: GOOGLE_API_KEY (st.secrets)
+# Routing: generuj_odpowiedz_ai() → genai.GenerativeModel()
+```
+**Why Gemini?**: Szybki, dobry do dynamicznych analiz makro. Soros potrzebuje refleksów na zmiany rynkowe.
+
+### 3. **CZ (Changpeng Zhao)** → OpenRouter (Llama-4-Scout)
+```python
+'model_engine': 'openrouter_mixtral'
+# Model: meta-llama/llama-4-scout:free
+# API Key: OPENROUTER_API_KEY (st.secrets)
+# Routing: generuj_odpowiedz_ai() → OpenAI client (base_url=openrouter.ai)
+```
+**Why OpenRouter?**: Darmowy Llama-4 idealny do crypto/tech. CZ potrzebuje nowoczesnych modeli open-source.
+
+### 4. **Nexus** → Custom Engine
+```python
+# nexus_ai_engine.py - własna implementacja
+# Może używać kombinacji modeli lub logiki przepływowej
+```
+**Why Custom?**: Nexus agreguje perspektywy wszystkich partnerów, potrzebuje elastyczności.
+
+---
+
+## API Keys Required (Streamlit Secrets)
+
+```toml
+# .streamlit/secrets.toml
+ANTHROPIC_API_KEY = "sk-ant-..."     # Claude (Warren)
+GOOGLE_API_KEY = "AIza..."           # Gemini (Soros)
+OPENROUTER_API_KEY = "sk-or-..."    # OpenRouter (CZ)
 ```
 
 ---
 
-## Funkcje i Pliki
+## Cost & Limits Analysis
 
-| Funkcja | Plik | Opis |
-|---------|------|------|
-| `send_to_ai_partner()` | `streamlit_app.py:648` | Główna funkcja wysyłki do partnera |
-| `generuj_odpowiedz_ai()` | `streamlit_app.py:452` | Routing do Gemini/OpenRouter |
-| `send_to_all_partners()` | `streamlit_app.py:2976` | Generator - wysyła do wszystkich po kolei |
-| `NexusAIEngine` | `nexus_ai_engine.py` | Dedykowany silnik dla Nexus |
+| API | Free Tier | Daily Limit | Cost per 1M tokens (if exceeded) |
+|-----|-----------|-------------|----------------------------------|
+| **Anthropic Claude** | ✅ Yes | 50 req/day | ~$3-15 |
+| **Google Gemini** | ✅ Yes | 50 req/day | $0.50-1.50 |
+| **OpenRouter** | ✅ Yes (free models) | 50 req/day | $0 (free tier) |
 
----
-
-## Konfiguracja API
-
-### Google Gemini Pro
-- **API Key**: `st.secrets["GOOGLE_API_KEY"]` lub `os.getenv("GOOGLE_API_KEY")`
-- **Model**: `gemini-pro`
-- **Tracking**: Wszystkie wywołania są śledzone w `api_usage_tracker.py`
-
-### OpenRouter (CZ)
-- **API Key**: `st.secrets["OPENROUTER_API_KEY"]` lub `os.getenv("OPENROUTER_API_KEY")`
-- **Model**: `meta-llama/llama-4-scout:free` (Mixtral)
-- **Koszt**: DARMOWY
-- **Tracking**: Śledzone jako "openai" w `api_usage_tracker.py`
-
-### Nexus
-- **Własny silnik**: Może używać różnych modeli wewnętrznie
-- **Fallback**: Automatyczny powrót do Gemini Pro przy błędzie
+**Total Free Capacity**: 150 requests/day = ~5 requests/hour continuously
 
 ---
 
-## System Pamięci
+## Migration History
 
-### Persona Memory (`persona_memory.json`)
-- Przechowuje długoterminową pamięć każdego partnera
-- **Struktura**:
-  - `communication_style`: Ton i styl komunikacji
-  - `expertise`: Specjalizacje
-  - `relationships`: Relacje z innymi partnerami
-  - `voting_weight`: Waga głosu w głosowaniach
-  - `meta`: Metadane sesji
-
-### Pamięć v2.0 (`persona_memory_manager.py`)
-- Rozbudowany kontekst z emocjami
-- Relacje między partnerami
-- Wagi głosowania
-- Historia interakcji
+- **2025-01-18**: Dodano OpenRouter support, migrated CZ
+- **2025-01-19**: Dodano Claude support, migrated Warren Buffett
+- **Previous**: Wszyscy na Gemini (1 API, 50 req/day shared)
+- **Current**: 3 API providers (3×50 = 150 req/day total)
 
 ---
 
-## Koszty API (orientacyjne)
+## Code References
 
-**Google Gemini Pro** (bezpłatny tier):
-- 60 zapytań/minutę
-- 1500 zapytań/dzień
-- Darmowy do pewnego limitu
-
-**Tracking kosztów**:
-- Wszystkie wywołania logowane w `api_usage_tracker.py`
-- Monitoring limitów w `api_limits_config.json`
+- **Main routing**: `streamlit_app.py` → `generuj_odpowiedz_ai()` (lines 452-540)
+- **Partner config**: `streamlit_app.py` → `load_personas_from_memory_json()` (lines 550-607)
+- **API tracking**: `api_usage_tracker.py` → tracks per-API usage
 
 ---
 
-## Przyszłe Rozszerzenia
+## Testing Checklist
 
-Możliwe dodanie innych modeli:
-- **Claude (Anthropic)** - dla bardziej analitycznych partnerów
-- **GPT-4 (OpenAI)** - dla specyficznych case'ów
-- **Mixtral/Llama** - lokalne modele dla prywatności
-
-Obecnie infrastruktura jest gotowa - wystarczy dodać obsługę w `generuj_odpowiedz_ai()`.
+- [ ] Warren Buffett response (Claude)
+- [ ] George Soros response (Gemini)
+- [ ] CZ response (OpenRouter)
+- [ ] Nexus autonomous conversation
+- [ ] API usage tracking shows separate counters
 
 ---
 
-**Ostatnia aktualizacja**: 2025-11-11
+**Last Updated**: 2025-01-19 by GitHub Copilot  
+**Config Version**: 2.0 (Multi-API)

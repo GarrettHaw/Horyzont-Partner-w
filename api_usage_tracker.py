@@ -15,17 +15,17 @@ CONFIG_FILE = "api_limits_config.json"
 # Domyślne limity API (możesz edytować w api_limits_config.json)
 DEFAULT_LIMITS = {
     "claude": {
-        "daily_limit": 1000,  # Szacunkowe wywołania dziennie
+        "daily_limit": 50,  # Szacunkowe wywołania dziennie
         "autonomous_percentage": 60,  # Ile % dostępne dla autonomicznych rozmów
         "cost_per_call": 0.01  # USD (szacunkowe)
     },
     "gemini": {
-        "daily_limit": 1500,
+        "daily_limit": 50,
         "autonomous_percentage": 60,
         "cost_per_call": 0.005
     },
     "openai": {
-        "daily_limit": 500,
+        "daily_limit": 50,
         "autonomous_percentage": 60,
         "cost_per_call": 0.02
     }

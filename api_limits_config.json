@@ -1,17 +1,21 @@
 {
   "claude": {
-    "daily_limit": 1000,
+    "daily_limit": 50,
     "autonomous_percentage": 60,
-    "cost_per_call": 0.01
+    "cost_per_call": 0.01,
+    "assigned_partner": "Warren Buffett"
   },
   "gemini": {
-    "daily_limit": 1500,
+    "daily_limit": 50,
     "autonomous_percentage": 60,
-    "cost_per_call": 0.005
+    "cost_per_call": 0.005,
+    "assigned_partner": "George Soros"
   },
   "openai": {
-    "daily_limit": 500,
+    "daily_limit": 50,
     "autonomous_percentage": 60,
-    "cost_per_call": 0.02
+    "cost_per_call": 0.02,
+    "assigned_partner": "OpenRouter (CZ)",
+    "note": "OpenRouter działa przez OpenAI API interface, trackowne jako 'openai'"
   }
 }
