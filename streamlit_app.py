@@ -8873,92 +8873,91 @@ def show_timeline_page(stan_spolki):
         
         # === FORMULARZ DODAWANIA RĘCZNEGO ===
         with st.expander("➕ Dodaj Audit Ręcznie (Dane Historyczne)", expanded=False):
-            st.markdown("**Wprowadź dane historyczne z poprzednich miesięcy/lat:**")
+            st.markdown("**Wprowadź uproszczone dane historyczne:**")
             
             col_form1, col_form2 = st.columns(2)
             
             with col_form1:
-                manual_year = st.number_input("Rok", min_value=2020, max_value=2030, value=2023, step=1)
+                st.markdown("**📅 Data:**")
+                manual_year = st.number_input("Rok", min_value=2020, max_value=2030, value=2023, step=1, key="manual_year")
                 manual_month = st.selectbox("Miesiąc", options=list(range(1, 13)), 
-                                           format_func=lambda x: f"{x:02d} - {['Styczeń','Luty','Marzec','Kwiecień','Maj','Czerwiec','Lipiec','Sierpień','Wrzesień','Październik','Listopad','Grudzień'][x-1]}")
+                                           format_func=lambda x: f"{x:02d} - {['Styczeń','Luty','Marzec','Kwiecień','Maj','Czerwiec','Lipiec','Sierpień','Wrzesień','Październik','Listopad','Grudzień'][x-1]}",
+                                           key="manual_month")
                 
-                st.markdown("**📊 Portfolio:**")
-                stocks_value = st.number_input("Akcje (USD)", min_value=0.0, value=0.0, step=100.0)
-                stocks_positions = st.number_input("Liczba pozycji akcji", min_value=0, value=0, step=1)
-                stocks_cash = st.number_input("Cash Trading212 (USD)", min_value=0.0, value=0.0, step=10.0)
-                
-                crypto_value = st.number_input("Crypto (USD)", min_value=0.0, value=0.0, step=100.0)
-                crypto_positions = st.number_input("Liczba pozycji crypto", min_value=0, value=0, step=1)
-                
-                usd_pln_manual = st.number_input("Kurs USD/PLN", min_value=3.0, max_value=5.0, value=3.65, step=0.01)
+                st.markdown("**📊 Portfolio (PLN):**")
+                stocks_pln = st.number_input("💼 Akcje (PLN)", min_value=0.0, value=0.0, step=500.0, key="stocks_pln")
+                cash_pln = st.number_input("💵 Cash Trading212 (PLN)", min_value=0.0, value=0.0, step=100.0, key="cash_pln")
+                crypto_pln = st.number_input("₿ Crypto (PLN)", min_value=0.0, value=0.0, step=100.0, key="crypto_pln")
             
             with col_form2:
                 st.markdown("**💳 Zobowiązania:**")
-                debt_pln = st.number_input("Dług (PLN)", min_value=0.0, value=0.0, step=100.0)
-                debt_count = st.number_input("Liczba kredytów", min_value=0, value=0, step=1)
+                debt_pln = st.number_input("Dług całkowity (PLN)", min_value=0.0, value=0.0, step=500.0, key="debt_pln")
                 
-                st.markdown("**🎯 Cele:**")
-                emergency_base = st.number_input("Rezerwa gotówkowa (PLN, bez T212)", min_value=0.0, value=0.0, step=100.0)
-                emergency_target = st.number_input("Cel rezerwy (PLN)", min_value=0.0, value=10000.0, step=1000.0)
-                add_target = st.number_input("Cel ADD (PLN)", min_value=0.0, value=50000.0, step=1000.0)
+                st.markdown("**� Rezerwa Gotówkowa:**")
+                emergency_other_pln = st.number_input("Rezerwa (inna gotówka, PLN)", min_value=0.0, value=0.0, step=100.0, 
+                                                     help="Gotówka poza Trading212 (np. konto bankowe)", key="emergency_other")
                 
-                st.markdown("**✅ Compliance:**")
-                compliance_status = st.selectbox("Status", options=["pass", "warnings", "fail"])
-                compliance_issues = st.number_input("Liczba issues", min_value=0, value=0, step=1)
+                st.markdown("---")
+                st.info(f"""
+                **Automatyczne obliczenia:**
+                - 💰 Aktywa: {stocks_pln + cash_pln + crypto_pln:,.0f} PLN
+                - 💎 Net Worth: {stocks_pln + cash_pln + crypto_pln - debt_pln:,.0f} PLN
+                - 🏦 Rezerwa całkowita: {emergency_other_pln + cash_pln:,.0f} PLN
+                """)
             
-            if st.button("💾 Zapisz Audit Historyczny", type="primary"):
+            if st.button("💾 Zapisz Audit Historyczny", type="primary", key="save_manual"):
                 # Oblicz totale
-                total_assets_usd = stocks_value + stocks_cash + crypto_value
-                total_assets_pln = total_assets_usd * usd_pln_manual
+                total_assets_pln = stocks_pln + cash_pln + crypto_pln
+                net_worth_pln = total_assets_pln - debt_pln
                 
-                # Cash w PLN
-                cash_pln = stocks_cash * usd_pln_manual
-                
-                # Rezerwa całkowita
-                emergency_current = emergency_base + cash_pln
+                # Rezerwa całkowita = inna gotówka + cash T212
+                emergency_current = emergency_other_pln + cash_pln
+                emergency_target = 10000.0  # Domyślny cel
                 emergency_progress = (emergency_current / emergency_target * 100) if emergency_target > 0 else 0
                 
-                # Net Worth
-                net_worth_pln = total_assets_pln - debt_pln
+                # Kurs USD/PLN (szacunkowy dla konwersji do wykresu)
+                usd_pln_manual = 3.65
+                total_assets_usd = total_assets_pln / usd_pln_manual
                 
                 # Utwórz snapshot
                 manual_snapshot = {
-                    "timestamp": f"{manual_year}-{manual_month:02d}-01T12:00:00",
+                    "timestamp": f"{manual_year}-{manual_month:02d}-15T12:00:00",
                     "month": f"{manual_year}-{manual_month:02d}",
                     "exchange_rate_usd_pln": usd_pln_manual,
                     "portfolio": {
                         "stocks": {
-                            "total_value_usd": round(stocks_value, 2),
-                            "positions": stocks_positions,
-                            "cash_usd": round(stocks_cash, 2),
-                            "total_with_cash_usd": round(stocks_value + stocks_cash, 2)
+                            "total_value_usd": round(stocks_pln / usd_pln_manual, 2),
+                            "positions": 0,  # Nieznana liczba
+                            "cash_usd": round(cash_pln / usd_pln_manual, 2),
+                            "total_with_cash_usd": round((stocks_pln + cash_pln) / usd_pln_manual, 2)
                         },
                         "crypto": {
-                            "total_value_usd": round(crypto_value, 2),
-                            "positions": crypto_positions
+                            "total_value_usd": round(crypto_pln / usd_pln_manual, 2),
+                            "positions": 0  # Nieznana liczba
                         },
                         "total_assets_usd": round(total_assets_usd, 2),
                         "total_assets_pln": round(total_assets_pln, 2)
                     },
                     "debt": {
                         "total_debt_pln": round(debt_pln, 2),
-                        "active_loans": debt_count
+                        "active_loans": 1 if debt_pln > 0 else 0
                     },
                     "net_worth_pln": round(net_worth_pln, 2),
                     "goals": {
                         "emergency_fund_target": emergency_target,
                         "emergency_fund_current": round(emergency_current, 2),
-                        "emergency_fund_base_pln": emergency_base,
-                        "emergency_fund_cash_usd": stocks_cash,
+                        "emergency_fund_base_pln": round(emergency_other_pln, 2),
+                        "emergency_fund_cash_usd": round(cash_pln / usd_pln_manual, 2),
                         "emergency_fund_cash_pln": round(cash_pln, 2),
                         "emergency_fund_progress": round(emergency_progress, 1),
-                        "add_target": add_target
+                        "add_target": 50000.0
                     },
                     "compliance": {
-                        "issues_count": compliance_issues,
-                        "status": compliance_status
+                        "issues_count": 0,
+                        "status": "pass"
                     },
-                    "_manual_entry": True
+                    "_manual_entry": True,
+                    "_simplified_input": True
                 }
                 
                 # Załaduj istniejącą historię
