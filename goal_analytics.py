@@ -82,28 +82,42 @@ class GoalAnalytics:
                 'goal_name': goal_key
             }
         
-        # Sortuj snapshots po dacie
-        sorted_snapshots = sorted(snapshots, key=lambda x: x.get('timestamp', ''))
+        # Sortuj snapshots po dacie (obsługa 'date' lub 'timestamp')
+        sorted_snapshots = sorted(snapshots, key=lambda x: x.get('date') or x.get('timestamp', ''))
         
         # Wybierz odpowiednią metrykę z snapshots
+        # Snapshoty mają strukturę: totals.net_worth_pln lub totals.assets_pln
         metric_map = {
-            'Rezerwa_gotowkowa_PLN': 'total_assets',
-            'Rezerwa_gotowkowa_obecna_PLN': 'total_assets',
-            'ADD_wartosc_docelowa_PLN': 'total_assets',
+            'Rezerwa_gotowkowa_PLN': ['totals', 'net_worth_pln'],
+            'Rezerwa_gotowkowa_obecna_PLN': ['totals', 'net_worth_pln'],
+            'ADD_wartosc_docelowa_PLN': ['totals', 'net_worth_pln'],
         }
         
-        metric_key = metric_map.get(goal_key, 'total_assets')
+        metric_path = metric_map.get(goal_key, ['totals', 'net_worth_pln'])
         
         # Zbierz dane do regresji
         dates = []
         values = []
         
-        base_date = datetime.fromisoformat(sorted_snapshots[0]['timestamp'][:10])
+        # Pobierz datę z pierwszego snapshota (obsługa 'date' lub 'timestamp')
+        first_date_str = sorted_snapshots[0].get('date') or sorted_snapshots[0].get('timestamp', '')
+        base_date = datetime.fromisoformat(first_date_str[:10])
         
         for snap in sorted_snapshots[-30:]:  # Ostatnie 30 snapshots
             try:
-                date_obj = datetime.fromisoformat(snap['timestamp'][:10])
-                value = snap.get(metric_key, 0)
+                # Obsługa 'date' lub 'timestamp'
+                date_str = snap.get('date') or snap.get('timestamp', '')
+                date_obj = datetime.fromisoformat(date_str[:10])
+                
+                # Pobierz wartość z zagnieżdżonej struktury
+                value = snap
+                for key in metric_path:
+                    value = value.get(key, {})
+                    if not isinstance(value, dict) and key == metric_path[-1]:
+                        break
+                
+                if isinstance(value, dict):
+                    value = 0
                 
                 days_diff = (date_obj - base_date).days
                 dates.append(days_diff)
