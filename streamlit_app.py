@@ -5916,7 +5916,7 @@ Wróć później aby zobaczyć świeżą analizę!
         krypto_val = stan_spolki.get('krypto', {}).get('wartosc_pln', 0) if stan_spolki else 0
         total_value = akcje_val + krypto_val
         
-        kurs_usd = pobierz_kurs_usd()
+        kurs_usd = pobierz_kurs_usd_pln()
         
         if stan_spolki and 'akcje' in stan_spolki and 'pozycje' in stan_spolki['akcje']:
             for ticker, data in stan_spolki['akcje']['pozycje'].items():
