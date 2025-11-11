@@ -5815,8 +5815,8 @@ Wróć później aby zobaczyć świeżą analizę!
                     ticker_clean = ticker.replace('_US_EQ', '').replace('_EQ', '')
                     
                     # Określ czy pozycja jest w PIE czy poza (non-PIE)
-                    # PIE "Almost Daily Dividends" = wszystkie POZA: GAIN, PBR, SXRV, V, BCAT, VWCE
-                    NON_PIE_TICKERS = ['GAIN', 'PBR', 'SXRV', 'V', 'BCAT', 'VWCE']
+                    # PIE "Almost Daily Dividends" = wszystkie POZA: GAIN, PBR, SXRV, SXRVd, V, BCAT, VWCE, VWCEd
+                    NON_PIE_TICKERS = ['GAIN', 'PBR', 'SXRV', 'SXRVd', 'V', 'BCAT', 'VWCE', 'VWCEd']
                     is_pie = ticker_clean not in NON_PIE_TICKERS
                     
                     ilosc = data.get('ilosc', data.get('quantity', 0))
