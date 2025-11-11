@@ -1,27 +1,27 @@
 [
   {
-    "timestamp": "2025-11-11T20:19:20.056622",
+    "timestamp": "2025-11-11T20:23:34.020971",
     "month": "2025-11",
     "exchange_rate_usd_pln": 3.661,
     "portfolio": {
       "stocks": {
         "total_value_usd": 6003.9,
         "positions": 56,
-        "cash_usd": 0.0,
-        "total_with_cash_usd": 6003.9
+        "cash_usd": 709.08,
+        "total_with_cash_usd": 6712.98
       },
       "crypto": {
-        "total_value_usd": 0.0,
+        "total_value_usd": 5029.71,
         "positions": 11
       },
-      "total_assets_usd": 6003.9,
-      "total_assets_pln": 21980.28
+      "total_assets_usd": 11742.69,
+      "total_assets_pln": 42989.99
     },
     "debt": {
       "total_debt_pln": 6665.0,
       "active_loans": 1
     },
-    "net_worth_pln": 15315.28,
+    "net_worth_pln": 36324.99,
     "goals": {
       "emergency_fund_target": 10000.0,
       "emergency_fund_current": 0.0,

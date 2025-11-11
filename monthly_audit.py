@@ -14,6 +14,13 @@ from datetime import datetime
 from typing import Dict, List, Any
 import requests
 
+# Import CryptoPortfolioManager dla live prices
+try:
+    from crypto_portfolio_manager import CryptoPortfolioManager
+except ImportError:
+    CryptoPortfolioManager = None
+    print("⚠️ CryptoPortfolioManager niedostępny - użyję danych statycznych")
+
 def load_json_file(filepath: str, default: Any = None) -> Any:
     """Załaduj plik JSON z obsługą błędów"""
     if not os.path.exists(filepath):
@@ -56,9 +63,15 @@ def analyze_trading212_portfolio() -> Dict[str, Any]:
     if not cache or 'data' not in cache:
         return {'total_value_usd': 0, 'positions': 0, 'cash_usd': 0}
     
-    positions = cache.get('data', {}).get('positions', [])
+    data = cache.get('data', {})
+    positions = data.get('positions', [])
+    account = data.get('account', {})
+    
+    # Wartość pozycji
     total_value = sum(float(pos.get('quantity', 0)) * float(pos.get('currentPrice', 0)) for pos in positions)
-    cash = float(cache.get('data', {}).get('cash', 0))
+    
+    # Cash z account.free
+    cash = float(account.get('free', 0))
     
     return {
         'total_value_usd': round(total_value, 2),
@@ -68,17 +81,50 @@ def analyze_trading212_portfolio() -> Dict[str, Any]:
     }
 
 def analyze_crypto_portfolio() -> Dict[str, Any]:
-    """Analiza portfela krypto"""
+    """Analiza portfela krypto z live prices"""
     krypto = load_json_file('krypto.json', {'krypto': []})
     
     positions = krypto.get('krypto', [])
     if not positions:
         return {'total_value_usd': 0, 'positions': 0}
     
+    # Najpierw spróbuj z live prices przez CryptoPortfolioManager
+    if CryptoPortfolioManager:
+        try:
+            manager = CryptoPortfolioManager()
+            symbols = [pos.get('symbol') for pos in positions if pos.get('symbol')]
+            
+            if symbols:
+                prices = manager.get_current_prices(symbols)
+                
+                # Przelicz wartość z live prices
+                live_value = 0
+                for pos in positions:
+                    symbol = pos.get('symbol')
+                    quantity = float(pos.get('ilosc', 0))
+                    
+                    if symbol and symbol in prices:
+                        price_data = prices.get(symbol, {})
+                        current_price = price_data.get('current_price', 0)
+                        if current_price > 0:
+                            live_value += quantity * current_price
+                
+                if live_value > 0:
+                    print(f"✅ Crypto live prices: ${live_value:,.2f}")
+                    return {
+                        'total_value_usd': round(live_value, 2),
+                        'positions': len(positions)
+                    }
+        except Exception as e:
+            print(f"⚠️ Błąd live prices crypto: {e}")
+    
+    # Fallback - użyj cen zakupu (statyczne dane)
     total_value = sum(
-        float(pos.get('ilosc', 0)) * float(pos.get('cena_usd', 0))
+        float(pos.get('ilosc', 0)) * float(pos.get('cena_zakupu_usd', 0))
         for pos in positions if isinstance(pos, dict)
     )
+    
+    print(f"⚠️ Crypto używa cen zakupu (live prices niedostępne): ${total_value:,.2f}")
     
     return {
         'total_value_usd': round(total_value, 2),
