@@ -8897,16 +8897,26 @@ def show_timeline_page(stan_spolki):
                 st.markdown("**💳 Zobowiązania:**")
                 debt_pln = st.number_input("Dług całkowity (PLN)", min_value=0.0, value=0.0, step=500.0, key="debt_pln")
                 
-                st.markdown("**� Rezerwa Gotówkowa:**")
-                emergency_other_pln = st.number_input("Rezerwa (inna gotówka, PLN)", min_value=0.0, value=0.0, step=100.0, 
-                                                     help="Gotówka poza Trading212 (np. konto bankowe)", key="emergency_other")
-                
                 st.markdown("---")
+                
+                # Oblicz podgląd
+                total_assets = stocks_pln + cash_pln + crypto_pln + emergency_other_pln
+                net_worth = total_assets - debt_pln
+                emergency_total = cash_pln + emergency_other_pln
+                
                 st.info(f"""
-                **Automatyczne obliczenia:**
-                - 💰 Aktywa: {stocks_pln + cash_pln + crypto_pln:,.0f} PLN
-                - 💎 Net Worth: {stocks_pln + cash_pln + crypto_pln - debt_pln:,.0f} PLN
-                - 🏦 Rezerwa całkowita: {emergency_other_pln + cash_pln:,.0f} PLN
+                **📊 Podgląd obliczeń:**
+                
+                **Aktywa ogółem:** {total_assets:,.0f} PLN
+                - Akcje: {stocks_pln:,.0f} PLN
+                - Cash broker: {cash_pln:,.0f} PLN
+                - Crypto: {crypto_pln:,.0f} PLN
+                - Inna gotówka: {emergency_other_pln:,.0f} PLN
+                
+                **💎 Net Worth:** {net_worth:,.0f} PLN
+                **🏦 Rezerwa gotówkowa:** {emergency_total:,.0f} PLN
+                - Cash broker: {cash_pln:,.0f} PLN
+                - Inna gotówka: {emergency_other_pln:,.0f} PLN
                 """)
             
             if st.button("💾 Zapisz Audit Historyczny", type="primary", key="save_manual"):
