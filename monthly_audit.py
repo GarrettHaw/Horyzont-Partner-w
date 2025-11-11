@@ -227,11 +227,38 @@ def main():
     print("\n📸 Generating monthly snapshot...")
     snapshot = generate_monthly_snapshot()
     
-    # Zapisz snapshot
-    if save_json_file('monthly_snapshot.json', snapshot):
+    # Wczytaj istniejącą historię monthly snapshots
+    monthly_history_file = 'monthly_snapshots_history.json'
+    try:
+        with open(monthly_history_file, 'r', encoding='utf-8') as f:
+            history = json.load(f)
+            if not isinstance(history, list):
+                history = []
+    except (FileNotFoundError, json.JSONDecodeError):
+        history = []
+    
+    # Dodaj nowy snapshot do historii
+    history.append(snapshot)
+    
+    # Deduplikacja - tylko 1 snapshot na miesiąc
+    unique_history = {}
+    for snap in history:
+        month_key = snap.get('month', '')
+        if month_key:
+            unique_history[month_key] = snap
+    
+    # Sortuj po miesiącu (najstarsze → najnowsze)
+    history = sorted(unique_history.values(), key=lambda x: x.get('month', ''))
+    
+    # Zapisz historię
+    if save_json_file(monthly_history_file, history):
+        print(f"✅ Saved to history: {len(history)} monthly snapshots")
         print(f"✅ Total Assets: ${snapshot['portfolio']['total_assets_usd']:,.2f}")
         print(f"✅ Net Worth: {snapshot['net_worth_pln']:,.2f} PLN")
         print(f"✅ Compliance Status: {snapshot['compliance']['status']}")
+    
+    # Zapisz też pojedynczy snapshot (dla kompatybilności wstecznej)
+    save_json_file('monthly_snapshot.json', snapshot)
     
     # Generuj compliance log
     print("\n📋 Checking compliance...")

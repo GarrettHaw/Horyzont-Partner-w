@@ -8817,81 +8817,116 @@ def show_timeline_page(stan_spolki):
     
     # === TAB 2: MONTHLY AUDIT ===
     with tab_monthly:
-        st.markdown("### 📅 Miesięczny Audit Portfela")
+        st.markdown("### 📅 Historia Miesięcznych Auditów")
         
-        # Załaduj monthly snapshot
+        # Załaduj historię monthly snapshots
         try:
-            with open('monthly_snapshot.json', 'r', encoding='utf-8') as f:
-                monthly_data = json.load(f)
+            with open('monthly_snapshots_history.json', 'r', encoding='utf-8') as f:
+                monthly_history = json.load(f)
             
-            # Sprawdź kiedy był ostatni audit
-            timestamp = monthly_data.get('timestamp', 'Unknown')
-            month = monthly_data.get('month', 'Unknown')
-            
-            st.info(f"📅 **Ostatni audit:** {timestamp} | **Miesiąc:** {month}")
-            
-            # Metrics
-            col1, col2, col3, col4 = st.columns(4)
-            
-            portfolio = monthly_data.get('portfolio', {})
-            debt = monthly_data.get('debt', {})
-            net_worth = monthly_data.get('net_worth_pln', 0)
-            
-            with col1:
-                total_assets = portfolio.get('total_assets_pln', 0)
-                st.metric("💰 Aktywa Ogółem", f"{total_assets:,.0f} PLN")
-            
-            with col2:
-                total_debt = debt.get('total_debt_pln', 0)
-                st.metric("💳 Zobowiązania", f"{total_debt:,.0f} PLN")
-            
-            with col3:
-                st.metric("💎 Net Worth", f"{net_worth:,.0f} PLN")
-            
-            with col4:
-                compliance = monthly_data.get('compliance', {})
-                status = compliance.get('status', 'unknown')
-                issues = compliance.get('issues_count', 0)
+            if not monthly_history or not isinstance(monthly_history, list):
+                st.warning("⚠️ Brak danych miesięcznych auditów")
+            else:
+                # Odwróć kolejność - najnowsze pierwsze
+                monthly_history = sorted(monthly_history, key=lambda x: x.get('month', ''), reverse=True)
                 
-                status_emoji = "✅" if status == "pass" else "⚠️" if status == "warnings" else "❌"
-                st.metric(f"{status_emoji} Compliance", f"{issues} issue(s)")
-            
-            st.markdown("---")
-            
-            # Details w kolumnach
-            col_left, col_right = st.columns(2)
-            
-            with col_left:
-                st.markdown("**📊 Portfolio Details:**")
-                stocks = portfolio.get('stocks', {})
-                crypto = portfolio.get('crypto', {})
+                st.info(f"📊 **Dostępne audity:** {len(monthly_history)} miesięcy | **Najnowszy:** {monthly_history[0].get('month', 'N/A')}")
                 
-                st.write(f"📈 **Akcje:** ${stocks.get('total_value_usd', 0):,.2f} ({stocks.get('positions', 0)} pozycji)")
-                st.write(f"₿ **Crypto:** ${crypto.get('total_value_usd', 0):,.2f} ({crypto.get('positions', 0)} pozycji)")
-                st.write(f"💵 **Cash:** ${stocks.get('cash_usd', 0):,.2f}")
-                st.write(f"💱 **Kurs USD/PLN:** {monthly_data.get('exchange_rate_usd_pln', 0):.4f}")
-            
-            with col_right:
-                st.markdown("**🎯 Cele Finansowe:**")
-                goals = monthly_data.get('goals', {})
+                # === WYKRES TRENDU NET WORTH ===
+                st.markdown("#### 📈 Trend Net Worth")
+                chart_data = []
+                for snapshot in reversed(monthly_history):  # Od najstarszego do najnowszego
+                    chart_data.append({
+                        'Miesiąc': snapshot.get('month', 'N/A'),
+                        'Net Worth (PLN)': snapshot.get('net_worth_pln', 0),
+                        'Aktywa (PLN)': snapshot.get('portfolio', {}).get('total_assets_pln', 0),
+                        'Dług (PLN)': snapshot.get('debt', {}).get('total_debt_pln', 0)
+                    })
                 
-                emergency_fund = goals.get('emergency_fund_current', 0)
-                emergency_target = goals.get('emergency_fund_target', 10000)
-                emergency_progress = goals.get('emergency_fund_progress', 0)
+                if chart_data:
+                    df_chart = pd.DataFrame(chart_data)
+                    st.line_chart(df_chart.set_index('Miesiąc'))
                 
-                st.write(f"🏦 **Rezerwa:** {emergency_fund:,.0f} PLN / {emergency_target:,.0f} PLN")
-                st.progress(emergency_progress / 100 if emergency_progress <= 100 else 1.0)
-                st.caption(f"{emergency_progress:.1f}% celu")
+                st.markdown("---")
+                st.markdown("#### 📋 Szczegóły Miesięczne")
                 
-                add_target = goals.get('add_target', 50000)
-                st.write(f"🎯 **ADD Target:** {add_target:,.0f} PLN")
-            
-            st.markdown("---")
-            st.caption("💡 Miesięczny audit uruchamiany automatycznie 1. dnia miesiąca o 09:00 UTC przez GitHub Actions")
-            st.caption(f"📁 Plik: `monthly_snapshot.json` | Następny audit: 1. dnia następnego miesiąca")
+                # === TABELA Z WSZYSTKIMI MIESIĄCAMI ===
+                for i, monthly_data in enumerate(monthly_history):
+                    month = monthly_data.get('month', 'Unknown')
+                    timestamp = monthly_data.get('timestamp', 'Unknown')
+                    
+                    # Oblicz zmianę m/m (jeśli nie pierwszy miesiąc)
+                    change_indicator = ""
+                    if i < len(monthly_history) - 1:
+                        prev_net_worth = monthly_history[i + 1].get('net_worth_pln', 0)
+                        curr_net_worth = monthly_data.get('net_worth_pln', 0)
+                        
+                        if prev_net_worth > 0:
+                            change_pct = ((curr_net_worth - prev_net_worth) / prev_net_worth) * 100
+                            change_pln = curr_net_worth - prev_net_worth
+                            
+                            if change_pct > 0:
+                                change_indicator = f"� +{change_pct:.1f}% (+{change_pln:,.0f} PLN)"
+                            else:
+                                change_indicator = f"📉 {change_pct:.1f}% ({change_pln:,.0f} PLN)"
+                    
+                    # Expander dla każdego miesiąca
+                    with st.expander(f"**{month}** | {timestamp} {change_indicator}", expanded=(i == 0)):
+                        # Metrics
+                        col1, col2, col3, col4 = st.columns(4)
+                        
+                        portfolio = monthly_data.get('portfolio', {})
+                        debt = monthly_data.get('debt', {})
+                        net_worth = monthly_data.get('net_worth_pln', 0)
+                        
+                        with col1:
+                            total_assets = portfolio.get('total_assets_pln', 0)
+                            st.metric("💰 Aktywa", f"{total_assets:,.0f} PLN")
+                        
+                        with col2:
+                            total_debt = debt.get('total_debt_pln', 0)
+                            st.metric("💳 Dług", f"{total_debt:,.0f} PLN")
+                        
+                        with col3:
+                            st.metric("💎 Net Worth", f"{net_worth:,.0f} PLN")
+                        
+                        with col4:
+                            compliance = monthly_data.get('compliance', {})
+                            status = compliance.get('status', 'unknown')
+                            issues = compliance.get('issues_count', 0)
+                            
+                            status_emoji = "✅" if status == "pass" else "⚠️" if status == "warnings" else "❌"
+                            st.metric(f"{status_emoji} Compliance", f"{issues} issue(s)")
+                        
+                        # Details
+                        col_left, col_right = st.columns(2)
+                        
+                        with col_left:
+                            st.markdown("**📊 Portfolio:**")
+                            stocks = portfolio.get('stocks', {})
+                            crypto = portfolio.get('crypto', {})
+                            
+                            st.write(f"📈 Akcje: ${stocks.get('total_value_usd', 0):,.2f} ({stocks.get('positions', 0)} poz.)")
+                            st.write(f"₿ Crypto: ${crypto.get('total_value_usd', 0):,.2f} ({crypto.get('positions', 0)} poz.)")
+                            st.write(f"💵 Cash: ${stocks.get('cash_usd', 0):,.2f}")
+                        
+                        with col_right:
+                            st.markdown("**🎯 Cele:**")
+                            goals = monthly_data.get('goals', {})
+                            
+                            emergency_fund = goals.get('emergency_fund_current', 0)
+                            emergency_target = goals.get('emergency_fund_target', 10000)
+                            emergency_progress = goals.get('emergency_fund_progress', 0)
+                            
+                            st.write(f"🏦 Rezerwa: {emergency_fund:,.0f} / {emergency_target:,.0f} PLN")
+                            st.progress(emergency_progress / 100 if emergency_progress <= 100 else 1.0)
+                            st.caption(f"{emergency_progress:.1f}%")
+                
+                st.markdown("---")
+                st.caption("💡 Audity uruchamiane automatycznie 1. dnia miesiąca o 09:00 UTC przez GitHub Actions")
             
         except FileNotFoundError:
-            st.warning("⚠️ Brak danych miesięcznego auditu")
+            st.warning("⚠️ Brak pliku z historią auditów")
             st.info("""
             **Jak wygenerować miesięczny audit?**
             - Automatycznie: Workflow `monthly_audit.yml` uruchamia się 1. dnia każdego miesiąca
