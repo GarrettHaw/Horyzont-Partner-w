@@ -93,26 +93,34 @@
     }
   },
   {
-    "date": "2025-11-11 18:08:02",
+    "date": "2025-11-11 20:14:47",
     "date_only": "2025-11-11",
     "usd_pln_rate": 3.661,
     "stocks": {
-      "value_usd": 5987.19,
-      "value_pln": 21919.08,
+      "value_usd": 6003.9,
+      "value_pln": 21980.28,
       "positions": 56,
-      "cash_usd": 709.16
+      "cash_usd": 709.08
     },
     "crypto": {
       "value_usd": 5029.71,
       "value_pln": 18413.78,
       "positions": 11
     },
-    "debt": null,
+    "debt": {
+      "total_pln": 6665,
+      "loans_count": 1
+    },
+    "emergency_fund": {
+      "current_pln": 0,
+      "target_pln": 10000,
+      "progress_pct": 0.0
+    },
     "totals": {
-      "assets_usd": 11016.9,
-      "assets_pln": 40332.86,
-      "debt_pln": 0,
-      "net_worth_pln": 40332.86
+      "assets_usd": 11033.61,
+      "assets_pln": 40394.06,
+      "debt_pln": 6665,
+      "net_worth_pln": 33729.06
     }
   }
 ]
