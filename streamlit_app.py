@@ -526,7 +526,7 @@ def generuj_odpowiedz_ai(persona_name, prompt):
             import google.generativeai as genai
             
             # Wybierz klucz API - Nexus ma osobne konto, inni partnerzy wspólne
-            if partner_name == "Nexus":
+            if persona_name == "Nexus":
                 api_key = st.secrets.get("GOOGLE_API_KEY_NEXUS", os.getenv("GOOGLE_API_KEY_NEXUS"))
                 if not api_key:
                     # Fallback na główny klucz jeśli Nexus nie ma osobnego
@@ -544,7 +544,7 @@ def generuj_odpowiedz_ai(persona_name, prompt):
             response = model.generate_content(prompt)
             
             # Track API call - różne countery dla Nexus vs inne
-            if partner_name == "Nexus":
+            if persona_name == "Nexus":
                 tracker.track_call("gemini_nexus", is_autonomous=False)
             else:
                 tracker.track_call("gemini", is_autonomous=False)
