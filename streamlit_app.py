@@ -5801,7 +5801,8 @@ Wróć później aby zobaczyć świeżą analizę!
             st.caption(f"💵 Kurs USD/PLN: **{kurs_usd:.4f}**")
         with col_t3:
             if cash_usd > 0:
-                st.caption(f"💰 Cash: **${cash_usd:.2f}**")
+                cash_pln = cash_usd * kurs_usd
+                st.caption(f"💰 Cash: **${cash_usd:.2f}** ({cash_pln:.2f} PLN)")
         
         # Wyświetl pozycje jako tabelę
         if pozycje:
@@ -5813,13 +5814,17 @@ Wróć później aby zobaczyć świeżą analizę!
                     # Czysty ticker bez sufiksów
                     ticker_clean = ticker.replace('_US_EQ', '').replace('_EQ', '')
                     
+                    # Określ czy pozycja jest w PIE czy poza (non-PIE)
+                    # PIE "Almost Daily Dividends" = wszystkie POZA: GAIN, PBR, SXRV, V, BCAT, VWCE
+                    NON_PIE_TICKERS = ['GAIN', 'PBR', 'SXRV', 'V', 'BCAT', 'VWCE']
+                    is_pie = ticker_clean not in NON_PIE_TICKERS
+                    
                     ilosc = data.get('ilosc', data.get('quantity', 0))
                     current_price = data.get('current_price', 0)
                     avg_price = data.get('avg_price', 0)
                     value_usd = data.get('value_usd', ilosc * current_price if current_price else 0)
                     value_pln = data.get('value_pln', value_usd * kurs_usd)
                     ppl = data.get('ppl', 0)
-                    frontend = data.get('frontend', '')
                     
                     # Oblicz % zysku/straty
                     if avg_price > 0 and current_price > 0:
@@ -5834,7 +5839,7 @@ Wróć później aby zobaczyć świeżą analizę!
                         'Cena aktualna': f"${current_price:.2f}",
                         'Wartość': f"{value_pln:.2f} PLN",
                         'P&L': f"{pnl_pct:+.2f}%",
-                        'Typ': '🥧 Pie' if frontend == 'AUTOINVEST' else '📊 Rdzenne'
+                        'Typ': '🥧 PIE (ADD)' if is_pie else '📊 Rdzenne'
                     })
             
             if pozycje_list:
@@ -5844,7 +5849,11 @@ Wróć później aby zobaczyć świeżą analizę!
                 df_pozycje = pd.DataFrame(pozycje_list)
                 st.dataframe(df_pozycje, use_container_width=True, hide_index=True)
                 
-                st.caption(f"📊 **Łącznie:** {len(pozycje_list)} pozycji | Wartość całkowita: {akcje_data.get('wartosc_pln', 0):.2f} PLN")
+                # Policz PIE vs non-PIE
+                pie_count = sum(1 for p in pozycje_list if 'PIE' in p['Typ'])
+                non_pie_count = sum(1 for p in pozycje_list if 'Rdzenne' in p['Typ'])
+                
+                st.caption(f"📊 **Łącznie:** {len(pozycje_list)} pozycji | 🥧 PIE (ADD): {pie_count} | 📊 Rdzenne: {non_pie_count} | Wartość całkowita: {akcje_data.get('wartosc_pln', 0):.2f} PLN")
             else:
                 st.info("ℹ️ Brak pozycji do wyświetlenia")
         else:
