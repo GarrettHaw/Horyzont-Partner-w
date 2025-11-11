@@ -12984,7 +12984,7 @@ def show_snapshots_page():
         
         st.write(f"📁 Plik: `daily_snapshots.json`")
         st.write(f"📊 Rozmiar historii: {stats['count']} snapshots")
-        st.write(f"⏱️  Automatyczna rotacja: ostatnie {ds.MAX_HISTORY_DAYS} dni")
+        st.write(f"♾️  Przechowywanie: **Pełna historia bez limitów** (permanentne)")
         
         # Opcja usunięcia wszystkich snapshots (niebezpieczne!)
         with st.expander("⚠️ Niebezpieczna Strefa"):
