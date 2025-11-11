@@ -5910,20 +5910,29 @@ Wróć później aby zobaczyć świeżą analizę!
     # Pobierz prawdziwe dane z portfela
     try:
         akcje_pozycje = []
-        total_value = stan_spolki.get('podsumowanie', {}).get('Wartosc_netto_PLN', 0)
-        kurs_usd = stan_spolki.get('kurs_usd_pln', 3.6)
         
-        if 'akcje' in stan_spolki and 'pozycje' in stan_spolki['akcje']:
+        # Oblicz total value dla wag
+        akcje_val = stan_spolki.get('akcje', {}).get('wartosc_pln', 0) if stan_spolki else 0
+        krypto_val = stan_spolki.get('krypto', {}).get('wartosc_pln', 0) if stan_spolki else 0
+        total_value = akcje_val + krypto_val
+        
+        kurs_usd = pobierz_kurs_usd()
+        
+        if stan_spolki and 'akcje' in stan_spolki and 'pozycje' in stan_spolki['akcje']:
             for ticker, data in stan_spolki['akcje']['pozycje'].items():
                 if isinstance(data, dict):
-                    wartosc_usd = data.get('wartosc_total_usd', 0)
-                    wartosc_pln = wartosc_usd * kurs_usd
+                    # Dane z Trading212: value_usd, value_pln
+                    wartosc_pln = data.get('value_pln', data.get('wartosc_pln', 0))
+                    zmiana = data.get('ppl', 0)  # P&L% z Trading212
                     waga = (wartosc_pln / total_value * 100) if total_value > 0 else 0
                     
+                    # Czysty ticker
+                    ticker_clean = ticker.replace('_US_EQ', '').replace('_EQ', '')
+                    
                     akcje_pozycje.append({
-                        'Ticker': ticker,
+                        'Ticker': ticker_clean,
                         'Wartość (PLN)': wartosc_pln,
-                        'Zmiana (%)': data.get('zmiana_proc', 0),
+                        'Zmiana (%)': zmiana,
                         'Waga (%)': waga,
                         'Typ': 'Akcja/ETF'
                     })
