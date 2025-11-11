@@ -33,6 +33,58 @@ NBP_API_URL = "https://api.nbp.pl/api/exchangerates/rates/a/usd/?format=json"
 TRADING212_CACHE_FILE = "trading212_cache.json"
 TRADING212_CACHE_HOURS = 24  # Cache na 24 godziny (aktualizowany przez GitHub Actions co 6h)
 
+# === HELPER FUNCTIONS ===
+def get_total_emergency_fund(cele_data: dict = None, usd_pln_rate: float = None) -> float:
+    """
+    Oblicza CAŁKOWITĄ rezerwę gotówkową = rezerwa z cele.json + cash z Trading212
+    
+    KRYTYCZNE: Cash z Trading212 ZAWSZE jest częścią rezerwy gotówkowej!
+    
+    Args:
+        cele_data: Dict z cele.json (opcjonalnie - załaduje jeśli None)
+        usd_pln_rate: Kurs USD/PLN (opcjonalnie - pobierze jeśli None)
+    
+    Returns:
+        float: Całkowita rezerwa gotówkowa w PLN
+    """
+    # Załaduj cele jeśli nie podano
+    if cele_data is None:
+        try:
+            with open('cele.json', 'r', encoding='utf-8') as f:
+                cele_data = json.load(f)
+        except:
+            cele_data = {}
+    
+    # Rezerwa z cele.json
+    rezerwa_pln = float(cele_data.get('Rezerwa_gotowkowa_obecna_PLN', 0))
+    
+    # Cash z Trading212
+    cash_usd = 0
+    try:
+        with open(TRADING212_CACHE_FILE, 'r', encoding='utf-8') as f:
+            t212_data = json.load(f)
+            cash_usd = float(t212_data.get('data', {}).get('account', {}).get('free', 0))
+    except:
+        pass
+    
+    # Kurs USD/PLN
+    if usd_pln_rate is None:
+        try:
+            import requests
+            response = requests.get(NBP_API_URL, timeout=5)
+            if response.status_code == 200:
+                usd_pln_rate = response.json()['rates'][0]['mid']
+            else:
+                usd_pln_rate = DEFAULT_USD_PLN_RATE
+        except:
+            usd_pln_rate = DEFAULT_USD_PLN_RATE
+    
+    # Przelicz cash na PLN i dodaj
+    cash_pln = cash_usd * usd_pln_rate
+    total_reserve = rezerwa_pln + cash_pln
+    
+    return total_reserve
+
 # === SYSTEM LOGOWANIA ===
 def check_password():
     """Zwraca True jeśli użytkownik wprowadził poprawne hasło."""

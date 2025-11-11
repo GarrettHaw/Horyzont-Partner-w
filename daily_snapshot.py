@@ -39,6 +39,17 @@ SNAPSHOT_FILE = "daily_snapshots.json"
 MONTHLY_SNAPSHOT_FILE = "monthly_snapshot.json"
 # Historia NIGDY nie jest usuwana - pełna historia od początku
 
+def get_trading212_cash_usd() -> float:
+    """Pobierz cash z Trading212 w USD"""
+    try:
+        if os.path.exists('trading212_cache.json'):
+            with open('trading212_cache.json', 'r', encoding='utf-8') as f:
+                t212_data = json.load(f)
+                return float(t212_data.get('data', {}).get('account', {}).get('free', 0))
+    except Exception as e:
+        print(f"⚠️ Błąd pobierania cash z Trading212: {e}")
+    return 0.0
+
 def migrate_monthly_to_daily_snapshots() -> int:
     """
     Migruj dane z monthly_snapshot.json do daily_snapshots.json
@@ -311,13 +322,21 @@ def save_daily_snapshot(api_key: Optional[str] = None) -> bool:
         debt_pln = zobowiazania.get('Suma_dlugu_PLN', 0)
         debt_count = zobowiazania.get('Liczba_kredytow', 0)
         
-        # Rezerwa gotówkowa - z cele.json
+        # Rezerwa gotówkowa - z cele.json + cash z Trading212
         try:
             with open('cele.json', 'r', encoding='utf-8') as f:
                 cele_data = json.load(f)
-                emergency_fund_pln = cele_data.get('Rezerwa_gotowkowa_obecna_PLN', 0)
+                emergency_fund_base_pln = cele_data.get('Rezerwa_gotowkowa_obecna_PLN', 0)
                 emergency_fund_target_pln = cele_data.get('Rezerwa_gotowkowa_PLN', 10000)
-        except:
+            
+            # DODAJ cash z Trading212 do rezerwy
+            cash_usd = get_trading212_cash_usd()
+            cash_pln = cash_usd * usd_pln_rate
+            emergency_fund_pln = emergency_fund_base_pln + cash_pln
+            
+            print(f"💵 Rezerwa gotówkowa: {emergency_fund_base_pln:,.2f} PLN (cele.json) + {cash_pln:,.2f} PLN (T212 cash) = {emergency_fund_pln:,.2f} PLN")
+        except Exception as e:
+            print(f"⚠️ Błąd rezerwy gotówkowej: {e}")
             emergency_fund_pln = 0
             emergency_fund_target_pln = 10000
         

@@ -155,12 +155,28 @@ def analyze_goals() -> Dict[str, Any]:
     
     # Poprawne nazwy pól z cele.json
     rezerwa_target = float(cele.get('Rezerwa_gotowkowa_PLN', 10000))
-    rezerwa_current = float(cele.get('Rezerwa_gotowkowa_obecna_PLN', 0))
+    rezerwa_base = float(cele.get('Rezerwa_gotowkowa_obecna_PLN', 0))
     add_target = float(cele.get('ADD_wartosc_docelowa_PLN', 50000))
+    
+    # DODAJ cash z Trading212 do rezerwy
+    trading212 = load_json_file('trading212_cache.json', {})
+    cash_usd = float(trading212.get('data', {}).get('account', {}).get('free', 0))
+    
+    # Kurs USD/PLN
+    usd_pln = get_usd_pln_rate()
+    cash_pln = cash_usd * usd_pln
+    
+    # CAŁKOWITA rezerwa = rezerwa z cele.json + cash z Trading212
+    rezerwa_current = rezerwa_base + cash_pln
+    
+    print(f"💵 Rezerwa: {rezerwa_base:,.2f} PLN (cele.json) + {cash_pln:,.2f} PLN (T212: ${cash_usd:,.2f}) = {rezerwa_current:,.2f} PLN")
     
     return {
         'emergency_fund_target': rezerwa_target,
         'emergency_fund_current': rezerwa_current,
+        'emergency_fund_base_pln': rezerwa_base,
+        'emergency_fund_cash_usd': cash_usd,
+        'emergency_fund_cash_pln': cash_pln,
         'emergency_fund_progress': round((rezerwa_current / rezerwa_target * 100), 1) if rezerwa_target > 0 else 0,
         'add_target': add_target
     }
