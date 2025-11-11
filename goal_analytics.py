@@ -276,6 +276,79 @@ def check_goal_alerts(snapshots: List[Dict]) -> List[Dict]:
     return alerts
 
 
+def get_all_savings_recommendations(deadline_months: int = 12) -> Dict[str, Dict]:
+    """
+    Generuje rekomendacje oszczędzania dla wszystkich celów
+    
+    Args:
+        deadline_months: W ciągu ilu miesięcy chcesz osiągnąć cele
+        
+    Returns:
+        Dict {goal_key: recommendation_data}
+    """
+    ga = GoalAnalytics()
+    recommendations = {}
+    
+    # Lista celów do trackowania
+    trackable_goals = [
+        'Rezerwa_gotowkowa_PLN',
+        'Rezerwa_gotowkowa_obecna_PLN',
+        'ADD_wartosc_docelowa_PLN'
+    ]
+    
+    for goal_key in trackable_goals:
+        target_value = ga.goals.get(goal_key)
+        
+        if not target_value:
+            continue
+        
+        # Założmy obecną wartość (możesz ją pobierać z snapshots)
+        # Tu prostsze podejście - można rozbudować
+        current_value = 0  # Domyślnie 0, można by pobierać z ostatniego snapshota
+        
+        gap = target_value - current_value
+        
+        if gap <= 0:
+            recommendations[goal_key] = {
+                'status': 'achieved',
+                'goal_name': goal_key,
+                'gap': 0,
+                'message': 'Cel osiągnięty!'
+            }
+            continue
+        
+        # Oblicz wymagane oszczędności
+        required_monthly = gap / deadline_months
+        required_daily = gap / (deadline_months * 30)
+        
+        # Poziom trudności
+        if required_monthly < 500:
+            difficulty = 'easy'
+            difficulty_emoji = '🟢'
+        elif required_monthly < 2000:
+            difficulty = 'medium'
+            difficulty_emoji = '🟡'
+        else:
+            difficulty = 'hard'
+            difficulty_emoji = '🔴'
+        
+        recommendations[goal_key] = {
+            'status': 'active',
+            'goal_name': goal_key,
+            'target_value': target_value,
+            'current_value': current_value,
+            'gap': gap,
+            'deadline_months': deadline_months,
+            'required_monthly': required_monthly,
+            'required_daily': required_daily,
+            'difficulty': difficulty,
+            'difficulty_emoji': difficulty_emoji,
+            'message': f'Oszczędzaj {required_monthly:.0f} PLN miesięcznie przez {deadline_months} miesięcy'
+        }
+    
+    return recommendations
+
+
 if __name__ == "__main__":
     # Test
     ga = GoalAnalytics()
