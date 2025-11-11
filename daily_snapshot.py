@@ -4,9 +4,9 @@ Automatyczny system codziennego zapisywania stanu portfela
 
 CECHY:
 - Zapis o stałej godzinie (domyślnie 21:00)
-- Pełny snapshot wszystkich aktywów (akcje, crypto, kredyty)
+- Pełny snapshot wszystkich aktywów (akcje, crypto, kredyty, rezerwa)
 - Historia w formacie daily_snapshots.json
-- Automatyczna rotacja starych danych (przechowujemy 365 dni)
+- PEŁNA HISTORIA - bez limitów czasowych, permanentne przechowywanie
 - Deduplikacja (1 snapshot na dzień)
 - Wsparcie dla wykresów long-term
 
@@ -37,7 +37,7 @@ except ImportError:
 
 SNAPSHOT_FILE = "daily_snapshots.json"
 MONTHLY_SNAPSHOT_FILE = "monthly_snapshot.json"
-MAX_HISTORY_DAYS = 365  # Przechowuj rok historii
+# Historia NIGDY nie jest usuwana - pełna historia od początku
 
 def migrate_monthly_to_daily_snapshots() -> int:
     """
@@ -254,9 +254,8 @@ def save_snapshot_history(history: List[Dict]):
         # Konwertuj z powrotem na listę
         history = list(unique_history.values())
         
-        # Rotacja - zachowaj tylko ostatnie X dni
-        cutoff_date = (datetime.now() - timedelta(days=MAX_HISTORY_DAYS)).strftime('%Y-%m-%d')
-        history = [s for s in history if s['date'][:10] >= cutoff_date]
+        # BRAK ROTACJI - zachowujemy całą historię
+        # Historia snapshots jest przechowywana permanentnie
         
         with open(SNAPSHOT_FILE, 'w', encoding='utf-8') as f:
             json.dump(history, f, indent=2, ensure_ascii=False)
@@ -384,7 +383,7 @@ def save_daily_snapshot(api_key: Optional[str] = None) -> bool:
         print(f"   💳 Zobowiązania: {debt_pln:,.2f} PLN")
         print(f"   🏦 Rezerwa gotówkowa: {emergency_fund_pln:,.2f} PLN ({emergency_fund_pln/emergency_fund_target_pln*100:.1f}% celu)")
         print(f"   💎 Net Worth: {net_worth_pln:,.2f} PLN")
-        print(f"\n📈 Historia: {len(history)} snapshots (ostatnie {MAX_HISTORY_DAYS} dni)")
+        print(f"\n📈 Historia: {len(history)} snapshots (pełna historia - bez limitów)")
         
         # Sprawdź czy to pierwszy snapshot dzisiaj
         today = datetime.now().strftime('%Y-%m-%d')
