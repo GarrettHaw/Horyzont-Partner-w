@@ -538,8 +538,9 @@ def generuj_odpowiedz_ai(persona_name, prompt):
                 return "[BŁĄD: Brak klucza GOOGLE_API_KEY]"
             
             genai.configure(api_key=api_key)
-            # UPDATED: gemini-1.5-flash (FAST - 15 req/min, gemini-2.5-pro too slow: 2 req/min)
-            model = genai.GenerativeModel('gemini-1.5-flash')
+            # CRITICAL: MUST use gemini-2.5-pro (NOT gemini-1.5-flash - deprecated!)
+            # DO NOT CHANGE THIS MODEL NAME
+            model = genai.GenerativeModel('gemini-2.5-pro')
             
             response = model.generate_content(prompt)
             
