@@ -737,23 +737,34 @@ def send_to_ai_partner(partner_name, message, stan_spolki=None, cele=None, tryb_
             try:
                 nexus = get_nexus_engine()
                 
-                # Build context for Nexus
+                # Pobierz pełne dane finansowe
+                akcje_val = stan_spolki.get('akcje', {}).get('wartosc_pln', 0) if stan_spolki else 0
+                krypto_val = stan_spolki.get('krypto', {}).get('wartosc_pln', 0) if stan_spolki else 0
+                rezerwa_val = cele.get('Rezerwa_gotowkowa_obecna_PLN', 0) if cele else 0
+                dlugi_val = get_suma_kredytow()  # Pobierz sumę długów
+                total_assets = akcje_val + krypto_val + rezerwa_val
+                net_worth = total_assets - dlugi_val
+                
+                # Build RICH context for Nexus
                 context = {
                     'portfolio': {
-                        'total_value': (stan_spolki.get('akcje', {}).get('wartosc_pln', 0) +
-                                       stan_spolki.get('krypto', {}).get('wartosc_pln', 0) +
-                                       cele.get('Rezerwa_gotowkowa_obecna_PLN', 0) if cele else 0) if stan_spolki else 0,
-                        'stocks_value': stan_spolki.get('akcje', {}).get('wartosc_pln', 0) if stan_spolki else 0,
-                        'crypto_value': stan_spolki.get('krypto', {}).get('wartosc_pln', 0) if stan_spolki else 0,
+                        'total_value': total_assets,
+                        'stocks_value': akcje_val,
+                        'crypto_value': krypto_val,
+                        'cash_reserve': rezerwa_val,
+                        'debt': dlugi_val,
+                        'net_worth': net_worth,
                         'positions_count': stan_spolki.get('akcje', {}).get('liczba_pozycji', 0) if stan_spolki else 0
                     },
+                    'goals': cele if cele else {},
+                    'mood': analyze_portfolio_mood(stan_spolki, cele) if stan_spolki else {},
                     'mode': tryb_odpowiedzi
                 }
                 
                 # Generate Nexus response
                 result = nexus.generate_response(message, context=context)
                 
-                if result.get('success'):
+                if result and result.get('success'):
                     return result.get('response', 'No response'), []
                 else:
                     # Fallback to standard if Nexus fails
