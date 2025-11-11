@@ -64,17 +64,19 @@ class APIUsageTracker:
             return self._create_empty_usage()
     
     def _create_empty_usage(self) -> Dict:
-        """Stwórz pustą strukturę usage"""
-        return {
+        """Stwórz pustą strukturę usage - dynamicznie z config"""
+        usage_dict = {
             "date": datetime.now().strftime("%Y-%m-%d"),
-            "usage": {
-                "claude": {"user": 0, "autonomous": 0, "total": 0},
-                "gemini": {"user": 0, "autonomous": 0, "total": 0},
-                "openai": {"user": 0, "autonomous": 0, "total": 0}
-            },
+            "usage": {},
             "autonomous_conversations_today": 0,
             "total_cost_usd": 0.0
         }
+        
+        # Dodaj wszystkie API z config (dynamicznie)
+        for api_name in self.config.keys():
+            usage_dict["usage"][api_name] = {"user": 0, "autonomous": 0, "total": 0}
+        
+        return usage_dict
     
     def _save_usage(self):
         """Zapisz aktualne wykorzystanie"""
@@ -115,7 +117,7 @@ class APIUsageTracker:
         Zarejestruj wywołanie API
         
         Args:
-            api_name: "claude", "gemini", lub "openai"
+            api_name: "claude", "gemini", "gemini_nexus", lub "openai"
             is_autonomous: True jeśli to autonomiczna rozmowa, False jeśli user
         
         Returns:
@@ -124,6 +126,10 @@ class APIUsageTracker:
         if api_name not in self.config:
             print(f"⚠️ Nieznane API: {api_name}")
             return True  # Nie blokuj nieznanych API
+        
+        # SAFE: Upewnij się że API jest w usage (auto-add jeśli nie ma)
+        if api_name not in self.usage["usage"]:
+            self.usage["usage"][api_name] = {"user": 0, "autonomous": 0, "total": 0}
         
         # Sprawdź czy można wykonać wywołanie
         if is_autonomous and not self.can_make_autonomous_call(api_name):
