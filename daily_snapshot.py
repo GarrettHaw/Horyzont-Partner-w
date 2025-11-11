@@ -61,13 +61,15 @@ def migrate_monthly_to_daily_snapshots() -> int:
         # Parsuj dane
         portfel_akcji = stan.get('PORTFEL_AKCJI', {})
         portfel_krypto = stan.get('PORTFEL_KRYPTO', {})
-        portfel_zobowiazania = stan.get('PORTFEL_ZOBOWIAZANIA', {})
+        # FIX: prawidłowy klucz ZOBOWIAZANIA (nie PORTFEL_ZOBOWIAZANIA)
+        zobowiazania = stan.get('ZOBOWIAZANIA', {})
         
         stocks_usd = portfel_akcji.get('Suma_USD', 0)
         stocks_pln = portfel_akcji.get('Suma_PLN', 0)
         crypto_usd = portfel_krypto.get('Suma_USD', 0)
         crypto_pln = portfel_krypto.get('Suma_PLN', 0)
-        debt_pln = portfel_zobowiazania.get('Suma_PLN', 0)
+        # FIX: prawidłowe pole Suma_dlugu_PLN (nie Suma_PLN)
+        debt_pln = zobowiazania.get('Suma_dlugu_PLN', 0)
         
         migrated_snapshot = {
             'date': monthly_data.get('data', '2025-10-19 19:14:04'),
@@ -86,7 +88,7 @@ def migrate_monthly_to_daily_snapshots() -> int:
             } if crypto_usd > 0 else None,
             'debt': {
                 'total_pln': round(debt_pln, 2),
-                'loans_count': portfel_zobowiazania.get('Liczba_kredytow', 0)
+                'loans_count': zobowiazania.get('Liczba_kredytow', 0)
             } if debt_pln > 0 else None,
             'totals': {
                 'assets_usd': round(stocks_usd + crypto_usd, 2),
@@ -305,10 +307,10 @@ def save_daily_snapshot(api_key: Optional[str] = None) -> bool:
         crypto_pln = portfel_krypto.get('Suma_PLN', 0)
         crypto_positions = portfel_krypto.get('Liczba_pozycji', 0)
         
-        # Zobowiązania - bezpośrednio w głównej strukturze
-        portfel_zobowiazania = stan_spolki.get('PORTFEL_ZOBOWIAZANIA', {})
-        debt_pln = portfel_zobowiazania.get('Suma_PLN', 0)
-        debt_count = portfel_zobowiazania.get('Liczba_kredytow', 0)
+        # Zobowiązania - FIX: prawidłowa nazwa klucza i pola
+        zobowiazania = stan_spolki.get('ZOBOWIAZANIA', {})
+        debt_pln = zobowiazania.get('Suma_dlugu_PLN', 0)
+        debt_count = zobowiazania.get('Liczba_kredytow', 0)
         
         # Totale
         total_usd = stocks_usd + crypto_usd
