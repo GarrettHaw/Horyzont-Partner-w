@@ -1,6 +1,25 @@
 {
   "history": [
     {
+      "timestamp": "2025-11-11T19:12:27.682340",
+      "month": "2025-11",
+      "issues": [
+        {
+          "category": "emergency_fund",
+          "severity": "warning",
+          "message": "Rezerwa bezpieczeństwa poniżej celu: 0 PLN / 10000 PLN",
+          "recommendation": "Zwiększ rezerwę przed większymi inwestycjami"
+        },
+        {
+          "category": "diversification",
+          "severity": "info",
+          "message": "GAIN_US_EQ stanowi 47.0% portfela (>15%)",
+          "recommendation": "Rozważ rebalansowanie przy kolejnych wpłatach"
+        }
+      ],
+      "status": "warnings"
+    },
+    {
       "timestamp": "2025-11-11T18:14:33.317685",
       "month": "2025-11",
       "issues": [
