@@ -11,8 +11,6 @@ import os
 import sys
 import json
 from datetime import datetime
-import gspread
-from google.oauth2.service_account import Credentials
 
 # Import Nexusa
 try:
@@ -20,6 +18,13 @@ try:
 except ImportError:
     print("❌ Nie można zaimportować nexus_ai_engine.py")
     sys.exit(1)
+
+# Import update_trading212 do pobrania świeżych danych
+try:
+    from update_trading212 import update_all_portfolio_data
+except ImportError:
+    print("⚠️ Nie można zaimportować update_trading212.py - użyję cache")
+    update_all_portfolio_data = None
 
 
 def load_json_file(filename, default=None):
@@ -42,106 +47,53 @@ def get_suma_kredytow():
     return sum(k.get('aktualna_kwota', 0) for k in kredyty if isinstance(k, dict))
 
 
-def pobierz_dane_z_google_sheets():
-    """Pobiera dane portfela z Google Sheets"""
+def pobierz_dane_portfela():
+    """
+    Pobiera dane portfela z trading212_cache.json (to samo źródło co Streamlit/Nexus).
+    Opcjonalnie odświeża dane przez update_trading212.py jeśli dostępne.
+    """
     try:
-        # Load credentials
-        creds_path = 'credentials.json'
-        if not os.path.exists(creds_path):
-            print("❌ Brak credentials.json")
-            return None
-        
-        scopes = [
-            'https://www.googleapis.com/auth/spreadsheets.readonly',
-            'https://www.googleapis.com/auth/drive.readonly'
-        ]
-        
-        print("   Ładowanie credentials...")
-        creds = Credentials.from_service_account_file(creds_path, scopes=scopes)
-        client = gspread.authorize(creds)
-        
-        print("   Otwieranie arkusza 'Horyzont Partnerów - Stan Spółki'...")
-        spreadsheet = client.open("Horyzont Partnerów - Stan Spółki")
-        
-        print("   Pobieranie worksheetu 'Portfolio Data'...")
-        worksheet = spreadsheet.worksheet("Portfolio Data")
-        
-        print("   Pobieranie danych z arkusza...")
-        # Get all data
-        all_data = worksheet.get_all_values()
-        
-        print(f"   Pobrano {len(all_data)} wierszy")
-        
-        if len(all_data) < 2:
-            print("❌ Brak danych w arkuszu")
-            return None
-        
-        # Parse headers and data
-        headers = all_data[0]
-        data_rows = all_data[1:]
-        
-        print(f"   Nagłówki: {headers[:5]}...")  # Pierwsze 5 kolumn
-        
-        # Build portfolio structure
-        akcje_pozycje = {}
-        total_stocks_value = 0
-        
-        for row in data_rows:
-            if len(row) < len(headers):
-                continue
-            
-            row_dict = dict(zip(headers, row))
-            ticker = row_dict.get('Ticker', '').strip()
-            
-            if not ticker:
-                continue
-            
+        # Spróbuj odświeżyć dane (jeśli mamy API keys)
+        if update_all_portfolio_data is not None:
+            print("   Odświeżanie danych z Trading212 API...")
             try:
-                ilosc = float(row_dict.get('Ilość', 0))
-                cena = float(row_dict.get('Cena Aktualna', 0))
-                wartosc = ilosc * cena
-                
-                akcje_pozycje[ticker] = {
-                    'ilosc': ilosc,
-                    'cena_aktualna': cena,
-                    'wartosc_pln': wartosc,
-                    'nazwa': row_dict.get('Nazwa', ticker)
-                }
-                
-                total_stocks_value += wartosc
-            except (ValueError, TypeError):
-                continue
+                update_all_portfolio_data()
+                print("   ✅ Dane odświeżone")
+            except Exception as e:
+                print(f"   ⚠️ Nie udało się odświeżyć danych: {e}")
+                print("   Użyję cache...")
+        else:
+            print("   Używam trading212_cache.json (brak update_trading212)")
         
+        # Wczytaj z cache
+        cache_file = 'trading212_cache.json'
+        if not os.path.exists(cache_file):
+            print(f"❌ Brak {cache_file}")
+            return None
+        
+        with open(cache_file, 'r', encoding='utf-8') as f:
+            cache_data = json.load(f)
+        
+        # Struktura cache: {'timestamp', 'akcje': {'wartosc_pln', 'pozycje': {...}}}
+        if 'akcje' not in cache_data:
+            print("❌ Nieprawidłowa struktura trading212_cache.json")
+            return None
+        
+        akcje_val = cache_data.get('akcje', {}).get('wartosc_pln', 0)
+        pozycje_count = len(cache_data.get('akcje', {}).get('pozycje', {}))
+        
+        print(f"   ✅ Załadowano cache: {pozycje_count} pozycji, wartość {akcje_val:.2f} PLN")
+        
+        # Zwróć w formacie stan_spolki
         stan_spolki = {
-            'akcje': {
-                'wartosc_pln': total_stocks_value,
-                'pozycje': akcje_pozycje
-            },
-            'krypto': {
-                'wartosc_pln': 0,  # Crypto handled separately
-                'pozycje': {}
-            }
+            'akcje': cache_data.get('akcje', {}),
+            'krypto': cache_data.get('krypto', {'wartosc_pln': 0, 'pozycje': {}})
         }
         
-        print(f"✅ Pobrano {len(akcje_pozycje)} pozycji akcji, wartość: {total_stocks_value:.2f} PLN")
         return stan_spolki
         
-    except gspread.exceptions.SpreadsheetNotFound:
-        print("❌ Nie znaleziono arkusza 'Horyzont Partnerów - Stan Spółki'")
-        print("   Sprawdź czy arkusz jest udostępniony dla service account!")
-        return None
-    except gspread.exceptions.WorksheetNotFound:
-        print("❌ Nie znaleziono zakładki 'Portfolio Data'")
-        print("   Dostępne zakładki:")
-        try:
-            spreadsheet = client.open("Horyzont Partnerów - Stan Spółki")
-            for ws in spreadsheet.worksheets():
-                print(f"   - {ws.title}")
-        except:
-            pass
-        return None
     except Exception as e:
-        print(f"❌ Błąd pobierania z Google Sheets: {type(e).__name__}: {str(e)}")
+        print(f"❌ Błąd pobierania danych portfela: {type(e).__name__}: {str(e)}")
         import traceback
         traceback.print_exc()
         return None
@@ -155,7 +107,7 @@ def generate_daily_insight():
     
     # 1. Pobierz dane portfela
     print("\n📊 Pobieranie danych portfela...")
-    stan_spolki = pobierz_dane_z_google_sheets()
+    stan_spolki = pobierz_dane_portfela()
     
     if not stan_spolki:
         print("❌ Nie można pobrać danych portfela - przerywam")
