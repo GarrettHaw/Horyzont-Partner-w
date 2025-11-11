@@ -531,7 +531,8 @@ def generuj_odpowiedz_ai(persona_name, prompt):
                 return "[BŁĄD: Brak klucza GOOGLE_API_KEY]"
             
             genai.configure(api_key=api_key)
-            model = genai.GenerativeModel('gemini-pro')
+            # UPDATED: gemini-pro deprecated, use gemini-1.5-flash (free tier)
+            model = genai.GenerativeModel('gemini-1.5-flash')
             
             response = model.generate_content(prompt)
             
@@ -582,12 +583,14 @@ def load_personas_from_memory_json(filename="persona_memory.json"):
             # Specjalne mapowanie dla znanych partnerów - KAŻDY MA SWOJE API!
             if partner_name == "Nexus":
                 persona_config['color_code'] = '\033[96m'  # Cyan
-                # Nexus ma własny silnik (nexus_ai_engine.py)
+                persona_config['model_engine'] = 'gemini'  # Nexus na Gemini (fallback from custom)
+                # Nexus ma własny silnik (nexus_ai_engine.py) ale używa Gemini jako fallback
             elif "Warren Buffett" in partner_name:
-                persona_config['model_engine'] = 'claude'  # Claude (Anthropic) - 50 req/day
+                # TEMPORARY: Claude brak kredytów, przełączam na Gemini
+                persona_config['model_engine'] = 'gemini'  # Gemini 1.5 Flash - 50 req/day
                 persona_config['color_code'] = '\033[92m'  # Zielony
             elif "George Soros" in partner_name:
-                persona_config['model_engine'] = 'gemini'  # Gemini Pro - 50 req/day
+                persona_config['model_engine'] = 'gemini'  # Gemini 1.5 Flash - 50 req/day
                 persona_config['color_code'] = '\033[91m'  # Czerwony
             elif "CZ" in partner_name or "Zhao" in partner_name:
                 persona_config['model_engine'] = 'openrouter_mixtral'  # OpenRouter - 50 req/day
