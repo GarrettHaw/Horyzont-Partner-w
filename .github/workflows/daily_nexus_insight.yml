@@ -1,0 +1,40 @@
+name: Daily Nexus Insight Generator
+
+on:
+  schedule:
+    # Uruchamia codziennie o 6:00 AM UTC (7:00 AM CET / 8:00 AM CEST)
+    - cron: '0 6 * * *'
+  
+  # Umożliwia ręczne uruchomienie
+  workflow_dispatch:
+
+jobs:
+  generate-insight:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: Generate Daily Nexus Insight
+        env:
+          GOOGLE_API_KEY_NEXUS: ${{ secrets.GOOGLE_API_KEY_NEXUS }}
+        run: |
+          python generate_daily_nexus_insight.py
+      
+      - name: Commit and push insight
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add daily_nexus_insight.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "🤖 Daily Nexus Insight - $(date +'%Y-%m-%d %H:%M')" && git push)

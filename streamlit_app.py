@@ -2166,13 +2166,42 @@ def calculate_crypto_apy_earnings(krypto_holdings, current_prices=None, kurs_usd
 # DAILY ADVISOR TIP FUNCTION
 # =====================================================
 
-def get_daily_advisor_tip(stan_spolki, cele):
+def get_daily_nexus_insight():
     """
-    Generuje codzienną rekomendację od losowego AI Partnera.
-    Losowanie jest deterministyczne - ten sam dzień = ten sam partner.
+    Wczytuje codzienną analizę portfela od Nexusa (generowaną przez GitHub Action o 6 rano).
     
     Returns:
-        dict: {partner_name, partner_icon, tip_text}
+        dict: {generated_at, insight_text, portfolio_summary} lub None jeśli brak pliku
+    """
+    from datetime import datetime
+    import json
+    
+    insight_file = "daily_nexus_insight.json"
+    
+    try:
+        if os.path.exists(insight_file):
+            with open(insight_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            
+            # Sprawdź czy insight jest z dzisiaj
+            generated_date = datetime.fromisoformat(data.get('generated_at', '')).date()
+            today = datetime.now().date()
+            
+            if generated_date == today:
+                return data
+            else:
+                return None  # Stary insight - GitHub Action jeszcze nie wygenerował nowego
+        else:
+            return None  # Plik nie istnieje
+    except Exception as e:
+        print(f"❌ Błąd wczytywania daily_nexus_insight.json: {e}")
+        return None
+
+
+def get_daily_advisor_tip_LEGACY(stan_spolki, cele):
+    """
+    LEGACY - Stara funkcja z losowym partnerem (nie używana).
+    Została zastąpiona przez get_daily_nexus_insight().
     """
     from datetime import datetime
     import random
@@ -2208,66 +2237,7 @@ Portfolio: {total_value:,.0f} PLN (Wartość netto)
 - Zobowiązania: {dlugi_val:,.0f} PLN
 """.strip()
     
-    # Prompt dla AI
-    prompt = f"""Jesteś {selected_advisor['name']}, legendarny inwestor znany z: {selected_advisor['style']}.
-
-Dzisiaj jest Twoja kolej, aby dać JEDNĄ KONKRETNĄ, PRAKTYCZNĄ radę użytkownikowi.
-
-PORTFOLIO UŻYTKOWNIKA:
-    {portfolio_snapshot}
-
-ZADANIE:
-    Napisz JEDNĄ krótką (2-3 zdania), konkretną rekomendację lub obserwację w swoim stylu inwestycyjnym.
-Może to być:
-    - Przestroga przed czymś
-- Zachęta do działania
-- Mądrość inwestycyjna
-- Coś do sprawdzenia w portfelu
-
-WAŻNE:
-    - Bądź konkretny, nie ogólnikowy
-- Mów językiem swoich zasad inwestycyjnych
-- Nie rozpoczynaj od "Witaj" ani przedstawiania się
-- Krótko i na temat (max 3 zdania)
-- Może być prowokacyjnie lub z charakterem
-
-Twoja rada:"""
-    
-    # Generuj odpowiedź przez AI
-    try:
-        if not IMPORTS_OK:
-            raise Exception("Błąd importu modułów")
-        
-        # Użyj funkcji generuj_odpowiedz_ai z gra_rpg.py (poprawione: tylko 2 parametry)
-        response = generuj_odpowiedz_ai(
-            selected_advisor['name'],  # persona_name
-            prompt  # prompt
-        )
-        
-        tip_text = response.strip()
-        
-        return {
-            "partner_name": selected_advisor['name'],
-            "partner_icon": selected_advisor['icon'],
-            "tip_text": tip_text,
-            "date": today.strftime("%Y-%m-%d")
-        }
-    except Exception as e:
-        # Fallback - statyczna rada (NOWA RADA - 5 partnerów)
-        fallback_tips = {
-            "Partner Zarządzający (JA)": "Finalne decyzje należą do Ciebie - słuchaj doradców, ale ufaj swojej intuicji.",
-            "Nexus": "Data-driven decisions. Risk management first. Optimize for tax efficiency.",
-            "Warren Buffett": "Inwestuj w biznes który rozumiesz i który ma przewagę konkurencyjną.",
-            "George Soros": "Rynek zawsze się myli - znajdź refleksyjną pętlę i wykorzystaj ją.",
-            "Changpeng Zhao (CZ)": "HODL strong projects. Bear markets build fortunes. Think long-term."
-        }
-        
-        return {
-            "partner_name": selected_advisor['name'],
-            "partner_icon": selected_advisor['icon'],
-            "tip_text": fallback_tips.get(selected_advisor['name'], "Sprawdź swój portfel pod kątem mojej filozofii inwestycyjnej."),
-            "date": today.strftime("%Y-%m-%d")
-        }
+    # Ta funkcja jest LEGACY - nie używana w nowym systemie
 
 # =====================================================
 # PORTFOLIO CO-PILOT FUNCTIONS
@@ -5456,23 +5426,41 @@ def show_dashboard(stan_spolki, cele):
     
     st.markdown("---")
     
-    # === CODZIENNA RADA OD AI PARTNERA ===
-    st.markdown("### 💡 Dzienna Rada od Eksperta")
+    # === CODZIENNA ANALIZA OD NEXUSA ===
+    st.markdown("### 🤖 Dzienna Ocena Portfela od Nexusa")
     
-    with st.spinner("Losowanie dzisiejszego doradcy..."):
-        try:
-            daily_tip = get_daily_advisor_tip(stan_spolki, cele)
-            
+    try:
+        nexus_insight = get_daily_nexus_insight()
+        
+        if nexus_insight:
+            # Wyświetl analizę Nexusa
             st.info(f"""
-**{daily_tip['partner_icon']} {daily_tip['partner_name']} mówi:**
+**🤖 Nexus AI - Analiza Portfela**
 
-_{daily_tip['tip_text']}_
+_{nexus_insight.get('insight_text', 'Brak danych')}_
+
+---
+📊 **Snapshot Portfela:**  
+{nexus_insight.get('portfolio_summary', 'Brak danych')}
             """)
             
-            st.caption(f"💬 Każdy dzień inny ekspert! Jutro ktoś inny podzieli się swoją mądrością.")
+            # Timestamp
+            from datetime import datetime
+            generated_time = datetime.fromisoformat(nexus_insight['generated_at']).strftime("%H:%M")
+            st.caption(f"🕐 Wygenerowano dzisiaj o {generated_time} przez GitHub Action")
             
-        except Exception as e:
-            st.warning(f"⚠️ Nie udało się pobrać dzisiejszej rady: {str(e)[:100]}")
+        else:
+            # Brak dzisiejszej analizy - pokaż info
+            st.warning("""
+⏳ **Dzienna analiza jeszcze nie gotowa**
+
+Nexus generuje codzienną ocenę portfela o **6:00 rano** przez GitHub Action.  
+Wróć później aby zobaczyć świeżą analizę!
+            """)
+            st.caption("💡 System automatycznie analizuje portfel, cele i ryzyko każdego dnia.")
+            
+    except Exception as e:
+        st.error(f"❌ Błąd wczytywania dziennej analizy: {str(e)[:100]}")
     
     st.markdown("---")
     
