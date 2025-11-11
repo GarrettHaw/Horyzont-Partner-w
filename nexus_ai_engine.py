@@ -36,8 +36,8 @@ def get_api_key(key_name):
         pass
     return os.getenv(key_name)
 
-# API Keys
-GEMINI_KEY = get_api_key('GEMINI_API_KEY') or get_api_key('GOOGLE_API_KEY')
+# API Keys - Nexus ma dedykowane konto Gemini!
+GEMINI_KEY = get_api_key('GOOGLE_API_KEY_NEXUS') or get_api_key('GOOGLE_API_KEY')
 ANTHROPIC_KEY = get_api_key('ANTHROPIC_API_KEY')
 OPENAI_KEY = get_api_key('OPENAI_API_KEY')
 
@@ -124,8 +124,9 @@ class NexusAIEngine:
         if GEMINI_KEY:
             try:
                 genai.configure(api_key=GEMINI_KEY)
-                self.gemini_client = genai.GenerativeModel('gemini-2.0-flash-exp')
-                print("   ✓ Gemini client initialized")
+                # CRITICAL: Use gemini-2.5-pro (NOT 2.0-flash-exp - deprecated!)
+                self.gemini_client = genai.GenerativeModel('gemini-2.5-pro')
+                print("   ✓ Gemini client initialized (gemini-2.5-pro)")
             except Exception as e:
                 print(f"   ⚠️ Gemini initialization failed: {e}")
         
@@ -158,9 +159,9 @@ class NexusAIEngine:
         prompt: str,
         context: Optional[Dict] = None,
         use_ensemble: bool = False
-    ) -> Dict[str, Any]:
+    ) -> Optional[Dict[str, Any]]:
         """
-        Generate response from Nexus AI
+        Generate response from Nexus AI with fallback on error
         
         Args:
             prompt: User query or topic to discuss
@@ -169,34 +170,45 @@ class NexusAIEngine:
         
         Returns:
             Dict with response, confidence, reasoning, and metadata
+            OR None if error (allows main code to use fallback)
         """
-        start_time = datetime.now()
-        
-        # Build full prompt with context
-        full_prompt = self._build_prompt(prompt, context)
-        
-        # Choose generation mode
-        if self.ensemble_enabled and use_ensemble:
-            result = self._generate_ensemble_response(full_prompt, context)
-        else:
-            result = self._generate_single_response(full_prompt)
-        
-        # Calculate response time
-        response_time = (datetime.now() - start_time).total_seconds() * 1000
-        
-        # Update performance tracking
-        self._update_performance(response_time)
-        
-        # Add metadata
-        result['metadata'] = {
-            'mode': 'ensemble' if (self.ensemble_enabled and use_ensemble) else 'single',
-            'model_used': self.current_model,
-            'response_time_ms': response_time,
-            'timestamp': datetime.now().isoformat(),
-            'ensemble_enabled': self.ensemble_enabled
-        }
-        
-        return result
+        try:
+            start_time = datetime.now()
+            
+            # Build full prompt with context
+            full_prompt = self._build_prompt(prompt, context)
+            
+            # Choose generation mode
+            if self.ensemble_enabled and use_ensemble:
+                result = self._generate_ensemble_response(full_prompt, context)
+            else:
+                result = self._generate_single_response(full_prompt)
+            
+            # Check if generation failed
+            if not result.get('success', False):
+                print(f"⚠️ Nexus generation failed: {result.get('reasoning', 'Unknown error')}")
+                return None  # Allow fallback to standard AI
+            
+            # Calculate response time
+            response_time = (datetime.now() - start_time).total_seconds() * 1000
+            
+            # Update performance tracking
+            self._update_performance(response_time)
+            
+            # Add metadata
+            result['metadata'] = {
+                'mode': 'ensemble' if (self.ensemble_enabled and use_ensemble) else 'single',
+                'model_used': self.current_model,
+                'response_time_ms': response_time,
+                'timestamp': datetime.now().isoformat(),
+                'ensemble_enabled': self.ensemble_enabled
+            }
+            
+            return result
+            
+        except Exception as e:
+            print(f"❌ Nexus AI Engine error: {e}")
+            return None  # Fallback to standard AI in streamlit_app.py
     
     def _build_prompt(self, prompt: str, context: Optional[Dict] = None) -> str:
         """Build comprehensive prompt with context"""
@@ -208,36 +220,68 @@ Your role:
 - Consider both traditional and innovative approaches
 - Challenge assumptions constructively
 - Focus on long-term value creation
+- You see what ALL partners say - your job is to find consensus or highlight disagreements
 
 Communication style:
 - Concise and professional
-- Data-backed recommendations
+- Data-backed recommendations with NUMBERS
 - Clear confidence levels
-- Actionable insights"""
+- Actionable insights
+- Meta-strategic perspective (you coordinate the Council)"""
         
-        # Add context if provided
+        # Add rich context if provided
         context_str = ""
         if context:
-            context_str = "\n\nCurrent Context:\n"
+            context_str = "\n\n═══ CURRENT CONTEXT ═══\n"
+            
+            # Portfolio data
             if 'portfolio' in context:
-                context_str += f"- Portfolio Value: {context['portfolio'].get('total_value', 'N/A')}\n"
+                pf = context['portfolio']
+                context_str += f"\n📊 PORTFOLIO STATUS:\n"
+                context_str += f"  • Total Value: {pf.get('total_value', 'N/A')} PLN\n"
+                context_str += f"  • Stocks: {pf.get('stocks_value', 'N/A')} PLN\n"
+                context_str += f"  • Crypto: {pf.get('crypto_value', 'N/A')} PLN\n"
+                context_str += f"  • Cash Reserve: {pf.get('cash_reserve', 'N/A')} PLN\n"
+                context_str += f"  • Debt: {pf.get('debt', 'N/A')} PLN\n"
+                context_str += f"  • Net Worth: {pf.get('net_worth', 'N/A')} PLN\n"
+            
+            # Goals
+            if 'goals' in context:
+                goals = context['goals']
+                context_str += f"\n🎯 FINANCIAL GOALS:\n"
+                for goal_name, goal_data in goals.items():
+                    context_str += f"  • {goal_name}: {goal_data}\n"
+            
+            # Market data
             if 'market_data' in context:
-                context_str += f"- Market Conditions: {context['market_data']}\n"
+                context_str += f"\n📈 MARKET CONDITIONS: {context['market_data']}\n"
+            
+            # Recent decisions
             if 'recent_decisions' in context:
-                context_str += f"- Recent Decisions: {context['recent_decisions']}\n"
+                context_str += f"\n📜 RECENT DECISIONS:\n{context['recent_decisions']}\n"
+            
+            # Partner responses (if Nexus is synthesizing)
+            if 'partner_responses' in context:
+                context_str += f"\n👥 PARTNER PERSPECTIVES:\n{context['partner_responses']}\n"
+            
+            # Portfolio mood
+            if 'mood' in context:
+                mood = context['mood']
+                context_str += f"\n😊 PORTFOLIO MOOD: {mood.get('emoji', '😐')} {mood.get('description', 'Neutral')}\n"
         
-        full_prompt = f"{system_instruction}\n{context_str}\n\nQuery: {prompt}\n\nProvide your analysis and recommendation:"
+        full_prompt = f"{system_instruction}\n{context_str}\n\n{'═'*50}\nQUESTION: {prompt}\n{'═'*50}\n\nProvide your meta-strategic analysis and recommendation:"
         
         return full_prompt
     
     def _generate_single_response(self, prompt: str) -> Dict[str, Any]:
-        """Generate response using single model (Gemini)"""
+        """Generate response using single model (Gemini 2.5 Pro)"""
         try:
             if not self.gemini_client:
+                print("❌ Nexus: Gemini client not initialized")
                 return {
                     'response': 'Error: Gemini client not available',
                     'confidence': 0.0,
-                    'reasoning': 'AI model not initialized',
+                    'reasoning': 'AI model not initialized - check GOOGLE_API_KEY_NEXUS',
                     'success': False
                 }
             
@@ -246,10 +290,11 @@ Communication style:
             
             # Extract response text
             if not response.parts:
+                print("⚠️ Nexus: Response blocked by safety filters")
                 return {
                     'response': 'Response blocked by safety filters',
                     'confidence': 0.0,
-                    'reasoning': 'Content filtered',
+                    'reasoning': 'Content filtered by Gemini safety',
                     'success': False
                 }
             
@@ -261,16 +306,17 @@ Communication style:
             return {
                 'response': response_text,
                 'confidence': confidence,
-                'reasoning': 'Single model analysis (Gemini Pro)',
+                'reasoning': 'Single model analysis (Gemini 2.5 Pro)',
                 'success': True,
-                'model': 'gemini-pro'
+                'model': 'gemini-2.5-pro'
             }
             
         except Exception as e:
+            print(f"❌ Nexus single response error: {e}")
             return {
                 'response': f'Error generating response: {str(e)}',
                 'confidence': 0.0,
-                'reasoning': 'Exception occurred',
+                'reasoning': f'Exception: {type(e).__name__}',
                 'success': False,
                 'error': str(e)
             }
