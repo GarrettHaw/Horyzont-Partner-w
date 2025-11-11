@@ -312,6 +312,16 @@ def save_daily_snapshot(api_key: Optional[str] = None) -> bool:
         debt_pln = zobowiazania.get('Suma_dlugu_PLN', 0)
         debt_count = zobowiazania.get('Liczba_kredytow', 0)
         
+        # Rezerwa gotówkowa - z cele.json
+        try:
+            with open('cele.json', 'r', encoding='utf-8') as f:
+                cele_data = json.load(f)
+                emergency_fund_pln = cele_data.get('Rezerwa_gotowkowa_obecna_PLN', 0)
+                emergency_fund_target_pln = cele_data.get('Rezerwa_gotowkowa_PLN', 10000)
+        except:
+            emergency_fund_pln = 0
+            emergency_fund_target_pln = 10000
+        
         # Totale
         total_usd = stocks_usd + crypto_usd
         total_pln = stocks_pln + crypto_pln
@@ -345,6 +355,12 @@ def save_daily_snapshot(api_key: Optional[str] = None) -> bool:
             'loans_count': debt_count
         } if debt_pln > 0 else None,
         
+        'emergency_fund': {
+            'current_pln': round(emergency_fund_pln, 2),
+            'target_pln': round(emergency_fund_target_pln, 2),
+            'progress_pct': round((emergency_fund_pln / emergency_fund_target_pln * 100), 1) if emergency_fund_target_pln > 0 else 0
+        },
+        
         'totals': {
             'assets_usd': round(total_usd, 2),
             'assets_pln': round(total_pln, 2),
@@ -366,6 +382,7 @@ def save_daily_snapshot(api_key: Optional[str] = None) -> bool:
         print(f"   ₿ Crypto: ${crypto_usd:,.2f}")
         print(f"   💰 Total Assets: {total_pln:,.2f} PLN")
         print(f"   💳 Zobowiązania: {debt_pln:,.2f} PLN")
+        print(f"   🏦 Rezerwa gotówkowa: {emergency_fund_pln:,.2f} PLN ({emergency_fund_pln/emergency_fund_target_pln*100:.1f}% celu)")
         print(f"   💎 Net Worth: {net_worth_pln:,.2f} PLN")
         print(f"\n📈 Historia: {len(history)} snapshots (ostatnie {MAX_HISTORY_DAYS} dni)")
         
