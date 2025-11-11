@@ -8884,10 +8884,14 @@ def show_timeline_page(stan_spolki):
                                            format_func=lambda x: f"{x:02d} - {['Styczeń','Luty','Marzec','Kwiecień','Maj','Czerwiec','Lipiec','Sierpień','Wrzesień','Październik','Listopad','Grudzień'][x-1]}",
                                            key="manual_month")
                 
-                st.markdown("**📊 Portfolio (PLN):**")
-                stocks_pln = st.number_input("💼 Akcje (PLN)", min_value=0.0, value=0.0, step=500.0, key="stocks_pln")
-                cash_pln = st.number_input("💵 Cash Trading212 (PLN)", min_value=0.0, value=0.0, step=100.0, key="cash_pln")
+                st.markdown("**📊 Aktywa (PLN):**")
+                stocks_pln = st.number_input("💼 Akcje na brokerze (PLN)", min_value=0.0, value=0.0, step=500.0, 
+                                            help="Wartość pozycji akcyjnych (bez casha)", key="stocks_pln")
+                cash_pln = st.number_input("💵 Cash na brokerze (PLN)", min_value=0.0, value=0.0, step=100.0,
+                                          help="Free funds na Trading212 - liczy się jako rezerwa gotówkowa", key="cash_pln")
                 crypto_pln = st.number_input("₿ Crypto (PLN)", min_value=0.0, value=0.0, step=100.0, key="crypto_pln")
+                emergency_other_pln = st.number_input("🏦 Inna gotówka (PLN)", min_value=0.0, value=0.0, step=100.0, 
+                                                     help="Gotówka poza brokerem (konto bankowe, etc.)", key="emergency_other")
             
             with col_form2:
                 st.markdown("**💳 Zobowiązania:**")
@@ -8906,8 +8910,8 @@ def show_timeline_page(stan_spolki):
                 """)
             
             if st.button("💾 Zapisz Audit Historyczny", type="primary", key="save_manual"):
-                # Oblicz totale
-                total_assets_pln = stocks_pln + cash_pln + crypto_pln
+                # Oblicz totale - WAŻNE: emergency_other_pln to też aktywa!
+                total_assets_pln = stocks_pln + cash_pln + crypto_pln + emergency_other_pln
                 net_worth_pln = total_assets_pln - debt_pln
                 
                 # Rezerwa całkowita = inna gotówka + cash T212
