@@ -56,15 +56,22 @@ def pobierz_dane_z_google_sheets():
             'https://www.googleapis.com/auth/drive.readonly'
         ]
         
+        print("   Ładowanie credentials...")
         creds = Credentials.from_service_account_file(creds_path, scopes=scopes)
         client = gspread.authorize(creds)
         
-        # Open spreadsheet
+        print("   Otwieranie arkusza 'Horyzont Partnerów - Stan Spółki'...")
         spreadsheet = client.open("Horyzont Partnerów - Stan Spółki")
+        
+        print("   Pobieranie worksheetu 'Portfolio Data'...")
         worksheet = spreadsheet.worksheet("Portfolio Data")
         
+        print("   Pobieranie danych z arkusza...")
         # Get all data
         all_data = worksheet.get_all_values()
+        
+        print(f"   Pobrano {len(all_data)} wierszy")
+        
         if len(all_data) < 2:
             print("❌ Brak danych w arkuszu")
             return None
@@ -72,6 +79,8 @@ def pobierz_dane_z_google_sheets():
         # Parse headers and data
         headers = all_data[0]
         data_rows = all_data[1:]
+        
+        print(f"   Nagłówki: {headers[:5]}...")  # Pierwsze 5 kolumn
         
         # Build portfolio structure
         akcje_pozycje = {}
@@ -117,8 +126,24 @@ def pobierz_dane_z_google_sheets():
         print(f"✅ Pobrano {len(akcje_pozycje)} pozycji akcji, wartość: {total_stocks_value:.2f} PLN")
         return stan_spolki
         
+    except gspread.exceptions.SpreadsheetNotFound:
+        print("❌ Nie znaleziono arkusza 'Horyzont Partnerów - Stan Spółki'")
+        print("   Sprawdź czy arkusz jest udostępniony dla service account!")
+        return None
+    except gspread.exceptions.WorksheetNotFound:
+        print("❌ Nie znaleziono zakładki 'Portfolio Data'")
+        print("   Dostępne zakładki:")
+        try:
+            spreadsheet = client.open("Horyzont Partnerów - Stan Spółki")
+            for ws in spreadsheet.worksheets():
+                print(f"   - {ws.title}")
+        except:
+            pass
+        return None
     except Exception as e:
-        print(f"❌ Błąd pobierania z Google Sheets: {e}")
+        print(f"❌ Błąd pobierania z Google Sheets: {type(e).__name__}: {str(e)}")
+        import traceback
+        traceback.print_exc()
         return None
 
 
