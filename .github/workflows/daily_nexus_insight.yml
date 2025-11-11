@@ -26,11 +26,20 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
       
+      - name: Create credentials.json from secret
+        run: |
+          echo '${{ secrets.GOOGLE_SHEETS_CREDENTIALS }}' > credentials.json
+      
       - name: Generate Daily Nexus Insight
         env:
           GOOGLE_API_KEY_NEXUS: ${{ secrets.GOOGLE_API_KEY_NEXUS }}
         run: |
           python generate_daily_nexus_insight.py
+      
+      - name: Cleanup credentials
+        if: always()
+        run: |
+          rm -f credentials.json
       
       - name: Commit and push insight
         run: |
