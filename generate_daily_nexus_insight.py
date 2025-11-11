@@ -50,44 +50,75 @@ def get_suma_kredytow():
 def pobierz_dane_portfela():
     """
     Pobiera dane portfela z trading212_cache.json (to samo źródło co Streamlit/Nexus).
-    Opcjonalnie odświeża dane przez update_trading212.py jeśli dostępne.
+    Przetwarza surowe dane API Trading212 do formatu używanego przez Nexusa.
     """
     try:
-        # Spróbuj odświeżyć dane (jeśli mamy API keys)
-        if update_all_portfolio_data is not None:
-            print("   Odświeżanie danych z Trading212 API...")
-            try:
-                update_all_portfolio_data()
-                print("   ✅ Dane odświeżone")
-            except Exception as e:
-                print(f"   ⚠️ Nie udało się odświeżyć danych: {e}")
-                print("   Użyję cache...")
-        else:
-            print("   Używam trading212_cache.json (brak update_trading212)")
-        
         # Wczytaj z cache
         cache_file = 'trading212_cache.json'
         if not os.path.exists(cache_file):
             print(f"❌ Brak {cache_file}")
             return None
         
+        print(f"   Wczytywanie {cache_file}...")
         with open(cache_file, 'r', encoding='utf-8') as f:
             cache_data = json.load(f)
         
-        # Struktura cache: {'timestamp', 'akcje': {'wartosc_pln', 'pozycje': {...}}}
-        if 'akcje' not in cache_data:
-            print("❌ Nieprawidłowa struktura trading212_cache.json")
+        # Cache ma strukturę: {"timestamp": "...", "data": {"positions": [...], "account": {...}}}
+        trading212_data = cache_data.get('data', {})
+        
+        if not trading212_data:
+            print("❌ Brak danych w cache (klucz 'data' nie istnieje)")
             return None
         
-        akcje_val = cache_data.get('akcje', {}).get('wartosc_pln', 0)
-        pozycje_count = len(cache_data.get('akcje', {}).get('pozycje', {}))
+        # Parsuj pozycje Trading212
+        positions = trading212_data.get('positions', [])
         
-        print(f"   ✅ Załadowano cache: {pozycje_count} pozycji, wartość {akcje_val:.2f} PLN")
+        if not positions:
+            print("❌ Brak pozycji w trading212_cache.json")
+            return None
+        
+        # Kurs USD->PLN (approx, można улучшyć później)
+        kurs_usd_pln = 4.0
+        
+        # Przetworz pozycje
+        akcje_pozycje = {}
+        total_stocks_value_pln = 0
+        
+        for pos in positions:
+            ticker = pos.get('ticker', 'UNKNOWN')
+            quantity = pos.get('quantity', 0)
+            current_price = pos.get('currentPrice', 0)
+            avg_price = pos.get('averagePrice', 0)
+            
+            value_usd = quantity * current_price
+            value_pln = value_usd * kurs_usd_pln
+            
+            akcje_pozycje[ticker] = {
+                'ilosc': quantity,
+                'cena_aktualna': current_price,
+                'cena_srednia': avg_price,
+                'wartosc_usd': value_usd,
+                'wartosc_pln': value_pln,
+                'frontend': pos.get('frontend', '')
+            }
+            
+            total_stocks_value_pln += value_pln
+        
+        pozycje_count = len(akcje_pozycje)
+        
+        print(f"   ✅ Załadowano {pozycje_count} pozycji akcji, wartość {total_stocks_value_pln:.2f} PLN")
         
         # Zwróć w formacie stan_spolki
         stan_spolki = {
-            'akcje': cache_data.get('akcje', {}),
-            'krypto': cache_data.get('krypto', {'wartosc_pln': 0, 'pozycje': {}})
+            'akcje': {
+                'wartosc_pln': total_stocks_value_pln,
+                'pozycje': akcje_pozycje,
+                'liczba_pozycji': pozycje_count
+            },
+            'krypto': {
+                'wartosc_pln': 0,
+                'pozycje': {}
+            }
         }
         
         return stan_spolki
