@@ -6641,9 +6641,10 @@ def show_autonomous_conversations_page():
     # Wyświetl rozmowy
     for idx, conv in enumerate(filtered_conversations):
         conv_id = conv.get('id', 'unknown')
-        unique_key = f"{conv_id}_{idx}"  # Ensure unique key even if id is duplicated
-        topic_name = conv.get('topic_name', 'Unknown Topic')
+        # Create truly unique key using multiple identifiers
         date_str = conv.get('date', '')[:19] if conv.get('date') else 'Unknown date'
+        unique_key = f"{idx}_{conv_id}_{hash(date_str) % 100000}"  # Ensure unique key
+        topic_name = conv.get('topic_name', 'Unknown Topic')
         participants = conv.get('participants', [])
         messages = conv.get('messages', [])
         api_calls = conv.get('api_calls_used', 0)
