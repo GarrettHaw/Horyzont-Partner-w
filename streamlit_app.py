@@ -451,31 +451,74 @@ def pobierz_stan_spolki(cele):
 
 def generuj_odpowiedz_ai(persona_name, prompt):
     """
-    Uproszczona wersja - kieruje zapytanie do Gemini (główny model).
-    Pełna wersja z wieloma modelami jest w gra_rpg.py (zarchiwizowana).
+    Kieruje zapytanie do odpowiedniego modelu AI na podstawie konfiguracji partnera.
+    Obsługuje: Gemini Pro, OpenRouter (Mixtral/Llama/inne)
     """
     try:
-        # Lazy load Google Gemini
-        import google.generativeai as genai
-        
-        # Pobierz klucz API
-        api_key = st.secrets.get("GOOGLE_API_KEY", os.getenv("GOOGLE_API_KEY"))
-        if not api_key:
-            return "[BŁĄD: Brak klucza GOOGLE_API_KEY]"
-        
-        genai.configure(api_key=api_key)
-        model = genai.GenerativeModel('gemini-pro')
-        
-        response = model.generate_content(prompt)
+        # Pobierz konfigurację partnera
+        persona_config = PERSONAS.get(persona_name, {})
+        model_engine = persona_config.get('model_engine', 'gemini')
         
         # Track API call
         tracker = get_tracker()
-        tracker.track_call("gemini", is_autonomous=False)
         
-        if not response.parts:
-            return "[ODPOWIEDŹ ZABLOKOWANA PRZEZ FILTRY BEZPIECZEŃSTWA GEMINI]"
+        # === OPENROUTER MODELS (darmowe) ===
+        if model_engine.startswith('openrouter'):
+            from openai import OpenAI
+            
+            # Pobierz klucz OpenRouter
+            openrouter_key = st.secrets.get("OPENROUTER_API_KEY", os.getenv("OPENROUTER_API_KEY"))
+            if not openrouter_key:
+                return "[BŁĄD: Brak klucza OPENROUTER_API_KEY - fallback do Gemini]"
+            
+            # Mapowanie model_engine na konkretny model OpenRouter
+            model_map = {
+                'openrouter_llama': "meta-llama/llama-4-maverick:free",
+                'openrouter_mistral': "mistralai/mistral-7b-instruct:free",
+                'openrouter_mixtral': "meta-llama/llama-4-scout:free",
+                'openrouter_glm': "z-ai/glm-4.5-air:free",
+            }
+            
+            model_name = model_map.get(model_engine, "mistralai/mistral-7b-instruct:free")
+            
+            # Inicjalizuj OpenRouter client
+            client = OpenAI(
+                api_key=openrouter_key,
+                base_url="https://openrouter.ai/api/v1"
+            )
+            
+            response = client.chat.completions.create(
+                model=model_name,
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0.7
+            )
+            
+            # Track API call (OpenRouter używa OpenAI compatible API)
+            tracker.track_call("openai", is_autonomous=False)
+            
+            return response.choices[0].message.content
         
-        return response.text
+        # === GEMINI PRO (domyślny) ===
+        else:
+            import google.generativeai as genai
+            
+            # Pobierz klucz API
+            api_key = st.secrets.get("GOOGLE_API_KEY", os.getenv("GOOGLE_API_KEY"))
+            if not api_key:
+                return "[BŁĄD: Brak klucza GOOGLE_API_KEY]"
+            
+            genai.configure(api_key=api_key)
+            model = genai.GenerativeModel('gemini-pro')
+            
+            response = model.generate_content(prompt)
+            
+            # Track API call
+            tracker.track_call("gemini", is_autonomous=False)
+            
+            if not response.parts:
+                return "[ODPOWIEDŹ ZABLOKOWANA PRZEZ FILTRY BEZPIECZEŃSTWA GEMINI]"
+            
+            return response.text
         
     except Exception as e:
         return f"[BŁĄD API: {str(e)}]"
@@ -518,9 +561,12 @@ def load_personas_from_memory_json(filename="persona_memory.json"):
                 persona_config['color_code'] = '\033[96m'  # Cyan
             elif "Warren Buffett" in partner_name:
                 persona_config['color_code'] = '\033[92m'  # Zielony
+                # Warren pozostaje na Gemini
             elif "George Soros" in partner_name:
                 persona_config['color_code'] = '\033[91m'  # Czerwony
+                # Soros pozostaje na Gemini (na razie)
             elif "CZ" in partner_name or "Zhao" in partner_name:
+                persona_config['model_engine'] = 'openrouter_mixtral'  # OpenRouter Llama-4-scout
                 persona_config['color_code'] = '\033[97m'  # Biały
             
             personas[partner_name] = persona_config
