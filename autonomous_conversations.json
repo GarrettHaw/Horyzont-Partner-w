@@ -1013,5 +1013,39 @@
     "status": "completed",
     "api_calls_used": 0,
     "completed_at": "2025-11-13T18:23:59.582755"
+  },
+  {
+    "id": "conv_20251114_102404",
+    "date": "2025-11-14T10:24:04.894340",
+    "topic_id": "strategy_debate",
+    "topic_name": "Debata Strategiczna",
+    "opening_prompt": "Porozmawiajmy o naszej długoterminowej strategii inwestycyjnej. Czy powinna się zmienić? Co dostosować?",
+    "participants": [
+      "Nexus",
+      "Warren Buffett",
+      "George Soros",
+      "Changpeng Zhao (CZ)"
+    ],
+    "messages": [],
+    "status": "completed",
+    "api_calls_used": 0,
+    "completed_at": "2025-11-14T10:24:04.894355"
+  },
+  {
+    "id": "conv_20251114_102404",
+    "date": "2025-11-14T10:24:04.894340",
+    "topic_id": "strategy_debate",
+    "topic_name": "Debata Strategiczna",
+    "opening_prompt": "Porozmawiajmy o naszej długoterminowej strategii inwestycyjnej. Czy powinna się zmienić? Co dostosować?",
+    "participants": [
+      "Nexus",
+      "Warren Buffett",
+      "George Soros",
+      "Changpeng Zhao (CZ)"
+    ],
+    "messages": [],
+    "status": "completed",
+    "api_calls_used": 0,
+    "completed_at": "2025-11-14T10:24:04.894355"
   }
 ]
