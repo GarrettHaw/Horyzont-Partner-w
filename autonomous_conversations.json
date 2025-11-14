@@ -1047,5 +1047,39 @@
     "status": "completed",
     "api_calls_used": 0,
     "completed_at": "2025-11-14T10:24:04.894355"
+  },
+  {
+    "id": "conv_20251114_181832",
+    "date": "2025-11-14T18:18:32.992888",
+    "topic_id": "risk_assessment",
+    "topic_name": "Ocena Ryzyka",
+    "opening_prompt": "Przeanalizujmy poziom ryzyka w portfelu. Czy jesteśmy odpowiednio zdywersyfikowani? Jakie są największe zagrożenia?",
+    "participants": [
+      "Nexus",
+      "Warren Buffett",
+      "George Soros",
+      "Changpeng Zhao (CZ)"
+    ],
+    "messages": [],
+    "status": "completed",
+    "api_calls_used": 0,
+    "completed_at": "2025-11-14T18:18:32.992901"
+  },
+  {
+    "id": "conv_20251114_181832",
+    "date": "2025-11-14T18:18:32.992888",
+    "topic_id": "risk_assessment",
+    "topic_name": "Ocena Ryzyka",
+    "opening_prompt": "Przeanalizujmy poziom ryzyka w portfelu. Czy jesteśmy odpowiednio zdywersyfikowani? Jakie są największe zagrożenia?",
+    "participants": [
+      "Nexus",
+      "Warren Buffett",
+      "George Soros",
+      "Changpeng Zhao (CZ)"
+    ],
+    "messages": [],
+    "status": "completed",
+    "api_calls_used": 0,
+    "completed_at": "2025-11-14T18:18:32.992901"
   }
 ]
