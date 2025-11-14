@@ -184,5 +184,36 @@
       "debt_pln": 6665,
       "net_worth_pln": 34253.09
     }
+  },
+  {
+    "date": "2025-11-14 20:15:45",
+    "date_only": "2025-11-14",
+    "usd_pln_rate": 3.6376,
+    "stocks": {
+      "value_usd": 6180.0,
+      "value_pln": 22480.36,
+      "positions": 56,
+      "cash_usd": 8221.54
+    },
+    "crypto": {
+      "value_usd": 5029.71,
+      "value_pln": 18296.08,
+      "positions": 11
+    },
+    "debt": {
+      "total_pln": 6665,
+      "loans_count": 1
+    },
+    "emergency_fund": {
+      "current_pln": 0,
+      "target_pln": 10000,
+      "progress_pct": 0.0
+    },
+    "totals": {
+      "assets_usd": 11209.71,
+      "assets_pln": 40776.44,
+      "debt_pln": 6665,
+      "net_worth_pln": 34111.44
+    }
   }
 ]
