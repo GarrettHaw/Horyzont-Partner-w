@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-11-15T06:31:26.139796",
+  "timestamp": "2025-11-15T12:41:44.328356",
   "data": {
     "positions": [
       {
@@ -167,7 +167,7 @@
         "fxPpl": -14.31,
         "initialFillDate": "2025-04-24T21:49:26.000+03:00",
         "frontend": "AUTOINVEST",
-        "maxBuy": 27096.13482036,
+        "maxBuy": 27096.03536396,
         "maxSell": null,
         "pieQuantity": 36.86517964
       },
@@ -180,7 +180,7 @@
         "fxPpl": 0.93,
         "initialFillDate": "2025-09-18T11:00:01.000+03:00",
         "frontend": "AUTOINVEST",
-        "maxBuy": 1050558.22948805,
+        "maxBuy": 1050558.12557208,
         "maxSell": null,
         "pieQuantity": 25.77051195
       },
@@ -713,7 +713,7 @@
         "fxPpl": -18.65,
         "initialFillDate": "2025-07-28T15:45:29.000+03:00",
         "frontend": "AUTOINVEST",
-        "maxBuy": 49999996.66826145,
+        "maxBuy": 49999996.6597724,
         "maxSell": null,
         "pieQuantity": 3.33173855
       },
@@ -732,12 +732,12 @@
       }
     ],
     "account": {
-      "free": 8224.15,
-      "total": 31595.26,
+      "free": 8209.15,
+      "total": 31574.76,
       "ppl": -483.96,
       "result": -828.39,
       "invested": 23194.47,
-      "pieCash": 2.92,
+      "pieCash": 31.42,
       "blocked": 0
     },
     "dividends": []
