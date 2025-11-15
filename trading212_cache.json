@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-11-15T01:45:56.627471",
+  "timestamp": "2025-11-15T06:31:26.139796",
   "data": {
     "positions": [
       {
@@ -732,12 +732,12 @@
       }
     ],
     "account": {
-      "free": 8221.31,
-      "total": 31592.08,
+      "free": 8224.15,
+      "total": 31595.26,
       "ppl": -483.96,
       "result": -828.39,
       "invested": 23194.47,
-      "pieCash": 2.58,
+      "pieCash": 2.92,
       "blocked": 0
     },
     "dividends": []
